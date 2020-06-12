@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native'
 
 import MenuButton from '../../components/MenuButton'
 import TanqueList from '../../components/TanqueList'
@@ -8,8 +7,6 @@ import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
 
 export default function HomeLaticinio() {
-
-    const navigation = useNavigation()
 
     const [tanque, setTanque] = useState([])
 

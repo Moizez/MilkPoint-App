@@ -1,13 +1,10 @@
 import React from 'react'
 import { View } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
 import Speedometer from 'react-native-speedometer-chart'
 
 import { Container, Nome, BoxSpeed, BoxTanque } from './styles'
 
 export default function TanqueList({ data }) {
-
-    const navigation = useNavigation()
 
     function capacidade() {
         let total = data.qtdAtual + data.qtdRestante
@@ -15,7 +12,7 @@ export default function TanqueList({ data }) {
     }
 
     return (
-        <Container onPress={() => navigation.navigate('DetalhesTanque')}>
+        <Container>
             <BoxTanque>
                 <Nome>Tanque: {data.nome}</Nome>
                 <Nome>Tipo do Leite: {data.tipo}</Nome>
