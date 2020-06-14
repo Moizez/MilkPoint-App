@@ -4,9 +4,9 @@ import { AuthContext } from '../../contexts/auth'
 import MenuButton from '../../components/MenuButton'
 import TanqueList from '../../components/TanqueList'
 
-import { Container, BoxNome, Nome, Box, Titulo, List, BoxLogout, Logout, LogoutText } from './styles'
+import { Container, BoxNome, Nome, Box, Titulo, List, BoxLogout, Logout, LogoutText } from '../HomeProdutor/styles'
 
-export default function HomeProdutor() {
+export default function HomeResponsavel() {
 
     const [tanque, setTanque] = useState([])
     const { user, logOut } = useContext(AuthContext)
@@ -28,7 +28,7 @@ export default function HomeProdutor() {
 
             <BoxNome>
                 <Nome>Bem-vindo {user.nome}</Nome>
-                <Titulo style={{ color: '#da1e37' }}>{user.perfil === 1 ? 'Produtor' : ''}</Titulo>
+                <Titulo style={{ color: '#da1e37' }}>{user.perfil === 2 ? 'Responsável' : ''}</Titulo>
             </BoxNome>
 
             <BoxLogout>
@@ -47,6 +47,6 @@ export default function HomeProdutor() {
                 keyExtractor={(item, key) => key.toString()}
                 renderItem={({ item }) => (<TanqueList data={item} />)}
             />
-        </Container >
+        </Container>
     );
 }

@@ -7,6 +7,7 @@ background-color: #292b2c;
 
 export const BoxNome = styled.View`
 margin-bottom: 5px;
+align-items: center;
 `;
 
 export const Box = styled.View`
@@ -38,5 +39,28 @@ export const List = styled.FlatList.attrs({
     border-top-right-radius: 8px;
     margin-left: 8px;
     margin-right: 8px;
+`;
+
+//Logaout temporario
+
+export const BoxLogout = styled.View`
+    margin-top:5px;
+    justify-content: center;
+    align-items: center;
+    height: 45px;
+`;
+
+export const Logout = styled.TouchableOpacity`
+    justify-content: center;
+    align-items: center;
+    background-color: #da1e37;
+    width: 90%;
+    height: 45px;
+    border-radius: 7px;
+    margin-bottom: 10px;
+`;
+export const LogoutText = styled.Text`
+    font-size: 20;
+    color: #FFF;
 `;
 

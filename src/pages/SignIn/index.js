@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react'
-import { Animated, StyleSheet, Keyboard } from 'react-native'
+import React, { useState, useEffect, useContext } from 'react'
+import { Animated, StyleSheet, Keyboard, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+
+import { AuthContext } from '../../contexts/auth'
 
 import { Container, BoxImage, Input, SubmitButton, SubmitText, Link, LinkText } from './styles'
 
 export default function SignIn() {
-
     const navigation = useNavigation()
+
+    //Dados p/ Login
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const { signIn, loadingAuth } = useContext(AuthContext)
+
+    function handleLogin() {
+        signIn(email, password)
+    }
 
     //Animação da tela de login
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 100 }))
     const [opacity] = useState(new Animated.Value(0))
     const [logo] = useState(new Animated.ValueXY({ x: 225, y: 225 }))
-
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
 
     //Ciclo da animação da tela de login
     useEffect(() => {
@@ -106,11 +113,18 @@ export default function SignIn() {
                     autoCorrect={false}
                     autoCapitalize='none'
                     value={password}
+                    secureTextEntry={true}
                     onChangeText={(text) => setPassword(text)}
                 />
 
-                <SubmitButton>
-                    <SubmitText>Entrar</SubmitText>
+                <SubmitButton onPress={handleLogin}>
+                    {
+                        loadingAuth ? (
+                            <ActivityIndicator size={20} color="#FFF" />
+                        ) : (
+                                <SubmitText>Entrar</SubmitText>
+                            )
+                    }
                 </SubmitButton>
 
                 <Link onPress={() => navigation.navigate('SignUp')}>

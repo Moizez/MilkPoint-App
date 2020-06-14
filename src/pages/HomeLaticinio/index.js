@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { AuthContext } from '../../contexts/auth'
 
 import MenuButton from '../../components/MenuButton'
 import TanqueList from '../../components/TanqueList'
 
-import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
-
+import { Container, BoxNome, Nome, Box, Titulo, List, BoxLogout, Logout, LogoutText } from '../HomeProdutor/styles'
 
 export default function HomeLaticinio() {
 
     const [tanque, setTanque] = useState([])
+    const { user, logOut } = useContext(AuthContext)
 
     useEffect(() => {
         async function loadList() {
@@ -26,8 +27,16 @@ export default function HomeLaticinio() {
             <MenuButton />
 
             <BoxNome>
-                <Nome>Home do Laticinio</Nome>
+                <Nome>Bem-vindo {user.nome}</Nome>
+                <Titulo style={{ color: '#da1e37' }}>{user.perfil === 3 ? 'Responsável' : ''}</Titulo>
             </BoxNome>
+
+            <BoxLogout>
+                <Logout onPress={() => logOut()}>
+                    <LogoutText>Sair</LogoutText>
+                </Logout>
+            </BoxLogout>
+
             <Box>
                 <Titulo>Lista de tanques</Titulo>
             </Box>
