@@ -4,23 +4,11 @@ import { AuthContext } from '../../contexts/auth'
 import MenuButton from '../../components/MenuButton'
 import TanqueList from '../../components/TanqueList'
 
-import { Container, BoxNome, Nome, Box, Titulo, List, BoxLogout, Logout, LogoutText } from './styles'
+import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
 export default function HomeProdutor() {
-
-    const [tanque, setTanque] = useState([])
-    const { user, logOut } = useContext(AuthContext)
-
-    useEffect(() => {
-        async function loadList() {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
-            const data = await response.json()
-            setTanque(data)
-        }
-
-        loadList()
-
-    }, [])
+    
+    const { user, tanque } = useContext(AuthContext)
 
     return (
         <Container>
@@ -30,12 +18,6 @@ export default function HomeProdutor() {
                 <Nome>Bem-vindo {user.nome}</Nome>
                 <Titulo style={{ color: '#da1e37' }}>{user.perfil === 1 ? 'Produtor' : ''}</Titulo>
             </BoxNome>
-
-            <BoxLogout>
-                <Logout onPress={() => logOut()}>
-                    <LogoutText>Sair</LogoutText>
-                </Logout>
-            </BoxLogout>
 
             <Box>
                 <Titulo>Lista de tanques</Titulo>

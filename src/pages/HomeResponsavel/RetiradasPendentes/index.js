@@ -1,12 +1,12 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../../contexts/auth'
+import { AuthContext } from '../../../contexts/auth'
 
-import MenuButton from '../../components/MenuButton'
-import RetiradaPendenteList from '../../components/RetiradaPendenteList'
+import MenuButton from '../../../components/MenuButton'
+import RetiradaPendenteList from '../../../components/RetiradaPendenteList'
 
 import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
-export default function HomeResponsavel() {
+export default function RetiradasPendentes() {
 
     const { user, retiradaPendente } = useContext(AuthContext)
 

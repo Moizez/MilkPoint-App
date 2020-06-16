@@ -16,7 +16,7 @@ align-items: baseline;
 justify-content: flex-start;
 margin-left: 15px;
 margin-bottom: 3px;
-margin-top: 25px;
+margin-top: 20px;
 `;
 
 export const Nome = styled.Text`

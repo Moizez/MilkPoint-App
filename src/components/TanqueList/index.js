@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Modal, Button, StyleSheet } from 'react-native'
+import { Modal, Button, View } from 'react-native'
 import Speedometer from 'react-native-speedometer-chart'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import FabButton from '../FabButton'
 
@@ -13,14 +14,63 @@ import {
 export default function TanqueList({ data }) {
 
     const [modalVisible, setModalVisible] = useState(false)
+    const capacidade = data.qtdAtual + data.qtdRestante
 
-    function capacidade() {
-        let total = data.qtdAtual + data.qtdRestante
-        return total
+    function corGrafico() {
+        if (data.qtdAtual > (capacidade - (capacidade / 3))) {
+            return '#da1e37'
+        } if (data.qtdAtual > (capacidade / 2)) {
+            return '#f5cb5c'
+        } else {
+            return '#2a9d8f'
+        }
     }
 
     return (
         <BoxGeral>
+            
+            <Container onPress={() => { setModalVisible(!modalVisible) }}>
+                <BoxTanque>
+                    <Nome>Tanque: {data.nome}</Nome>
+                    <Nome>Tipo do Leite: {data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Nome>
+                    <Nome>Qtd. Atual: {data.qtdAtual}L</Nome>
+                    <Nome>Qtd. Restante: {data.qtdRestante}L</Nome>
+                    <Nome>Responsável: {data.responsavel.nome} </Nome>
+                </BoxTanque>
+
+                <BoxSpeed>
+                    <View style={{ flex: 1, marginRight: '80%' }}>
+                        {data.tipo == 'BOVINO' ?
+                            <Icon
+                                name='cow'
+                                color='blue'
+                                size={30}>
+                            </Icon> :
+                            <Icon
+                                name='sheep'
+                                color='green'
+                                size={30}>
+                            </Icon>
+                        }
+                    </View>
+                    <Speedometer
+                        value={data.qtdAtual}
+                        totalValue={capacidade}
+                        size={150}
+                        outerColor="#d3d3d3"
+                        internalColor={corGrafico()}
+                        showText
+                        text={data.nome}
+                        textStyle={{ color: 'black' }}
+                        showLabels
+                        labelStyle={{ color: 'blue' }}
+                        labelFormatter={number => `${number}`}
+                        showPercent
+                        percentStyle={{ color: 'red' }}
+                    />
+                </BoxSpeed>
+            </Container>
+
             <Modal
                 animationType='slide'
                 transparent={false}
@@ -44,9 +94,9 @@ export default function TanqueList({ data }) {
                     <BoxInfo>
 
                         <BoxCaracteristicas>
-                            <TextInfo>Tipo do Leite: {data.tipo}</TextInfo>
-                            <TextInfo>Qtd. Atual: {data.qtdAtual} L</TextInfo>
-                            <TextInfo>Qtd. Restante: {data.qtdRestante} L</TextInfo>
+                            <TextInfo>Tipo do Leite: {data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</TextInfo>
+                            <TextInfo>Qtd. Atual: {data.qtdAtual}L</TextInfo>
+                            <TextInfo>Qtd. Restante: {data.qtdRestante}L</TextInfo>
                             <TextInfo>Responsável: {data.responsavel.nome} </TextInfo>
                         </BoxCaracteristicas>
                         <BoxEndereco>
@@ -71,38 +121,6 @@ export default function TanqueList({ data }) {
                     style={{ bottom: 100, right: 50 }}
                 />
             </Modal>
-
-            <Container onPress={() => { setModalVisible(!modalVisible) }}>
-                <BoxTanque>
-                    <Nome>Tanque: {data.nome}</Nome>
-                    <Nome>Tipo do Leite: {data.tipo}</Nome>
-                    <Nome>Qtd. Atual: {data.qtdAtual} L</Nome>
-                    <Nome>Qtd. Restante: {data.qtdRestante} L</Nome>
-                    <Nome>Responsável: {data.responsavel.nome} </Nome>
-                </BoxTanque>
-
-                <BoxSpeed>
-                    <Speedometer
-                        value={data.qtdAtual}
-                        totalValue={capacidade()}
-                        size={160}
-                        outerColor="#d3d3d3"
-                        internalColor={data.qtdAtual > (capacidade() - (capacidade() / 3)) ? '#da1e37' : '#2a9d8f'}
-                        showText
-                        text={data.nome}
-                        textStyle={{ color: 'black' }}
-                        showLabels
-                        labelStyle={{ color: 'blue' }}
-                        labelFormatter={number => `${number}`}
-                        showPercent
-                        percentStyle={{ color: 'red' }}
-                    />
-                </BoxSpeed>
-            </Container>
         </BoxGeral>
     );
 }
-
-const styles = StyleSheet.create({
-
-})

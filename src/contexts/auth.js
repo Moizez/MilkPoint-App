@@ -6,10 +6,79 @@ export const AuthContext = createContext({})
 
 export default function AuthProvider({ children }) {
 
-    //Se existir qualquer usuario diferente de "null", ele loga
-    const [user, setUser] = useState(null)
+    //Estados do Active Indicator
     const [loading, setLoading] = useState(true)
     const [loadingAuth, setLoadingAuth] = useState(false)
+
+    //Se existir qualquer usuario diferente de "null", ele loga
+    const [user, setUser] = useState(null)
+    const [tanque, setTanque] = useState([])
+    const [deposito, setDeposito] = useState([])
+    const [retirada, setRetirada] = useState([])
+    const [depositoPendente, setDepositoPendente] = useState([])
+    const [retiradaPendente, setRetiradaPendente] = useState([])
+
+
+    //Lista de Depositos
+    useEffect(() => {
+        async function loadListDepositos() {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listatodos')
+            const deposito = await response.json()
+            setDeposito(deposito)
+        }
+
+        loadListDepositos()
+
+    }, [])
+
+    //Lista de Depositos Pendentes
+    useEffect(() => {
+        async function loadListDepositosPendentes() {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listapendentes')
+            const depositoPendente = await response.json()
+            setDepositoPendente(depositoPendente)
+        }
+
+        loadListDepositosPendentes()
+
+    }, [])
+
+    //Lista de Retiradas
+    useEffect(() => {
+        async function loadListRetiradas() {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listatodos')
+            const retirada = await response.json()
+            setRetirada(retirada)
+        }
+
+        loadListRetiradas()
+
+    }, [])
+
+    //Lista de Retiradas Pendentes
+    useEffect(() => {
+        async function loadListRetiradasPendentes() {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listapendentes')
+            const retiradaPendente = await response.json()
+            setRetiradaPendente(retiradaPendente)
+        }
+
+        loadListRetiradasPendentes()
+
+    }, [])
+
+    //Carregar lista tanque para o Context
+    useEffect(() => {
+        async function loadListTanques() {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
+            const tanque = await response.json()
+            setTanque(tanque)
+        }
+
+        loadListTanques()
+
+    }, [])
+
 
     //Carregar usuário do AsyncStorage
     useEffect(() => {
@@ -55,8 +124,6 @@ export default function AuthProvider({ children }) {
             const response = await fetch('https://milkpoint.herokuapp.com/api/login', dado)
             const data = await response.json()
 
-            alert(data.perfil)
-
             try {
                 if (response.status == 200) {
                     setUser(data)
@@ -75,7 +142,7 @@ export default function AuthProvider({ children }) {
         }
     }
 
-    //Função para logar o usario
+    //Função para deslogar o usuário
     async function logOut() {
         await AsyncStorage.clear()
             .then(() => {
@@ -83,12 +150,16 @@ export default function AuthProvider({ children }) {
             })
     }
 
+    //Função para adicionar o usuário no Async Storage
     async function storageUser(data) {
         await AsyncStorage.setItem('Auth_user', JSON.stringify(data))
     }
 
     return (
-        <AuthContext.Provider value={{ signed: !!user, user, loading, loadingAuth, signIn, logOut }}>
+        <AuthContext.Provider value={{
+            signed: !!user, user, tanque, deposito, retirada, depositoPendente, retiradaPendente,
+            loading, loadingAuth, signIn, logOut
+        }}>
             {children}
         </AuthContext.Provider>
     );

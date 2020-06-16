@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
-import { View, TouchableWithoutFeedback, Animated } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { View, KeyboardAvoidingView, Text, TouchableOpacity, TouchableWithoutFeedback, Animated, Modal, TextInput } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native'
 
 import styles from './styles'
 
 export default function FabButton(props) {
 
+    const navigation = useNavigation()
+
     const [open, setOpen] = useState(false)
     const [animation] = useState(new Animated.Value(0))
+    const [modalVisible, setModalVIsible] = useState(false)
+    const [text, setText] = useState('')
 
     const toggleMenu = () => {
         var toValue = open ? 0 : 1
@@ -57,7 +62,52 @@ export default function FabButton(props) {
 
     return (
         <View style={[styles.container, props.style]} >
-            <TouchableWithoutFeedback onPress={() => alert('Home button')}>
+
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={modalVisible}
+            >
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <KeyboardAvoidingView style={styles.modalBox}>
+                        <View style={styles.boxInput}>
+                            <Text style={{
+                                color: '#FFF',
+                                fontSize: 18,
+                                marginBottom: 15
+                            }}
+                            >Digite a quatidade que irá depositar:</Text>
+                            <TextInput
+                                style={styles.input}
+                                placeholder='Quantidade em litros (L)'
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                keyboardType='numeric'
+                                value={text}
+                                onChangeText={(text) => setText(text)}
+                            />
+
+                            <View style={styles.btnView}>
+                                <View style={styles.btnConfirm}>
+                                    <TouchableOpacity onPress={() => setModalVIsible(!modalVisible)}>
+                                        <Text style={styles.btn}>Confirmar</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={styles.btnCancel}>
+                                    <TouchableOpacity onPress={() => setModalVIsible(!modalVisible)}>
+                                        <Text style={styles.btn}>Cancelar</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+
+                        </View>
+                    </KeyboardAvoidingView>
+                </View>
+
+            </Modal>
+
+            <TouchableWithoutFeedback onPress={() => navigation.navigate('Home')}>
                 <Animated.View style={[styles.button, styles.subMenuUm, heartStyle]}>
                     <Icon
                         name="home"
@@ -66,10 +116,10 @@ export default function FabButton(props) {
                     />
                 </Animated.View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => alert('Home heart')}>
+            <TouchableWithoutFeedback onPress={() => setModalVIsible(!modalVisible)}>
                 <Animated.View style={[styles.button, styles.subMenuDois, homeStyle]}>
                     <Icon
-                        name="heart"
+                        name="level-up-alt"
                         size={20}
                         color="#FFF"
                     />

@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../../contexts/auth'
+import { AuthContext } from '../../../contexts/auth'
 
-import MenuButton from '../../components/MenuButton'
-import RetiradaPendenteList from '../../components/RetiradaPendenteList'
+import MenuButton from '../../../components/MenuButton'
+import DepositoPendenteList from '../../../components/DepositoPendenteList'
 
 import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
-export default function HomeResponsavel() {
-
-    const { user, retiradaPendente } = useContext(AuthContext)
+export default function DepositosPendentes() {
+    
+    const { user, depositoPendente } = useContext(AuthContext)
 
     return (
         <Container>
@@ -25,9 +25,9 @@ export default function HomeResponsavel() {
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={retiradaPendente}
+                data={depositoPendente}
                 keyExtractor={(item, key) => key.toString()}
-                renderItem={({ item }) => (<RetiradaPendenteList data={item} />)}
+                renderItem={({ item }) => (<DepositoPendenteList data={item} />)}
             />
         </Container>
     );
