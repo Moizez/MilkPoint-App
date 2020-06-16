@@ -20,7 +20,7 @@ export default function DepositosPendentes() {
             </BoxNome>
 
             <Box>
-                <Titulo>Lista de tanques</Titulo>
+                <Titulo>Lista de depósitos pendentes</Titulo>
             </Box>
 
             <List

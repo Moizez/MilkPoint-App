@@ -63,7 +63,7 @@ function ResponsavelTab() {
             <AppTab.Screen name='Retiradas' component={RetiradasPendentes}
                 options={{
                     tabBarLabel: 'Retiradas Pendentes',
-                    tabBarIcon: ({  size }) => (
+                    tabBarIcon: ({ size }) => (
                         <Icon name="md-arrow-round-down" color={'#da1e37'} size={size} />
                     ),
                 }}
@@ -76,6 +76,7 @@ function ResponsavelTab() {
 function LaticinioDrawer() {
     return (
         <AppDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}
+            drawerType='front'
         >
             <AppDrawer.Screen name='Home' component={HomeLaticinio} />
             <AppDrawer.Screen name='Relatorio' component={RelatorioLaticinio} />
@@ -88,6 +89,7 @@ function LaticinioDrawer() {
 function ResponsavelDrawer() {
     return (
         <AppDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}
+            drawerType='front'
         >
             <AppDrawer.Screen name='Home' component={ResponsavelTab} />
             <AppDrawer.Screen name='Relatorio' component={RelatorioResponsavel} />
@@ -108,6 +110,7 @@ export default function AppRoutes() {
 
         return (
             <AppDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}
+                drawerType='front'
             >
                 <AppDrawer.Screen name='Home' component={HomeProdutor} />
                 <AppDrawer.Screen name='Relatorio' component={RelatorioProdutor} />

@@ -1,16 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../contexts/auth'
 
 import MenuButton from '../../components/MenuButton'
-import RetiradaPendenteList from '../../components/RetiradaPendenteList'
+import TanqueList from '../../components/TanqueList'
 
 import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
 export default function HomeResponsavel() {
 
-    const { user, retiradaPendente } = useContext(AuthContext)
+    const [dataTanque, setDataTanque] = useState([])
+    const { user, tanque } = useContext(AuthContext)
 
     return (
+
         <Container>
             <MenuButton />
 
@@ -25,10 +27,11 @@ export default function HomeResponsavel() {
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={retiradaPendente}
+                data={dataTanque}
                 keyExtractor={(item, key) => key.toString()}
-                renderItem={({ item }) => (<RetiradaPendenteList data={item} />)}
+                renderItem={({ item }) => (<TanqueList data={item} />)}
             />
+
         </Container>
     );
 }

@@ -20,7 +20,7 @@ export default function RetiradasPendentes() {
             </BoxNome>
 
             <Box>
-                <Titulo>Lista de tanques</Titulo>
+                <Titulo>Lista de retiradas pendentes</Titulo>
             </Box>
 
             <List
