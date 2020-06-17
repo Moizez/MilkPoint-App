@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import Icon from 'react-native-vector-icons/Ionicons'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
@@ -46,8 +46,8 @@ function ResponsavelTab() {
             <AppTab.Screen name='Home' component={HomeResponsavel}
                 options={{
                     tabBarLabel: 'Início',
-                    tabBarIcon: ({ color, size }) => (
-                        <Icon name="ios-home" color={color} size={size} />
+                    tabBarIcon: ({ color }) => (
+                        <Icon name="home" color={color} size={30} />
                     ),
                 }} Depósitos Pendentes
 
@@ -55,16 +55,16 @@ function ResponsavelTab() {
             <AppTab.Screen name='Depositos' component={DepositosPendentes}
                 options={{
                     tabBarLabel: 'Depósitos Pendentes',
-                    tabBarIcon: ({ size }) => (
-                        <Icon name="md-arrow-round-up" color={'#2a9d8f'} size={size} />
+                    tabBarIcon: ({ }) => (
+                        <Icon name="arrow-up-bold-hexagon-outline" color={'#2a9d8f'} size={30} />
                     ),
                 }}
             />
             <AppTab.Screen name='Retiradas' component={RetiradasPendentes}
                 options={{
                     tabBarLabel: 'Retiradas Pendentes',
-                    tabBarIcon: ({ size }) => (
-                        <Icon name="md-arrow-round-down" color={'#da1e37'} size={size} />
+                    tabBarIcon: ({ }) => (
+                        <Icon name="arrow-down-bold-hexagon-outline" color={'#da1e37'} size={30} />
                     ),
                 }}
 

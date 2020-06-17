@@ -17,6 +17,7 @@ export default function AuthProvider({ children }) {
     const [retirada, setRetirada] = useState([])
     const [depositoPendente, setDepositoPendente] = useState([])
     const [retiradaPendente, setRetiradaPendente] = useState([])
+    const [tanqueResponsavel, setTanqueResponsavel] = useState([])
 
 
     //Lista de Depositos
@@ -76,6 +77,18 @@ export default function AuthProvider({ children }) {
         }
 
         loadListTanques()
+
+    }, [])
+
+    //Carregar lista apens dos responsaveis logados e seus tanques
+    useEffect(() => {
+        async function loadListTanquesResponsavel() {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
+            const tanqueResponsavel = await response.json()
+            setTanqueResponsavel(tanqueResponsavel)
+        }
+
+        loadListTanquesResponsavel()
 
     }, [])
 
@@ -158,9 +171,10 @@ export default function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{
             signed: !!user, user, tanque, deposito, retirada, depositoPendente, retiradaPendente,
-            loading, loadingAuth, signIn, logOut
+            tanqueResponsavel, loading, loadingAuth, signIn, logOut
         }}>
             {children}
         </AuthContext.Provider>
     );
 }
+

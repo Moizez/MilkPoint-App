@@ -1,15 +1,14 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/auth'
 
 import MenuButton from '../../components/MenuButton'
-import TanqueList from '../../components/TanqueList'
+import TanqueResponsavelList from '../../components/TanqueResponsavelList'
 
 import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
 export default function HomeResponsavel() {
 
-    const [dataTanque, setDataTanque] = useState([])
-    const { user, tanque } = useContext(AuthContext)
+    const { user, tanqueResponsavel } = useContext(AuthContext)
 
     return (
 
@@ -27,11 +26,10 @@ export default function HomeResponsavel() {
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={dataTanque}
+                data={tanqueResponsavel}
                 keyExtractor={(item, key) => key.toString()}
-                renderItem={({ item }) => (<TanqueList data={item} />)}
+                renderItem={({ item }) => (<TanqueResponsavelList data={item} />)}
             />
-
         </Container>
     );
 }
