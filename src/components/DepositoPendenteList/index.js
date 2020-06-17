@@ -6,8 +6,17 @@ import { BoxGeral, Container, Nome, BoxIcon, BoxDeposito } from './styles'
 
 export default function DepositoPendenteList({ data }) {
 
-    let status = data.confirmacao == true ? 'Confirmado' : 'Pendente' ||
-        data.excluido == true ? 'Cancelado' : 'Pendente'
+    function bucketColor(status) {
+        if (data.confirmacao == true) {
+            return status = 'Confirmado'
+        } if (data.excluido == true) {
+            return status = 'Cancelado'
+        } else {
+            return status = 'Pendente'
+        }
+    }
+
+    let status = bucketColor()
 
     return (
         <BoxGeral>
@@ -21,29 +30,27 @@ export default function DepositoPendenteList({ data }) {
                 </BoxDeposito>
                 <BoxIcon>
                     <Nome>Depósito</Nome>
-                    {data.confirmacao == true ?
+                    {status == 'Confirmado' && (
                         <Icon
                             name='bucket'
                             size={70}
                             color='#2a9d8f'
-                        ></Icon> :
+                        ></Icon>
+                    )}
+                    {status == 'Cancelado' && (
+                        <Icon
+                            name='bucket'
+                            size={70}
+                            color='#da1e37'
+                        ></Icon>
+                    )}
+                    {status != 'Cancelado' && status != 'Confirmado' && (
                         < Icon
                             name='bucket'
                             size={70}
-                            color='#000'
-                        ></Icon> ||
-                            data.excluido == true ?
-                            <Icon
-                                name='bucket'
-                                size={70}
-                                color='#da1e37'
-                            ></Icon> :
-                            < Icon
-                                name='bucket'
-                                size={70}
-                                color='#ececec'
-                            ></Icon>
-                    }
+                            color='#adb5bd'
+                        ></Icon>
+                    )}
                     <Nome>{status}</Nome>
                 </BoxIcon>
             </Container>
