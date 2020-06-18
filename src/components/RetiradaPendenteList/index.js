@@ -1,10 +1,35 @@
-import React from 'react';
-import { View } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, Modal, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo'
 
-import { BoxGeral, Container, Nome, BoxIcon, BoxDeposito } from './styles'
+import { AuthContext } from '../../contexts/auth'
+
+import {
+    BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque, BoxModal, BoxTitulo, TituloInfo,
+    BoxBtnText, BtnVoltar, BtnText, BoxInfo, BoxInfoModal, BtnConfirm, BtnCancel, Btn, NomeModal
+} from './styles'
 
 export default function RetiradaPendenteList({ data }) {
+
+    const [modalVisible, setModalVisible] = useState(false)
+    const [confirmacao, setConfirmacao] = useState(false)
+    const [idRetirada, setIdRetirada] = useState('')
+    const { confirmacaoRetirada } = useContext(AuthContext)
+
+    //Função para confirmar a retirada
+    function handleConfirm() {
+        setConfirmacao(!confirmacao)
+        setIdRetirada(data.id)
+        confirmacaoRetirada(confirmacao, idRetirada)
+        setModalVisible(!modalVisible)
+    }
+
+    //Função para cancelar a retirada
+    function handleCancel() {
+        setIdRetirada(data.id)
+        confirmacaoRetirada(confirmacao, idRetirada)
+        setModalVisible(!modalVisible)
+    }
 
     function bucketColor(status) {
         if (data.confirmacao == true) {
@@ -15,21 +40,19 @@ export default function RetiradaPendenteList({ data }) {
             return status = 'Pendente'
         }
     }
-
     let status = bucketColor()
 
     return (
 
         <BoxGeral>
             <Container>
-                <BoxDeposito>
+                <BoxInfoTanque>
                     <Nome>Tanque: {data.tanque.nome}</Nome>
-                    <Nome>Depósito solicitado: {data.quantidade}</Nome>
+                    <Nome>Retirada solicitada: {data.quantidade}</Nome>
                     <Nome>Nome do laticinio: {data.laticinio.nome}</Nome>
-                    <Nome>Nome do responsável {data.tanque.responsavel.nome}</Nome>
                     <Nome>Status: {status}</Nome>
-                </BoxDeposito>
-                <BoxIcon>
+                </BoxInfoTanque>
+                <BoxIcon onPress={() => { setModalVisible(!modalVisible) }}>
                     <Nome>Retirada</Nome>
                     {status == 'Confirmada' && (
                         <Icon
@@ -55,6 +78,47 @@ export default function RetiradaPendenteList({ data }) {
                     <Nome>{status}</Nome>
                 </BoxIcon>
             </Container>
+
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={modalVisible}
+            >
+                <BoxModal>
+                    <BoxTitulo>
+                        <TituloInfo>Confirmação de retirada do tanque: </TituloInfo>
+                    </BoxTitulo>
+
+                    <BoxInfoModal>
+                        <NomeModal>Tanque: {data.tanque.nome}</NomeModal>
+                        <NomeModal>Retirada solicitada: {data.quantidade} litros</NomeModal>
+                        <NomeModal>Nome do solicitante: {data.laticinio.nome}</NomeModal>
+                        <NomeModal>Data: 20/06/20 - 17h32</NomeModal>
+                    </BoxInfoModal>
+
+                    <BoxInfo>
+                        <BtnConfirm>
+                            <TouchableOpacity onPress={() => { handleConfirm() }}>
+                                <Btn>Confirmar</Btn>
+                            </TouchableOpacity>
+                        </BtnConfirm>
+
+                        <BtnCancel>
+                            <TouchableOpacity onPress={() => { handleCancel() }}>
+                                <Btn>Cancelar</Btn>
+                            </TouchableOpacity>
+                        </BtnCancel>
+                    </BoxInfo>
+
+                    <BoxBtnText>
+                        <BtnVoltar onPress={() => { setModalVisible(!modalVisible) }}>
+                            <BtnText>Fechar</BtnText>
+                        </BtnVoltar>
+                    </BoxBtnText>
+                </BoxModal>
+
+            </Modal>
+
         </BoxGeral>
     );
 }

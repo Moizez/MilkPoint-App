@@ -16,11 +16,11 @@ export default function TanqueResponsavelList({ data }) {
 
     function corGrafico() {
         if (data.qtdAtual > (capacidade - (capacidade / 3))) {
-            return '#da1e37'
-        } if (data.qtdAtual > (capacidade / 2)) {
+            return '#2a9d8f'
+        } if (data.qtdAtual >= (capacidade / 2)) {
             return '#f5cb5c'
         } else {
-            return '#2a9d8f'
+            return '#da1e37'
         }
     }
 
@@ -41,12 +41,12 @@ export default function TanqueResponsavelList({ data }) {
                                 size={40}>
                             </Icon>
                         }
-                        <Nome style={{ fontSize: 18, fontWeight: 'bold', marginLeft: 10 }}>Tanque: {data.nome}</Nome>
+                        <Nome style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 10 }}>Tanque: {data.nome}</Nome>
                     </BoxIcon>
                     <Speedometer
                         value={data.qtdAtual}
                         totalValue={capacidade}
-                        size={200}
+                        size={170}
                         outerColor="#d3d3d3"
                         internalColor={corGrafico()}
                         showText
@@ -59,8 +59,8 @@ export default function TanqueResponsavelList({ data }) {
                         percentStyle={{ color: 'red' }}
                     />
                     <BoxTanque>
-                        <Nome>- Volume atual de leite: {data.qtdAtual} litros</Nome>
-                        <Nome>- Volume restante do tanque: {data.qtdRestante} litros</Nome>
+                        <Nome>- Volume atual do tanque é de {data.qtdAtual} litros</Nome>
+                        <Nome>- Falta {data.qtdRestante} litros para completar o tanque</Nome>
                     </BoxTanque>
                 </BoxSpeed>
             </Container>

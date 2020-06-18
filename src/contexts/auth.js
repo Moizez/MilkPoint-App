@@ -6,11 +6,14 @@ export const AuthContext = createContext({})
 
 export default function AuthProvider({ children }) {
 
+    //Url padrão da API
+    const baseURL = 'https://milkpoint.herokuapp.com/api/'
+
     //Estados do Active Indicator
     const [loading, setLoading] = useState(true)
     const [loadingAuth, setLoadingAuth] = useState(false)
 
-    //Se existir qualquer usuario diferente de "null", ele loga
+    //States 
     const [user, setUser] = useState(null)
     const [tanque, setTanque] = useState([])
     const [deposito, setDeposito] = useState([])
@@ -19,11 +22,53 @@ export default function AuthProvider({ children }) {
     const [retiradaPendente, setRetiradaPendente] = useState([])
     const [tanqueResponsavel, setTanqueResponsavel] = useState([])
 
+    //Confirmação da retiradas
+    async function confirmacaoRetirada(confirmacao, idRetirada) {
+        const data = new FormData();
+        data.append("confirmacao", confirmacao);
+        data.append("idRetirada", idRetirada);
 
-    //Lista de Depositos
+        const apiCall = await fetch(
+            'https://milkpoint.herokuapp.com/api/retirada/confirmacao', { method: 'POST', body: data })
+
+        const response = await apiCall.json();
+
+        if (confirmacao) {
+            alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
+        }
+        else {
+            alert("Pedido cancelado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
+        }
+
+        loadListRetiradasPendentes()
+    };
+
+    //Confirmação da depositos
+    async function confirmacaoDeposito(confirmacao, idDeposito) {
+        const data = new FormData();
+        data.append("confirmacao", confirmacao);
+        data.append("idDeposito", idDeposito);
+
+        const apiCall = await fetch(
+            'https://milkpoint.herokuapp.com/api/deposito/confirmacao', { method: 'POST', body: data })
+
+        const response = await apiCall.json();
+
+        if (confirmacao) {
+            alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
+        }
+        else {
+            alert("Pedido cancelado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
+        }
+
+        loadListDepositosPendentes()
+    };
+
+
+    //Lista de todos os depositos
     useEffect(() => {
         async function loadListDepositos() {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listatodos')
+            const response = await fetch(baseURL + 'deposito/listatodos')
             const deposito = await response.json()
             setDeposito(deposito)
         }
@@ -35,7 +80,7 @@ export default function AuthProvider({ children }) {
     //Lista de Depositos Pendentes
     useEffect(() => {
         async function loadListDepositosPendentes() {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listapendentes')
+            const response = await fetch(baseURL + 'deposito/listapendentes')
             const depositoPendente = await response.json()
             setDepositoPendente(depositoPendente)
         }
@@ -47,7 +92,7 @@ export default function AuthProvider({ children }) {
     //Lista de Retiradas
     useEffect(() => {
         async function loadListRetiradas() {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listatodos')
+            const response = await fetch(baseURL + 'retirada/listatodos')
             const retirada = await response.json()
             setRetirada(retirada)
         }
@@ -59,19 +104,19 @@ export default function AuthProvider({ children }) {
     //Lista de Retiradas Pendentes
     useEffect(() => {
         async function loadListRetiradasPendentes() {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listapendentes')
+            const response = await fetch(baseURL + 'retirada/listapendentes')
             const retiradaPendente = await response.json()
             setRetiradaPendente(retiradaPendente)
         }
 
         loadListRetiradasPendentes()
 
-    }, [])
+    }, [retiradaPendente])
 
     //Carregar lista tanque para o Context
     useEffect(() => {
         async function loadListTanques() {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
+            const response = await fetch(baseURL + 'tanque')
             const tanque = await response.json()
             setTanque(tanque)
         }
@@ -83,15 +128,16 @@ export default function AuthProvider({ children }) {
     //Carregar lista apens dos responsaveis logados e seus tanques
     useEffect(() => {
         async function loadListTanquesResponsavel() {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
+            const storageUser = await AsyncStorage.getItem('Auth_user')
+            setUser(JSON.parse(storageUser))
+            const response = await fetch(baseURL + 'responsavel/' + user.id + '/tanques')
             const tanqueResponsavel = await response.json()
             setTanqueResponsavel(tanqueResponsavel)
         }
 
         loadListTanquesResponsavel()
 
-    }, [])
-
+    }, [...tanqueResponsavel])
 
     //Carregar usuário do AsyncStorage
     useEffect(() => {
@@ -112,7 +158,6 @@ export default function AuthProvider({ children }) {
     //Funcao para logar o usuário
     async function signIn(email, password) {
         setLoadingAuth(true)
-
         if (email.trim().length == 0 || password.trim().length == 0) {
             alert('Preencha seu e-mail e senha corretamente!')
             setLoadingAuth(false)
@@ -122,6 +167,7 @@ export default function AuthProvider({ children }) {
             const dado = {
                 method: 'POST',
                 body: JSON.stringify({
+                    id: id,
                     email: email,
                     password: password,
                 }),
@@ -137,6 +183,8 @@ export default function AuthProvider({ children }) {
             const response = await fetch('https://milkpoint.herokuapp.com/api/login', dado)
             const data = await response.json()
 
+            console.log(data)
+
             try {
                 if (response.status == 200) {
                     setUser(data)
@@ -146,6 +194,8 @@ export default function AuthProvider({ children }) {
                     alert(response.status)
                     setLoadingAuth(false)
                 }
+
+
 
             }
             catch (erro) {
@@ -168,10 +218,12 @@ export default function AuthProvider({ children }) {
         await AsyncStorage.setItem('Auth_user', JSON.stringify(data))
     }
 
+
+
     return (
         <AuthContext.Provider value={{
             signed: !!user, user, tanque, deposito, retirada, depositoPendente, retiradaPendente,
-            tanqueResponsavel, loading, loadingAuth, signIn, logOut
+            tanqueResponsavel, loading, loadingAuth, signIn, logOut, confirmacaoRetirada, confirmacaoDeposito
         }}>
             {children}
         </AuthContext.Provider>

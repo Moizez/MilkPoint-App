@@ -1,7 +1,7 @@
-import axios from 'axios'
+import axios from 'axios';
 
 const api = axios.create({
-    baseUrl: "https://milkpoint.herokuapp.com/api/",
-})
+    baseURL: 'https://milkpoint.herokuapp.com/api/'
+});
 
-export default api
+export default api;

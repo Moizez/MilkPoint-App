@@ -18,17 +18,17 @@ export default function TanqueList({ data }) {
 
     function corGrafico() {
         if (data.qtdAtual > (capacidade - (capacidade / 3))) {
-            return '#da1e37'
-        } if (data.qtdAtual > (capacidade / 2)) {
+            return '#2a9d8f'
+        } if (data.qtdAtual >= (capacidade / 2)) {
             return '#f5cb5c'
         } else {
-            return '#2a9d8f'
+            return '#da1e37'
         }
     }
 
     return (
         <BoxGeral>
-            
+
             <Container onPress={() => { setModalVisible(!modalVisible) }}>
                 <BoxTanque>
                     <Nome>Tanque: {data.nome}</Nome>

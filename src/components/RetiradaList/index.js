@@ -6,8 +6,16 @@ import { BoxGeral, Container, Nome, BoxIcon, BoxDeposito } from './styles'
 
 export default function RetiradaList({ data }) {
 
-    let status = data.confirmacao == true ? 'Confirmado' : 'Pendente' ||
-        data.excluido == true ? 'Cancelado' : 'Pendente'
+    function bucketColor(status) {
+        if (data.confirmacao == true) {
+            return status = 'Confirmada'
+        } if (data.excluido == true) {
+            return status = 'Cancelada'
+        } else {
+            return status = 'Pendente'
+        }
+    }
+    let status = bucketColor()
 
     return (
         <BoxGeral>
@@ -20,30 +28,28 @@ export default function RetiradaList({ data }) {
                     <Nome>Status: {status}</Nome>
                 </BoxDeposito>
                 <BoxIcon>
-                    <Nome>Depósito</Nome>
-                    {data.confirmacao == true ?
+                    <Nome>Retirada</Nome>
+                    {status == 'Confirmada' && (
                         <Icon
                             name='bucket'
                             size={70}
                             color='#2a9d8f'
-                        ></Icon> :
+                        ></Icon>
+                    )}
+                    {status == 'Cancelada' && (
+                        <Icon
+                            name='bucket'
+                            size={70}
+                            color='#da1e37'
+                        ></Icon>
+                    )}
+                    {status != 'Cancelada' && status != 'Confirmada' && (
                         < Icon
                             name='bucket'
                             size={70}
-                            color='#000'
-                        ></Icon> ||
-                            data.excluido == true ?
-                            <Icon
-                                name='bucket'
-                                size={70}
-                                color='#da1e37'
-                            ></Icon> :
-                            < Icon
-                                name='bucket'
-                                size={70}
-                                color='#ececec'
-                            ></Icon>
-                    }
+                            color='#adb5bd'
+                        ></Icon>
+                    )}
                     <Nome>{status}</Nome>
                 </BoxIcon>
             </Container>
