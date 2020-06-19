@@ -15,10 +15,10 @@ export default function TanqueResponsavelList({ data }) {
     const capacidade = data.qtdAtual + data.qtdRestante
 
     function corGrafico() {
-        if (data.qtdAtual > (capacidade - (capacidade / 3))) {
-            return '#2a9d8f'
-        } if (data.qtdAtual >= (capacidade / 2)) {
+        if (data.qtdAtual > (capacidade / 4)) {
             return '#f5cb5c'
+        } if (data.qtdAtual >= (capacidade / 2)) {
+            return '#2a9d8f'
         } else {
             return '#da1e37'
         }

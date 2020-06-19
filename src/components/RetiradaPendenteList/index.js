@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Modal, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo'
 
@@ -12,22 +12,23 @@ import {
 export default function RetiradaPendenteList({ data }) {
 
     const [modalVisible, setModalVisible] = useState(false)
-    const [confirmacao, setConfirmacao] = useState(false)
-    const [idRetirada, setIdRetirada] = useState('')
+    const [confirmacao, setConfirmacao] = useState() // não está alterando o estado da variavel confirmação
+    const [idRetirada, setIdRetirada] = useState()
     const { confirmacaoRetirada } = useContext(AuthContext)
 
     //Função para confirmar a retirada
     function handleConfirm() {
-        setConfirmacao(!confirmacao)
+        setConfirmacao(true)
         setIdRetirada(data.id)
-        confirmacaoRetirada(confirmacao, idRetirada)
+        confirmacaoRetirada(true, idRetirada) // forçar a confirmação
         setModalVisible(!modalVisible)
     }
 
     //Função para cancelar a retirada
     function handleCancel() {
+        setConfirmacao(false)
         setIdRetirada(data.id)
-        confirmacaoRetirada(confirmacao, idRetirada)
+        confirmacaoRetirada(false, idRetirada) // forçar a confirmação
         setModalVisible(!modalVisible)
     }
 

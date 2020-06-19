@@ -1,7 +1,15 @@
 import styled from 'styled-components/native'
 
+export const BoxGeral = styled.View`
+flex: 1;
+padding-bottom: 20px;
+`;
+
+//MODAL
+
 export const BoxModal = styled.View`
-flex:1;
+flex: 1;
+background-color: #292b2c;
 `;
 
 export const BoxTitulo = styled.View`
@@ -22,6 +30,7 @@ flex: 1;
 background-color: #adb5bd;
 align-items: center;
 justify-content: center;
+border-bottom-left-radius: 5px;
 border-bottom-right-radius: 5px;
 `;
 
@@ -32,6 +41,7 @@ margin-left: 3px;
 align-items: center;
 justify-content: center;
 border-bottom-left-radius: 5px;
+border-bottom-right-radius: 5px;
 `;
 
 export const TituloInfo = styled.Text`
@@ -42,10 +52,7 @@ color: #FFF;
 
 export const BoxInfo = styled.View`
 flex-direction: row;
-background-color: #FFF;
-padding: 6px;
-border-bottom-width: 1px;
-border-bottom-color: #000;
+background-color: #292b2c;
 `;
 
 export const BoxCaracteristicas = styled.View`
@@ -53,6 +60,9 @@ flex: 1;
 background-color: #ececec;
 padding: 5px;
 border-radius: 5px;
+justify-content: center;
+margin-bottom: 5px;
+margin-top: 5px;
 `;
 
 export const BoxEndereco = styled.View`
@@ -61,10 +71,13 @@ background-color: #ececec;
 padding: 5px;
 border-radius: 5px;
 margin-left: 3px;
+justify-content: center;
+margin-bottom: 5px;
+margin-top: 5px;
 `;
 
 export const TextInfo = styled.Text`
-font-size: 17px;
+font-size: 16px;
 `;
 
 export const BoxMap = styled.View`
@@ -73,4 +86,27 @@ background-color: #FFF;
 padding: 10px;
 justify-content: center;
 align-items: center;
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
+`;
+
+export const BtnVoltar = styled.TouchableOpacity`
+align-items: center;
+justify-content: center;
+background-color: #292b2c;
+width: 100%;
+height: 45px;
+border-radius: 8px;
+`;
+
+export const BoxBtnText = styled.View`
+align-items: center;
+justify-content: center;
+border-top-color: #FFF;
+border-width: 1px;
+`;
+
+export const BtnText = styled.Text`
+font-size: 20px;
+color: #FFF;
 `;

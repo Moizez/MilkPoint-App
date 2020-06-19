@@ -132,10 +132,9 @@ export const BtnVoltar = styled.TouchableOpacity`
 align-items: center;
 justify-content: center;
 background-color: #292b2c;
-width: 95%;
+width: 100%;
 height: 45px;
 border-radius: 8px;
-margin-top: 5px;
 `;
 
 export const BoxBtnText = styled.View`

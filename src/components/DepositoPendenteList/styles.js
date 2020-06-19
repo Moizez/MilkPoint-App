@@ -58,7 +58,7 @@ background-color: #292b2c;
 export const TituloInfo = styled.Text`
 font-size: 16px;
 font-weight: bold;
-color: #000;
+color: #FFF;
 margin-top: 5px;
 `;
 

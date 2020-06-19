@@ -22,8 +22,26 @@ export default function AuthProvider({ children }) {
     const [retiradaPendente, setRetiradaPendente] = useState([])
     const [tanqueResponsavel, setTanqueResponsavel] = useState([])
 
-    //Confirmação da retiradas
-    async function confirmacaoRetirada(confirmacao, idRetirada) {
+    //Solicitação de depósito pelo produtor
+    const requestDeposito = async (quantidade, idProd, idTanque) => {
+        const data = new FormData();
+        data.append("quantidade", quantidade);
+        data.append("idProd", idProd);
+        data.append("idTanque", idTanque);
+
+        const apiCall = await fetch('https://milkpoint.herokuapp.com/api/deposito', {
+            method: 'POST', body: data
+        })
+
+        if (idProd === undefined) {
+            alert('Erro ao processar o pedido!')
+        } else {
+            alert("Depósito realizado com sucesso!" + "\n" + "Aguarde a confirmação!")
+        }
+    };
+
+    //Confirmação da retiradas pelo responsável
+    const confirmacaoRetirada = async (confirmacao, idRetirada) => {
         const data = new FormData();
         data.append("confirmacao", confirmacao);
         data.append("idRetirada", idRetirada);
@@ -43,8 +61,8 @@ export default function AuthProvider({ children }) {
         loadListRetiradasPendentes()
     };
 
-    //Confirmação da depositos
-    async function confirmacaoDeposito(confirmacao, idDeposito) {
+    //Confirmação da depositos pelo responsável
+    const confirmacaoDeposito = async (confirmacao, idDeposito) => {
         const data = new FormData();
         data.append("confirmacao", confirmacao);
         data.append("idDeposito", idDeposito);
@@ -67,7 +85,7 @@ export default function AuthProvider({ children }) {
 
     //Lista de todos os depositos
     useEffect(() => {
-        async function loadListDepositos() {
+        const loadListDepositos = async () => {
             const response = await fetch(baseURL + 'deposito/listatodos')
             const deposito = await response.json()
             setDeposito(deposito)
@@ -75,11 +93,11 @@ export default function AuthProvider({ children }) {
 
         loadListDepositos()
 
-    }, [])
+    }, [...deposito])
 
     //Lista de Depositos Pendentes
     useEffect(() => {
-        async function loadListDepositosPendentes() {
+        const loadListDepositosPendentes = async () => {
             const response = await fetch(baseURL + 'deposito/listapendentes')
             const depositoPendente = await response.json()
             setDepositoPendente(depositoPendente)
@@ -87,11 +105,11 @@ export default function AuthProvider({ children }) {
 
         loadListDepositosPendentes()
 
-    }, [])
+    }, [...depositoPendente])
 
     //Lista de Retiradas
     useEffect(() => {
-        async function loadListRetiradas() {
+        const loadListRetiradas = async () => {
             const response = await fetch(baseURL + 'retirada/listatodos')
             const retirada = await response.json()
             setRetirada(retirada)
@@ -99,11 +117,11 @@ export default function AuthProvider({ children }) {
 
         loadListRetiradas()
 
-    }, [])
+    }, [...retirada])
 
     //Lista de Retiradas Pendentes
     useEffect(() => {
-        async function loadListRetiradasPendentes() {
+        const loadListRetiradasPendentes = async () => {
             const response = await fetch(baseURL + 'retirada/listapendentes')
             const retiradaPendente = await response.json()
             setRetiradaPendente(retiradaPendente)
@@ -111,11 +129,11 @@ export default function AuthProvider({ children }) {
 
         loadListRetiradasPendentes()
 
-    }, [retiradaPendente])
+    }, [...retiradaPendente])
 
     //Carregar lista tanque para o Context
     useEffect(() => {
-        async function loadListTanques() {
+        const loadListTanques = async () => {
             const response = await fetch(baseURL + 'tanque')
             const tanque = await response.json()
             setTanque(tanque)
@@ -123,11 +141,11 @@ export default function AuthProvider({ children }) {
 
         loadListTanques()
 
-    }, [])
+    }, [...tanque])
 
     //Carregar lista apens dos responsaveis logados e seus tanques
     useEffect(() => {
-        async function loadListTanquesResponsavel() {
+        const loadListTanquesResponsavel = async () => {
             const storageUser = await AsyncStorage.getItem('Auth_user')
             setUser(JSON.parse(storageUser))
             const response = await fetch(baseURL + 'responsavel/' + user.id + '/tanques')
@@ -141,7 +159,7 @@ export default function AuthProvider({ children }) {
 
     //Carregar usuário do AsyncStorage
     useEffect(() => {
-        async function loadStorage() {
+        const loadStorage = async () => {
             const storageUser = await AsyncStorage.getItem('Auth_user')
 
             if (storageUser) {
@@ -156,7 +174,7 @@ export default function AuthProvider({ children }) {
     }, [])
 
     //Funcao para logar o usuário
-    async function signIn(email, password) {
+    const signIn = async (email, password) => {
         setLoadingAuth(true)
         if (email.trim().length == 0 || password.trim().length == 0) {
             alert('Preencha seu e-mail e senha corretamente!')
@@ -183,8 +201,6 @@ export default function AuthProvider({ children }) {
             const response = await fetch('https://milkpoint.herokuapp.com/api/login', dado)
             const data = await response.json()
 
-            console.log(data)
-
             try {
                 if (response.status == 200) {
                     setUser(data)
@@ -206,7 +222,7 @@ export default function AuthProvider({ children }) {
     }
 
     //Função para deslogar o usuário
-    async function logOut() {
+    const logOut = async () => {
         await AsyncStorage.clear()
             .then(() => {
                 setUser(null)
@@ -214,7 +230,7 @@ export default function AuthProvider({ children }) {
     }
 
     //Função para adicionar o usuário no Async Storage
-    async function storageUser(data) {
+    const storageUser = async (data) => {
         await AsyncStorage.setItem('Auth_user', JSON.stringify(data))
     }
 
@@ -223,7 +239,8 @@ export default function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{
             signed: !!user, user, tanque, deposito, retirada, depositoPendente, retiradaPendente,
-            tanqueResponsavel, loading, loadingAuth, signIn, logOut, confirmacaoRetirada, confirmacaoDeposito
+            tanqueResponsavel, loading, loadingAuth, signIn, logOut, confirmacaoRetirada, confirmacaoDeposito,
+            requestDeposito
         }}>
             {children}
         </AuthContext.Provider>

@@ -7,7 +7,7 @@ import DepositoPendenteList from '../../../components/DepositoPendenteList'
 import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
 export default function DepositosPendentes() {
-    
+
     const { user, depositoPendente } = useContext(AuthContext)
 
     return (
@@ -26,7 +26,7 @@ export default function DepositosPendentes() {
             <List
                 showsVerticalScrollIndicator={false}
                 data={depositoPendente}
-                keyExtractor={(item, key) => key.toString()}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (<DepositoPendenteList data={item} />)}
             />
         </Container>

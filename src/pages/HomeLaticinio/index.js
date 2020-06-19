@@ -26,7 +26,7 @@ export default function HomeLaticinio() {
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanque}
-                keyExtractor={(item, key) => key.toString()}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (<TanqueList data={item} />)}
             />
         </Container>

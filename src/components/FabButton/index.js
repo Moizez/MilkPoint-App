@@ -11,8 +11,8 @@ export default function FabButton(props) {
 
     const [open, setOpen] = useState(false)
     const [animation] = useState(new Animated.Value(0))
-    const [modalVisible, setModalVIsible] = useState(false)
-    const [text, setText] = useState('')
+    const [modalVisible, setModalVisible] = useState(false)
+    const [quantidade, setQuantidade] = useState()
 
     const toggleMenu = () => {
         var toValue = open ? 0 : 1
@@ -83,19 +83,19 @@ export default function FabButton(props) {
                                 autoCorrect={false}
                                 autoCapitalize='none'
                                 keyboardType='numeric'
-                                value={text}
-                                onChangeText={(text) => setText(text)}
+                                value={quantidade}
+                                onChangeText={(quantidade) => setQuantidade(quantidade)}
                             />
 
                             <View style={styles.btnView}>
                                 <View style={styles.btnConfirm}>
-                                    <TouchableOpacity onPress={() => setModalVIsible(!modalVisible)}>
+                                    <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
                                         <Text style={styles.btn}>Confirmar</Text>
                                     </TouchableOpacity>
                                 </View>
 
                                 <View style={styles.btnCancel}>
-                                    <TouchableOpacity onPress={() => setModalVIsible(!modalVisible)}>
+                                    <TouchableOpacity onPress={() => setModalVisible(!modalVisible)}>
                                         <Text style={styles.btn}>Cancelar</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -107,7 +107,7 @@ export default function FabButton(props) {
 
             </Modal>
 
-            <TouchableWithoutFeedback onPress={() => navigation.navigate('Home')}>
+            <TouchableWithoutFeedback onPress={() => { navigation.navigate('Home') }}>
                 <Animated.View style={[styles.button, styles.subMenuUm, heartStyle]}>
                     <Icon
                         name="home"
@@ -116,7 +116,7 @@ export default function FabButton(props) {
                     />
                 </Animated.View>
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback onPress={() => setModalVIsible(!modalVisible)}>
+            <TouchableWithoutFeedback onPress={() => { setModalVisible(!modalVisible) }}>
                 <Animated.View style={[styles.button, styles.subMenuDois, homeStyle]}>
                     <Icon
                         name="level-up-alt"

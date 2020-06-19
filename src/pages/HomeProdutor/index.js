@@ -7,7 +7,7 @@ import TanqueList from '../../components/TanqueList'
 import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
 export default function HomeProdutor() {
-    
+
     const { user, tanque } = useContext(AuthContext)
 
     return (
@@ -26,7 +26,7 @@ export default function HomeProdutor() {
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanque}
-                keyExtractor={(item, key) => key.toString()}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (<TanqueList data={item} />)}
             />
         </Container >

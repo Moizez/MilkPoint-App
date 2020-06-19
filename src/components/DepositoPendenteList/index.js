@@ -12,24 +12,26 @@ import {
 export default function DepositoPendenteList({ data }) {
 
     const [modalVisible, setModalVisible] = useState(false)
-    const [confirmacao, setConfirmacao] = useState(false)
-    const [idDeposito, setIdDeposito] = useState('')
-    const { confirmacaoDeposito } = useContext(AuthContext)
+    const [confirmacao, setConfirmacao] = useState(false) // não está alterando o estado da variavel confirmação
+    const [idDeposito, setIdDeposito] = useState()
+    const { depositoPendente, confirmacaoDeposito } = useContext(AuthContext)
 
-    //Função para confirmar a retirada
+    //Função para confirmar a depósito
     function handleConfirm() {
-        setConfirmacao(!confirmacao)
+        setConfirmacao(true)
         setIdDeposito(data.id)
-        confirmacaoDeposito(confirmacao, idDeposito)
+        confirmacaoDeposito(true, idDeposito) // forçar a confirmação
         setModalVisible(!modalVisible)
     }
 
-    //Função para cancelar a retirada
+    //Função para cancelar a depósito
     function handleCancel() {
+        setConfirmacao(false)
         setIdDeposito(data.id)
-        confirmacaoDeposito(confirmacao, idDeposito)
+        confirmacaoDeposito(false, idDeposito) // forçar a confirmação
         setModalVisible(!modalVisible)
     }
+
 
     function bucketColor(status) {
         if (data.confirmacao == true) {
@@ -45,14 +47,12 @@ export default function DepositoPendenteList({ data }) {
     return (
         <BoxGeral>
             <Container>
-                {Object.keys(data).length !== 0 ?
-                    <BoxInfoTanque>
-                        <Nome>Tanque: {data.tanque.nome}</Nome>
-                        <Nome>Depósito solicitado: {data.quantidade}</Nome>
-                        <Nome>Nome do produtor: {data.produtor.nome}</Nome>
-                        <Nome>Status: {status}</Nome>
-                    </BoxInfoTanque> :
-                    <TituloInfo style={{ color: '#000' }}>TESTE</TituloInfo>}
+                <BoxInfoTanque>
+                    <Nome>Tanque: {data.tanque.nome}</Nome>
+                    <Nome>Depósito solicitado: {data.quantidade}</Nome>
+                    <Nome>Nome do produtor: {data.produtor.nome}</Nome>
+                    <Nome>Status: {status}</Nome>
+                </BoxInfoTanque>
                 <BoxIcon onPress={() => { setModalVisible(!modalVisible) }}>
                     <Nome>Depósito</Nome>
                     {status == 'Confirmado' && (

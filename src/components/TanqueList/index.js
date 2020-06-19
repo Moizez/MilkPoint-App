@@ -1,20 +1,34 @@
-import React, { useState } from 'react'
-import { Modal, Button, View } from 'react-native'
+import React, { useState, useContext } from 'react'
+import { Modal, View, TouchableOpacity, Text } from 'react-native'
 import Speedometer from 'react-native-speedometer-chart'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-
-import FabButton from '../FabButton'
+import { AuthContext } from '../../contexts/auth'
 
 import {
     BoxGeral, Container, Nome, BoxSpeed, BoxTanque, BoxModal, BoxInfo, TituloInfo,
     TextInfo, BoxMap, BoxTitulo, BoxSubTitulo, BoxCaracteristicas, BoxEndereco,
-    BoxSubCar, BoxSubEnd
+    BoxSubCar, BoxSubEnd, BoxBtnModal, BtnFechar, BtnText, BoxFabBtn, FabBtn, FabText,
+    /*MODAL DOIS*/ BoxModalDois, BoxInfoModalDois, BtnConfirm, Btn, BtnCancel, InputModal
 } from './styles'
 
 export default function TanqueList({ data }) {
 
     const [modalVisible, setModalVisible] = useState(false)
-    const capacidade = data.qtdAtual + data.qtdRestante
+    const [modalVisibleDois, setModalVisibleDois] = useState(false)
+    const { requestDeposito, user } = useContext(AuthContext)
+    const [quantidade, setQuantidade] = useState()
+    const [idProd, setIdProd] = useState()
+    const [idTanque, setIdTanque] = useState()
+
+    async function handleDeposito() {
+        setQuantidade(quantidade)
+        setIdProd(user.id)
+        setIdTanque(data.id)
+        await requestDeposito(quantidade, idProd, idTanque)
+        //alert('Qtd: ' + quantidade + ' IdProd: ' + idProd + ' idTanque: ' + idTanque)
+        setModalVisibleDois(!modalVisibleDois)
+        setModalVisible(!modalVisible)
+    }
 
     function corGrafico() {
         if (data.qtdAtual > (capacidade - (capacidade / 3))) {
@@ -26,9 +40,10 @@ export default function TanqueList({ data }) {
         }
     }
 
+    const capacidade = data.qtdAtual + data.qtdRestante
+
     return (
         <BoxGeral>
-
             <Container onPress={() => { setModalVisible(!modalVisible) }}>
                 <BoxTanque>
                     <Nome>Tanque: {data.nome}</Nome>
@@ -76,6 +91,46 @@ export default function TanqueList({ data }) {
                 transparent={false}
                 visible={modalVisible}
             >
+                <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={modalVisibleDois}
+                >
+                    <BoxModalDois>
+
+                        <BoxInfoModalDois>
+                            <TituloInfo style={{
+                                fontSize: 16, fontWeight: 'normal', textAlign: 'center'
+                            }}>Solicitação de depósito no tanque
+                        </TituloInfo>
+                            <InputModal
+                                placeholder='Quantidade em litros (L)'
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                keyboardType='numeric'
+                                value={quantidade}
+                                onChangeText={(quantidade) => setQuantidade(quantidade)}
+                            />
+
+                            <View style={{ flexDirection: 'row' }}>
+                                <BtnConfirm>
+                                    <TouchableOpacity onPress={() => { handleDeposito() }}>
+                                        <Btn>Confirmar</Btn>
+                                    </TouchableOpacity>
+                                </BtnConfirm>
+
+                                <BtnCancel>
+                                    <TouchableOpacity onPress={() => { setModalVisibleDois(!modalVisibleDois) }}>
+                                        <Btn>Cancelar</Btn>
+                                    </TouchableOpacity>
+                                </BtnCancel>
+                            </View>
+
+                        </BoxInfoModalDois>
+
+                    </BoxModalDois>
+                </Modal>
+
                 <BoxModal>
                     <BoxTitulo>
                         <TituloInfo>Tanque: </TituloInfo>
@@ -111,15 +166,25 @@ export default function TanqueList({ data }) {
                         <TextInfo>Mapa</TextInfo>
                     </BoxMap>
 
-                    <Button
-                        title='Fechar Modal'
-                        onPress={() => { setModalVisible(!modalVisible) }}
-                    ></Button>
+                    <BoxFabBtn>
+                        <FabBtn onPress={() => { setModalVisibleDois(!modalVisibleDois) }}>
+                            <Icon
+                                name='arrow-up-bold-hexagon-outline'
+                                color='#FFF'
+                                size={20}>
+                            </Icon>
+                            <FabText>Depositar</FabText>
+                        </FabBtn>
+                    </BoxFabBtn>
+
+                    <BoxBtnModal>
+                        <BtnFechar onPress={() => { setModalVisible(!modalVisible) }}>
+                            <BtnText>Voltar</BtnText>
+                        </BtnFechar>
+                    </BoxBtnModal>
+
                 </BoxModal>
 
-                <FabButton
-                    style={{ bottom: 100, right: 50 }}
-                />
             </Modal>
         </BoxGeral>
     );

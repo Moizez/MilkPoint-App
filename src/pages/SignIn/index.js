@@ -14,8 +14,8 @@ export default function SignIn() {
     const [password, setPassword] = useState('')
     const { signIn, loadingAuth } = useContext(AuthContext)
 
-    function handleLogin() {
-        signIn(email, password)
+    async function handleLogin() {
+        await signIn(email, password)
     }
 
     //Animação da tela de login

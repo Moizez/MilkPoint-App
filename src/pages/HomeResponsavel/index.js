@@ -27,7 +27,7 @@ export default function HomeResponsavel() {
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanqueResponsavel}
-                keyExtractor={(item, key) => key.toString()}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (<TanqueResponsavelList data={item} />)}
             />
         </Container>
