@@ -2,8 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Modal, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo'
 
-import { AuthContext } from '../../contexts/auth'
-
 import {
     BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque, BoxModal, BoxTitulo, TituloInfo,
     BoxBtnText, BtnVoltar, BtnText, BoxInfo, BoxInfoModal, BtnConfirm, BtnCancel, Btn, NomeModal
@@ -13,13 +11,27 @@ export default function RetiradaPendenteList({ data }) {
 
     const [modalVisible, setModalVisible] = useState(false)
     const [confirmacao, setConfirmacao] = useState() // não está alterando o estado da variavel confirmação
-    const [idRetirada, setIdRetirada] = useState()
-    const { confirmacaoRetirada } = useContext(AuthContext)
+    const [idRetirada, setIdRetirada] = useState(data.id)
+
+    //Confirmação da retiradas pelo responsável
+    const confirmacaoRetirada = async (confirmacao, idRetirada) => {
+        const data = new FormData();
+        data.append("confirmacao", confirmacao);
+        data.append("idRetirada", idRetirada);
+
+        await fetch('https://milkpoint.herokuapp.com/api/retirada/confirmacao', { method: 'POST', body: data })
+
+        if (confirmacao) {
+            alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
+        }
+        else {
+            alert("Pedido cancelado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
+        }
+    };
 
     //Função para confirmar a retirada
     function handleConfirm() {
         setConfirmacao(true)
-        setIdRetirada(data.id)
         confirmacaoRetirada(true, idRetirada) // forçar a confirmação
         setModalVisible(!modalVisible)
     }
@@ -27,7 +39,6 @@ export default function RetiradaPendenteList({ data }) {
     //Função para cancelar a retirada
     function handleCancel() {
         setConfirmacao(false)
-        setIdRetirada(data.id)
         confirmacaoRetirada(false, idRetirada) // forçar a confirmação
         setModalVisible(!modalVisible)
     }

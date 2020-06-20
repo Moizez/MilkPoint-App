@@ -1,43 +1,54 @@
 import React, { useState, useContext } from 'react'
 import { Modal, View, TouchableOpacity, Text } from 'react-native'
-import Speedometer from 'react-native-speedometer-chart'
+
+import GraficoTanque from '../../../components/GraficoTanque/'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { AuthContext } from '../../contexts/auth'
+
+import { AuthContext } from '../../../contexts/auth'
 
 import {
-    BoxGeral, Container, Nome, BoxSpeed, BoxTanque, BoxModal, BoxInfo, TituloInfo,
+    BoxGeral, Container, Nome, BoxTanque, BoxModal, BoxInfo, TituloInfo,
     TextInfo, BoxMap, BoxTitulo, BoxSubTitulo, BoxCaracteristicas, BoxEndereco,
     BoxSubCar, BoxSubEnd, BoxBtnModal, BtnFechar, BtnText, BoxFabBtn, FabBtn, FabText,
     /*MODAL DOIS*/ BoxModalDois, BoxInfoModalDois, BtnConfirm, Btn, BtnCancel, InputModal
 } from './styles'
 
-export default function TanqueList({ data }) {
+export default function TanqueListProdutor({ data }) {
+
+    const { user } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [modalVisibleDois, setModalVisibleDois] = useState(false)
-    const { requestDeposito, user } = useContext(AuthContext)
+
+
     const [quantidade, setQuantidade] = useState()
     const [idProd, setIdProd] = useState(user.id)
     const [idTanque, setIdTanque] = useState(data.id)
 
+    //Solicitação de depósito pelo produtor
+    const requestDeposito = async (quantidade, idProd, idTanque) => {
+        const data = new FormData();
+        data.append("quantidade", quantidade);
+        data.append("idProd", idProd);
+        data.append("idTanque", idTanque);
+
+        await fetch('https://milkpoint.herokuapp.com/api/deposito', { method: 'POST', body: data })
+
+        if (idProd === undefined) {
+            alert('Erro ao processar o pedido! QTD: ' + quantidade + ' ID Produtor: ' + idProd + ' ID Tanque: ' + idTanque)
+        } else {
+            alert("Depósito realizado com sucesso!" + "\n" + "Aguarde a confirmação!")
+        }
+    };
+
     async function handleDeposito() {
         setQuantidade(quantidade)
+        setIdProd(user.id)
+        setIdTanque(data.id)
         await requestDeposito(quantidade, idProd, idTanque)
         setModalVisibleDois(!modalVisibleDois)
         setModalVisible(!modalVisible)
     }
-
-    function corGrafico() {
-        if (data.qtdAtual > (capacidade - (capacidade / 3))) {
-            return '#2a9d8f'
-        } if (data.qtdAtual >= (capacidade / 2)) {
-            return '#f5cb5c'
-        } else {
-            return '#da1e37'
-        }
-    }
-
-    const capacidade = data.qtdAtual + data.qtdRestante
 
     return (
         <BoxGeral>
@@ -50,37 +61,7 @@ export default function TanqueList({ data }) {
                     <Nome>Responsável: {data.responsavel.nome} </Nome>
                 </BoxTanque>
 
-                <BoxSpeed>
-                    <View style={{ flex: 1, marginRight: '80%' }}>
-                        {data.tipo == 'BOVINO' ?
-                            <Icon
-                                name='cow'
-                                color='blue'
-                                size={30}>
-                            </Icon> :
-                            <Icon
-                                name='sheep'
-                                color='green'
-                                size={30}>
-                            </Icon>
-                        }
-                    </View>
-                    <Speedometer
-                        value={data.qtdAtual}
-                        totalValue={capacidade}
-                        size={150}
-                        outerColor="#d3d3d3"
-                        internalColor={corGrafico()}
-                        showText
-                        text={data.nome}
-                        textStyle={{ color: 'black' }}
-                        showLabels
-                        labelStyle={{ color: 'blue' }}
-                        labelFormatter={number => `${number}`}
-                        showPercent
-                        percentStyle={{ color: 'red' }}
-                    />
-                </BoxSpeed>
+                <GraficoTanque dataGrafico={data} />
             </Container>
 
             <Modal

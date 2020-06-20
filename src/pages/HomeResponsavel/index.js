@@ -1,14 +1,27 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../contexts/auth'
 
 import MenuButton from '../../components/MenuButton'
-import TanqueResponsavelList from '../../components/TanqueResponsavelList'
+import TanqueListResponsavel from '../HomeResponsavel/TanqueListResponsavel'
 
 import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
 export default function HomeResponsavel() {
 
-    const { user, tanqueResponsavel } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
+    const [tanqueResponsavel, setTanqueResponsavel] = useState([])
+
+    //Carregar lista apenas do responsável logado e seus tanques
+    useEffect(() => {
+        const loadListTanquesResponsavel = async () => {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/responsavel/' + user.id + '/tanques')
+            const tanqueResponsavel = await response.json()
+            setTanqueResponsavel(tanqueResponsavel)
+        }
+
+        loadListTanquesResponsavel()
+
+    }, [...tanqueResponsavel])
 
     return (
 
@@ -28,7 +41,7 @@ export default function HomeResponsavel() {
                 showsVerticalScrollIndicator={false}
                 data={tanqueResponsavel}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (<TanqueResponsavelList data={item} />)}
+                renderItem={({ item }) => (<TanqueListResponsavel data={item} />)}
             />
         </Container>
     );

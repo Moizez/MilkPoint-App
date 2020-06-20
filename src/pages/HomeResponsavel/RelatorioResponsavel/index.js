@@ -11,8 +11,34 @@ import { Container, BoxNome, Nome, Box, Titulo, BoxTitulo, TituloLista, List } f
 
 export default function RelatorioResponsavel() {
 
-    const { user, deposito, retirada } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
+    const [deposito, setDeposito] = useState([])
+    const [retirada, setRetirada] = useState([])
     const [value, setValue] = useState(null)
+
+    //Lista de todos os depositos
+    useEffect(() => {
+        const loadListDepositos = async () => {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listatodos')
+            const deposito = await response.json()
+            setDeposito(deposito)
+        }
+
+        loadListDepositos()
+
+    }, [...deposito])
+
+    //Lista de Retiradas
+    useEffect(() => {
+        const loadListRetiradas = async () => {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listatodos')
+            const retirada = await response.json()
+            setRetirada(retirada)
+        }
+
+        loadListRetiradas()
+
+    }, [...retirada])
 
     return (
         <Container>
@@ -33,7 +59,7 @@ export default function RelatorioResponsavel() {
             <List
                 showsVerticalScrollIndicator={false}
                 data={value == 'retirada' ? retirada : deposito}
-                keyExtractor={(item, key) => key.toString()}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
                     value == 'retirada' ? (<RetiradaList data={item} />) :
                         (<DepositoList data={item} />))}

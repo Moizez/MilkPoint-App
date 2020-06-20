@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../../contexts/auth'
 
 import MenuButton from '../../../components/MenuButton'
@@ -8,7 +8,20 @@ import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
 export default function RetiradasPendentes() {
 
-    const { user, retiradaPendente } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
+    const [retiradaPendente, setRetiradaPendente] = useState([])
+
+    //Lista de Retiradas Pendentes
+    useEffect(() => {
+        const loadListRetiradasPendentes = async () => {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listapendentes')
+            const retiradaPendente = await response.json()
+            setRetiradaPendente(retiradaPendente)
+        }
+
+        loadListRetiradasPendentes()
+
+    }, [...retiradaPendente])
 
     return (
         <Container>
@@ -26,7 +39,7 @@ export default function RetiradasPendentes() {
             <List
                 showsVerticalScrollIndicator={false}
                 data={retiradaPendente}
-                keyExtractor={(item, key) => key.toString()}
+                keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (<RetiradaPendenteList data={item} />)}
             />
         </Container>

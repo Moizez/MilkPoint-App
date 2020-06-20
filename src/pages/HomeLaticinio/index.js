@@ -1,14 +1,27 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../contexts/auth'
 
 import MenuButton from '../../components/MenuButton'
-import TanqueList from '../../components/TanqueList'
+import TanqueListLaticinio from '../HomeLaticinio/TanqueListLaticinio'
 
 import { Container, BoxNome, Nome, Box, Titulo, List } from '../HomeProdutor/styles'
 
 export default function HomeLaticinio() {
 
-    const { user, tanque } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
+    const [tanque, setTanque] = useState([])
+
+    //Carregar lista tanque para o Context
+    useEffect(() => {
+        const loadListTanques = async () => {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
+            const tanque = await response.json()
+            setTanque(tanque)
+        }
+
+        loadListTanques()
+
+    }, [...tanque])
 
     return (
         <Container>
@@ -27,7 +40,7 @@ export default function HomeLaticinio() {
                 showsVerticalScrollIndicator={false}
                 data={tanque}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (<TanqueList data={item} />)}
+                renderItem={({ item }) => (<TanqueListLaticinio data={item} />)}
             />
         </Container>
     );

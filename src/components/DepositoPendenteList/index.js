@@ -2,8 +2,6 @@ import React, { useState, useContext } from 'react';
 import { View, Modal, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo'
 
-import { AuthContext } from '../../contexts/auth'
-
 import {
     BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque, BoxModal, BoxTitulo, TituloInfo,
     BoxBtnText, BtnVoltar, BtnText, BoxInfo, BoxInfoModal, BtnConfirm, BtnCancel, Btn, NomeModal
@@ -13,13 +11,28 @@ export default function DepositoPendenteList({ data }) {
 
     const [modalVisible, setModalVisible] = useState(false)
     const [confirmacao, setConfirmacao] = useState(false) // não está alterando o estado da variavel confirmação
-    const [idDeposito, setIdDeposito] = useState()
-    const { depositoPendente, confirmacaoDeposito } = useContext(AuthContext)
+    const [idDeposito, setIdDeposito] = useState(data.id)
+
+    //Confirmação da depositos pelo responsável
+    const confirmacaoDeposito = async (confirmacao, idDeposito) => {
+        const data = new FormData();
+        data.append("confirmacao", confirmacao);
+        data.append("idDeposito", idDeposito);
+
+        await fetch('https://milkpoint.herokuapp.com/api/deposito/confirmacao', { method: 'POST', body: data })
+
+        if (confirmacao) {
+            alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
+        }
+        else {
+            alert("Pedido cancelado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
+        }
+
+    };
 
     //Função para confirmar a depósito
     function handleConfirm() {
         setConfirmacao(true)
-        setIdDeposito(data.id)
         confirmacaoDeposito(true, idDeposito) // forçar a confirmação
         setModalVisible(!modalVisible)
     }
@@ -27,7 +40,6 @@ export default function DepositoPendenteList({ data }) {
     //Função para cancelar a depósito
     function handleCancel() {
         setConfirmacao(false)
-        setIdDeposito(data.id)
         confirmacaoDeposito(false, idDeposito) // forçar a confirmação
         setModalVisible(!modalVisible)
     }
