@@ -39,24 +39,25 @@ flex: 2;
 //MODAL
 
 export const BoxModal = styled.View`
-height: 45%;
+height: 50%;
 width: 100%;
 bottom: 0;
 position: absolute;
 border-top-left-radius: 10px;
+border-top-right-radius: 10;
 background-color: #292b2c;
+justify-content: center;
+align-items: center;
 `;
 
 export const BoxTitulo = styled.View`
 flex-direction: row;
 padding: 8px;
-align-items: center;
-justify-content: center;
 background-color: #292b2c;
 `;
 
 export const TituloInfo = styled.Text`
-font-size: 16px;
+font-size: 17px;
 font-weight: bold;
 color: #FFF;
 margin-top: 5px;
@@ -70,38 +71,34 @@ justify-content: center;
 `;
 
 export const NomeModal = styled.Text`
-font-size: 16px;
+font-size: 17px;
 `;
 
 export const BoxInfoModal = styled.View`
 flex: 1;
-margin-top: 15px;
 border-radius: 8px;
 background-color: #ececec;
 align-items: center ;
 justify-content: center;
-margin-left: 25px;
-margin-right: 25px;
+width: 90%;
 `;
 
 export const BtnConfirm = styled.View`
 align-items: center ;
 justify-content: center;
 background-color: #2a9d8f;
-width: 144px;
+width: 44%;
 height: 45px;
 border-radius: 8px;
-margin-top: 10px;
 `;
 
 export const BtnCancel = styled.View`
 align-items: center;
 justify-content: center;
 background-color: #da1e37;
-width: 144px;
+width: 44%;
 height: 45px;
 border-radius: 8px;
-margin-top: 10px;
 margin-left: 8px;
 `;
 
@@ -109,27 +106,19 @@ export const Btn = styled.Text`
 font-size: 16px;
 `;
 
-export const BtnVoltar = styled.TouchableOpacity`
-align-items: center;
-justify-content: center;
-background-color: #292b2c;
-width: 95%;
-height: 45px;
-border-radius: 8px;
-`;
-
-export const BoxBtnText = styled.View`
-border-color: #FFF;
-border-width: 0.5px;
+export const BtnFechar = styled.TouchableOpacity`
+background-color: #ececec;
 border-radius: 8px;
 margin-bottom: 10px;
-margin-left: 25px;
-margin-right: 25px;
+width: 90%;
+height: 45px;
+align-items: center;
+justify-content: center;
 `;
 
 export const BtnText = styled.Text`
-font-size: 20px;
-color: #FFF;
+font-size: 22px;
+color: #000;
 
 `;
 

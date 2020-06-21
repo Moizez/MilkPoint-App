@@ -21,6 +21,16 @@ export const Nome = styled.Text`
 font-size: 15px;
 `;
 
+export const BoxSpeed = styled.View`
+flex: 1;
+align-items: center;
+justify-content: center;
+background-color: #FFF;
+padding: 8px;
+border-radius: 3px;
+margin-left: 5px;
+`;
+
 export const BoxTanque = styled.View`
 flex: 1;
 align-items: flex-start;
@@ -31,113 +41,9 @@ export const Linha = styled.View`
 
 `;
 
-//MODAL UM
+//MODAL
 
 export const BoxModal = styled.View`
-flex:1;
-`;
-
-export const BoxTitulo = styled.View`
-flex-direction: row;
-padding: 8px;
-align-items: center;
-justify-content: center;
-background-color: #292b2c;
-`;
-
-export const BoxSubTitulo = styled.View`
-flex-direction: row;
-height: 30px;
-`;
-
-export const BoxSubCar = styled.View`
-flex: 1;
-background-color: #adb5bd;
-align-items: center;
-justify-content: center;
-border-bottom-left-radius: 5px;
-border-bottom-right-radius: 5px;
-`;
-
-export const BoxSubEnd = styled.View`
-flex: 1;
-background-color: #adb5bd;
-margin-left: 3px;
-align-items: center;
-justify-content: center;
-border-bottom-left-radius: 5px;
-border-bottom-right-radius: 5px;
-`;
-
-export const TituloInfo = styled.Text`
-font-size: 20px;
-font-weight: bold;
-color: #FFF;
-`;
-
-export const BoxInfo = styled.View`
-flex-direction: row;
-background-color: #FFF;
-padding: 6px;
-border-bottom-width: 1px;
-border-bottom-color: #000;
-`;
-
-export const BoxCaracteristicas = styled.View`
-flex: 1;
-background-color: #ececec;
-padding: 5px;
-border-radius: 5px;
-justify-content: center;
-`;
-
-export const BoxEndereco = styled.View`
-flex: 1;
-background-color: #ececec;
-padding: 5px;
-border-radius: 5px;
-margin-left: 3px;
-justify-content: center;
-`;
-
-export const TextInfo = styled.Text`
-font-size: 16px;
-`;
-
-export const BoxMap = styled.View`
-flex:2;
-background-color: #FFF;
-padding: 10px;
-justify-content: center;
-align-items: center;
-`;
-
-export const BoxBtnModal = styled.View`
-border-color: #FFF;
-border-width: 0.5px;
-border-radius: 8px;
-margin-bottom: 10px;
-align-items: center;
-justify-content: center;
-`;
-
-export const BtnFechar = styled.TouchableOpacity`
-align-items: center;
-justify-content: center;
-background-color: #292b2c;
-width: 100%;
-height: 45px;
-border-radius: 8px;
-`;
-
-export const BtnText = styled.Text`
-font-size: 20px;
-color: #FFF;
-`;
-
-//MODAL DOIS
-
-export const BoxModalDois = styled.View`
 flex: 1;
 height: 35%;
 width: 100%;
@@ -148,10 +54,16 @@ border-top-left-radius: 8px;
 border-top-right-radius: 8px;
 `;
 
-export const BoxInfoModalDois = styled.View`
+export const BoxInfoModal = styled.View`
 flex: 1;
 align-items: center ;
 justify-content: center;
+`;
+
+export const TituloInfo = styled.Text`
+font-size: 16px;
+color: #FFF;
+text-align: center;
 `;
 
 export const InputModal = styled.TextInput`
@@ -166,6 +78,9 @@ padding: 10px;
 border-radius: 8px;
 `;
 
+export const BoxBtn = styled.View`
+flex-direction: row;
+`;
 
 export const BtnConfirm = styled.View`
 align-items: center ;
@@ -188,7 +103,11 @@ margin-top: 10px;
 margin-left: 10px;
 `;
 
-export const Btn = styled.Text`
+export const Button = styled.TouchableOpacity`
+font-size: 16px;
+`;
+
+export const BtnText = styled.Text`
 font-size: 16px;
 `;
 
@@ -215,6 +134,8 @@ export const FabText = styled.Text`
 font-size: 14px;
 color: #FFF;
 `;
+
+
 
 
 

@@ -26,7 +26,7 @@ export default function RelatorioResponsavel() {
 
         loadListDepositos()
 
-    }, [...deposito])
+    }, [])
 
     //Lista de Retiradas
     useEffect(() => {
@@ -38,7 +38,7 @@ export default function RelatorioResponsavel() {
 
         loadListRetiradas()
 
-    }, [...retirada])
+    }, [])
 
     return (
         <Container>

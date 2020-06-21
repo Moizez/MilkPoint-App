@@ -41,7 +41,6 @@ color: #FFF;
 margin-bottom: -19px;
 `;
 
-
 export const List = styled.FlatList.attrs({
     marginHorinzontal: 15,
 })`

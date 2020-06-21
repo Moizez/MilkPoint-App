@@ -34,7 +34,7 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='home-outline'
+                                        name='home'
                                         color={color}
                                         size={size}
                                     />
@@ -46,19 +46,19 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='clipboard-text-outline'
+                                        name='archive'
                                         color={color}
                                         size={size}
                                     />
                                 )}
-                                label='Relatório'
-                                onPress={() => { props.navigation.navigate('Relatorio') }}
+                                label='Histórico'
+                                onPress={() => { props.navigation.navigate('Histórico') }}
                             />
 
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='account-outline'
+                                        name='account'
                                         color={color}
                                         size={size}
                                     />
@@ -70,7 +70,7 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='settings-outline'
+                                        name='settings'
                                         color={color}
                                         size={size}
                                     />
@@ -84,10 +84,10 @@ export function DrawerContent(props) {
                 </DrawerContentScrollView>
                 <Drawer.Section style={styles.bottomDrawerSection}>
                     <DrawerItem
-                        icon={({ color, size }) => (
+                        icon={({ size }) => (
                             <Icon
                                 name='exit-to-app'
-                                color={color}
+                                color={'red'}
                                 size={size}
                             />
                         )}
@@ -125,7 +125,7 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='home-outline'
+                                        name='home'
                                         color={color}
                                         size={size}
                                     />
@@ -137,19 +137,19 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='clipboard-text-outline'
+                                        name='archive'
                                         color={color}
                                         size={size}
                                     />
                                 )}
-                                label='Relatório'
-                                onPress={() => { props.navigation.navigate('Relatorio') }}
+                                label='Histórico'
+                                onPress={() => { props.navigation.navigate('Histórico') }}
                             />
 
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='account-outline'
+                                        name='account'
                                         color={color}
                                         size={size}
                                     />
@@ -161,7 +161,7 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='settings-outline'
+                                        name='settings'
                                         color={color}
                                         size={size}
                                     />
@@ -175,10 +175,10 @@ export function DrawerContent(props) {
                 </DrawerContentScrollView>
                 <Drawer.Section style={styles.bottomDrawerSection}>
                     <DrawerItem
-                        icon={({ color, size }) => (
+                        icon={({ size }) => (
                             <Icon
                                 name='exit-to-app'
-                                color={color}
+                                color={'red'}
                                 size={size}
                             />
                         )}
@@ -214,7 +214,7 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='home-outline'
+                                        name='home'
                                         color={color}
                                         size={size}
                                     />
@@ -226,19 +226,19 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='clipboard-text-outline'
+                                        name='archive'
                                         color={color}
                                         size={size}
                                     />
                                 )}
-                                label='Relatório'
-                                onPress={() => { props.navigation.navigate('Relatorio') }}
+                                label='Histórico'
+                                onPress={() => { props.navigation.navigate('Histórico') }}
                             />
 
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='account-outline'
+                                        name='account'
                                         color={color}
                                         size={size}
                                     />
@@ -250,7 +250,7 @@ export function DrawerContent(props) {
                             <DrawerItem
                                 icon={({ color, size }) => (
                                     <Icon
-                                        name='settings-outline'
+                                        name='settings'
                                         color={color}
                                         size={size}
                                     />
@@ -264,10 +264,10 @@ export function DrawerContent(props) {
                 </DrawerContentScrollView>
                 <Drawer.Section style={styles.bottomDrawerSection}>
                     <DrawerItem
-                        icon={({ color, size }) => (
+                        icon={({ size }) => (
                             <Icon
                                 name='exit-to-app'
-                                color={color}
+                                color={'red'}
                                 size={size}
                             />
                         )}

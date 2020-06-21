@@ -3,6 +3,7 @@ import { AuthContext } from '../../contexts/auth'
 
 import MenuButton from '../../components/MenuButton'
 import TanqueListProdutor from '../HomeProdutor/TanqueListProdutor'
+import FabGoTop from '../../components/FabGoTop'
 
 import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
 
@@ -21,7 +22,11 @@ export default function HomeProdutor() {
 
         loadListTanques()
 
-    }, [...tanque])
+    }, [])
+
+    function toTop() {
+        scrollToOffset()
+    }
 
     return (
         <Container>
@@ -42,6 +47,8 @@ export default function HomeProdutor() {
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (<TanqueListProdutor data={item} />)}
             />
+
+            {/*<FabGoTop />*/}
         </Container >
     );
 }

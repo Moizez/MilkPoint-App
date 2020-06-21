@@ -21,7 +21,7 @@ export default function RetiradasPendentes() {
 
         loadListRetiradasPendentes()
 
-    }, [...retiradaPendente])
+    }, [])
 
     return (
         <Container>

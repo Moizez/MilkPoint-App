@@ -21,7 +21,7 @@ export default function HomeResponsavel() {
 
         loadListTanquesResponsavel()
 
-    }, [...tanqueResponsavel])
+    }, [])
 
     return (
 

@@ -91,12 +91,13 @@ justify-content: center;
 `;
 
 export const BtnVoltar = styled.TouchableOpacity`
+background-color: #292b2c;
+border-radius: 8px;
+margin-bottom: 10px;
+width: 90%;
+height: 45px;
 align-items: center;
 justify-content: center;
-background-color: #292b2c;
-width: 100%;
-height: 45px;
-border-radius: 8px;
 `;
 
 export const BtnText = styled.Text`

@@ -21,7 +21,7 @@ export default function HomeLaticinio() {
 
         loadListTanques()
 
-    }, [...tanque])
+    }, [])
 
     return (
         <Container>

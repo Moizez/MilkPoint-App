@@ -1,16 +1,16 @@
 import React, { useState, useContext } from 'react'
-import { Modal, View, TouchableOpacity, Text } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { Modal } from 'react-native'
 
 import GraficoTanque from '../../../components/GraficoTanque'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
+
 
 import { AuthContext } from '../../../contexts/auth'
 
 import {
-    BoxGeral, Container, Nome, BoxTanque, BoxModal, BoxInfo, TituloInfo,
-    TextInfo, BoxMap, BoxTitulo, BoxSubTitulo, BoxCaracteristicas, BoxEndereco,
-    BoxSubCar, BoxSubEnd, BoxBtnModal, BtnFechar, BtnText, BoxFabBtn, FabBtn, FabText,
-    /*MODAL DOIS*/ BoxModalDois, BoxInfoModalDois, BtnConfirm, Btn, BtnCancel, InputModal
+    BoxGeral, Container, Nome, BoxTanque, BoxModal, BoxInfoModal, TituloInfo, InputModal, BoxBtn, BtnConfirm,
+    BtnCancel, Button, BtnText, BoxFabBtn, FabBtn, FabText
 } from './styles'
 
 export default function TanqueListLaticinio({ data }) {
@@ -50,6 +50,10 @@ export default function TanqueListLaticinio({ data }) {
         setModalVisible(!modalVisible)
     }
 
+    function handleCloseModal() {
+        setModalVisible(false)
+    }
+
     return (
         <BoxGeral>
             <Container onPress={() => { setModalVisible(!modalVisible) }}>
@@ -64,23 +68,26 @@ export default function TanqueListLaticinio({ data }) {
                 <GraficoTanque dataGrafico={data} />
             </Container>
 
+            {/*MODAL DETALHE DO TANQUE */}
             <Modal
                 animationType='slide'
                 transparent={false}
                 visible={modalVisible}
             >
+                <ModalDetalheTanque
+                    dataTanque={data}
+                    onClose={handleCloseModal}
+                />
+
                 <Modal
                     animationType='slide'
                     transparent={true}
                     visible={modalVisibleDois}
                 >
-                    <BoxModalDois>
+                    <BoxModal>
 
-                        <BoxInfoModalDois>
-                            <TituloInfo style={{
-                                fontSize: 16, fontWeight: 'normal', textAlign: 'center'
-                            }}>Solicitação de retirada no tanque
-                        </TituloInfo>
+                        <BoxInfoModal>
+                            <TituloInfo>Solicitação de retirada no tanque</TituloInfo>
                             <InputModal
                                 placeholder='Quantidade em litros (L)'
                                 autoCorrect={false}
@@ -90,78 +97,36 @@ export default function TanqueListLaticinio({ data }) {
                                 onChangeText={(quantidade) => setQuantidade(quantidade)}
                             />
 
-                            <View style={{ flexDirection: 'row' }}>
+                            <BoxBtn>
                                 <BtnConfirm>
-                                    <TouchableOpacity onPress={() => { handleRetirada() }}>
-                                        <Btn>Confirmar</Btn>
-                                    </TouchableOpacity>
+                                    <Button onPress={handleRetirada}>
+                                        <BtnText>Confirmar</BtnText>
+                                    </Button>
                                 </BtnConfirm>
 
                                 <BtnCancel>
-                                    <TouchableOpacity onPress={() => { setModalVisibleDois(!modalVisibleDois) }}>
-                                        <Btn>Cancelar</Btn>
-                                    </TouchableOpacity>
+                                    <Button onPress={() => { setModalVisibleDois(!modalVisibleDois) }}>
+                                        <BtnText>Cancelar</BtnText>
+                                    </Button>
                                 </BtnCancel>
-                            </View>
+                            </BoxBtn>
 
-                        </BoxInfoModalDois>
+                        </BoxInfoModal>
 
-                    </BoxModalDois>
+                    </BoxModal>
+
                 </Modal>
 
-                <BoxModal>
-                    <BoxTitulo>
-                        <TituloInfo>Tanque: </TituloInfo>
-                        <TituloInfo style={{ color: 'red' }}>{data.nome}</TituloInfo>
-                    </BoxTitulo>
-
-                    <BoxSubTitulo>
-                        <BoxSubCar>
-                            <TextInfo>Caracteristicas</TextInfo>
-                        </BoxSubCar>
-                        <BoxSubEnd>
-                            <TextInfo>Endereço</TextInfo>
-                        </BoxSubEnd>
-                    </BoxSubTitulo>
-
-                    <BoxInfo>
-
-                        <BoxCaracteristicas>
-                            <TextInfo>Tipo do Leite: {data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</TextInfo>
-                            <TextInfo>Qtd. Atual: {data.qtdAtual}L</TextInfo>
-                            <TextInfo>Qtd. Restante: {data.qtdRestante}L</TextInfo>
-                            <TextInfo>Responsável: {data.responsavel.nome} </TextInfo>
-                        </BoxCaracteristicas>
-                        <BoxEndereco>
-                            <TextInfo>Cidade: {data.localidade}</TextInfo>
-                            <TextInfo>Estado: {data.uf}</TextInfo>
-                            <TextInfo>CEP: {data.cep}</TextInfo>
-                            <TextInfo>Bairro: {data.bairro} </TextInfo>
-                            <TextInfo>Rua: {data.logradouro} </TextInfo>
-                        </BoxEndereco>
-                    </BoxInfo>
-                    <BoxMap>
-                        <TextInfo>Mapa</TextInfo>
-                    </BoxMap>
-
-                    <BoxFabBtn>
-                        <FabBtn onPress={() => { setModalVisibleDois(!modalVisibleDois) }}>
-                            <Icon
-                                name='arrow-up-bold-hexagon-outline'
-                                color='#FFF'
-                                size={20}>
-                            </Icon>
-                            <FabText>Retirar</FabText>
-                        </FabBtn>
-                    </BoxFabBtn>
-
-                    <BoxBtnModal>
-                        <BtnFechar onPress={() => { setModalVisible(!modalVisible) }}>
-                            <BtnText>Voltar</BtnText>
-                        </BtnFechar>
-                    </BoxBtnModal>
-
-                </BoxModal>
+                <BoxFabBtn>
+                    <FabBtn onPress={() => { setModalVisibleDois(!modalVisibleDois) }}>
+                        <Icon
+                            name='arrow-up-bold-hexagon-outline'
+                            color='#FFF'
+                            size={20}>
+                        </Icon>
+                        <FabText>Retirar</FabText>
+                    </FabBtn>
+                </BoxFabBtn>
 
             </Modal>
         </BoxGeral>

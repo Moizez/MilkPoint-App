@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Entypo'
 
 import {
     BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque, BoxModal, BoxTitulo, TituloInfo,
-    BoxBtnText, BtnVoltar, BtnText, BoxInfo, BoxInfoModal, BtnConfirm, BtnCancel, Btn, NomeModal
+    BtnFechar, BtnText, BoxInfo, BoxInfoModal, BtnConfirm, BtnCancel, Btn, NomeModal
 } from './styles'
 
 export default function DepositoPendenteList({ data }) {
@@ -112,22 +112,20 @@ export default function DepositoPendenteList({ data }) {
                     <BoxInfo>
                         <BtnConfirm>
                             <TouchableOpacity onPress={() => { handleConfirm() }}>
-                                <Btn>Confirmar</Btn>
+                                <Btn>Confirmar Depósito</Btn>
                             </TouchableOpacity>
                         </BtnConfirm>
 
                         <BtnCancel>
                             <TouchableOpacity onPress={() => { handleCancel() }}>
-                                <Btn>Cancelar</Btn>
+                                <Btn>Cancelar Depósito</Btn>
                             </TouchableOpacity>
                         </BtnCancel>
                     </BoxInfo>
 
-                    <BoxBtnText>
-                        <BtnVoltar onPress={() => { setModalVisible(!modalVisible) }}>
+                        <BtnFechar onPress={() => { setModalVisible(!modalVisible) }}>
                             <BtnText>Fechar</BtnText>
-                        </BtnVoltar>
-                    </BoxBtnText>
+                        </BtnFechar>
                 </BoxModal>
 
             </Modal>

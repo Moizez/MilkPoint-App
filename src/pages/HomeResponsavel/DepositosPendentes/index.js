@@ -21,7 +21,7 @@ export default function DepositosPendentes() {
         }
 
         loadListDepositosPendentes()
-    }, [...depositoPendente])
+    }, [])
 
     return (
         <Container>
