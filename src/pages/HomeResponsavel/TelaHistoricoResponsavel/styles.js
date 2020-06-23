@@ -23,17 +23,21 @@ text-align: center;
 
 export const Box = styled.View`
 flex-direction: row;
-align-items: baseline;
-justify-content: flex-start;
+align-items: center;
+justify-content: space-between;
 margin-left: 10px;
 margin-right: 10px;
-margin-top: 20px;
 margin-bottom: 5px;
 `;
 
-export const Titulo = styled.Text`
+export const BoxTitulo = styled.View`
+align-items: center;
+`;
+
+export const TituloLista = styled.Text`
 font-size: 14px;
 color: #FFF;
+margin-bottom: -19px;
 `;
 
 export const List = styled.FlatList.attrs({

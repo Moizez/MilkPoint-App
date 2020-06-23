@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../../contexts/auth'
 
 import MenuButton from '../../components/MenuButton'
-import TanqueListProdutor from '../HomeProdutor/TanqueListProdutor'
-import FabGoTop from '../../components/FabGoTop'
+import ListaTanques from '../HomeProdutor/ListaTanques'
+import Header from '../../components/Header'
 
-import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
+import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from './styles'
 
 export default function HomeProdutor() {
 
-    const { user } = useContext(AuthContext)
     const [tanque, setTanque] = useState([])
 
     //Carregar lista tanque para o Context
@@ -24,19 +22,11 @@ export default function HomeProdutor() {
 
     }, [])
 
-    function toTop() {
-        scrollToOffset()
-    }
-
     return (
         <Container>
             <MenuButton />
 
-            <BoxNome>
-                <Nome>Bem-vindo {user.nome}</Nome>
-                <Titulo style={{ color: '#da1e37' }}>{user.perfil === 1 ? 'Produtor' : ''}</Titulo>
-            </BoxNome>
-
+            <Header />
             <Box>
                 <Titulo>Lista de tanques</Titulo>
             </Box>
@@ -45,10 +35,10 @@ export default function HomeProdutor() {
                 showsVerticalScrollIndicator={false}
                 data={tanque}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (<TanqueListProdutor data={item} />)}
+                renderItem={({ item }) => (<ListaTanques data={item} />)}
+                ListEmptyComponent={<BoxNomeAviso><NomeAviso>Nenhum tanque disponível!</NomeAviso></BoxNomeAviso>}
             />
 
-            {/*<FabGoTop />*/}
         </Container >
     );
 }

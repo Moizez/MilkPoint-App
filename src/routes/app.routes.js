@@ -6,35 +6,33 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { AuthContext } from '../contexts/auth'
 import { DrawerContent } from '../components/DrawerContent'
 
-//Páginas do Produtor
+//Páginas do Drawer do Produtor
 import HomeProdutor from '../pages/HomeProdutor'
-import RelatorioProdutor from '../pages/HomeProdutor/RelatorioProdutor'
-import PerfilProdutor from '../pages/HomeProdutor/PerfilProdutor'
-import ConfigProdutor from '../pages/HomeProdutor/ConfigProdutor'
+import TelaHistoricoProdutor from '../pages/HomeProdutor/TelaHistoricoProdutor'
+import TelaPerfilProdutor from '../pages/HomeProdutor/TelaPerfilProdutor'
+import TelaConfiguracaoProdutor from '../pages/HomeProdutor/TelaConfiguracaoProdutor'
 
-//Páginas do Latcínio
+//Páginas do Drawer do Latcínio
 import HomeLaticinio from '../pages/HomeLaticinio'
-import RelatorioLaticinio from '../pages/HomeLaticinio/RelatorioLaticinio'
-import PerfilLaticinio from '../pages/HomeLaticinio/PerfilLaticinio'
-import ConfigLaticinio from '../pages/HomeLaticinio/ConfigLaticinio'
+import TelaHistoricoLaticinio from '../pages/HomeLaticinio/TelaHistoricoLaticinio'
+import TelaPerfilLaticinio from '../pages/HomeLaticinio/TelaPerfilLaticinio'
+import TelaConfiguracaoLaticinio from '../pages/HomeLaticinio/TelaConfiguracaoLaticinio'
 
-//Páginas do Responsável
+//Páginas do Drawer do Responsável
 import HomeResponsavel from '../pages/HomeResponsavel'
-import RelatorioResponsavel from '../pages/HomeResponsavel/RelatorioResponsavel'
-import PerfilResponsavel from '../pages/HomeResponsavel/PerfilResponsavel'
-import ConfigResponsavel from '../pages/HomeResponsavel/ConfigResponsavel'
+import TelaHistoricoResponsavel from '../pages/HomeResponsavel/TelaHistoricoResponsavel'
+import TelaPerfilResponsavel from '../pages/HomeResponsavel/TelaPerfilResponsavel'
+import TelaConfiguracaoResponsavel from '../pages/HomeResponsavel/TelaConfiguracaoResponsavel'
 
 //Páginas TAB do Responsável
-import DepositosPendentes from '../pages/HomeResponsavel/DepositosPendentes'
-import RetiradasPendentes from '../pages/HomeResponsavel/RetiradasPendentes'
+import TelaDepositosPendentesResponsavel from '../pages/HomeResponsavel/TelaDepositosPendentesResponsavel'
+import TelaRetiradasPendentesResponsavel from '../pages/HomeResponsavel/TelaRetiradasPendentesResponsavel'
 
 //Páginas TAB do Produtor
-import DepositosPendentesProdutor from '../pages/HomeProdutor/DepositosPendentesProdutor'
+import TelaDepositosPendentesProdutor from '../pages/HomeProdutor/TelaDepositosPendentesProdutor'
 
 //Páginas TAB do Laticínio
-import RetiradasPendentesLaticinio from '../pages/HomeLaticinio/RetiradasPendentesLaticinio'
-
-
+import TelaRetiradasPendentesLaticinio from '../pages/HomeLaticinio/TelaRetiradasPendentesLaticinio'
 
 const AppDrawer = createDrawerNavigator()
 const AppTab = createBottomTabNavigator()
@@ -60,19 +58,28 @@ function ResponsavelTab() {
                 }} Depósitos Pendentes
 
             />
-            <AppTab.Screen name='Depositos' component={DepositosPendentes}
+            <AppTab.Screen name='Depositos' component={TelaDepositosPendentesResponsavel}
                 options={{
-                    tabBarLabel: 'Depósitos Pendentes',
+                    tabBarLabel: 'Depósitos',
                     tabBarIcon: ({ }) => (
                         <Icon name="basket-fill" color={'#2a9d8f'} size={30} />
                     ),
                 }}
             />
-            <AppTab.Screen name='Retiradas' component={RetiradasPendentes}
+            <AppTab.Screen name='Retiradas' component={TelaRetiradasPendentesResponsavel}
                 options={{
-                    tabBarLabel: 'Retiradas Pendentes',
+                    tabBarLabel: 'Retiradas',
                     tabBarIcon: ({ }) => (
                         <Icon name="basket-unfill" color={'#da1e37'} size={30} />
+                    ),
+                }}
+
+            />
+            <AppTab.Screen name='Histórico' component={TelaHistoricoResponsavel}
+                options={{
+                    tabBarLabel: 'Histórico',
+                    tabBarIcon: ({ }) => (
+                        <Icon name="archive" color={'#fca311'} size={30} />
                     ),
                 }}
 
@@ -100,9 +107,8 @@ function ProdutorTab() {
                         <Icon name="home" color={color} size={30} />
                     ),
                 }} Depósitos Pendentes
-
             />
-            <AppTab.Screen name='Depositos' component={DepositosPendentesProdutor}
+            <AppTab.Screen name='Depositos' component={TelaDepositosPendentesProdutor}
                 options={{
                     tabBarLabel: 'Depósitos Pendentes',
                     tabBarIcon: ({ }) => (
@@ -110,14 +116,13 @@ function ProdutorTab() {
                     ),
                 }}
             />
-            <AppTab.Screen name='Histórico' component={RelatorioProdutor}
+            <AppTab.Screen name='Histórico' component={TelaHistoricoProdutor}
                 options={{
                     tabBarLabel: 'Histórico',
                     tabBarIcon: ({ }) => (
                         <Icon name="archive" color={'#fca311'} size={30} />
                     ),
                 }}
-
             />
         </AppTab.Navigator>
     )
@@ -144,7 +149,7 @@ function LaticinioTab() {
                 }} Depósitos Pendentes
 
             />
-            <AppTab.Screen name='Retiradas' component={RetiradasPendentesLaticinio}
+            <AppTab.Screen name='Retiradas' component={TelaRetiradasPendentesLaticinio}
                 options={{
                     tabBarLabel: 'Retiradas Pendentes',
                     tabBarIcon: ({ }) => (
@@ -152,14 +157,13 @@ function LaticinioTab() {
                     ),
                 }}
             />
-            <AppTab.Screen name='Histórico' component={RelatorioLaticinio}
+            <AppTab.Screen name='Histórico' component={TelaHistoricoLaticinio}
                 options={{
                     tabBarLabel: 'Histórico',
                     tabBarIcon: ({ }) => (
                         <Icon name="archive" color={'#fca311'} size={30} />
                     ),
                 }}
-
             />
         </AppTab.Navigator>
     )
@@ -171,9 +175,9 @@ function LaticinioDrawer() {
             drawerType='front'
         >
             <AppDrawer.Screen name='Home' component={LaticinioTab} />
-            <AppDrawer.Screen name='Histórico' component={RelatorioLaticinio} />
-            <AppDrawer.Screen name='Perfil' component={PerfilLaticinio} />
-            <AppDrawer.Screen name='Configurações' component={ConfigLaticinio} />
+            <AppDrawer.Screen name='Histórico' component={TelaHistoricoLaticinio} />
+            <AppDrawer.Screen name='Perfil' component={TelaPerfilLaticinio} />
+            <AppDrawer.Screen name='Configurações' component={TelaConfiguracaoLaticinio} />
         </AppDrawer.Navigator>
     )
 }
@@ -184,9 +188,9 @@ function ResponsavelDrawer() {
             drawerType='front'
         >
             <AppDrawer.Screen name='Home' component={ResponsavelTab} />
-            <AppDrawer.Screen name='Histórico' component={RelatorioResponsavel} />
-            <AppDrawer.Screen name='Perfil' component={PerfilResponsavel} />
-            <AppDrawer.Screen name='Configurações' component={ConfigResponsavel} />
+            <AppDrawer.Screen name='Histórico' component={TelaHistoricoResponsavel} />
+            <AppDrawer.Screen name='Perfil' component={TelaPerfilResponsavel} />
+            <AppDrawer.Screen name='Configurações' component={TelaConfiguracaoResponsavel} />
         </AppDrawer.Navigator>
     )
 }
@@ -205,9 +209,9 @@ export default function AppRoutes() {
                 drawerType='front'
             >
                 <AppDrawer.Screen name='Home' component={ProdutorTab} />
-                <AppDrawer.Screen name='Histórico' component={RelatorioProdutor} />
-                <AppDrawer.Screen name='Perfil' component={PerfilProdutor} />
-                <AppDrawer.Screen name='Configurações' component={ConfigProdutor} />
+                <AppDrawer.Screen name='Histórico' component={TelaHistoricoProdutor} />
+                <AppDrawer.Screen name='Perfil' component={TelaPerfilProdutor} />
+                <AppDrawer.Screen name='Configurações' component={TelaConfiguracaoProdutor} />
             </AppDrawer.Navigator>
 
         )

@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../../contexts/auth'
 
 import MenuButton from '../../components/MenuButton'
-import TanqueListLaticinio from '../HomeLaticinio/TanqueListLaticinio'
+import Header from '../../components/Header'
+import ListaTanques from '../HomeLaticinio/ListaTanques'
 
-import { Container, BoxNome, Nome, Box, Titulo, List } from '../HomeProdutor/styles'
+import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from '../HomeProdutor/styles'
 
 export default function HomeLaticinio() {
 
-    const { user } = useContext(AuthContext)
     const [tanque, setTanque] = useState([])
 
     //Carregar lista tanque para o Context
@@ -27,10 +26,7 @@ export default function HomeLaticinio() {
         <Container>
             <MenuButton />
 
-            <BoxNome>
-                <Nome>Bem-vindo {user.nome}</Nome>
-                <Titulo style={{ color: '#da1e37' }}>{user.perfil === 3 ? 'Laticínio' : ''}</Titulo>
-            </BoxNome>
+            <Header />
 
             <Box>
                 <Titulo>Lista de tanques</Titulo>
@@ -40,7 +36,8 @@ export default function HomeLaticinio() {
                 showsVerticalScrollIndicator={false}
                 data={tanque}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (<TanqueListLaticinio data={item} />)}
+                renderItem={({ item }) => (<ListaTanques data={item} />)}
+                ListEmptyComponent={<BoxNomeAviso><NomeAviso>Nenhum tanque disponível!</NomeAviso></BoxNomeAviso>}
             />
         </Container>
     );

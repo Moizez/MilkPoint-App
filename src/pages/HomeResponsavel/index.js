@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { AuthContext } from '../../contexts/auth'
 
 import MenuButton from '../../components/MenuButton'
-import TanqueListResponsavel from '../HomeResponsavel/TanqueListResponsavel'
+import Header from '../../components/Header'
+import ListaTanques from '../HomeResponsavel/ListaTanques'
+import { AuthContext } from '../../contexts/auth'
 
-import { Container, BoxNome, Nome, Box, Titulo, List } from './styles'
+import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from './styles'
 
 export default function HomeResponsavel() {
 
@@ -14,11 +15,13 @@ export default function HomeResponsavel() {
     //Carregar lista apenas do responsável logado e seus tanques
     useEffect(() => {
         const loadListTanquesResponsavel = async () => {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/responsavel/' + user.id + '/tanques')
+            const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
             const tanqueResponsavel = await response.json()
-            setTanqueResponsavel(tanqueResponsavel)
-        }
+            setTanqueResponsavel(tanqueResponsavel.filter(function (tanque) {
+                return tanque.responsavel.id == user.id
+            }))
 
+        }
         loadListTanquesResponsavel()
 
     }, [])
@@ -28,10 +31,7 @@ export default function HomeResponsavel() {
         <Container>
             <MenuButton />
 
-            <BoxNome>
-                <Nome>Bem-vindo {user.nome}</Nome>
-                <Titulo style={{ color: '#da1e37' }}>{user.perfil === 2 ? 'Responsável' : ''}</Titulo>
-            </BoxNome>
+            <Header />
 
             <Box>
                 <Titulo>Lista de tanques</Titulo>
@@ -41,7 +41,8 @@ export default function HomeResponsavel() {
                 showsVerticalScrollIndicator={false}
                 data={tanqueResponsavel}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (<TanqueListResponsavel data={item} />)}
+                renderItem={({ item }) => (<ListaTanques data={item} />)}
+                ListEmptyComponent={<BoxNomeAviso><NomeAviso>Nenhum tanque disponível!</NomeAviso></BoxNomeAviso>}
             />
         </Container>
     );

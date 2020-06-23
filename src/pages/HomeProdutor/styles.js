@@ -5,24 +5,30 @@ flex: 1;
 background-color: #292b2c;
 `;
 
-export const BoxNome = styled.View`
-margin-bottom: 5px;
-align-items: center;
+export const BoxNomeAviso = styled.View`
+flex: 1;
+padding-top: 15px;
+background-color: #FFF;
+border-top-left-radius: 8px;
+border-top-right-radius: 8px;
+margin-left: 8px;
+margin-right: 8px;
+`;
+
+export const NomeAviso = styled.Text`
+font-size: 18px;
+color: #292b2c;
+text-align: center;
 `;
 
 export const Box = styled.View`
 flex-direction: row;
 align-items: baseline;
 justify-content: flex-start;
-margin-left: 15px;
-margin-bottom: 3px;
+margin-left: 10px;
+margin-right: 10px;
 margin-top: 20px;
-`;
-
-export const Nome = styled.Text`
-font-size: 25px;
-color: #FFF;
-text-align: center;
+margin-bottom: 5px;
 `;
 
 export const Titulo = styled.Text`
@@ -40,27 +46,3 @@ export const List = styled.FlatList.attrs({
     margin-left: 8px;
     margin-right: 8px;
 `;
-
-//Logaout temporario
-
-export const BoxLogout = styled.View`
-    margin-top:5px;
-    justify-content: center;
-    align-items: center;
-    height: 45px;
-`;
-
-export const Logout = styled.TouchableOpacity`
-    justify-content: center;
-    align-items: center;
-    background-color: #da1e37;
-    width: 90%;
-    height: 45px;
-    border-radius: 7px;
-    margin-bottom: 10px;
-`;
-export const LogoutText = styled.Text`
-    font-size: 20;
-    color: #FFF;
-`;
-

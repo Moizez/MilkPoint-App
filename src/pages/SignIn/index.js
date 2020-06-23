@@ -33,11 +33,13 @@ export default function SignIn() {
             Animated.spring(offset.y, {
                 toValue: 0,
                 speed: 4,
-                bounciness: 20
+                bounciness: 20,
+                useNativeDriver: true
             }),
             Animated.timing(opacity, {
                 toValue: 1,
                 duration: 300,
+                useNativeDriver: true
             })
 
         ]).start()
