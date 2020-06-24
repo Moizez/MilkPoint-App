@@ -24,7 +24,7 @@ export default function TelaDepositosPendentesProdutor() {
         }
 
         loadListDepositosPendentes()
-    }, [])
+    }, [depositoPendente])
 
     return (
         <Container>
@@ -38,6 +38,7 @@ export default function TelaDepositosPendentesProdutor() {
             <List
                 showsVerticalScrollIndicator={false}
                 data={depositoPendente}
+                extraData={depositoPendente}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (<ListaDepositosPendentes data={item} />)}
                 ListEmptyComponent={<BoxNomeAviso><NomeAviso>Não há depósitos pendentes!</NomeAviso></BoxNomeAviso>}

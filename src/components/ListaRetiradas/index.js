@@ -28,9 +28,10 @@ export default function ListaRetiradas({ data }) {
                     <Nome>Valor solicitado: {data.quantidade} litros</Nome>
                     {user.perfil == 3 && <Nome>Solicitante: {data.laticinio.nome}</Nome>}
                     <Nome>Data : {data.dataNow} às {data.horaNow}h</Nome>
-                    <Nome>Responsável: {data.tanque.responsavel.nome}</Nome>
+                    {data.confirmacao === false && <Nome>Responsável: {data.tanque.responsavel.nome}</Nome>}
                     <View style={{ borderBottomColor: '#000', borderBottomWidth: 0.5, marginTop: 25, marginBottom: 5 }}></View>
-                    <Nome style={{ textAlign: 'center' }}>Cancelado por: {data.efetuou}</Nome>
+                    {data.excluido === true ? <Nome style={{ textAlign: 'center' }}>Cancelado por: {data.efetuou}</Nome>
+                        : <Nome style={{ textAlign: 'center' }}>Responsável: {data.tanque.responsavel.nome}</Nome>}
                 </BoxInfo>
                 <BoxIcon>
                     <Nome>Retirada</Nome>

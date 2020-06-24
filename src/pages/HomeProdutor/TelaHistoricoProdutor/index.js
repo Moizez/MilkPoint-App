@@ -25,7 +25,7 @@ export default function TelaHistoricoProdutor() {
 
         loadListDepositos()
 
-    }, [])
+    }, [deposito])
 
     return (
         <Container>
@@ -39,6 +39,7 @@ export default function TelaHistoricoProdutor() {
 
             <List
                 showsVerticalScrollIndicator={false}
+                extraData={deposito}
                 data={deposito}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (<ListaDepositos data={item} />)}

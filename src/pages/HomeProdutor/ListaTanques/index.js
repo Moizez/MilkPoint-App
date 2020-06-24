@@ -33,20 +33,22 @@ export default function ListaTanques({ data }) {
 
         await fetch('https://milkpoint.herokuapp.com/api/deposito', { method: 'POST', body: data })
 
-        if (idProd === undefined) {
-            alert('Erro ao processar o pedido! QTD: ' + quantidade + ' ID Produtor: ' + idProd + ' ID Tanque: ' + idTanque)
-        } else {
-            alert("Depósito realizado com sucesso!" + "\n" + "Aguarde a confirmação!")
-        }
     };
 
     async function handleDeposito() {
-        setQuantidade(quantidade)
-        setIdProd(user.id)
-        setIdTanque(data.id)
-        await requestDeposito(quantidade, idProd, idTanque)
-        setModalVisibleDois(!modalVisibleDois)
-        setModalVisible(!modalVisible)
+        if (quantidade <= 0) {
+            alert('Valor inválido, digite a quantidade novamente!')
+        } else if (quantidade > data.qtdRestante) {
+            alert("Seu depósito excede o valor máximo atual do tanque!")
+        } else {
+            alert("Depósito realizado com sucesso!" + "\n" + "Aguarde a confirmação!")
+            setQuantidade(quantidade)
+            setIdProd(user.id)
+            setIdTanque(data.id)
+            await requestDeposito(quantidade, idProd, idTanque)
+            setModalVisibleDois(!modalVisibleDois)
+            setModalVisible(!modalVisible)
+        }
     }
 
     function handleCloseModal() {
@@ -68,7 +70,7 @@ export default function ListaTanques({ data }) {
 
             </Container>
 
-             {/*MODAL DETALHE DO TANQUE */}
+            {/*MODAL DETALHE DO TANQUE */}
             <Modal
                 animationType='slide'
                 transparent={false}

@@ -22,7 +22,9 @@ export default function TelaHistoricoResponsavel() {
         const loadListDepositos = async () => {
             const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listatodos')
             const deposito = await response.json()
-            setDeposito(deposito)
+            setDeposito(deposito.filter(function (status) {
+                return status.confirmacao === true || status.excluido === true
+            }))
         }
 
         loadListDepositos()
@@ -34,7 +36,9 @@ export default function TelaHistoricoResponsavel() {
         const loadListRetiradas = async () => {
             const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listatodos')
             const retirada = await response.json()
-            setRetirada(retirada)
+            setRetirada(retirada.filter(function (status) {
+                return status.confirmacao === true || status.excluido === true
+            }))
         }
 
         loadListRetiradas()
