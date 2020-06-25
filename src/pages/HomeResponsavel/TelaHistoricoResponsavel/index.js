@@ -8,21 +8,24 @@ import ListaRetiradas from '../../../components/ListaRetiradas'
 import ListaDepositos from '../../../components/ListaDepositos'
 import Picker from '../../../components/Picker'
 
-import { Container, BoxNomeAviso, NomeAviso, Box, BoxTitulo, TituloLista, List } from './styles'
+
+import {
+    Container, BoxNomeAviso, NomeAviso, Box, BoxTitulo, TituloLista, List,
+} from './styles'
 
 export default function TelaHistoricoResponsavel() {
 
     const { user } = useContext(AuthContext)
     const [deposito, setDeposito] = useState([])
     const [retirada, setRetirada] = useState([])
-    const [value, setValue] = useState(null)
+    const [value, setValue] = useState(true)
 
     //Lista de todos os depositos
     useEffect(() => {
         const loadListDepositos = async () => {
             const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listatodos')
-            const deposito = await response.json()
-            setDeposito(deposito.filter(function (status) {
+            const data = await response.json()
+            setDeposito(data.filter(function (status) {
                 return status.confirmacao === true || status.excluido === true
             }))
         }
@@ -35,8 +38,8 @@ export default function TelaHistoricoResponsavel() {
     useEffect(() => {
         const loadListRetiradas = async () => {
             const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listatodos')
-            const retirada = await response.json()
-            setRetirada(retirada.filter(function (status) {
+            const data = await response.json()
+            setRetirada(data.filter(function (status) {
                 return status.confirmacao === true || status.excluido === true
             }))
         }
@@ -60,13 +63,14 @@ export default function TelaHistoricoResponsavel() {
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={value == 'retirada' ? retirada : deposito}
+                data={value == false ? retirada : deposito}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    value == 'retirada' ? (<ListaRetiradas data={item} />) :
+                    value == false ? (<ListaRetiradas data={item} />) :
                         (<ListaDepositos data={item} />))}
                 ListEmptyComponent={<BoxNomeAviso><NomeAviso>Não há registro de transações!</NomeAviso></BoxNomeAviso>}
             />
+
         </Container>
     );
 }

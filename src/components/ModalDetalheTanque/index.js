@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MapView from 'react-native-maps'
 
 import {
     BoxModal, BoxTitulo, TituloInfo, BoxSubtitulo, BoxSubCaracteristicas, BoxSubEndereco,
@@ -42,7 +42,17 @@ export default function ModalDetalheTanque({ dataTanque, onClose }) {
                 </BoxEndereco>
             </BoxInfo>
             <BoxMap>
-                <TextInfo>Mapa</TextInfo>
+                <MapView
+                    style={{ width: '100%', height: '100%' }}
+                    initialRegion={{
+                        latitude: -6.148043,
+                        longitude: -38.195733,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421
+                    }}
+                >
+
+                </MapView>
             </BoxMap>
 
             <BoxBtnModal>

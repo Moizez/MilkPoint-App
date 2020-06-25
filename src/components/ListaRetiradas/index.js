@@ -26,7 +26,7 @@ export default function ListaRetiradas({ data }) {
                 <BoxInfo>
                     <Nome>Tanque: {data.tanque.nome}</Nome>
                     <Nome>Valor solicitado: {data.quantidade} litros</Nome>
-                    {user.perfil == 3 && <Nome>Solicitante: {data.laticinio.nome}</Nome>}
+                    {user.perfil == 3 && <Nome>Solicitante: {data.laticinio.nomeFantasia}</Nome>}
                     <Nome>Data : {data.dataNow} às {data.horaNow}h</Nome>
                     {data.confirmacao === false && <Nome>Responsável: {data.tanque.responsavel.nome}</Nome>}
                     <View style={{ borderBottomColor: '#000', borderBottomWidth: 0.5, marginTop: 25, marginBottom: 5 }}></View>

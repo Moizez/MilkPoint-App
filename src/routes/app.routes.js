@@ -55,9 +55,8 @@ function ResponsavelTab() {
                     tabBarIcon: ({ color }) => (
                         <Icon name="home" color={color} size={30} />
                     ),
-                }} Depósitos Pendentes
+                }}/>
 
-            />
             <AppTab.Screen name='Depositos' component={TelaDepositosPendentesResponsavel}
                 options={{
                     tabBarLabel: 'Depósitos',

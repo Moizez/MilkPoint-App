@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, Button, View, Text } from 'react-native'
+import { Modal, Text } from 'react-native'
 import Speedometer from 'react-native-speedometer-chart'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -15,7 +15,7 @@ export default function ListaTanques({ data }) {
     const capacidade = data.qtdAtual + data.qtdRestante
 
     function corGrafico() {
-        if (data.qtdAtual > (capacidade / 4)) {
+        if (data.qtdAtual > (capacidade / 4) & data.qtdAtual < (capacidade / 2)) {
             return '#f5cb5c'
         } if (data.qtdAtual >= (capacidade / 2)) {
             return '#2a9d8f'
@@ -56,7 +56,7 @@ export default function ListaTanques({ data }) {
                         labelStyle={{ color: 'blue' }}
                         labelFormatter={number => `${number}`}
                         showPercent
-                        percentStyle={{ color: 'black' }}
+                        percentStyle={{ color: 'black', fontSize: 22 }}
                     />
                     <BoxTanque>
                         <Nome style={{ textAlign: 'center', opacity: 0.1 }}>____________________________________________</Nome>

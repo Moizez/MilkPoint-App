@@ -1,14 +1,15 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import Icon from 'react-native-vector-icons/Entypo'
 import { View } from 'react-native'
-import { format } from 'date-fns'
 
 import { AuthContext } from '../../contexts/auth'
+import DatePicker from '../../components/DatePicker'
 import { BoxGeral, Container, Nome, BoxIcon, BoxInfo } from './styles'
 
-export default function ListaDepositos({ data }) {
+export default function ListaDepositos({ data, onShowCalendar }) {
 
     const { user } = useContext(AuthContext)
+    const [showCalendar, setShowCalendar] = useState(false)
 
     function bucketColor(status) {
         if (data.confirmacao == true) {
@@ -20,6 +21,10 @@ export default function ListaDepositos({ data }) {
         }
     }
     let status = bucketColor()
+
+    function onChange(){
+        setShowCalendar(onShowCalendar)
+    }
 
     return (
         <BoxGeral>
@@ -60,6 +65,12 @@ export default function ListaDepositos({ data }) {
                     <Nome>{status}</Nome>
                 </BoxIcon>
             </Container>
+
+            {showCalendar && (
+                <DatePicker
+                    dataPicker={data.dataNow}
+                />)}
+
         </BoxGeral>
     );
 }

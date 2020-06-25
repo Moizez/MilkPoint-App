@@ -5,12 +5,12 @@ import { Modal } from 'react-native'
 import GraficoTanque from '../../../components/GraficoTanque'
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
 
-
 import { AuthContext } from '../../../contexts/auth'
 
 import {
     BoxGeral, Container, Nome, BoxTanque, BoxModal, BoxInfoModal, TituloInfo, InputModal, BoxBtn, BtnConfirm,
     BtnCancel, Button, BtnText, BoxFabBtn, FabBtn, FabText
+
 } from './styles'
 
 export default function ListaTanques({ data }) {
@@ -21,31 +21,31 @@ export default function ListaTanques({ data }) {
     const [modalVisibleDois, setModalVisibleDois] = useState(false)
 
     const [quantidade, setQuantidade] = useState()
-    const [idLat, setIdLat] = useState(user.id)
+    const [idProd, setIdProd] = useState(user.id)
     const [idTanque, setIdTanque] = useState(data.id)
 
-    //Solicitação de retirada pelo laticinio
-    const requestRetirada = async (quantidade, idLat, idTanque) => {
+    //Solicitação de depósito pelo produtor
+    const requestDeposito = async (quantidade, idProd, idTanque) => {
         const data = new FormData();
         data.append("quantidade", quantidade);
-        data.append("idLat", idLat);
+        data.append("idProd", idProd);
         data.append("idTanque", idTanque);
 
-        await fetch('https://milkpoint.herokuapp.com/api/retirada', { method: 'POST', body: data })
+        await fetch('https://milkpoint.herokuapp.com/api/deposito', { method: 'POST', body: data })
 
     };
 
-    async function handleRetirada() {
+    async function handleDeposito() {
         if (quantidade <= 0) {
             alert('Valor inválido, digite a quantidade novamente!')
-        } else if (quantidade > data.qtdAtual) {
-            alert("Sua retirada excede o valor máximo atual do tanque!")
+        } else if (quantidade > data.qtdRestante) {
+            alert("Seu depósito excede o valor máximo atual do tanque!")
         } else {
-            alert("Retirada realizada com sucesso!" + "\n" + "Aguarde a confirmação!")
+            alert("Depósito realizado com sucesso!" + "\n" + "Aguarde a confirmação!")
             setQuantidade(quantidade)
-            setIdLat(user.id)
+            setIdProd(user.id)
             setIdTanque(data.id)
-            await requestRetirada(quantidade, idLat, idTanque)
+            await requestDeposito(quantidade, idProd, idTanque)
             setModalVisibleDois(!modalVisibleDois)
             setModalVisible(!modalVisible)
         }
@@ -67,6 +67,7 @@ export default function ListaTanques({ data }) {
                 </BoxTanque>
 
                 <GraficoTanque dataGrafico={data} />
+
             </Container>
 
             {/*MODAL DETALHE DO TANQUE */}
@@ -88,7 +89,7 @@ export default function ListaTanques({ data }) {
                     <BoxModal>
 
                         <BoxInfoModal>
-                            <TituloInfo>Solicitação de retirada no tanque</TituloInfo>
+                            <TituloInfo>Solicitação de depósito no tanque</TituloInfo>
                             <InputModal
                                 placeholder='Quantidade em litros (L)'
                                 autoCorrect={false}
@@ -100,7 +101,7 @@ export default function ListaTanques({ data }) {
 
                             <BoxBtn>
                                 <BtnConfirm>
-                                    <Button onPress={handleRetirada}>
+                                    <Button onPress={handleDeposito}>
                                         <BtnText>Confirmar</BtnText>
                                     </Button>
                                 </BtnConfirm>
@@ -125,11 +126,12 @@ export default function ListaTanques({ data }) {
                             color='#FFF'
                             size={20}>
                         </Icon>
-                        <FabText>Retirar</FabText>
+                        <FabText>Depositar</FabText>
                     </FabBtn>
                 </BoxFabBtn>
-
             </Modal>
+            
         </BoxGeral>
     );
 }
+

@@ -10,15 +10,17 @@ export default function HomeProdutor() {
 
     const [tanque, setTanque] = useState([])
 
-    async function loadListTanques() {
-        const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
-        const data = await response.json()
 
-        setTanque([...data])
-    }
 
     //Carregar lista tanque
     useEffect(() => {
+
+        async function loadListTanques() {
+            const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
+            const data = await response.json()
+            setTanque(data)
+        }
+
         loadListTanques()
     }, [])
 

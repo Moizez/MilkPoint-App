@@ -17,12 +17,12 @@ export default function Picker({ onChange }) {
                 placeholder={{
                     label: 'Listar por?',
                     color: '#222',
-                    value: 'deposito',
+                    value: true,
                 }}
                 onValueChange={(value) => onChange(value)}
                 items={[
-                    { label: 'Depositos', value: 'deposito', color: 'green' },
-                    { label: 'Retiradas', value: 'retirada', color: 'red' },
+                    { label: 'Depositos', value: true, color: 'green' },
+                    { label: 'Retiradas', value: false, color: 'red' },
                 ]}
             />
         </PickerView>

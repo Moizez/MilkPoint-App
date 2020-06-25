@@ -1,19 +1,19 @@
 import React, { useState, useContext } from 'react';
-import { View, Modal, TouchableOpacity } from 'react-native';
+import { Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo'
 
 import { AuthContext } from '../../../contexts/auth'
+import ModalCancel from '../../../components/ModalCancel'
 
 import {
-    BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque, BoxModal, BoxTitulo, TituloInfo,
-    BtnFechar, BtnText, BoxInfo, BoxInfoModal, BtnCancel, Btn, NomeModal
+    BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque
 } from './styles'
 
 export default function ListaDepositosPendentes({ data }) {
 
     const { user } = useContext(AuthContext)
 
-    const [modalVisible, setModalVisible] = useState(false)
+    const [modalCancelVisible, setModalCancelVisible] = useState(false)
     const [confirmacao, setConfirmacao] = useState(false) // não está alterando o estado da variavel confirmação
     const [idDeposito, setIdDeposito] = useState(data.id)
     const [efetuou, setEfetuou] = useState(user.apelido)
@@ -42,7 +42,7 @@ export default function ListaDepositosPendentes({ data }) {
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
         confirmacaoDeposito(false, idDeposito, efetuou) // forçar a confirmação
-        setModalVisible(!modalVisible)
+        setModalCancelVisible(!modalCancelVisible)
     }
 
 
@@ -57,6 +57,10 @@ export default function ListaDepositosPendentes({ data }) {
     }
     let status = bucketColor()
 
+    function handleCloseCancelModal() {
+        setModalCancelVisible(false)
+    }
+
     return (
         <BoxGeral>
             <Container>
@@ -66,7 +70,7 @@ export default function ListaDepositosPendentes({ data }) {
                     <Nome>Nome do produtor: {data.produtor.nome}</Nome>
                     <Nome>Data: {data.dataNow} às {data.horaNow}h</Nome>
                 </BoxInfoTanque>
-                <BoxIcon onLongPress={() => { setModalVisible(!modalVisible) }}>
+                <BoxIcon onLongPress={() => { setModalCancelVisible(!modalCancelVisible) }}>
                     <Nome>Depósito</Nome>
                     {status == 'Confirmado' && (
                         <Icon
@@ -96,39 +100,14 @@ export default function ListaDepositosPendentes({ data }) {
             <Modal
                 animationType='slide'
                 transparent={true}
-                visible={modalVisible}
+                visible={modalCancelVisible}
             >
-                <BoxModal>
-                    <BoxTitulo>
-                        <TituloInfo>Informação do depósito pendente: </TituloInfo>
-                    </BoxTitulo>
-
-                    <BoxInfoModal>
-                        <NomeModal>Tanque: {data.tanque.nome}</NomeModal>
-                        <NomeModal>Depósito solicitado: {data.quantidade} litros</NomeModal>
-                        <NomeModal>Nome do solicitante: {data.produtor.nome}</NomeModal>
-                        <NomeModal>Data: {data.dataNow} às {data.horaNow}h</NomeModal>
-                    </BoxInfoModal>
-
-                    <BoxTitulo>
-                        <TituloInfo>Deseja realmente cancelar este depósito? </TituloInfo>
-                    </BoxTitulo>
-
-                    <BoxInfo>
-                        <BtnCancel>
-                            <TouchableOpacity onPress={() => { handleCancel() }}>
-                                <Btn>Cancelar Depósito</Btn>
-                            </TouchableOpacity>
-                        </BtnCancel>
-                    </BoxInfo>
-
-                    <BtnFechar onPress={() => { setModalVisible(!modalVisible) }}>
-                        <BtnText>Fechar</BtnText>
-                    </BtnFechar>
-                </BoxModal>
-
+                <ModalCancel
+                    dataTanque={data}
+                    onClose={handleCloseCancelModal}
+                    onCancel={handleCancel}
+                />
             </Modal>
-
 
         </BoxGeral>
     );

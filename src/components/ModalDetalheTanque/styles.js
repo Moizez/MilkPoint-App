@@ -22,7 +22,6 @@ flex: 1;
 background-color: #adb5bd;
 align-items: center;
 justify-content: center;
-border-bottom-left-radius: 5px;
 border-bottom-right-radius: 5px;
 `;
 
@@ -33,7 +32,7 @@ margin-left: 3px;
 align-items: center;
 justify-content: center;
 border-bottom-left-radius: 5px;
-border-bottom-right-radius: 5px;
+
 `;
 
 export const TituloInfo = styled.Text`
@@ -73,8 +72,7 @@ font-size: 16px;
 
 export const BoxMap = styled.View`
 flex: 2;
-background-color: #FFF;
-padding: 10px;
+padding: 6px;
 justify-content: center;
 align-items: center;
 `;
@@ -82,10 +80,8 @@ align-items: center;
 //Botão de Voltar
 
 export const BoxBtnModal = styled.View`
-border-color: #FFF;
-border-width: 0.5px;
 border-radius: 8px;
-margin-bottom: 10px;
+margin-bottom: 8px;
 align-items: center;
 justify-content: center;
 `;
@@ -93,8 +89,7 @@ justify-content: center;
 export const BtnVoltar = styled.TouchableOpacity`
 background-color: #292b2c;
 border-radius: 8px;
-margin-bottom: 10px;
-width: 90%;
+width: 97%;
 height: 45px;
 align-items: center;
 justify-content: center;

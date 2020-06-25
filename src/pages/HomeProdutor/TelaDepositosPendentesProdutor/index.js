@@ -12,19 +12,18 @@ export default function TelaDepositosPendentesProdutor() {
     const { user } = useContext(AuthContext)
     const [depositoPendente, setDepositoPendente] = useState([])
 
+    const loadListDepositosPendentes = async () => {
+        const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listapendentes')
+        const depositoPendente = await response.json()
+        setDepositoPendente(depositoPendente.filter(function (deposito) {
+            return deposito.produtor.id == user.id
+        }))
+    }
+
     //Lista de Depositos Pendentes
     useEffect(() => {
-
-        const loadListDepositosPendentes = async () => {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listapendentes')
-            const depositoPendente = await response.json()
-            setDepositoPendente(depositoPendente.filter(function (deposito) {
-                return deposito.produtor.id == user.id
-            }))
-        }
-
         loadListDepositosPendentes()
-    }, [depositoPendente])
+    }, [])
 
     return (
         <Container>
