@@ -37,11 +37,11 @@ export default function ListaRetiradasPendentes({ data }) {
     };
 
     //Função para cancelar a retirada
-    function handleCancel() {
+    async function handleCancel() {
         setConfirmacao(false)
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
-        confirmacaoRetirada(false, idRetirada, efetuou) // forçar a confirmação
+        await confirmacaoRetirada(false, idRetirada, efetuou) // forçar a confirmação
         setModalCancelVisible(!modalCancelVisible)
     }
 
@@ -108,7 +108,6 @@ export default function ListaRetiradasPendentes({ data }) {
                     onCancel={handleCancel}
                 />
             </Modal>
-
 
         </BoxGeral>
     );

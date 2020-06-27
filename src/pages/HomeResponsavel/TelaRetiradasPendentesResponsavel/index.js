@@ -9,26 +9,24 @@ import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from './styles'
 
 export default function TelaRetiradasPendentesResponsavel() {
 
-    const { user } = useContext(AuthContext)
     const [retiradaPendente, setRetiradaPendente] = useState([])
 
     //Lista de Retiradas Pendentes
+    const loadListRetiradasPendentes = async () => {
+        const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listapendentes')
+        setRetiradaPendente(await response.json())
+        return retiradaPendente
+    }
+
     useEffect(() => {
-        const loadListRetiradasPendentes = async () => {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listapendentes')
-            const retiradaPendente = await response.json()
-            setRetiradaPendente(retiradaPendente)
-        }
-
         loadListRetiradasPendentes()
-
     }, [])
 
     return (
         <Container>
             <MenuButton />
 
-            <Header/>
+            <Header />
 
             <Box>
                 <Titulo>Lista de retiradas pendentes</Titulo>

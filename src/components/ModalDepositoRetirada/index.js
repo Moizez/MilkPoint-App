@@ -1,63 +1,48 @@
 import React, { useState } from 'react';
-import { View, Modal } from 'react-native';
+import { View } from 'react-native';
 
-import { BoxGeral, BoxModal, BoxInfo, TituloInfo, BoxTitulo, BoxEndereco } from './styles'
+import {
+    BoxModal, BoxInfoModal, TituloInfo, InputModal, BoxBtn, BtnConfirm,
+    BtnCancel, Button, BtnText
+} from './styles'
 
-export function ModalDepositoRetirada() {
+export default function ModalDepositoRetirada(props) {
 
-    const [modalVisible, setModalVisible] = useState(true)
+    const [quantidade, setQuantidade] = useState(0)
+
+    console.log('QTD: ' + quantidade)
 
     return (
-        <BoxGeral>
-            <Modal
-                animationType='slide'
-                transparent={false}
-                visible={modalVisible}
-            >
-                <BoxModal>
+        <BoxModal>
 
-                    <BoxTitulo>
-                        <TituloInfo>Tanque: </TituloInfo>
-                        <TituloInfo style={{ color: 'red' }}>T-55</TituloInfo>
-                    </BoxTitulo>
+            <BoxInfoModal>
+                <TituloInfo>Solicitação de depósito no tanque</TituloInfo>
+                <InputModal
+                    placeholder='Quantidade em litros (L)'
+                    autoCorrect={false}
+                    autoCapitalize='none'
+                    keyboardType='numeric'
+                    value={quantidade}
+                    onChangeText={setQuantidade}
+                    onEndEditing={() => props.onConfirme(quantidade)}
+                />
 
-                    <BoxSubTitulo>
-                        <BoxSubCar>
-                            <TextInfo>Caracteristicas</TextInfo>
-                        </BoxSubCar>
-                        <BoxSubEnd>
-                            <TextInfo>Endereço</TextInfo>
-                        </BoxSubEnd>
-                    </BoxSubTitulo>
+                <BoxBtn>
+                    <BtnConfirm>
+                        <Button onPress={props.onConfirme}>
+                            <BtnText>Confirmar</BtnText>
+                        </Button>
+                    </BtnConfirm>
 
-                    <BoxInfo>
+                    <BtnCancel>
+                        <Button onPress={props.onClose}>
+                            <BtnText>Cancelar</BtnText>
+                        </Button>
+                    </BtnCancel>
+                </BoxBtn>
 
-                        <BoxCaracteristicas>
-                            <TextInfo>Tipo do Leite: {data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</TextInfo>
-                            <TextInfo>Qtd. Atual: {data.qtdAtual}L</TextInfo>
-                            <TextInfo>Qtd. Restante: {data.qtdRestante}L</TextInfo>
-                            <TextInfo>Responsável: {data.responsavel.nome} </TextInfo>
-                        </BoxCaracteristicas>
-                        <BoxEndereco>
-                            <TextInfo>Cidade: {data.localidade}</TextInfo>
-                            <TextInfo>Estado: {data.uf}</TextInfo>
-                            <TextInfo>CEP: {data.cep}</TextInfo>
-                            <TextInfo>Bairro: {data.bairro} </TextInfo>
-                            <TextInfo>Rua: {data.logradouro} </TextInfo>
-                        </BoxEndereco>
-                    </BoxInfo>
-                    <BoxMap>
-                        <TextInfo>Mapa</TextInfo>
-                    </BoxMap>
+            </BoxInfoModal>
 
-                    <BoxBtnText>
-                        <BtnVoltar onPress={() => { setModalVisible(!modalVisible) }}>
-                            <BtnText>Voltar</BtnText>
-                        </BtnVoltar>
-                    </BoxBtnText>
-
-                </BoxModal>
-            </Modal >
-        </BoxGeral >
-    )
+        </BoxModal>
+    );
 }

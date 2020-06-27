@@ -1,10 +1,9 @@
 import React, { useState, useContext } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { Modal } from 'react-native'
+import { Modal, Keyboard } from 'react-native'
 
 import GraficoTanque from '../../../components/GraficoTanque'
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
-
 
 import { AuthContext } from '../../../contexts/auth'
 
@@ -49,10 +48,12 @@ export default function ListaTanques({ data }) {
             setModalVisibleDois(!modalVisibleDois)
             setModalVisible(!modalVisible)
         }
+        Keyboard.dismiss()
+        setQuantidade('')
     }
 
     function handleCloseModal() {
-        setModalVisible(false)
+        return setModalVisible(false)
     }
 
     return (
@@ -95,7 +96,7 @@ export default function ListaTanques({ data }) {
                                 autoCapitalize='none'
                                 keyboardType='numeric'
                                 value={quantidade}
-                                onChangeText={(quantidade) => setQuantidade(quantidade)}
+                                onChangeText={(quantidade) => setQuantidade(parseInt(quantidade))}
                             />
 
                             <BoxBtn>

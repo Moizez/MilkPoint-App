@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MenuButton from '../../../components/MenuButton'
 import ListaDepositos from '../../../components/ListaDepositos'
 import Header from '../../../components/Header'
+import DatePicker from '../../../components/DatePicker'
 
 import {
     Container, Box, BoxNomeAviso, NomeAviso, Titulo, List, Calendar,
@@ -14,7 +15,8 @@ export default function TelaHistoricoProdutor() {
 
     const { user } = useContext(AuthContext)
     const [deposito, setDeposito] = useState([])
-    const [showCalendar, setShowCalendar] = useState(false)
+    const [date, setDate] = useState(new Date())
+    const [show, setShow] = useState(false);
 
     //Lista de todos os depositos
     useEffect(() => {
@@ -32,7 +34,11 @@ export default function TelaHistoricoProdutor() {
     }, [])
 
     function handleShowPicker() {
-        setShowCalendar(true)
+        setShow(true)
+    }
+
+    function onChange(date) {
+        setDate(date)
     }
 
     return (
@@ -43,7 +49,7 @@ export default function TelaHistoricoProdutor() {
 
             <Box>
                 <Titulo>Lista de transações</Titulo>
-                <Calendar onPress={() => handleShowPicker()}>
+                <Calendar onPress={handleShowPicker}>
                     <Icon
                         name='calendar-month'
                         color='#FFF'
@@ -57,9 +63,15 @@ export default function TelaHistoricoProdutor() {
                 extraData={deposito}
                 data={deposito}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (<ListaDepositos data={item} onShowCalendar={handleShowPicker} />)}
+                renderItem={({ item }) => (<ListaDepositos data={item} />)}
                 ListEmptyComponent={<BoxNomeAviso><NomeAviso>Não há registro de transações!</NomeAviso></BoxNomeAviso>}
             />
+
+            {show && (
+                <DatePicker
+                    date={date}
+                    onChange={onChange}
+                />)}
 
         </Container>
     );

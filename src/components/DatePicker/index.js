@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { Text, Platform, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function DatePicker({ dataPicker }) {
+export default function DatePicker({ date, onChange }) {
 
-    const [diaItem, mesItem, anoItem] = dataPicker.split('/');
-    const dateNow = new Date(`${anoItem}/${mesItem}/${diaItem}`);
+    const [dateNow, setDateNow] = useState(new Date(date));
 
     return (
         <DateTimePicker
@@ -13,8 +12,9 @@ export default function DatePicker({ dataPicker }) {
             mode="date"
             display="default"
             onChange={(e, d) => {
-                const currentDate = d || dateNow;
-                setDateNow(currentDate);
+                const currentDate = d || dateNow
+                setDateNow(currentDate)
+                onChange(currentDate)
             }}
             style={{ backgroundColor: '#FFF' }}
         />

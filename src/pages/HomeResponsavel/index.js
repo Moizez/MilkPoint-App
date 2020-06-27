@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { View } from 'react-native'
 
 import MenuButton from '../../components/MenuButton'
 import Header from '../../components/Header'
@@ -13,17 +14,14 @@ export default function HomeResponsavel() {
     const [tanqueResponsavel, setTanqueResponsavel] = useState([])
 
     //Carregar lista apenas do responsável logado e seus tanques
+    const loadListTanquesResponsavel = async () => {
+        const response = await fetch(`https://milkpoint.herokuapp.com/api/responsavel/${user.id}/tanque`)
+        setTanqueResponsavel(await response.json())
+        return tanqueResponsavel
+    }
+
     useEffect(() => {
-        const loadListTanquesResponsavel = async () => {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/tanque')
-            const tanqueResponsavel = await response.json()
-            setTanqueResponsavel(tanqueResponsavel.filter(function (tanque) {
-                return tanque.responsavel.id == user.id
-            }))
-
-        }
         loadListTanquesResponsavel()
-
     }, [])
 
     return (

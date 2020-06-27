@@ -21,31 +21,31 @@ export default function TelaHistoricoResponsavel() {
     const [value, setValue] = useState(true)
 
     //Lista de todos os depositos
+    const loadListDepositos = async () => {
+        const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listatodos')
+        const data = await response.json()
+        setDeposito(data.filter(function (status) {
+            return status.confirmacao === true || status.excluido === true
+        }))
+        return deposito
+    }
+
     useEffect(() => {
-        const loadListDepositos = async () => {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listatodos')
-            const data = await response.json()
-            setDeposito(data.filter(function (status) {
-                return status.confirmacao === true || status.excluido === true
-            }))
-        }
-
         loadListDepositos()
-
     }, [])
 
     //Lista de Retiradas
+    const loadListRetiradas = async () => {
+        const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listatodos')
+        const data = await response.json()
+        setRetirada(data.filter(function (status) {
+            return status.confirmacao === true || status.excluido === true
+        }))
+        return retirada
+    }
+
     useEffect(() => {
-        const loadListRetiradas = async () => {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listatodos')
-            const data = await response.json()
-            setRetirada(data.filter(function (status) {
-                return status.confirmacao === true || status.excluido === true
-            }))
-        }
-
         loadListRetiradas()
-
     }, [])
 
     return (

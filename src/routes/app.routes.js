@@ -55,7 +55,7 @@ function ResponsavelTab() {
                     tabBarIcon: ({ color }) => (
                         <Icon name="home" color={color} size={30} />
                     ),
-                }}/>
+                }} />
 
             <AppTab.Screen name='Depositos' component={TelaDepositosPendentesResponsavel}
                 options={{
@@ -171,7 +171,7 @@ function LaticinioTab() {
 function LaticinioDrawer() {
     return (
         <AppDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}
-            drawerType='front'
+            drawerType='front' initialRouteName='Home'
         >
             <AppDrawer.Screen name='Home' component={LaticinioTab} />
             <AppDrawer.Screen name='Histórico' component={TelaHistoricoLaticinio} />
@@ -184,7 +184,7 @@ function LaticinioDrawer() {
 function ResponsavelDrawer() {
     return (
         <AppDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}
-            drawerType='front'
+            drawerType='front' initialRouteName='Home'
         >
             <AppDrawer.Screen name='Home' component={ResponsavelTab} />
             <AppDrawer.Screen name='Histórico' component={TelaHistoricoResponsavel} />
@@ -201,11 +201,11 @@ export default function AppRoutes() {
         return ResponsavelDrawer()
     } else if (user.perfil === 3) {
         return LaticinioDrawer()
-    } else if (user.perfil === 1) {
+    } else {
 
         return (
             <AppDrawer.Navigator drawerContent={props => <DrawerContent {...props} />}
-                drawerType='front'
+                drawerType='front' initialRouteName='Home'
             >
                 <AppDrawer.Screen name='Home' component={ProdutorTab} />
                 <AppDrawer.Screen name='Histórico' component={TelaHistoricoProdutor} />
@@ -214,7 +214,5 @@ export default function AppRoutes() {
             </AppDrawer.Navigator>
 
         )
-    } else {
-        alert("Seu e-mail ou senha são inválidos!")
     }
 }

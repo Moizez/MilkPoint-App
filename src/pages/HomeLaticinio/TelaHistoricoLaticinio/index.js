@@ -1,16 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../../contexts/auth'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import MenuButton from '../../../components/MenuButton'
 import ListaRetiradas from '../../../components/ListaRetiradas'
 import Header from '../../../components/Header'
+import DatePicker from '../../../components/DatePicker'
 
-import { Container, Box, BoxNomeAviso, NomeAviso, Titulo, List } from '../styles'
+import { Container, Box, BoxNomeAviso, NomeAviso, Titulo, List, Calendar } from './styles'
 
 export default function TelaHistoricoLaticinio() {
 
     const { user } = useContext(AuthContext)
     const [retirada, setRetirada] = useState([])
+    const [date, setDate] = useState(new Date())
+    const [show, setShow] = useState(false);
 
     //Lista de todos os retiradas
     useEffect(() => {
@@ -27,6 +31,15 @@ export default function TelaHistoricoLaticinio() {
 
     }, [])
 
+
+    function handleShowPicker() {
+        setShow(true)
+    }
+
+    function onChange(date) {
+        setDate(date)
+    }
+
     return (
         <Container>
             <MenuButton />
@@ -35,6 +48,13 @@ export default function TelaHistoricoLaticinio() {
 
             <Box>
                 <Titulo>Lista de transações</Titulo>
+                <Calendar onPress={handleShowPicker}>
+                    <Icon
+                        name='calendar-month'
+                        color='#FFF'
+                        size={30}>
+                    </Icon>
+                </Calendar>
             </Box>
 
             <List
@@ -44,6 +64,12 @@ export default function TelaHistoricoLaticinio() {
                 renderItem={({ item }) => (<ListaRetiradas data={item} />)}
                 ListEmptyComponent={<BoxNomeAviso><NomeAviso>Não há registro de transações!</NomeAviso></BoxNomeAviso>}
             />
+
+            {show && (
+                <DatePicker
+                    date={date}
+                    onChange={onChange}
+                />)}
 
         </Container>
     );
