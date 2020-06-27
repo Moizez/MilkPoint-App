@@ -37,7 +37,7 @@ export default function GraficoTanque({ dataGrafico }) {
             <Speedometer
                 value={dataGrafico.qtdAtual}
                 totalValue={capacidade}
-                size={150}
+                size={140}
                 outerColor="#d3d3d3"
                 internalColor={corGrafico()}
                 showText

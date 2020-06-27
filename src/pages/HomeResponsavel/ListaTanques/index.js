@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Modal, Text } from 'react-native'
+
 import Speedometer from 'react-native-speedometer-chart'
+import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import {
-    BoxGeral, Container, Nome, BoxSpeed, BoxTanque, BoxModal, BoxInfo, TituloInfo,
-    TextInfo, BoxMap, BoxTitulo, BoxSubTitulo, BoxCaracteristicas, BoxEndereco,
-    BoxSubCar, BoxSubEnd, BoxIcon, BtnVoltar, BtnText, BoxBtnText
+    BoxGeral, Container, Nome, BoxSpeed, BoxTanque, BoxIcon
 } from './styles'
 
 export default function ListaTanques({ data }) {
@@ -22,6 +22,10 @@ export default function ListaTanques({ data }) {
         } else {
             return '#da1e37'
         }
+    }
+
+    function handleCloseModal() {
+        return setModalVisible(false)
     }
 
     return (
@@ -71,47 +75,10 @@ export default function ListaTanques({ data }) {
                 transparent={false}
                 visible={modalVisible}
             >
-                <BoxModal>
-                    <BoxTitulo>
-                        <TituloInfo>Tanque: </TituloInfo>
-                        <TituloInfo style={{ color: 'red' }}>{data.nome}</TituloInfo>
-                    </BoxTitulo>
-
-                    <BoxSubTitulo>
-                        <BoxSubCar>
-                            <TextInfo>Caracteristicas</TextInfo>
-                        </BoxSubCar>
-                        <BoxSubEnd>
-                            <TextInfo>Endereço</TextInfo>
-                        </BoxSubEnd>
-                    </BoxSubTitulo>
-
-                    <BoxInfo>
-
-                        <BoxCaracteristicas>
-                            <TextInfo>Tipo do Leite: {data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</TextInfo>
-                            <TextInfo>Qtd. Atual: {data.qtdAtual}L</TextInfo>
-                            <TextInfo>Qtd. Restante: {data.qtdRestante}L</TextInfo>
-                            <TextInfo>Responsável: {data.responsavel.nome} </TextInfo>
-                        </BoxCaracteristicas>
-                        <BoxEndereco>
-                            <TextInfo>Cidade: {data.localidade}</TextInfo>
-                            <TextInfo>Estado: {data.uf}</TextInfo>
-                            <TextInfo>CEP: {data.cep}</TextInfo>
-                            <TextInfo>Bairro: {data.bairro} </TextInfo>
-                            <TextInfo>Rua: {data.logradouro} </TextInfo>
-                        </BoxEndereco>
-                    </BoxInfo>
-                    <BoxMap>
-                        <TextInfo>Mapa</TextInfo>
-                    </BoxMap>
-
-                    <BoxBtnText>
-                        <BtnVoltar onPress={() => { setModalVisible(!modalVisible) }}>
-                            <BtnText>Voltar</BtnText>
-                        </BtnVoltar>
-                    </BoxBtnText>
-                </BoxModal>
+                <ModalDetalheTanque
+                    dataTanque={data}
+                    onClose={handleCloseModal}
+                />
 
             </Modal>
 

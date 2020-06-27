@@ -4,12 +4,12 @@ import { Modal, Keyboard } from 'react-native'
 
 import GraficoTanque from '../../../components/GraficoTanque'
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
+import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
 
 import { AuthContext } from '../../../contexts/auth'
 
 import {
-    BoxGeral, Container, Nome, BoxTanque, BoxModal, BoxInfoModal, TituloInfo, InputModal, BoxBtn, BtnConfirm,
-    BtnCancel, Button, BtnText, BoxFabBtn, FabBtn, FabText
+    BoxGeral, Container, Nome, NomeValor, BoxTanque, BoxFabBtn, FabBtn, FabText
 } from './styles'
 
 export default function ListaTanques({ data }) {
@@ -19,7 +19,6 @@ export default function ListaTanques({ data }) {
     const [modalVisible, setModalVisible] = useState(false)
     const [modalVisibleDois, setModalVisibleDois] = useState(false)
 
-    const [quantidade, setQuantidade] = useState()
     const [idProd, setIdProd] = useState(user.id)
     const [idTanque, setIdTanque] = useState(data.id)
 
@@ -29,48 +28,52 @@ export default function ListaTanques({ data }) {
         data.append("quantidade", quantidade);
         data.append("idProd", idProd);
         data.append("idTanque", idTanque);
-
+        console.log(quantidade)
         await fetch('https://milkpoint.herokuapp.com/api/deposito', { method: 'POST', body: data })
 
     };
 
-    async function handleDeposito() {
-        if (quantidade <= 0) {
+    async function handleDeposito(value) {
+        if (isNaN(value) || value <= 0) {
+            console.log('Aqui 1: ' + value)
             alert('Valor inválido, digite a quantidade novamente!')
-        } else if (quantidade > data.qtdRestante) {
+        } else if (value > data.qtdAtual) {
             alert("Seu depósito excede o valor máximo atual do tanque!")
+            return
         } else {
-            alert("Depósito realizado com sucesso!" + "\n" + "Aguarde a confirmação!")
-            setQuantidade(quantidade)
+            alert("Deposito realizado com sucesso!" + "\n" + "Aguarde a confirmação!")
+            console.log('Aqui 3: ' + value)
             setIdProd(user.id)
             setIdTanque(data.id)
-            await requestDeposito(quantidade, idProd, idTanque)
+            await requestDeposito(value, idProd, idTanque)
             setModalVisibleDois(!modalVisibleDois)
             setModalVisible(!modalVisible)
         }
         Keyboard.dismiss()
-        setQuantidade('')
     }
 
     function handleCloseModal() {
         return setModalVisible(false)
     }
 
+    function handleCloseModalDois() {
+        return setModalVisibleDois(false)
+    }
+
     return (
         <BoxGeral>
             <Container onPress={() => { setModalVisible(!modalVisible) }}>
                 <BoxTanque>
-                    <Nome>Tanque: {data.nome}</Nome>
-                    <Nome>Tipo do Leite: {data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Nome>
-                    <Nome>Qtd. Atual: {data.qtdAtual}L</Nome>
-                    <Nome>Qtd. Restante: {data.qtdRestante}L</Nome>
-                    <Nome>Responsável: {data.responsavel.nome} </Nome>
+                    <Nome>Tanque: <NomeValor>{data.nome}</NomeValor></Nome>
+                    <Nome>Tipo do Leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
+                    <Nome>Vol. Atual: <NomeValor>{data.qtdAtual} litros</NomeValor></Nome>
+                    <Nome>Ainda cabe: <NomeValor>{data.qtdRestante} litros</NomeValor></Nome>
+                    <Nome>Responsável: <NomeValor>{data.responsavel.nome}</NomeValor></Nome>
                 </BoxTanque>
 
                 <GraficoTanque dataGrafico={data} />
             </Container>
 
-            {/*MODAL DETALHE DO TANQUE */}
             <Modal
                 animationType='slide'
                 transparent={false}
@@ -86,36 +89,11 @@ export default function ListaTanques({ data }) {
                     transparent={true}
                     visible={modalVisibleDois}
                 >
-                    <BoxModal>
 
-                        <BoxInfoModal>
-                            <TituloInfo>Solicitação de depósito no tanque</TituloInfo>
-                            <InputModal
-                                placeholder='Quantidade em litros (L)'
-                                autoCorrect={false}
-                                autoCapitalize='none'
-                                keyboardType='numeric'
-                                value={quantidade}
-                                onChangeText={(quantidade) => setQuantidade(parseInt(quantidade))}
-                            />
-
-                            <BoxBtn>
-                                <BtnConfirm>
-                                    <Button onPress={handleDeposito}>
-                                        <BtnText>Confirmar</BtnText>
-                                    </Button>
-                                </BtnConfirm>
-
-                                <BtnCancel>
-                                    <Button onPress={() => { setModalVisibleDois(!modalVisibleDois) }}>
-                                        <BtnText>Cancelar</BtnText>
-                                    </Button>
-                                </BtnCancel>
-                            </BoxBtn>
-
-                        </BoxInfoModal>
-
-                    </BoxModal>
+                    <ModalDepositoRetirada
+                        onConfirme={handleDeposito}
+                        onClose={handleCloseModalDois}
+                    />
 
                 </Modal>
 
@@ -134,4 +112,3 @@ export default function ListaTanques({ data }) {
         </BoxGeral>
     );
 }
-

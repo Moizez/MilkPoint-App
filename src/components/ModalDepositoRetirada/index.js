@@ -8,15 +8,13 @@ import {
 
 export default function ModalDepositoRetirada(props) {
 
-    const [quantidade, setQuantidade] = useState(0)
-
-    console.log('QTD: ' + quantidade)
+    const [quantidade, setQuantidade] = useState()
 
     return (
         <BoxModal>
 
             <BoxInfoModal>
-                <TituloInfo>Solicitação de depósito no tanque</TituloInfo>
+                <TituloInfo>Digite o valor que deseja solicitar:</TituloInfo>
                 <InputModal
                     placeholder='Quantidade em litros (L)'
                     autoCorrect={false}
@@ -24,18 +22,17 @@ export default function ModalDepositoRetirada(props) {
                     keyboardType='numeric'
                     value={quantidade}
                     onChangeText={setQuantidade}
-                    onEndEditing={() => props.onConfirme(quantidade)}
                 />
 
                 <BoxBtn>
                     <BtnConfirm>
-                        <Button onPress={props.onConfirme}>
+                        <Button onPress={() => props.onConfirme(quantidade)}>
                             <BtnText>Confirmar</BtnText>
                         </Button>
                     </BtnConfirm>
 
                     <BtnCancel>
-                        <Button onPress={props.onClose}>
+                        <Button onPress={() => props.onClose()}>
                             <BtnText>Cancelar</BtnText>
                         </Button>
                     </BtnCancel>
