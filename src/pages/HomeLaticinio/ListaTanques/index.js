@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Modal, Keyboard } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import GraficoTanque from '../../../components/GraficoTanque'
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
@@ -13,6 +14,8 @@ import {
 } from './styles'
 
 export default function ListaTanques({ data }) {
+
+    const navigation = useNavigation()
 
     const { user } = useContext(AuthContext)
 
@@ -28,21 +31,19 @@ export default function ListaTanques({ data }) {
         data.append("quantidade", quantidade);
         data.append("idLat", idLat);
         data.append("idTanque", idTanque);
-        console.log(quantidade)
+
         await fetch('https://milkpoint.herokuapp.com/api/retirada', { method: 'POST', body: data })
 
     };
 
     async function handleRetirada(value) {
         if (isNaN(value) || value <= 0) {
-            console.log('Aqui 1: ' + value)
             alert('Valor inválido, digite a quantidade novamente!')
         } else if (value > data.qtdAtual) {
             alert("Sua retirada excede o valor máximo atual do tanque!")
             return
         } else {
             alert("Retirada realizada com sucesso!" + "\n" + "Aguarde a confirmação!")
-            console.log('Aqui 3: ' + value)
             setIdLat(user.id)
             setIdTanque(data.id)
             await requestRetirada(value, idLat, idTanque)
@@ -58,6 +59,10 @@ export default function ListaTanques({ data }) {
 
     function handleCloseModalDois() {
         return setModalVisibleDois(false)
+    }
+
+    function goToDetalhes() {
+        navigation.navigate('Detalhes Tanque')
     }
 
     return (
@@ -109,6 +114,6 @@ export default function ListaTanques({ data }) {
                 </BoxFabBtn>
 
             </Modal>
-        </BoxGeral>
+        </BoxGeral >
     );
 }

@@ -6,12 +6,12 @@ align-items: center;
 `;
 
 export const Nome = styled.Text`
-font-size: 22px;
 color: #FFF;
 text-align: center;
 `;
 
 export const Titulo = styled.Text`
-font-size: 16px;
-color: #FFF;
+font-size: 17px;
+color: #da1e37;
+font-style: italic;
 `;

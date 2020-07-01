@@ -1,12 +1,10 @@
 import React from 'react';
-import { View } from 'react-native';
-
-import { Container, Titulo } from './styles'
+import { View, Text } from 'react-native';
 
 export default function DetalhesTanque() {
     return (
-        <Container>
-            <Titulo>Detalhes do Tanque</Titulo>
-        </Container>
+        <View>
+            <Text>DETALHES DO TANQUE</Text>
+        </View>
     );
 }

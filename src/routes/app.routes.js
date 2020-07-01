@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createStackNavigator } from '@react-navigation/stack'
 
 import { AuthContext } from '../contexts/auth'
 import { DrawerContent } from '../components/DrawerContent'
@@ -34,8 +35,20 @@ import TelaDepositosPendentesProdutor from '../pages/HomeProdutor/TelaDepositosP
 //Páginas TAB do Laticínio
 import TelaRetiradasPendentesLaticinio from '../pages/HomeLaticinio/TelaRetiradasPendentesLaticinio'
 
+//Página do detalhes do tanque
+import DetalhesTanque from '../pages/DetalhesTanque'
+
 const AppDrawer = createDrawerNavigator()
 const AppTab = createBottomTabNavigator()
+const Stack = createStackNavigator()
+
+function TanqueDetail() {
+    return (
+        <Stack.Navigator mode='modal'>
+            <Stack.Screen name='Detalhes Tanque' component={LaticinioTab} />
+        </Stack.Navigator>
+    )
+}
 
 function ResponsavelTab() {
     return (

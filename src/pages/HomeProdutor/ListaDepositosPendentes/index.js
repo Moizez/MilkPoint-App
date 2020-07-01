@@ -66,8 +66,8 @@ export default function ListaDepositosPendentes({ data }) {
             <Container>
                 <BoxInfoTanque>
                     <Nome>Tanque: {data.tanque.nome}</Nome>
-                    <Nome>Depósito solicitado: {data.quantidade}</Nome>
-                    <Nome>Nome do produtor: {data.produtor.nome}</Nome>
+                    <Nome>Valor requerido: {data.quantidade} litros</Nome>
+                    <Nome>Tipo do leite: <Nome>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Nome></Nome>
                     <Nome>Data: {data.dataNow} às {data.horaNow}h</Nome>
                 </BoxInfoTanque>
                 <BoxIcon onLongPress={() => { setModalCancelVisible(!modalCancelVisible) }}>

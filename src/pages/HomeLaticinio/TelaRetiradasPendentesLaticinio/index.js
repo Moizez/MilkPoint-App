@@ -6,24 +6,30 @@ import MenuButton from '../../../components/MenuButton'
 import ListaRetiradasPendentes from '../ListaRetiradasPendentes'
 import Header from '../../../components/Header'
 
-import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from '../styles'
+import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from './styles'
 
+let baseURL = 'https://milkpoint.herokuapp.com/api/'
 
 export default function TelaRetiradasPendentesLaticinio() {
     const { user } = useContext(AuthContext)
     const [retiradaPendente, setRetiradaPendente] = useState([])
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [newArray, setNewArray] = useState([])
 
     //Lista de retiradas pendentes
     const loadListRetiradasPendentes = async () => {
-        const response = await fetch('https://milkpoint.herokuapp.com/api/retirada/listapendentes')
+        const response = await fetch(baseURL + 'retirada/listapendentes')
         const data = await response.json()
+
         setRetiradaPendente(data.filter(function (retirada) {
             return retirada.laticinio.id == user.id
         }))
 
         return retiradaPendente
     }
+
+    const dataId = retiradaPendente.map(i => i.id)
+    console.log('Logado: ' + dataId)
 
     useEffect(() => {
         loadListRetiradasPendentes()
@@ -41,15 +47,15 @@ export default function TelaRetiradasPendentesLaticinio() {
             <Header />
 
             <Box>
-                <Titulo>Lista de depósitos pendentes</Titulo>
+                <Titulo>Lista de retiradas pendentes</Titulo>
             </Box>
 
             <List
                 showsVerticalScrollIndicator={false}
                 data={retiradaPendente}
-                keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => (<ListaRetiradasPendentes data={item} refreshList={loadListRetiradasPendentes} />)}
+                keyExtractor={(item) => item.id}
+                renderItem={({ item, index }) => (<ListaRetiradasPendentes data={item} index={index} />)}
                 ListEmptyComponent={<BoxNomeAviso><NomeAviso>Não há retiradas pendentes!</NomeAviso></BoxNomeAviso>}
             />
         </Container>

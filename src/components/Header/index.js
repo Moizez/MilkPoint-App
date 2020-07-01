@@ -11,8 +11,9 @@ export default function Header() {
     return (
         <View>
             <BoxNome>
-                <Nome> Bem-vindo {user.perfil == 3 ? user.nomeFantasia : user.apelido}</Nome>
-                <Titulo style={{ color: '#da1e37' }}>
+                <Nome>Bem-vindo</Nome>
+                <Nome style={{fontSize: 23, fontWeight: 'bold'}}>{user.perfil == 3 ? user.nomeFantasia : user.apelido}</Nome>
+                <Titulo>
                     {user.perfil == 1 && ('Produtor')}
                     {user.perfil == 2 && ('Responsável')}
                     {user.perfil != 1 && user.perfil != 2 && ('Laticínio')}</Titulo>

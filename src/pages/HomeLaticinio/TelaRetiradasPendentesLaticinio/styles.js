@@ -23,23 +23,15 @@ text-align: center;
 
 export const Box = styled.View`
 flex-direction: row;
-align-items: center;
-justify-content: space-between;
+align-items: baseline;
+justify-content: flex-start;
 margin-left: 10px;
 margin-right: 10px;
-margin-top: 13px;
-`;
-
-export const BoxTitulo = styled.View`
-align-items: center;
+margin-top: 20px;
+margin-bottom: 5px;
 `;
 
 export const Titulo = styled.Text`
-font-size: 14px;
-color: #FFF;
-`;
-
-export const TituloLista = styled.Text`
 font-size: 14px;
 color: #FFF;
 `;
@@ -54,7 +46,3 @@ export const List = styled.FlatList.attrs({
     margin-left: 8px;
     margin-right: 8px;
 `;
-
-export const Calendar = styled.TouchableOpacity`
-`;
-

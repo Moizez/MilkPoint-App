@@ -5,11 +5,9 @@ import Icon from 'react-native-vector-icons/Entypo'
 import { AuthContext } from '../../../contexts/auth'
 import ModalCancel from '../../../components/ModalCancel'
 
-import {
-    BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque
-} from './styles'
+import { BoxGeral, Nome, BoxIcon, BoxInfoTanque, NomeValor } from './styles'
 
-export default function ListaRetiradasPendentes({ data }) {
+export default function ListaRetiradasPendentes({ data, index }) {
 
     const { user } = useContext(AuthContext)
 
@@ -63,39 +61,38 @@ export default function ListaRetiradasPendentes({ data }) {
 
     return (
         <BoxGeral>
-            <Container>
-                <BoxInfoTanque>
-                    <Nome>Tanque: {data.tanque.nome}</Nome>
-                    <Nome>Retirada solicitada: {data.quantidade}</Nome>
-                    <Nome>Nome do laticínio: {data.laticinio.nome}</Nome>
-                    <Nome>Data: {data.dataNow} às {data.horaNow}h</Nome>
-                </BoxInfoTanque>
-                <BoxIcon onLongPress={() => { setModalCancelVisible(!modalCancelVisible) }}>
-                    <Nome>Retirada</Nome>
-                    {status == 'Confirmado' && (
-                        <Icon
-                            name='bucket'
-                            size={70}
-                            color='#2a9d8f'
-                        ></Icon>
-                    )}
-                    {status == 'Cancelado' && (
-                        <Icon
-                            name='bucket'
-                            size={70}
-                            color='#da1e37'
-                        ></Icon>
-                    )}
-                    {status != 'Cancelado' && status != 'Confirmado' && (
-                        < Icon
-                            name='bucket'
-                            size={70}
-                            color='#adb5bd'
-                        ></Icon>
-                    )}
-                    <Nome>{status}</Nome>
-                </BoxIcon>
-            </Container>
+            <BoxInfoTanque>
+                <Nome>Indice: <NomeValor>{index}</NomeValor></Nome>
+                <Nome>Tanque: <NomeValor>{data.tanque.nome}</NomeValor></Nome>
+                <Nome>Valor requerido: <NomeValor>{data.quantidade} litros</NomeValor></Nome>
+                <Nome>Tipo do leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
+                <Nome>Data: <NomeValor>{data.dataNow} às {data.horaNow}h</NomeValor></Nome>
+            </BoxInfoTanque>
+            <BoxIcon onLongPress={() => { setModalCancelVisible(!modalCancelVisible) }}>
+                <NomeValor>Retirada</NomeValor>
+                {status == 'Confirmado' && (
+                    <Icon
+                        name='bucket'
+                        size={70}
+                        color='#2a9d8f'
+                    ></Icon>
+                )}
+                {status == 'Cancelado' && (
+                    <Icon
+                        name='bucket'
+                        size={70}
+                        color='#da1e37'
+                    ></Icon>
+                )}
+                {status != 'Cancelado' && status != 'Confirmado' && (
+                    < Icon
+                        name='bucket'
+                        size={70}
+                        color='#adb5bd'
+                    ></Icon>
+                )}
+                <NomeValor>{status}</NomeValor>
+            </BoxIcon>
 
             <Modal
                 animationType='slide'
@@ -110,5 +107,6 @@ export default function ListaRetiradasPendentes({ data }) {
             </Modal>
 
         </BoxGeral>
+
     );
 }

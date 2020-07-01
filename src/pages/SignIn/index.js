@@ -34,12 +34,10 @@ export default function SignIn() {
                 toValue: 0,
                 speed: 4,
                 bounciness: 20,
-                useNativeDriver: true
             }),
             Animated.timing(opacity, {
                 toValue: 1,
                 duration: 300,
-                useNativeDriver: true
             })
 
         ]).start()

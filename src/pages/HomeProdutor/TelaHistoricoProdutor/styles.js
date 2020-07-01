@@ -27,7 +27,7 @@ align-items: center;
 justify-content: space-between;
 margin-left: 10px;
 margin-right: 10px;
-margin-top: 10px;
+margin-top: 13px;
 `;
 
 export const BoxTitulo = styled.View`
@@ -42,7 +42,6 @@ color: #FFF;
 export const TituloLista = styled.Text`
 font-size: 14px;
 color: #FFF;
-margin-bottom: -19px;
 `;
 
 export const List = styled.FlatList.attrs({
@@ -57,6 +56,5 @@ export const List = styled.FlatList.attrs({
 `;
 
 export const Calendar = styled.TouchableOpacity`
-
 `;
 
