@@ -1,14 +1,9 @@
 import styled from 'styled-components/native'
 
-export const BoxGeral = styled.View`
-flex:1;
-padding-bottom: 6px;
-`;
-
 export const Container = styled.View`
 flex-direction: row;
 align-items: center;
-margin-bottom: 5px;
+margin-bottom: 10px;
 padding: 10px;
 box-shadow: 2px 2px rgba(0,0,0,0.40);
 background-color: #ececec;
@@ -20,6 +15,11 @@ justify-content: space-between;
 
 export const Nome = styled.Text`
 font-size: 15px;
+font-weight: bold;
+`;
+
+export const NomeValor = styled.Text`
+font-weight: normal;
 `;
 
 export const BoxIcon = styled.TouchableOpacity`
@@ -111,6 +111,5 @@ justify-content: center;
 export const BtnText = styled.Text`
 font-size: 22px;
 color: #000;
-
 `;
 

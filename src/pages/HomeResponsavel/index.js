@@ -8,6 +8,8 @@ import { AuthContext } from '../../contexts/auth'
 
 import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from './styles'
 
+let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+
 export default function HomeResponsavel() {
 
     const { user } = useContext(AuthContext)
@@ -17,7 +19,7 @@ export default function HomeResponsavel() {
 
     //Retona uma lista apenas com os tanques do responsável logado
     const loadListTanquesResponsavel = async () => {
-        const response = await fetch(`https://milkpoint.herokuapp.com/api/responsavel/${user.id}/tanque`)
+        const response = await fetch(`${baseUrl}responsavel/${user.id}/tanque`)
         setTanqueResponsavel(await response.json())
         return tanqueResponsavel
     }

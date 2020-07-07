@@ -6,7 +6,6 @@ background-color: #292b2c;
 `;
 
 export const BoxNomeAviso = styled.View`
-flex: 1;
 padding-top: 15px;
 background-color: #FFF;
 border-top-left-radius: 8px;
@@ -30,16 +29,7 @@ margin-right: 10px;
 margin-top: 13px;
 `;
 
-export const BoxTitulo = styled.View`
-align-items: center;
-`;
-
 export const Titulo = styled.Text`
-font-size: 14px;
-color: #FFF;
-`;
-
-export const TituloLista = styled.Text`
 font-size: 14px;
 color: #FFF;
 `;
@@ -47,6 +37,7 @@ color: #FFF;
 export const List = styled.FlatList.attrs({
     marginHorinzontal: 15,
 })`
+    flex: 1;
     padding-top: 15px;
     background-color: #FFF;
     border-top-left-radius: 8px;

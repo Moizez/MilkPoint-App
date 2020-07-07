@@ -2,15 +2,17 @@ import React, { useState, useContext } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Modal, Keyboard } from 'react-native'
 
-import GraficoTanque from '../../../components/GraficoTanque'
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
 import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
+import GraficoTanque from '../../../components/GraficoTanque'
 
 import { AuthContext } from '../../../contexts/auth'
 
 import {
     BoxGeral, Container, Nome, NomeValor, BoxTanque, BoxFabBtn, FabBtn, FabText
 } from './styles'
+
+let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function ListaTanques({ data }) {
 
@@ -28,26 +30,23 @@ export default function ListaTanques({ data }) {
         data.append("quantidade", quantidade);
         data.append("idProd", idProd);
         data.append("idTanque", idTanque);
-        console.log(quantidade)
-        await fetch('https://milkpoint.herokuapp.com/api/deposito', { method: 'POST', body: data })
 
+        await fetch(`${baseUrl}deposito`, { method: 'POST', body: data })
     };
 
     async function handleDeposito(value) {
         if (isNaN(value) || value <= 0) {
-            console.log('Aqui 1: ' + value)
             alert('Valor inválido, digite a quantidade novamente!')
         } else if (value > data.qtdAtual) {
             alert("Seu depósito excede o valor máximo atual do tanque!")
             return
         } else {
             alert("Deposito realizado com sucesso!" + "\n" + "Aguarde a confirmação!")
-            console.log('Aqui 3: ' + value)
             setIdProd(user.id)
             setIdTanque(data.id)
             await requestDeposito(value, idProd, idTanque)
-            setModalVisibleDois(!modalVisibleDois)
-            setModalVisible(!modalVisible)
+            setModalVisibleDois(false)
+            setModalVisible(false)
         }
         Keyboard.dismiss()
     }
@@ -62,13 +61,13 @@ export default function ListaTanques({ data }) {
 
     return (
         <BoxGeral>
-            <Container onPress={() => { setModalVisible(!modalVisible) }}>
+            <Container onPress={() => { setModalVisible(true) }}>
                 <BoxTanque>
                     <Nome>Tanque: <NomeValor>{data.nome}</NomeValor></Nome>
                     <Nome>Tipo do Leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
                     <Nome>Vol. Atual: <NomeValor>{data.qtdAtual} litros</NomeValor></Nome>
                     <Nome>Ainda cabe: <NomeValor>{data.qtdRestante} litros</NomeValor></Nome>
-                    <Nome>Responsável: <NomeValor>{data.responsavel.nome}</NomeValor></Nome>
+                    <Nome>Responsável: <NomeValor>{data.responsavel.apelido}</NomeValor></Nome>
                 </BoxTanque>
 
                 <GraficoTanque dataGrafico={data} />
@@ -98,7 +97,7 @@ export default function ListaTanques({ data }) {
                 </Modal>
 
                 <BoxFabBtn>
-                    <FabBtn onPress={() => { setModalVisibleDois(!modalVisibleDois) }}>
+                    <FabBtn onPress={() => { setModalVisibleDois(true) }}>
                         <Icon
                             name='arrow-up-bold-hexagon-outline'
                             color='#FFF'

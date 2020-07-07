@@ -1,11 +1,10 @@
 import React, { useState, useContext } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Modal, Keyboard } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
 
-import GraficoTanque from '../../../components/GraficoTanque'
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
 import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
+import GraficoTanque from '../../../components/GraficoTanque'
 
 import { AuthContext } from '../../../contexts/auth'
 
@@ -13,9 +12,9 @@ import {
     BoxGeral, Container, Nome, NomeValor, BoxTanque, BoxFabBtn, FabBtn, FabText
 } from './styles'
 
-export default function ListaTanques({ data }) {
+let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
-    const navigation = useNavigation()
+export default function ListaTanques({ data }) {
 
     const { user } = useContext(AuthContext)
 
@@ -32,8 +31,7 @@ export default function ListaTanques({ data }) {
         data.append("idLat", idLat);
         data.append("idTanque", idTanque);
 
-        await fetch('https://milkpoint.herokuapp.com/api/retirada', { method: 'POST', body: data })
-
+        await fetch(`${baseUrl}retirada`, { method: 'POST', body: data })
     };
 
     async function handleRetirada(value) {
@@ -47,8 +45,8 @@ export default function ListaTanques({ data }) {
             setIdLat(user.id)
             setIdTanque(data.id)
             await requestRetirada(value, idLat, idTanque)
-            setModalVisibleDois(!modalVisibleDois)
-            setModalVisible(!modalVisible)
+            setModalVisibleDois(false)
+            setModalVisible(false)
         }
         Keyboard.dismiss()
     }
@@ -61,13 +59,9 @@ export default function ListaTanques({ data }) {
         return setModalVisibleDois(false)
     }
 
-    function goToDetalhes() {
-        navigation.navigate('Detalhes Tanque')
-    }
-
     return (
         <BoxGeral>
-            <Container onPress={() => { setModalVisible(!modalVisible) }}>
+            <Container onPress={() => { setModalVisible(true) }}>
                 <BoxTanque>
                     <Nome>Tanque: <NomeValor>{data.nome}</NomeValor></Nome>
                     <Nome>Tipo do Leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
@@ -103,7 +97,7 @@ export default function ListaTanques({ data }) {
                 </Modal>
 
                 <BoxFabBtn>
-                    <FabBtn onPress={() => { setModalVisibleDois(!modalVisibleDois) }}>
+                    <FabBtn onPress={() => { setModalVisibleDois(true) }}>
                         <Icon
                             name='arrow-up-bold-hexagon-outline'
                             color='#FFF'

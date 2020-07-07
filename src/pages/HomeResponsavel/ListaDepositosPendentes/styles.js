@@ -20,6 +20,11 @@ justify-content: space-between;
 
 export const Nome = styled.Text`
 font-size: 15px;
+font-weight: bold;
+`;
+
+export const NomeValor = styled.Text`
+font-weight: normal;
 `;
 
 export const BoxIcon = styled.TouchableOpacity`
@@ -72,6 +77,7 @@ justify-content: center;
 
 export const NomeModal = styled.Text`
 font-size: 17px;
+font-weight: bold;
 `;
 
 export const BoxInfoModal = styled.View`

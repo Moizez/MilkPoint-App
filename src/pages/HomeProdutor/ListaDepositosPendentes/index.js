@@ -5,11 +5,11 @@ import Icon from 'react-native-vector-icons/Entypo'
 import { AuthContext } from '../../../contexts/auth'
 import ModalCancel from '../../../components/ModalCancel'
 
-import {
-    BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque
-} from './styles'
+import { Container, Nome, BoxIcon, BoxInfoTanque, NomeValor } from './styles'
 
-export default function ListaDepositosPendentes({ data }) {
+let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+
+export default function ListaDepositosPendentes({ data, onRefresh }) {
 
     const { user } = useContext(AuthContext)
 
@@ -25,7 +25,7 @@ export default function ListaDepositosPendentes({ data }) {
         data.append("idDeposito", idDeposito);
         data.append("efetuou", efetuou);
 
-        await fetch('https://milkpoint.herokuapp.com/api/deposito/confirmacao', { method: 'POST', body: data })
+        await fetch(`${baseUrl}deposito/confirmacao`, { method: 'POST', body: data })
 
         if (confirmacao) {
             alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
@@ -37,12 +37,13 @@ export default function ListaDepositosPendentes({ data }) {
     };
 
     //Função para cancelar a depósito
-    function handleCancel() {
+    async function handleCancel() {
         setConfirmacao(false)
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
-        confirmacaoDeposito(false, idDeposito, efetuou) // forçar a confirmação
-        setModalCancelVisible(!modalCancelVisible)
+        await confirmacaoDeposito(false, idDeposito, efetuou)
+        onRefresh()
+        setModalCancelVisible(false)
     }
 
 
@@ -62,53 +63,52 @@ export default function ListaDepositosPendentes({ data }) {
     }
 
     return (
-        <BoxGeral>
-            <Container>
-                <BoxInfoTanque>
-                    <Nome>Tanque: {data.tanque.nome}</Nome>
-                    <Nome>Valor requerido: {data.quantidade} litros</Nome>
-                    <Nome>Tipo do leite: <Nome>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Nome></Nome>
-                    <Nome>Data: {data.dataNow} às {data.horaNow}h</Nome>
-                </BoxInfoTanque>
-                <BoxIcon onLongPress={() => { setModalCancelVisible(!modalCancelVisible) }}>
-                    <Nome>Depósito</Nome>
-                    {status == 'Confirmado' && (
-                        <Icon
-                            name='bucket'
-                            size={70}
-                            color='#2a9d8f'
-                        ></Icon>
-                    )}
-                    {status == 'Cancelado' && (
-                        <Icon
-                            name='bucket'
-                            size={70}
-                            color='#da1e37'
-                        ></Icon>
-                    )}
-                    {status != 'Cancelado' && status != 'Confirmado' && (
-                        < Icon
-                            name='bucket'
-                            size={70}
-                            color='#adb5bd'
-                        ></Icon>
-                    )}
-                    <Nome>{status}</Nome>
-                </BoxIcon>
-            </Container>
+        
+        <Container>
+            <BoxInfoTanque>
+                <Nome>Tanque: <NomeValor>{data.tanque.nome}</NomeValor></Nome>
+                <Nome>Valor requerido: <NomeValor>{data.quantidade} litros</NomeValor></Nome>
+                <Nome>Tipo do leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
+                <Nome>Data: <NomeValor>{data.dataNow} às {data.horaNow}h</NomeValor></Nome>
+            </BoxInfoTanque>
+            <BoxIcon onLongPress={() => { setModalCancelVisible(true) }}>
+                <NomeValor>Depósito</NomeValor>
+                {status == 'Confirmado' && (
+                    <Icon
+                        name='bucket'
+                        size={70}
+                        color='#2a9d8f'
+                    ></Icon>
+                )}
+                {status == 'Cancelado' && (
+                    <Icon
+                        name='bucket'
+                        size={70}
+                        color='#da1e37'
+                    ></Icon>
+                )}
+                {status != 'Cancelado' && status != 'Confirmado' && (
+                    < Icon
+                        name='bucket'
+                        size={70}
+                        color='#adb5bd'
+                    ></Icon>
+                )}
+                <NomeValor>{status}</NomeValor>
 
-            <Modal
-                animationType='slide'
-                transparent={true}
-                visible={modalCancelVisible}
-            >
-                <ModalCancel
-                    dataTanque={data}
-                    onClose={handleCloseCancelModal}
-                    onCancel={handleCancel}
-                />
-            </Modal>
+                <Modal
+                    animationType='slide'
+                    transparent={true}
+                    visible={modalCancelVisible}
+                >
+                    <ModalCancel
+                        dataTanque={data}
+                        onClose={handleCloseCancelModal}
+                        onCancel={handleCancel}
+                    />
+                </Modal>
 
-        </BoxGeral>
+            </BoxIcon>
+        </Container>
     );
 }

@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import Icon from 'react-native-vector-icons/Entypo'
 
 import { AuthContext } from '../../contexts/auth'
-import { BoxGeral, Container, Nome, BoxIcon, BoxInfo } from './styles'
+import { Container, Nome, NomeValor, BoxIcon, BoxInfo } from './styles'
 
 export default function ListaRetiradas({ data }) {
 
@@ -21,44 +21,43 @@ export default function ListaRetiradas({ data }) {
     let status = bucketColor()
 
     return (
-        <BoxGeral>
-            <Container>
-                <BoxInfo>
-                    <Nome>Tanque: {data.tanque.nome}</Nome>
-                    <Nome>Valor solicitado: {data.quantidade} litros</Nome>
-                    {user.perfil == 3 && <Nome>Solicitante: {data.laticinio.nomeFantasia}</Nome>}
-                    <Nome>Data : {data.dataNow} às {data.horaNow}h</Nome>
-                    {data.confirmacao === false && <Nome>Responsável: {data.tanque.responsavel.nome}</Nome>}
-                    <View style={{ borderBottomColor: '#000', borderBottomWidth: 0.5, marginTop: 25, marginBottom: 5 }}></View>
-                    {data.excluido === true ? <Nome style={{ textAlign: 'center' }}>Cancelado por: {data.efetuou}</Nome>
-                        : <Nome style={{ textAlign: 'center' }}>Responsável: {data.tanque.responsavel.nome}</Nome>}
-                </BoxInfo>
-                <BoxIcon>
-                    <Nome>Retirada</Nome>
-                    {status == 'Confirmada' && (
-                        <Icon
-                            name='bucket'
-                            size={70}
-                            color='#2a9d8f'
-                        ></Icon>
-                    )}
-                    {status == 'Cancelada' && (
-                        <Icon
-                            name='bucket'
-                            size={70}
-                            color='#da1e37'
-                        ></Icon>
-                    )}
-                    {status != 'Cancelada' && status != 'Confirmada' && (
-                        < Icon
-                            name='bucket'
-                            size={70}
-                            color='#adb5bd'
-                        ></Icon>
-                    )}
-                    <Nome>{status}</Nome>
-                </BoxIcon>
-            </Container>
-        </BoxGeral >
+        <Container>
+            <BoxInfo>
+                <Nome>Tanque:<NomeValor> {data.tanque.nome}</NomeValor></Nome>
+                <Nome>Valor solicitado: <NomeValor>{data.quantidade} litros</NomeValor></Nome>
+                {user.perfil == 3 && <Nome>Solicitante: <NomeValor>{data.laticinio.nomeFantasia}</NomeValor></Nome>}
+                <Nome>Data: <NomeValor> {data.dataNow} às {data.horaNow}h</NomeValor></Nome>
+                {data.confirmacao === false && <Nome>Responsável: <NomeValor>{data.tanque.responsavel.nome}</NomeValor></Nome>}
+                <View style={{ borderBottomColor: '#000', borderBottomWidth: 0.5, marginTop: 25, marginBottom: 5 }}></View>
+                {data.excluido === true ? <Nome style={{ textAlign: 'center' }}>Cancelado por: <NomeValor>{data.efetuou}</NomeValor></Nome>
+                    : <Nome style={{ textAlign: 'center' }}>Responsável: <NomeValor>{data.tanque.responsavel.nome}</NomeValor></Nome>}
+            </BoxInfo>
+            <BoxIcon>
+                <NomeValor>Retirada</NomeValor>
+                {status == 'Confirmada' && (
+                    <Icon
+                        name='bucket'
+                        size={70}
+                        color='#2a9d8f'
+                    ></Icon>
+                )}
+                {status == 'Cancelada' && (
+                    <Icon
+                        name='bucket'
+                        size={70}
+                        color='#da1e37'
+                    ></Icon>
+                )}
+                {status != 'Cancelada' && status != 'Confirmada' && (
+                    < Icon
+                        name='bucket'
+                        size={70}
+                        color='#adb5bd'
+                    ></Icon>
+                )}
+                <NomeValor>{status}</NomeValor>
+            </BoxIcon>
+        </Container>
+
     );
 }

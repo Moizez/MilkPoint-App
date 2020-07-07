@@ -5,9 +5,11 @@ import Icon from 'react-native-vector-icons/Entypo'
 import { AuthContext } from '../../../contexts/auth'
 import ModalCancel from '../../../components/ModalCancel'
 
-import { BoxGeral, Nome, BoxIcon, BoxInfoTanque, NomeValor } from './styles'
+import { Container, Nome, BoxIcon, BoxInfoTanque, NomeValor } from './styles'
 
-export default function ListaRetiradasPendentes({ data, index }) {
+let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+
+export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
     const { user } = useContext(AuthContext)
 
@@ -23,7 +25,7 @@ export default function ListaRetiradasPendentes({ data, index }) {
         data.append("idRetirada", idRetirada);
         data.append("efetuou", efetuou);
 
-        await fetch('https://milkpoint.herokuapp.com/api/retirada/confirmacao', { method: 'POST', body: data })
+        await fetch(`${baseUrl}retirada/confirmacao`, { method: 'POST', body: data })
 
         if (confirmacao) {
             alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
@@ -39,8 +41,9 @@ export default function ListaRetiradasPendentes({ data, index }) {
         setConfirmacao(false)
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
-        await confirmacaoRetirada(false, idRetirada, efetuou) // forçar a confirmação
-        setModalCancelVisible(!modalCancelVisible)
+        await confirmacaoRetirada(false, idRetirada, efetuou)
+        onRefresh()
+        setModalCancelVisible(false)
     }
 
 
@@ -60,15 +63,14 @@ export default function ListaRetiradasPendentes({ data, index }) {
     }
 
     return (
-        <BoxGeral>
+        <Container>
             <BoxInfoTanque>
-                <Nome>Indice: <NomeValor>{index}</NomeValor></Nome>
                 <Nome>Tanque: <NomeValor>{data.tanque.nome}</NomeValor></Nome>
                 <Nome>Valor requerido: <NomeValor>{data.quantidade} litros</NomeValor></Nome>
                 <Nome>Tipo do leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
                 <Nome>Data: <NomeValor>{data.dataNow} às {data.horaNow}h</NomeValor></Nome>
             </BoxInfoTanque>
-            <BoxIcon onLongPress={() => { setModalCancelVisible(!modalCancelVisible) }}>
+            <BoxIcon onLongPress={() => { setModalCancelVisible(true) }}>
                 <NomeValor>Retirada</NomeValor>
                 {status == 'Confirmado' && (
                     <Icon
@@ -106,7 +108,7 @@ export default function ListaRetiradasPendentes({ data, index }) {
                 />
             </Modal>
 
-        </BoxGeral>
+        </Container>
 
     );
 }

@@ -6,7 +6,6 @@ background-color: #292b2c;
 `;
 
 export const BoxNomeAviso = styled.View`
-flex: 1;
 padding-top: 15px;
 background-color: #FFF;
 border-top-left-radius: 8px;
@@ -39,6 +38,7 @@ color: #FFF;
 export const List = styled.FlatList.attrs({
     marginHorinzontal: 15,
 })`
+    flex: 1;
     padding-top: 15px;
     background-color: #FFF;
     border-top-left-radius: 8px;

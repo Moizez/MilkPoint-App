@@ -1,29 +1,39 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../../contexts/auth'
+import { RefreshControl } from 'react-native'
 
 import MenuButton from '../../../components/MenuButton'
 import ListaDepositosPendentes from '../ListaDepositosPendentes'
 import Header from '../../../components/Header'
 
-import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from '../styles'
+import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from './styles'
+
+let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function TelaDepositosPendentesProdutor() {
 
     const { user } = useContext(AuthContext)
     const [depositoPendente, setDepositoPendente] = useState([])
+    const [isRefreshing, setIsRefreshing] = useState(false)
 
+    //Lista de depositos pendentes
     const loadListDepositosPendentes = async () => {
-        const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listapendentes')
+        const response = await fetch(`${baseUrl}deposito/listapendentes`)
         const depositoPendente = await response.json()
         setDepositoPendente(depositoPendente.filter(function (deposito) {
             return deposito.produtor.id == user.id
         }))
     }
 
-    //Lista de Depositos Pendentes
     useEffect(() => {
         loadListDepositosPendentes()
     }, [])
+
+    async function onRefreshList() {
+        setIsRefreshing(true)
+        await loadListDepositosPendentes()
+        setIsRefreshing(false)
+    }
 
     return (
         <Container>
@@ -37,9 +47,9 @@ export default function TelaDepositosPendentesProdutor() {
             <List
                 showsVerticalScrollIndicator={false}
                 data={depositoPendente}
-                extraData={depositoPendente}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (<ListaDepositosPendentes data={item} />)}
+                refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
+                renderItem={({ item }) => (<ListaDepositosPendentes data={item} onRefresh={onRefreshList} />)}
                 ListEmptyComponent={<BoxNomeAviso><NomeAviso>Não há depósitos pendentes!</NomeAviso></BoxNomeAviso>}
             />
         </Container>

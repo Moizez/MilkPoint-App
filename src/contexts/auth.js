@@ -1,5 +1,4 @@
 import React, { useState, useEffect, createContext } from 'react';
-import { View } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage'
 
 export const AuthContext = createContext({})
@@ -7,7 +6,7 @@ export const AuthContext = createContext({})
 export default function AuthProvider({ children }) {
 
     //Url padrão da API
-    const baseURL = 'https://milkpoint.herokuapp.com/api/'
+    const baseURL = 'https://milkpointapi.cfapps.io/api/'
 
     //Estados do Active Indicator
     const [loading, setLoading] = useState(true)
@@ -56,7 +55,7 @@ export default function AuthProvider({ children }) {
                 }
             }
 
-            const response = await fetch('https://milkpoint.herokuapp.com/api/login', dado)
+            const response = await fetch(`${baseURL}login`, dado)
             const data = await response.json()
 
             try {
@@ -92,8 +91,7 @@ export default function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={{
-            signed: !!user, user, loading, loadingAuth,
-            signIn, logOut
+            signed: !!user, user, loading, loadingAuth, signIn, logOut
         }}>
             {children}
         </AuthContext.Provider>

@@ -8,17 +8,17 @@ import Header from '../../../components/Header'
 
 import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from './styles'
 
-let baseURL = 'https://milkpoint.herokuapp.com/api/'
+let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function TelaRetiradasPendentesLaticinio() {
+    
     const { user } = useContext(AuthContext)
     const [retiradaPendente, setRetiradaPendente] = useState([])
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [newArray, setNewArray] = useState([])
 
     //Lista de retiradas pendentes
     const loadListRetiradasPendentes = async () => {
-        const response = await fetch(baseURL + 'retirada/listapendentes')
+        const response = await fetch(`${baseUrl}retirada/listapendentes`)
         const data = await response.json()
 
         setRetiradaPendente(data.filter(function (retirada) {
@@ -27,9 +27,6 @@ export default function TelaRetiradasPendentesLaticinio() {
 
         return retiradaPendente
     }
-
-    const dataId = retiradaPendente.map(i => i.id)
-    console.log('Logado: ' + dataId)
 
     useEffect(() => {
         loadListRetiradasPendentes()
@@ -53,9 +50,9 @@ export default function TelaRetiradasPendentesLaticinio() {
             <List
                 showsVerticalScrollIndicator={false}
                 data={retiradaPendente}
-                refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item, index }) => (<ListaRetiradasPendentes data={item} index={index} />)}
+                refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
+                renderItem={({ item }) => <ListaRetiradasPendentes data={item} onRefresh={onRefreshList} />}
                 ListEmptyComponent={<BoxNomeAviso><NomeAviso>Não há retiradas pendentes!</NomeAviso></BoxNomeAviso>}
             />
         </Container>

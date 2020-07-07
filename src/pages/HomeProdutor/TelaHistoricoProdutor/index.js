@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../../../contexts/auth'
+import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import MenuButton from '../../../components/MenuButton'
@@ -7,30 +8,32 @@ import ListaDepositos from '../../../components/ListaDepositos'
 import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
 
-import {
-    Container, Box, BoxNomeAviso, NomeAviso, Titulo, List, Calendar,
-} from './styles'
+import { Container, Box, BoxNomeAviso, NomeAviso, Titulo, List, Calendar } from './styles'
+
+let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function TelaHistoricoProdutor() {
 
     const { user } = useContext(AuthContext)
     const [deposito, setDeposito] = useState([])
     const [date, setDate] = useState(new Date())
-    const [show, setShow] = useState(false);
+    const [show, setShow] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false)
 
     //Lista de todos os depositos
+    const loadListDepositos = async () => {
+        const response = await fetch(`${baseUrl}deposito/listatodos`)
+        const data = await response.json()
+
+        const produtor = d => d.produtor.id == user.id
+        const status = d => d.confirmacao != false || d.excluido != false
+        setDeposito(data.filter(produtor).filter(status))
+
+        return deposito
+    }
+
     useEffect(() => {
-        const loadListDepositos = async () => {
-            const response = await fetch('https://milkpoint.herokuapp.com/api/deposito/listatodos')
-            const data = await response.json()
-
-            const produtor = d => d.produtor.id == user.id
-            const status = d => d.confirmacao != false || d.excluido != false
-            setDeposito(data.filter(produtor).filter(status))
-        }
-
         loadListDepositos()
-
     }, [])
 
     function handleShowPicker() {
@@ -39,6 +42,12 @@ export default function TelaHistoricoProdutor() {
 
     function onChange(date) {
         setDate(date)
+    }
+
+    async function onRefreshList() {
+        setIsRefreshing(true)
+        await loadListDepositos()
+        setIsRefreshing(false)
     }
 
     return (
@@ -60,10 +69,10 @@ export default function TelaHistoricoProdutor() {
 
             <List
                 showsVerticalScrollIndicator={false}
-                extraData={deposito}
                 data={deposito}
                 keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (<ListaDepositos data={item} />)}
+                refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
+                renderItem={({ item }) => <ListaDepositos data={item} />}
                 ListEmptyComponent={<BoxNomeAviso><NomeAviso>Não há registro de transações!</NomeAviso></BoxNomeAviso>}
             />
 
