@@ -3,28 +3,73 @@ import AsyncStorage from '@react-native-community/async-storage'
 
 export const AuthContext = createContext({})
 
+//Url padrão da API
+let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+
 export default function AuthProvider({ children }) {
 
-    //Url padrão da API
-    const baseURL = 'https://milkpointapi.cfapps.io/api/'
-
-    //Estados do Active Indicator
     const [loading, setLoading] = useState(true)
     const [loadingAuth, setLoadingAuth] = useState(false)
-
-    //Estados do usuário
+    const [depositoPendente, setDepositoPendente] = useState([])
+    const [deposito, setDeposito] = useState([])
+    const [retiradaPendente, setRetiradaPendente] = useState([])
+    const [retirada, setRetirada] = useState([])
     const [user, setUser] = useState(null)
+    const [tanque, setTanque] = useState([])
+
+    //Carregar lista de tanques 
+    const loadListTanques = async () => {
+        const response = await fetch(`${baseUrl}tanque`)
+        const data = await response.json()
+        setTanque(data)
+
+        return tanque
+    }
+
+    //Lista de depositos pendentes
+    const loadListDepositosPendentes = async () => {
+        const response = await fetch(`${baseUrl}deposito/listapendentes`)
+        const data = await response.json()        
+        setDepositoPendente(data)
+
+        return depositoPendente
+    }
+
+    //Lista de todos os depositos
+    const loadListDepositos = async () => {
+        const response = await fetch(`${baseUrl}deposito/listatodos`)
+        const data = await response.json()
+        setDeposito(data)
+
+        return deposito
+    }
+
+    //Lista de retiradas pendentes
+    const loadListRetiradasPendentes = async () => {
+        const response = await fetch(`${baseUrl}retirada/listapendentes`)
+        const data = await response.json()
+        setRetiradaPendente(data)
+
+        return retiradaPendente
+    }
+
+    //Lista de todos os retiradas
+    const loadListRetiradas = async () => {
+        const response = await fetch(`${baseUrl}retirada/listatodos`)
+        const data = await response.json()
+        setRetirada(data)
+
+        return retirada
+    }
 
     //Carregar usuário do AsyncStorage
     useEffect(() => {
         const loadStorage = async () => {
             const storageUser = await AsyncStorage.getItem('Auth_user')
-
             if (storageUser) {
                 setUser(JSON.parse(storageUser))
                 setLoading(false)
             }
-
             setLoading(false)
         }
 
@@ -55,7 +100,7 @@ export default function AuthProvider({ children }) {
                 }
             }
 
-            const response = await fetch(`${baseURL}login`, dado)
+            const response = await fetch(`${baseUrl}login`, dado)
             const data = await response.json()
 
             try {
@@ -63,11 +108,12 @@ export default function AuthProvider({ children }) {
                     setUser(data)
                     storageUser(data)
                     setLoadingAuth(false)
+                    return
                 } else {
                     alert(response.status)
                     setLoadingAuth(false)
+                    return
                 }
-
             }
             catch (erro) {
                 alert('Erro ao tentar fazer login: ' + erro)
@@ -91,7 +137,10 @@ export default function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={{
-            signed: !!user, user, loading, loadingAuth, signIn, logOut
+            signed: !!user, user, loading, loadingAuth, depositoPendente, deposito, retiradaPendente,
+            retirada, tanque,
+            signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,
+            loadListRetiradas, loadListTanques
         }}>
             {children}
         </AuthContext.Provider>

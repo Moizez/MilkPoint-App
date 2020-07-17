@@ -1,20 +1,24 @@
-import React, { useState, useContext } from 'react';
-import { Modal } from 'react-native';
-import Icon from 'react-native-vector-icons/Entypo'
+import React, { useState, useContext } from 'react'
+import { Modal, View } from 'react-native'
 
 import { AuthContext } from '../../../contexts/auth'
+import CardInfo from '../../../components/CardInfo'
 import ModalCancel from '../../../components/ModalCancel'
-
-import { Container, Nome, BoxIcon, BoxInfoTanque, NomeValor } from './styles'
-
-let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
+import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 
 export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
+    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+    let success = require('../../../assets/lottie/delete-confirm.json')
+
     const { user } = useContext(AuthContext)
 
+    const [alertVisible, setAlertVisible] = useState(false)
+    const [isAlertInfo, setAlertInfo] = useState(false)
+
     const [modalCancelVisible, setModalCancelVisible] = useState(false)
-    const [confirmacao, setConfirmacao] = useState(false) // não está alterando o estado da variavel confirmação
+    const [confirmacao, setConfirmacao] = useState(false)
     const [idRetirada, setIdRetirada] = useState(data.id)
     const [efetuou, setEfetuou] = useState(user.nomeFantasia)
 
@@ -26,75 +30,69 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         data.append("efetuou", efetuou);
 
         await fetch(`${baseUrl}retirada/confirmacao`, { method: 'POST', body: data })
-
-        if (confirmacao) {
-            alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
-        }
-        else {
-            alert("Pedido cancelado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
-        }
-
     };
 
     //Função para cancelar a retirada
-    async function handleCancel() {
+    function handleCancel() {
+        setAlertInfo(true)
+    }
+
+    const handleConfirm = async () => {
+        setAlertInfo(false)
+        setAlertVisible(true)
         setConfirmacao(false)
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
         await confirmacaoRetirada(false, idRetirada, efetuou)
-        onRefresh()
         setModalCancelVisible(false)
     }
 
-
-    function bucketColor(status) {
-        if (data.confirmacao == true) {
-            return status = 'Confirmado'
-        } if (data.excluido == true) {
-            return status = 'Cancelado'
-        } else {
-            return status = 'Pendente'
+    const ErrorSuccesAlert = () => {
+        if (alertVisible) {
+            return (
+                <AlertErrorSuccess
+                    onClose={closeAlertErroSuccess}
+                    title='Aviso'
+                    message={'Retirada cancelada com sucesso!'}
+                    titleButton='Ok'
+                    jsonPath={success}
+                    buttonColor={'#292b2c'}
+                />
+            )
         }
     }
-    let status = bucketColor()
 
-    function handleCloseCancelModal() {
-        setModalCancelVisible(false)
+    const InformationAlert = () => {
+        if (isAlertInfo) {
+            return (
+                <AlertSimpleInfo
+                    dataInfo={data}
+                    onConfirm={handleConfirm}
+                    onClose={closeAlertInfo}
+                    title='Aviso'
+                    message={'Deseja realmente cancelar esta retirada?'}
+                />
+            )
+        }
+    }
+
+    const closeAlertInfo = () => setAlertInfo(false)
+    const handleOpenCancelModal = () => setModalCancelVisible(true)
+    const handleCloseCancelModal = () => setModalCancelVisible(false)
+    const closeAlertErroSuccess = () => {
+        setAlertVisible(false)
+        onRefresh()
     }
 
     return (
-        <Container>
-            <BoxInfoTanque>
-                <Nome>Tanque: <NomeValor>{data.tanque.nome}</NomeValor></Nome>
-                <Nome>Valor requerido: <NomeValor>{data.quantidade} litros</NomeValor></Nome>
-                <Nome>Tipo do leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
-                <Nome>Data: <NomeValor>{data.dataNow} às {data.horaNow}h</NomeValor></Nome>
-            </BoxInfoTanque>
-            <BoxIcon onLongPress={() => { setModalCancelVisible(true) }}>
-                <NomeValor>Retirada</NomeValor>
-                {status == 'Confirmado' && (
-                    <Icon
-                        name='bucket'
-                        size={70}
-                        color='#2a9d8f'
-                    ></Icon>
-                )}
-                {status == 'Cancelado' && (
-                    <Icon
-                        name='bucket'
-                        size={70}
-                        color='#da1e37'
-                    ></Icon>
-                )}
-                {status != 'Cancelado' && status != 'Confirmado' && (
-                    < Icon
-                        name='bucket'
-                        size={70}
-                        color='#adb5bd'
-                    ></Icon>
-                )}
-                <NomeValor>{status}</NomeValor>
-            </BoxIcon>
+        <View>
+
+            <CardInfo
+                showModal={handleOpenCancelModal}
+                dataInfo={data}
+                titlePerfil={'Laticínio: '}
+                infoPerfil={data.laticinio.nome}
+            />
 
             <Modal
                 animationType='slide'
@@ -108,7 +106,23 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
                 />
             </Modal>
 
-        </Container>
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={alertVisible}
+            >
+                {ErrorSuccesAlert()}
+            </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={isAlertInfo}
+            >
+                {InformationAlert()}
+            </Modal>
+
+        </View>
 
     );
 }

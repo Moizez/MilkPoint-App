@@ -1,13 +1,9 @@
 import React, { useState } from 'react'
-import { Modal, Text } from 'react-native'
+import { View, Modal, Text, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native'
 
 import Speedometer from 'react-native-speedometer-chart'
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-
-import {
-    BoxGeral, Container, Nome, BoxSpeed, BoxTanque, BoxIcon
-} from './styles'
 
 export default function ListaTanques({ data }) {
 
@@ -24,51 +20,44 @@ export default function ListaTanques({ data }) {
         }
     }
 
-    function handleCloseModal() {
-        return setModalVisible(false)
-    }
+    const handleCloseModal = () => { setModalVisible(false) }
 
     return (
-        <BoxGeral>
-            <Container onPress={() => { setModalVisible(!modalVisible) }}>
-                <BoxSpeed>
-                    <BoxIcon>
-                        {data.tipo == 'BOVINO' ?
-                            <Icon
-                                name='cow'
-                                color='blue'
-                                size={40}>
-                            </Icon> :
-                            <Icon
-                                name='sheep'
-                                color='green'
-                                size={40}>
-                            </Icon>
-                        }
-                        <Nome style={{ fontSize: 16, fontWeight: 'bold', marginLeft: 10 }}>Tanque: {data.nome}</Nome>
-                    </BoxIcon>
-                    <Speedometer
-                        value={data.qtdAtual}
-                        totalValue={capacidade}
-                        size={170}
-                        outerColor="#d3d3d3"
-                        internalColor={corGrafico()}
-                        showText
-                        text={''}
-                        textStyle={{ color: 'black' }}
-                        showLabels
-                        labelStyle={{ color: 'blue' }}
-                        labelFormatter={number => `${number}`}
-                        showPercent
-                        percentStyle={{ color: 'black', fontSize: 22 }}
-                    />
-                    <BoxTanque>
-                        <Nome style={{ textAlign: 'center', opacity: 0.1 }}>____________________________________________</Nome>
-                        <Nome>- Volume atual do tanque é de <Text style={{ fontWeight: 'bold' }}>{data.qtdAtual} litros</Text></Nome>
-                        <Nome>- Faltam <Text style={{ fontWeight: 'bold' }}>{data.qtdRestante} litros</Text> para completar o tanque</Nome>
-                    </BoxTanque>
-                </BoxSpeed>
-            </Container>
+        <View style={styles.container}>
+            <TouchableOpacity style={styles.cardButton} onPress={() => { setModalVisible(!modalVisible) }} activeOpacity={0.5}>
+                <View style={styles.iconContainer}>
+                    {data.tipo == 'BOVINO' ?
+                        <Icon name='cow' color='blue' size={40} /> :
+                        <Icon name='sheep' color='green' size={40} />
+                    }
+                    <Text style={styles.title}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
+                </View>
+
+                <Speedometer
+                    value={data.qtdAtual}
+                    totalValue={capacidade}
+                    size={170}
+                    outerColor="#d3d3d3"
+                    internalColor={corGrafico()}
+                    showText
+                    text={''}
+                    textStyle={{ color: 'black' }}
+                    innerColor={'#faf9f9'}
+                    showLabels
+                    labelStyle={{ color: 'blue' }}
+                    labelFormatter={number => `${number}`}
+                    showPercent
+                    percentStyle={{ color: 'black', fontSize: 22 }}
+                />
+
+                <View style={{ width: '95%', height: 1, backgroundColor: '#adb5bd', marginVertical: 10 }}></View>
+
+                <View>
+                    <Text>- Volume atual do tanque é de <Text style={{ fontWeight: 'bold' }}>{data.qtdAtual} litros</Text></Text>
+                    <Text>- Faltam <Text style={{ fontWeight: 'bold' }}>{data.qtdRestante} litros</Text> para completar o tanque</Text>
+                </View>
+
+            </TouchableOpacity>
 
             <Modal
                 animationType='slide'
@@ -82,6 +71,42 @@ export default function ListaTanques({ data }) {
 
             </Modal>
 
-        </BoxGeral>
+        </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#faf9f9',
+        padding: 10,
+        margin: 12,
+        borderRadius: 2,
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 3.85,
+        shadowOffset: {
+            width: 0,
+            height: 1
+        },
+        elevation: 5,
+
+    },
+    cardButton: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    iconContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 6,
+    },
+    title: {
+        fontSize: 16, fontWeight: 'bold', marginLeft: 10
+    },
+    text: {
+        fontWeight: 'normal'
+    }
+})

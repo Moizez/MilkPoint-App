@@ -1,30 +1,41 @@
 import React, { useState, useContext } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { Modal, Keyboard } from 'react-native'
+import { Modal, Keyboard, View, Text,  StyleSheet } from 'react-native'
 
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
 import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
 import GraficoTanque from '../../../components/GraficoTanque'
+import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
+import AlertInformation from '../../../components/AlertInformation'
 
 import { AuthContext } from '../../../contexts/auth'
 
 import {
-    BoxGeral, Container, Nome, NomeValor, BoxTanque, BoxFabBtn, FabBtn, FabText
+    BoxFabBtn, FabBtn, FabText
 } from './styles'
-
-let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function ListaTanques({ data }) {
 
-    const { user } = useContext(AuthContext)
+    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+
+    const { user, loadListDepositosPendentes } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [modalVisibleDois, setModalVisibleDois] = useState(false)
+    const [alertVisible, setAlertVisible] = useState(false)
+    const [isAlertInfo, setAlertInfo] = useState(false)
+    const [typeMessage, setTypeMessage] = useState('')
+    const [jsonIcon, setJsonIcon] = useState('error')
 
     const [idProd, setIdProd] = useState(user.id)
     const [idTanque, setIdTanque] = useState(data.id)
+    const [qtdInfo, setQtdInfo] = useState()
 
-    //Solicitação de depósito pelo produtor
+    let error = require('../../../assets/lottie/error-icon.json')
+    let success = require('../../../assets/lottie/success-icon.json')
+    let msgType = jsonIcon == 'error' ? error : success
+
+    //Solicitação de retirada pelo laticinio
     const requestDeposito = async (quantidade, idProd, idTanque) => {
         const data = new FormData();
         data.append("quantidade", quantidade);
@@ -34,44 +45,87 @@ export default function ListaTanques({ data }) {
         await fetch(`${baseUrl}deposito`, { method: 'POST', body: data })
     };
 
-    async function handleDeposito(value) {
+    function handleDeposito(value) {
         if (isNaN(value) || value <= 0) {
-            alert('Valor inválido, digite a quantidade novamente!')
-        } else if (value > data.qtdAtual) {
-            alert("Seu depósito excede o valor máximo atual do tanque!")
-            return
+            setJsonIcon('error')
+            setTypeMessage('Valor inválido, digite a quantidade novamente!')
+            setAlertVisible(true)
+        } else if (value > data.qtdRestante) {
+            setJsonIcon('error')
+            setTypeMessage('Seu depósito excede o valor máximo aceito pelo tanque!')
+            setAlertVisible(true)
         } else {
-            alert("Deposito realizado com sucesso!" + "\n" + "Aguarde a confirmação!")
-            setIdProd(user.id)
-            setIdTanque(data.id)
-            await requestDeposito(value, idProd, idTanque)
-            setModalVisibleDois(false)
-            setModalVisible(false)
+            setQtdInfo(value)
+            setJsonIcon('success')
+            setAlertInfo(true)
         }
         Keyboard.dismiss()
     }
 
-    function handleCloseModal() {
-        return setModalVisible(false)
+    const handleConfirm = async (value) => {
+        setAlertInfo(false)
+        setTypeMessage('Depósito realizado com sucesso! Aguarde a confirmação.')
+        setAlertVisible(true)
+        setIdProd(user.id)
+        setIdTanque(data.id)
+        await requestDeposito(value, idProd, idTanque)
+        loadListDepositosPendentes()
+        setModalVisibleDois(false)
+        setModalVisible(false)
     }
 
-    function handleCloseModalDois() {
-        return setModalVisibleDois(false)
+    const handleCloseModal = () => setModalVisible(false)
+    const handleOpenModal = () => setModalVisible(true)
+    const handleCloseModalDois = () => setModalVisibleDois(false)
+    const closeAlertInfo = () => setAlertInfo(false)
+    const closeAlertErroSuccess = () => setAlertVisible(false)
+
+    const ErrorSuccesAlert = () => {
+        if (alertVisible) {
+            return (
+                <AlertErrorSuccess
+                    onClose={closeAlertErroSuccess}
+                    title='Aviso'
+                    message={typeMessage}
+                    titleButton='Ok'
+                    jsonPath={msgType}
+                    buttonColor={'#292b2c'}
+                />
+            )
+        }
+    }
+
+    const InformationAlert = () => {
+        if (isAlertInfo) {
+            return (
+                <AlertInformation
+                    dataInfo={data}
+                    qtd={qtdInfo}
+                    onConfirm={handleConfirm}
+                    onClose={closeAlertInfo}
+                    title='Aviso'
+                    message={'Confirme os dados'}
+                />
+            )
+        }
     }
 
     return (
-        <BoxGeral>
-            <Container onPress={() => { setModalVisible(true) }}>
-                <BoxTanque>
-                    <Nome>Tanque: <NomeValor>{data.nome}</NomeValor></Nome>
-                    <Nome>Tipo do Leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
-                    <Nome>Vol. Atual: <NomeValor>{data.qtdAtual} litros</NomeValor></Nome>
-                    <Nome>Ainda cabe: <NomeValor>{data.qtdRestante} litros</NomeValor></Nome>
-                    <Nome>Responsável: <NomeValor>{data.responsavel.apelido}</NomeValor></Nome>
-                </BoxTanque>
+        <View style={styles.container}>
 
-                <GraficoTanque dataGrafico={data} />
-            </Container>
+            <View style={styles.cardContainer} onPress={() => { setModalVisible(true) }} activeOpacity={0.7}>
+                <View style={styles.infoCard}>
+                    <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
+                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
+                    <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
+                    <Text style={styles.textInfo}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
+                    <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
+                </View>
+
+                <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
+
+                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
+            </View>
 
             <Modal
                 animationType='slide'
@@ -83,31 +137,79 @@ export default function ListaTanques({ data }) {
                     onClose={handleCloseModal}
                 />
 
-                <Modal
-                    animationType='slide'
-                    transparent={true}
-                    visible={modalVisibleDois}
-                >
-
-                    <ModalDepositoRetirada
-                        onConfirme={handleDeposito}
-                        onClose={handleCloseModalDois}
-                    />
-
-                </Modal>
-
                 <BoxFabBtn>
-                    <FabBtn onPress={() => { setModalVisibleDois(true) }}>
-                        <Icon
-                            name='arrow-up-bold-hexagon-outline'
-                            color='#FFF'
-                            size={20}>
-                        </Icon>
+                    <FabBtn onPress={() => { setModalVisibleDois(true) }} activeOpacity={0.7}>
+                        <Icon name='basket-fill' color='#FFF' size={20} />
                         <FabText>Depositar</FabText>
                     </FabBtn>
                 </BoxFabBtn>
 
             </Modal>
-        </BoxGeral>
+
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={modalVisibleDois}
+            >
+                <ModalDepositoRetirada
+                    onConfirme={handleDeposito}
+                    onClose={handleCloseModalDois}
+                />
+            </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={isAlertInfo}
+            >
+                {InformationAlert()}
+            </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={alertVisible}
+            >
+                {ErrorSuccesAlert()}
+            </Modal>
+
+        </View >
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#faf9f9',
+        margin: 12,
+        borderRadius: 5,
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 3.85,
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        elevation: 5
+    },
+    cardContainer: {
+        flex: 1,
+        flexDirection: 'row',
+    },
+    infoCard: {
+        flex: 1.5,
+        backgroundColor: '#faf9f9',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        padding: 6,
+
+    },
+    textInfo: {
+        fontWeight: 'bold',
+        fontSize: 14.5,
+    },
+    text: {
+        fontWeight: 'normal'
+    }
+
+})

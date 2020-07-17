@@ -1,24 +1,28 @@
-import React, { useState, useContext } from 'react';
-import { Modal } from 'react-native';
-import Icon from 'react-native-vector-icons/Entypo'
+import React, { useState, useContext } from 'react'
+import { Modal, View } from 'react-native'
 
 import { AuthContext } from '../../../contexts/auth'
+import CardInfo from '../../../components/CardInfo'
 import ModalCancel from '../../../components/ModalCancel'
+import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
+import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 
-import { Container, Nome, BoxIcon, BoxInfoTanque, NomeValor } from './styles'
+export default function ListaDepositossPendentes({ data, onRefresh }) {
 
-let baseUrl = 'https://milkpointapi.cfapps.io/api/'
-
-export default function ListaDepositosPendentes({ data, onRefresh }) {
+    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+    let success = require('../../../assets/lottie/delete-confirm.json')
 
     const { user } = useContext(AuthContext)
 
+    const [alertVisible, setAlertVisible] = useState(false)
+    const [isAlertInfo, setAlertInfo] = useState(false)
+
     const [modalCancelVisible, setModalCancelVisible] = useState(false)
-    const [confirmacao, setConfirmacao] = useState(false) // não está alterando o estado da variavel confirmação
+    const [confirmacao, setConfirmacao] = useState(false)
     const [idDeposito, setIdDeposito] = useState(data.id)
     const [efetuou, setEfetuou] = useState(user.apelido)
 
-    //Confirmação da depositos pelo responsável
+    //Confirmação da depósitos pelo responsável
     const confirmacaoDeposito = async (confirmacao, idDeposito, efetuou) => {
         const data = new FormData();
         data.append("confirmacao", confirmacao);
@@ -26,89 +30,98 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         data.append("efetuou", efetuou);
 
         await fetch(`${baseUrl}deposito/confirmacao`, { method: 'POST', body: data })
+    }
 
-        if (confirmacao) {
-            alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
-        }
-        else {
-            alert("Pedido cancelado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
-        }
+    //Função para cancelar o depósito
+    function handleCancel() {
+        setAlertInfo(true)
+    }
 
-    };
-
-    //Função para cancelar a depósito
-    async function handleCancel() {
+    const handleConfirm = async () => {
+        setAlertInfo(false)
+        setAlertVisible(true)
         setConfirmacao(false)
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
         await confirmacaoDeposito(false, idDeposito, efetuou)
-        onRefresh()
         setModalCancelVisible(false)
     }
 
-
-    function bucketColor(status) {
-        if (data.confirmacao == true) {
-            return status = 'Confirmado'
-        } if (data.excluido == true) {
-            return status = 'Cancelado'
-        } else {
-            return status = 'Pendente'
+    const ErrorSuccesAlert = () => {
+        if (alertVisible) {
+            return (
+                <AlertErrorSuccess
+                    onClose={closeAlertErroSuccess}
+                    title='Aviso'
+                    message={'Depósito cancelado com sucesso!'}
+                    titleButton='Ok'
+                    jsonPath={success}
+                    buttonColor={'#292b2c'}
+                />
+            )
         }
     }
-    let status = bucketColor()
 
-    function handleCloseCancelModal() {
-        setModalCancelVisible(false)
+    const InformationAlert = () => {
+        if (isAlertInfo) {
+            return (
+                <AlertSimpleInfo
+                    dataInfo={data}
+                    onConfirm={handleConfirm}
+                    onClose={closeAlertInfo}
+                    title='Aviso'
+                    message={'Deseja realmente cancelar este depósito?'}
+                />
+            )
+        }
+    }
+
+    const closeAlertInfo = () => setAlertInfo(false)
+    const handleOpenCancelModal = () => setModalCancelVisible(true)
+    const handleCloseCancelModal = () => setModalCancelVisible(false)
+    const closeAlertErroSuccess = () => {
+        setAlertVisible(false)
+        onRefresh()
     }
 
     return (
-        
-        <Container>
-            <BoxInfoTanque>
-                <Nome>Tanque: <NomeValor>{data.tanque.nome}</NomeValor></Nome>
-                <Nome>Valor requerido: <NomeValor>{data.quantidade} litros</NomeValor></Nome>
-                <Nome>Tipo do leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
-                <Nome>Data: <NomeValor>{data.dataNow} às {data.horaNow}h</NomeValor></Nome>
-            </BoxInfoTanque>
-            <BoxIcon onLongPress={() => { setModalCancelVisible(true) }}>
-                <NomeValor>Depósito</NomeValor>
-                {status == 'Confirmado' && (
-                    <Icon
-                        name='bucket'
-                        size={70}
-                        color='#2a9d8f'
-                    ></Icon>
-                )}
-                {status == 'Cancelado' && (
-                    <Icon
-                        name='bucket'
-                        size={70}
-                        color='#da1e37'
-                    ></Icon>
-                )}
-                {status != 'Cancelado' && status != 'Confirmado' && (
-                    < Icon
-                        name='bucket'
-                        size={70}
-                        color='#adb5bd'
-                    ></Icon>
-                )}
-                <NomeValor>{status}</NomeValor>
+        <View>
 
-                <Modal
-                    animationType='slide'
-                    transparent={true}
-                    visible={modalCancelVisible}
-                >
-                    <ModalCancel
-                        dataTanque={data}
-                        onClose={handleCloseCancelModal}
-                        onCancel={handleCancel}
-                    />
-                </Modal>
+            <CardInfo
+                showModal={handleOpenCancelModal}
+                dataInfo={data}
+                titlePerfil={'Produtor: '}
+                infoPerfil={data.produtor.nome}
+            />
 
-            </BoxIcon>
-        </Container>
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={modalCancelVisible}
+            >
+                <ModalCancel
+                    dataTanque={data}
+                    onClose={handleCloseCancelModal}
+                    onCancel={handleCancel}
+                />
+            </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={alertVisible}
+            >
+                {ErrorSuccesAlert()}
+            </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={isAlertInfo}
+            >
+                {InformationAlert()}
+            </Modal>
+
+        </View>
     );
 }

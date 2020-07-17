@@ -1,12 +1,11 @@
 import styled from 'styled-components/native'
 
-export const BoxGrafico = styled.View`
+export const BoxGrafico = styled.TouchableOpacity`
 flex: 1;
 align-items: center;
 justify-content: center;
-background-color: #FFF;
-border-radius: 3px;
-margin-left: 15px;
+background-color: #ececec;
+padding: 5px;
 `;
 
 export const BoxIconGrafico = styled.View`

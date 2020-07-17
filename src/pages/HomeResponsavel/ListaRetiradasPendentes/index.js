@@ -1,24 +1,33 @@
 import React, { useState, useContext } from 'react';
-import { Modal, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Entypo'
+import { Modal, View } from 'react-native';
 
 import { AuthContext } from '../../../contexts/auth'
-
-import {
-    BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque, BoxModal, BoxTitulo, TituloInfo, NomeValor,
-    BtnFechar, BtnText, BoxInfo, BoxInfoModal, BtnConfirm, BtnCancel, Btn, NomeModal
-} from './styles'
-
-let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+import CardInfo from '../../../components/CardInfo'
+import ModalChoice from '../../../components/ModalChoice'
+import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
+import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 
 export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
+    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+
+    let error = require('../../../assets/lottie/error-icon.json')
+    let success = require('../../../assets/lottie/success-icon.json')
+    let msgType = jsonIcon == 'error' ? error : success
+
     const { user } = useContext(AuthContext)
 
-    const [modalVisible, setModalVisible] = useState(false)
     const [confirmacao, setConfirmacao] = useState(false)
     const [idRetirada, setIdRetirada] = useState(data.id)
     const [efetuou, setEfetuou] = useState(user.apelido)
+    const [isAction, setAction] = useState()
+    const [typeMessage, setTypeMessage] = useState('')
+    const [jsonIcon, setJsonIcon] = useState('error')
+
+    //States dos modais
+    const [isVisibleCard, setVisibleCard] = useState(false)
+    const [isAlertSimpleInfo, setAlertSimpleInfo] = useState(false)
+    const [isAlertErroSuccess, setAlertErroSuccess] = useState(false)
 
     //Confirmação da retiradas pelo responsável
     const confirmacaoRetirada = async (confirmacao, idRetirada, efetuou) => {
@@ -28,120 +37,138 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         data.append("efetuou", efetuou);
 
         await fetch(`${baseUrl}retirada/confirmacao`, { method: 'POST', body: data })
-
-        if (confirmacao) {
-            alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
-        }
-        else {
-            alert("Pedido cancelado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
-        }
     };
 
     //Função para confirmar a retirada
-    async function handleConfirm() {
+    const handleConfirm = () => {
+        if (data.quantidade < data.tanque.qtdAtual) {
+            setJsonIcon('success')
+            setAction(true)
+            setAlertSimpleInfo(true)
+        } else {
+            setJsonIcon('error')
+            setTypeMessage('O valor solicitado excede a capacidade atual!')
+            setAlertErroSuccess(true)
+        }
+    }
+
+    const doneConfirm = async () => {
+        setAlertSimpleInfo(false)
+        setTypeMessage('Retirada confirmada com sucesso!')
+        setAlertErroSuccess(true)
         setConfirmacao(true)
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
         await confirmacaoRetirada(true, idRetirada, efetuou)
-        onRefresh()
-        setModalVisible(false)
+        setVisibleCard(false)
     }
 
     //Função para cancelar a retirada
-    async function handleCancel() {
+    const handleCancel = () => {
+        setAction(false)
+        setAlertSimpleInfo(true)
+    }
+
+    const doneCancel = async () => {
+        setAlertSimpleInfo(false)
+        setTypeMessage('Retirada cancelada com sucesso!')
+        setAlertErroSuccess(true)
         setConfirmacao(false)
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
         await confirmacaoRetirada(false, idRetirada, efetuou)
-        onRefresh()
-        setModalVisible(false)
+        setVisibleCard(false)
     }
 
-    function bucketColor(status) {
-        if (data.confirmacao == true) {
-            return status = 'Confirmada'
-        } if (data.excluido == true) {
-            return status = 'Cancelada'
-        } else {
-            return status = 'Pendente'
+    const InfoAlertSimple = () => {
+        if (isAlertSimpleInfo) {
+            if (isAction === false) {
+                return (
+                    <AlertSimpleInfo
+                        dataInfo={data}
+                        onConfirm={doneCancel}
+                        onClose={hideModalInfo}
+                        title='Aviso'
+                        message={'Deseja realmente CANCELAR esta RETIRADA?'}
+                    />
+                )
+            } else {
+                return (
+                    <AlertSimpleInfo
+                        dataInfo={data}
+                        onConfirm={doneConfirm}
+                        onClose={hideModalInfo}
+                        title='Aviso'
+                        message={'Deseja realmente CONFIRMAR esta RETIRADA?'}
+                    />
+                )
+            }
         }
     }
-    let status = bucketColor()
+
+    const ErrorSuccesAlert = () => {
+        if (isAlertErroSuccess) {
+            return (
+                <AlertErrorSuccess
+                    onClose={hideAlertErroSuccess}
+                    title='Aviso'
+                    message={typeMessage}
+                    titleButton='Ok'
+                    jsonPath={msgType}
+                    buttonColor={'#292b2c'}
+                />
+            )
+        }
+    }
+
+    const showModal = () => { setVisibleCard(true) }
+    const hideModal = () => { setVisibleCard(false) }
+    const hideModalInfo = () => { setAlertSimpleInfo(false) }
+    const hideAlertErroSuccess = () => {
+        setAlertErroSuccess(false)
+        onRefresh()
+    }
 
     return (
-        <Container>
-            <BoxInfoTanque>
-                <Nome>Tanque: <NomeValor>{data.tanque.nome}</NomeValor></Nome>
-                <Nome>Tipo do leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
-                <Nome>Valor requerido: <NomeValor>{data.quantidade} litros</NomeValor></Nome>
-                <Nome>Nome do produtor: <NomeValor>{data.laticinio.nome}</NomeValor></Nome>
-                <Nome>Data: <NomeValor>{data.dataNow} às {data.horaNow}h</NomeValor></Nome>
-            </BoxInfoTanque>
-            <BoxIcon onPress={() => { setModalVisible(true) }}>
-                <NomeValor>Retirada</NomeValor>
-                {status == 'Confirmada' && (
-                    <Icon
-                        name='bucket'
-                        size={70}
-                        color='#2a9d8f'
-                    ></Icon>
-                )}
-                {status == 'Cancelada' && (
-                    <Icon
-                        name='bucket'
-                        size={70}
-                        color='#da1e37'
-                    ></Icon>
-                )}
-                {status != 'Cancelada' && status != 'Confirmada' && (
-                    < Icon
-                        name='bucket'
-                        size={70}
-                        color='#adb5bd'
-                    ></Icon>
-                )}
-                <NomeValor>{status}</NomeValor>
+        <View>
+            <CardInfo
+                showModal={showModal}
+                dataInfo={data}
+                titlePerfil={'Laticínio: '}
+                infoPerfil={data.laticinio.nome}
+            />
 
-                <Modal
-                    animationType='slide'
-                    transparent={true}
-                    visible={modalVisible}
-                >
-                    <BoxModal>
-                        <BoxTitulo>
-                            <TituloInfo>Confirmação de retirada do tanque: </TituloInfo>
-                        </BoxTitulo>
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={isVisibleCard}
+            >
+                <ModalChoice
+                    dataInfo={data}
+                    hideModal={hideModal}
+                    handleCancel={handleCancel}
+                    handleConfirm={handleConfirm}
+                    titlePerfil={'Laticínio: '}
+                    infoPerfil={data.laticinio.nome}
+                />
+            </Modal>
 
-                        <BoxInfoModal>
-                            <NomeModal>Tanque: <NomeValor>{data.tanque.nome}</NomeValor></NomeModal>
-                            <NomeModal>Tipo do leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></NomeModal>
-                            <NomeModal>Valor requerido: <NomeValor>{data.quantidade} litros</NomeValor></NomeModal>
-                            <NomeModal>Nome do produtor: <NomeValor>{data.laticinio.nome}</NomeValor></NomeModal>
-                            <NomeModal>Data: <NomeValor>{data.dataNow} às {data.horaNow}h</NomeValor></NomeModal>
-                        </BoxInfoModal>
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={isAlertSimpleInfo}
+            >
+                {InfoAlertSimple()}
+            </Modal>
 
-                        <BoxInfo>
-                            <BtnConfirm>
-                                <TouchableOpacity onPress={() => { handleConfirm() }}>
-                                    <Btn>Confirmar Retirada</Btn>
-                                </TouchableOpacity>
-                            </BtnConfirm>
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={isAlertErroSuccess}
+            >
+                {ErrorSuccesAlert()}
+            </Modal>
 
-                            <BtnCancel>
-                                <TouchableOpacity onPress={() => { handleCancel() }}>
-                                    <Btn>Cancelar Retirada</Btn>
-                                </TouchableOpacity>
-                            </BtnCancel>
-                        </BoxInfo>
-
-                        <BtnFechar onPress={() => { setModalVisible(false) }}>
-                            <BtnText>Fechar</BtnText>
-                        </BtnFechar>
-                    </BoxModal>
-
-                </Modal>
-
-            </BoxIcon>
-        </Container>
-    );
+        </View>
+    )
 }

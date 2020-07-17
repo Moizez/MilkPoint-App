@@ -1,25 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react'
+import { AuthContext } from '../../../contexts/auth'
 import { RefreshControl } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import MenuButton from '../../../components/MenuButton'
 import Header from '../../../components/Header'
 import ListaRetiradasPendentes from '../ListaRetiradasPendentes'
 
-import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List } from './styles'
-
-let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+import {
+    Container, BoxNomeAviso, NomeAviso, Box, Titulo, List, BoxIconAviso,
+    BoxIconUpdate, BoxIconDelete
+} from './styles'
 
 export default function TelaRetiradasPendentesResponsavel() {
 
-    const [retiradaPendente, setRetiradaPendente] = useState([])
+    const { loadListRetiradasPendentes, retiradaPendente } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
-
-    //Lista de Retiradas Pendentes
-    const loadListRetiradasPendentes = async () => {
-        const response = await fetch(`${baseUrl}retirada/listapendentes`)
-        setRetiradaPendente(await response.json())
-        return retiradaPendente
-    }
 
     useEffect(() => {
         loadListRetiradasPendentes()
@@ -33,8 +28,6 @@ export default function TelaRetiradasPendentesResponsavel() {
 
     return (
         <Container>
-            <MenuButton />
-
             <Header />
 
             <Box>
@@ -47,7 +40,21 @@ export default function TelaRetiradasPendentesResponsavel() {
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <ListaRetiradasPendentes data={item} onRefresh={onRefreshList} />}
-                ListEmptyComponent={<BoxNomeAviso><NomeAviso>Não há retiradas pendentes!</NomeAviso></BoxNomeAviso>}
+                ListEmptyComponent={
+                    <BoxNomeAviso>
+                        <NomeAviso style={{ marginBottom: 70 }}>Não há retiradas pendentes!</NomeAviso>
+                        <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
+                        <BoxIconAviso>
+                            <BoxIconUpdate>
+                                <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
+                                <NomeAviso>Clique e arraste para atualizar a lista</NomeAviso>
+                            </BoxIconUpdate>
+                            <BoxIconDelete>
+                                <Icon name='gesture-tap' color='#adb5bd' size={60} />
+                                <NomeAviso>Clique na retirada para confirmar ou cancelar</NomeAviso>
+                            </BoxIconDelete>
+                        </BoxIconAviso>
+                    </BoxNomeAviso>}
             />
         </Container>
     );

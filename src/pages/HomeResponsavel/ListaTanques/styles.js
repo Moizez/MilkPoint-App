@@ -11,7 +11,7 @@ padding: 5px;
 box-shadow: 2px 2px rgba(0,0,0,0.40);
 margin-left: 10px;
 margin-right: 10px;
-border-radius: 8px;
+border-radius: 3px;
 justify-content: space-between;
 border-width: 1px;
 border-color: #000;

@@ -1,10 +1,8 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React from 'react'
+import OptionsScreen from '../../../components/OptionsScreen'
 
 export default function TelaConfiguracaoLaticinio() {
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>CONFIGURAÇÕES DO LATICINIO</Text>
-        </View>
-    );
+        <OptionsScreen />
+    )
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Speedometer from 'react-native-speedometer-chart'
-import { BoxGrafico, BoxIconGrafico } from './styles';
+import { BoxGrafico, BoxIconGrafico } from './styles'
 
-export default function GraficoTanque({ dataGrafico }) {
+export default function GraficoTanque({ dataGrafico, handleOpenModal }) {
 
     const capacidade = dataGrafico.qtdAtual + dataGrafico.qtdRestante
 
@@ -18,7 +18,7 @@ export default function GraficoTanque({ dataGrafico }) {
     }
 
     return (
-        <BoxGrafico>
+        <BoxGrafico onPress={handleOpenModal}>
             <BoxIconGrafico>
                 {dataGrafico.tipo == 'BOVINO' ?
                     <Icon
@@ -37,12 +37,13 @@ export default function GraficoTanque({ dataGrafico }) {
             <Speedometer
                 value={dataGrafico.qtdAtual}
                 totalValue={capacidade}
-                size={140}
+                size={125}
                 outerColor="#d3d3d3"
                 internalColor={corGrafico()}
                 showText
                 text={''}
                 textStyle={{ color: 'black' }}
+                innerColor={'#ececec'}
                 showLabels
                 labelStyle={{ color: 'blue' }}
                 labelFormatter={number => `${number}`}
@@ -53,3 +54,4 @@ export default function GraficoTanque({ dataGrafico }) {
         </BoxGrafico>
     );
 }
+

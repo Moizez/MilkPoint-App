@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import { StyleSheet, Text } from 'react-native'
 import MapView from 'react-native-maps'
 
 import {
@@ -9,7 +10,6 @@ import {
 export default function ModalDetalheTanque({ dataTanque, onClose }) {
 
     return (
-
         <BoxModal>
             <BoxTitulo>
                 <TituloInfo>Tanque: </TituloInfo>
@@ -28,17 +28,17 @@ export default function ModalDetalheTanque({ dataTanque, onClose }) {
             <BoxInfo>
 
                 <BoxCaracteristicas>
-                    <TextInfo>Tipo do Leite: {dataTanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</TextInfo>
-                    <TextInfo>Qtd. Atual: {dataTanque.qtdAtual}L</TextInfo>
-                    <TextInfo>Qtd. Restante: {dataTanque.qtdRestante}L</TextInfo>
-                    <TextInfo>Responsável: {dataTanque.responsavel.nome} </TextInfo>
+                    <TextInfo>Tipo do Leite: <Text style={{ fontWeight: 'normal' }}>{dataTanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></TextInfo>
+                    <TextInfo>Vol. Atual: <Text style={{ fontWeight: 'normal' }}>{dataTanque.qtdAtual} litros</Text></TextInfo>
+                    <TextInfo>Cabem: <Text style={{ fontWeight: 'normal' }}>{dataTanque.qtdRestante} litros</Text></TextInfo>
+                    <TextInfo>Responsável: <Text style={{ fontWeight: 'normal' }}>{dataTanque.responsavel.nome}</Text></TextInfo>
                 </BoxCaracteristicas>
                 <BoxEndereco>
-                    <TextInfo>Cidade: {dataTanque.localidade}</TextInfo>
-                    <TextInfo>Estado: {dataTanque.uf}</TextInfo>
-                    <TextInfo>CEP: {dataTanque.cep}</TextInfo>
-                    <TextInfo>Bairro: {dataTanque.bairro} </TextInfo>
-                    <TextInfo>Rua: {dataTanque.logradouro} </TextInfo>
+                    <TextInfo>Cidade: <Text style={{ fontWeight: 'normal' }}>{dataTanque.localidade}</Text></TextInfo>
+                    <TextInfo>Estado: <Text style={{ fontWeight: 'normal' }}>{dataTanque.uf}</Text></TextInfo>
+                    <TextInfo>CEP: <Text style={{ fontWeight: 'normal' }}>{dataTanque.cep}</Text></TextInfo>
+                    <TextInfo>Bairro: <Text style={{ fontWeight: 'normal' }}>{dataTanque.bairro}</Text></TextInfo>
+                    <TextInfo>Rua: <Text style={{ fontWeight: 'normal' }}>{dataTanque.logradouro}</Text></TextInfo>
                 </BoxEndereco>
             </BoxInfo>
             <BoxMap>

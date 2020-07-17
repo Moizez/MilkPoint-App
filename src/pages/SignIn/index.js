@@ -87,7 +87,7 @@ export default function SignIn() {
                     width: logo.x,
                     height: logo.y,
                 }}
-                    source={require('../../assets/mkLogo.png')} />
+                    source={require('../../assets/images/mkLogo.png')} />
             </BoxImage>
 
             <Animated.View

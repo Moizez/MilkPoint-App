@@ -1,24 +1,33 @@
 import React, { useState, useContext } from 'react';
-import { Modal, TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Entypo'
+import { Modal, View } from 'react-native';
 
 import { AuthContext } from '../../../contexts/auth'
-
-import {
-    BoxGeral, Container, Nome, BoxIcon, BoxInfoTanque, BoxModal, BoxTitulo, TituloInfo, NomeModal,
-    BtnFechar, BtnText, BoxInfo, BoxInfoModal, BtnConfirm, BtnCancel, Btn, NomeValor
-} from './styles'
-
-let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+import CardInfo from '../../../components/CardInfo'
+import ModalChoice from '../../../components/ModalChoice'
+import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
+import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 
 export default function ListaDepositosPendentes({ data, onRefresh }) {
 
+    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+
+    let error = require('../../../assets/lottie/error-icon.json')
+    let success = require('../../../assets/lottie/success-icon.json')
+    let msgType = jsonIcon == 'error' ? error : success
+
     const { user } = useContext(AuthContext)
 
-    const [modalVisible, setModalVisible] = useState(false)
     const [confirmacao, setConfirmacao] = useState(false)
     const [idDeposito, setIdDeposito] = useState(data.id)
     const [efetuou, setEfetuou] = useState(user.apelido)
+    const [isAction, setAction] = useState()
+    const [typeMessage, setTypeMessage] = useState('')
+    const [jsonIcon, setJsonIcon] = useState('error')
+
+    //States dos modais
+    const [isVisibleCard, setVisibleCard] = useState(false)
+    const [isAlertSimpleInfo, setAlertSimpleInfo] = useState(false)
+    const [isAlertErroSuccess, setAlertErroSuccess] = useState(false)
 
     //Confirmação da depositos pelo responsável
     const confirmacaoDeposito = async (confirmacao, idDeposito, efetuou) => {
@@ -28,123 +37,140 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         data.append("efetuou", efetuou);
 
         await fetch(`${baseUrl}deposito/confirmacao`, { method: 'POST', body: data })
-
-        if (confirmacao) {
-            alert("Pedido confirmado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
-        }
-        else {
-            alert("Pedido cancelado com sucesso!" + "\n" + "Veja sempre a quantidade restante!")
-        }
     };
 
     //Função para confirmar a depósito
-    async function handleConfirm() {
+    const handleConfirm = () => {
+        if (data.quantidade < data.tanque.qtdRestante) {
+            setJsonIcon('success')
+            setAction(true)
+            setAlertSimpleInfo(true)
+        } else {
+            setJsonIcon('error')
+            setTypeMessage('O valor solicitado excede a capacidade atual!')
+            setAlertErroSuccess(true)
+        }
+    }
+
+    const doneConfirm = async () => {
+        setAlertSimpleInfo(false)
+        setTypeMessage('Depósito confirmado com sucesso!')
+        setAlertErroSuccess(true)
         setConfirmacao(true)
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
         await confirmacaoDeposito(true, idDeposito, efetuou)
-        onRefresh()
-        setModalVisible(false)
+        setVisibleCard(false)
     }
 
     //Função para cancelar a depósito
-    async function handleCancel() {
+    const handleCancel = () => {
+        setAction(false)
+        setAlertSimpleInfo(true)
+    }
+
+    const doneCancel = async () => {
+        setAlertSimpleInfo(false)
+        setTypeMessage('Depósito cancelado com sucesso!')
+        setAlertErroSuccess(true)
         setConfirmacao(false)
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
         await confirmacaoDeposito(false, idDeposito, efetuou)
-        onRefresh()
-        setModalVisible(false)
+        setVisibleCard(false)
     }
 
-
-    function bucketColor(status) {
-        if (data.confirmacao == true) {
-            return status = 'Confirmado'
-        } if (data.excluido == true) {
-            return status = 'Cancelado'
-        } else {
-            return status = 'Pendente'
+    const InfoAlertSimple = () => {
+        if (isAlertSimpleInfo) {
+            if (isAction === false) {
+                return (
+                    <AlertSimpleInfo
+                        dataInfo={data}
+                        onConfirm={doneCancel}
+                        onClose={hideModalInfo}
+                        title='Aviso'
+                        message={'Deseja realmente cancelar este depósito?'}
+                    />
+                )
+            } else {
+                return (
+                    <AlertSimpleInfo
+                        dataInfo={data}
+                        onConfirm={doneConfirm}
+                        onClose={hideModalInfo}
+                        title='Aviso'
+                        message={'Deseja realmente confirmar este depósito?'}
+                    />
+                )
+            }
         }
     }
-    let status = bucketColor()
+
+    const ErrorSuccesAlert = () => {
+        if (isAlertErroSuccess) {
+            return (
+                <AlertErrorSuccess
+                    onClose={hideAlertErroSuccess}
+                    title='Aviso'
+                    message={typeMessage}
+                    titleButton='Ok'
+                    jsonPath={msgType}
+                    buttonColor={'#292b2c'}
+                />
+            )
+        }
+    }
+
+    const showModal = () => { setVisibleCard(true) }
+    const hideModal = () => { setVisibleCard(false) }
+    const hideModalInfo = () => { setAlertSimpleInfo(false) }
+    const hideAlertErroSuccess = () => {
+        setAlertErroSuccess(false)
+        onRefresh()
+    }
 
     return (
-        
-        <Container>
-            <BoxInfoTanque>
-                <Nome>Tanque: <NomeValor>{data.tanque.nome}</NomeValor></Nome>
-                <Nome>Tipo do leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></Nome>
-                <Nome>Valor requerido: <NomeValor>{data.quantidade} litros</NomeValor></Nome>
-                <Nome>Nome do produtor: <NomeValor>{data.produtor.nome}</NomeValor></Nome>
-                <Nome>Data: <NomeValor>{data.dataNow} às {data.horaNow}h</NomeValor></Nome>
-            </BoxInfoTanque>
-            <BoxIcon onPress={() => { setModalVisible(!modalVisible) }}>
-                <NomeValor>Depósito</NomeValor>
-                {status == 'Confirmado' && (
-                    <Icon
-                        name='bucket'
-                        size={70}
-                        color='#2a9d8f'
-                    ></Icon>
-                )}
-                {status == 'Cancelado' && (
-                    <Icon
-                        name='bucket'
-                        size={70}
-                        color='#da1e37'
-                    ></Icon>
-                )}
-                {status != 'Cancelado' && status != 'Confirmado' && (
-                    < Icon
-                        name='bucket'
-                        size={70}
-                        color='#adb5bd'
-                    ></Icon>
-                )}
-                <NomeValor>{status}</NomeValor>
 
-                <Modal
-                    animationType='slide'
-                    transparent={true}
-                    visible={modalVisible}
-                >
-                    <BoxModal>
-                        <BoxTitulo>
-                            <TituloInfo>Confirmação de depósito do tanque: </TituloInfo>
-                        </BoxTitulo>
+        <View>
+            <CardInfo
+                showModal={showModal}
+                dataInfo={data}
+                titlePerfil={'Produtor: '}
+                infoPerfil={data.produtor.nome}
+            />
 
-                        <BoxInfoModal>
-                            <NomeModal>Tanque: <NomeValor>{data.tanque.nome}</NomeValor></NomeModal>
-                            <NomeModal>Tipo do leite: <NomeValor>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</NomeValor></NomeModal>
-                            <NomeModal>Valor requerido: <NomeValor>{data.quantidade} litros</NomeValor></NomeModal>
-                            <NomeModal>Nome do produtor: <NomeValor>{data.produtor.nome}</NomeValor></NomeModal>
-                            <NomeModal>Data: <NomeValor>{data.dataNow} às {data.horaNow}h</NomeValor></NomeModal>
-                        </BoxInfoModal>
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={isVisibleCard}
+            >
+                <ModalChoice
+                    dataInfo={data}
+                    hideModal={hideModal}
+                    handleCancel={handleCancel}
+                    handleConfirm={handleConfirm}
+                    titlePerfil={'Produtor: '}
+                    infoPerfil={data.produtor.nome}
+                />
+            </Modal>
 
-                        <BoxInfo>
-                            <BtnConfirm>
-                                <TouchableOpacity onPress={() => { handleConfirm() }}>
-                                    <Btn>Confirmar Depósito</Btn>
-                                </TouchableOpacity>
-                            </BtnConfirm>
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={isAlertSimpleInfo}
+            >
+                {InfoAlertSimple()}
+            </Modal>
 
-                            <BtnCancel>
-                                <TouchableOpacity onPress={() => { handleCancel() }}>
-                                    <Btn>Cancelar Depósito</Btn>
-                                </TouchableOpacity>
-                            </BtnCancel>
-                        </BoxInfo>
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={isAlertErroSuccess}
+            >
+                {ErrorSuccesAlert()}
+            </Modal>
 
-                        <BtnFechar onPress={() => { setModalVisible(false) }}>
-                            <BtnText>Fechar</BtnText>
-                        </BtnFechar>
-                    </BoxModal>
-
-                </Modal>
-
-            </BoxIcon>
-        </Container>
+        </View>
 
     );
 }

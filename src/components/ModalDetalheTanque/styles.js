@@ -68,6 +68,7 @@ justify-content: center;
 
 export const TextInfo = styled.Text`
 font-size: 16px;
+font-weight: bold;
 `;
 
 export const BoxMap = styled.View`

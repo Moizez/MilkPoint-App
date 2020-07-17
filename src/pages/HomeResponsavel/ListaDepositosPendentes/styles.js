@@ -6,16 +6,7 @@ padding-bottom: 6px;
 `;
 
 export const Container = styled.View`
-flex-direction: row;
-align-items: center;
-margin-bottom: 5px;
-padding: 10px;
-box-shadow: 2px 2px rgba(0,0,0,0.40);
-background-color: #ececec;
-margin-left: 3px;
-margin-right: 3px;
-border-radius: 8px;
-justify-content: space-between;
+
 `;
 
 export const Nome = styled.Text`
@@ -46,10 +37,10 @@ flex: 2;
 export const BoxModal = styled.View`
 height: 50%;
 width: 100%;
-bottom: 0;
+bottom: 0px;
 position: absolute;
 border-top-left-radius: 10px;
-border-top-right-radius: 10;
+border-top-right-radius: 10px;
 background-color: #292b2c;
 justify-content: center;
 align-items: center;
