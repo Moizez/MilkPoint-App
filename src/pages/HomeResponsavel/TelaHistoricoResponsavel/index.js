@@ -82,16 +82,16 @@ export default function TelaHistoricoResponsavel() {
         setIsRefreshing(false)
     }
 
+    const showCalendar = () => { setShow(true) }
+
     return (
         <Container>
-            <Header />
+            <Header
+                nameList={`Lista de ${value == true ? 'DEPÓSITOS' : 'RETIRADAS'} do dia ${newDate && moment(newDate).format('L')}`}
+                onOpen={showCalendar}
+                calendar={<Icon name='calendar-month' color='#FFF' size={22} />}
+            />
 
-            <Box>
-                <Titulo>Lista de {value == true ? 'DEPÓSITOS' : 'RETIRADAS'} do dia {newDate && moment(newDate).format('L')}</Titulo>
-                <Calendar onPress={() => setShow(true)}>
-                    <Icon name='calendar-month' color='#FFF' size={25} />
-                </Calendar>
-            </Box>
 
             <List
                 showsVerticalScrollIndicator={false}
@@ -132,13 +132,13 @@ export default function TelaHistoricoResponsavel() {
                 actions={[
                     {
                         icon: 'basket-fill',
-                        label: 'Depósito',
+                        label: 'Listar por depósitos',
                         color: '#2a9d8f',
                         onPress: () => setValue(true),
                     },
                     {
                         icon: 'basket-unfill',
-                        label: 'Retirada',
+                        label: 'Listar por retiradas',
                         color: '#da1e37',
                         onPress: () => setValue(false),
                     },

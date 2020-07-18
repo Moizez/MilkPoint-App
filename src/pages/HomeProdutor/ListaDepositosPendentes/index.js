@@ -70,7 +70,7 @@ export default function ListaDepositossPendentes({ data, onRefresh }) {
                     onConfirm={handleConfirm}
                     onClose={closeAlertInfo}
                     title='Aviso'
-                    message={'Deseja realmente cancelar este depósito?'}
+                    message={'Deseja realmente CANCELAR este DEPÓSITO?'}
                 />
             )
         }

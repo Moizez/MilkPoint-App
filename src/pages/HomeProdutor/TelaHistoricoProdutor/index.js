@@ -9,7 +9,7 @@ import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
 
 import {
-    Container, Box, BoxNomeAviso, NomeAviso, Titulo, List, Calendar, BoxIconAviso,
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
@@ -53,20 +53,15 @@ export default function TelaHistoricoProdutor() {
         setIsRefreshing(false)
     }
 
+    const showCalendar = () => { setShow(true) }
+
     return (
         <Container>
-            <Header />
-
-            <Box>
-                <Titulo>Lista de transações do dia {selectedDate && moment(selectedDate).format('L')}</Titulo>
-                <Calendar onPress={() => setShow(true)}>
-                    <Icon
-                        name='calendar-month'
-                        color='#FFF'
-                        size={25}>
-                    </Icon>
-                </Calendar>
-            </Box>
+            <Header
+                nameList={`Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`}
+                onOpen={showCalendar}
+                calendar={<Icon name='calendar-month' color='#FFF' size={22} />}
+            />
 
             <List
                 showsVerticalScrollIndicator={false}

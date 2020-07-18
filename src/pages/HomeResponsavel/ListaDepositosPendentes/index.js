@@ -89,7 +89,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
                         onConfirm={doneCancel}
                         onClose={hideModalInfo}
                         title='Aviso'
-                        message={'Deseja realmente cancelar este depósito?'}
+                        message={'Deseja realmente CANCELAR esta RETIRADA?'}
                     />
                 )
             } else {
@@ -99,7 +99,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
                         onConfirm={doneConfirm}
                         onClose={hideModalInfo}
                         title='Aviso'
-                        message={'Deseja realmente confirmar este depósito?'}
+                        message={'Deseja realmente CONFIRMAR esta RETIRADA?'}
                     />
                 )
             }

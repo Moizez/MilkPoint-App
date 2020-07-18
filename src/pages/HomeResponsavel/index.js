@@ -40,11 +40,7 @@ export default function HomeResponsavel() {
 
     return (
         <Container>
-            <Header />
-            <Box>
-                <Titulo>Lista de tanques</Titulo>
-            </Box>
-
+            <Header nameList={'Lista de tanques'}/> 
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanqueResponsavel}

@@ -70,7 +70,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
                     onConfirm={handleConfirm}
                     onClose={closeAlertInfo}
                     title='Aviso'
-                    message={'Deseja realmente cancelar esta retirada?'}
+                    message={'Deseja realmente CANCELAR esta RETIRADA?'}
                 />
             )
         }
@@ -86,7 +86,6 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
     return (
         <View>
-
             <CardInfo
                 showModal={handleOpenCancelModal}
                 dataInfo={data}

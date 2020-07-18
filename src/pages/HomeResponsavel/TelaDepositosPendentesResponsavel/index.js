@@ -28,12 +28,7 @@ export default function TelaDepositosPendentesResponsavel() {
 
     return (
         <Container>
-            <Header />
-
-            <Box>
-                <Titulo>Lista de depósitos pendentes</Titulo>
-            </Box>
-
+            <Header nameList={'Lista de depósitos pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
                 data={depositoPendente}

@@ -19,10 +19,10 @@ export default function ModalCancel({ dataTanque, onClose, onCancel }) {
                 <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 6 }}></View>
 
                 <View style={styles.viewMessage}>
-                    <Text style={styles.textMsgInfo}>Nome do tanque: {dataTanque.tanque.nome}</Text>
-                    <Text style={styles.textMsgInfo}>Tipo do leite: {dataTanque.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text>
-                    <Text style={styles.textMsgInfo}>Valor solicitado: {dataTanque.quantidade} litros</Text>
-                    <Text style={styles.textMsgInfo}>Data: {dayHour}h</Text>
+                    <Text style={styles.textMsgInfo}>Nome do tanque: <Text style={styles.text}>{dataTanque.tanque.nome}</Text></Text>
+                    <Text style={styles.textMsgInfo}>Tipo do leite: <Text style={styles.text}>{dataTanque.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
+                    <Text style={styles.textMsgInfo}>Valor solicitado: <Text style={styles.text}>{dataTanque.quantidade} litros</Text></Text>
+                    <Text style={styles.textMsgInfo}>Data: <Text style={styles.text}>{dayHour}h</Text></Text>
                 </View>
 
                 <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginTop: 20 }}></View>
@@ -84,10 +84,14 @@ const styles = StyleSheet.create({
     },
     textMsgInfo: {
         fontSize: 16,
+        fontWeight: 'bold'
     },
     btnStyle: {
         color: '#FFF',
         textAlign: 'center',
         fontSize: 20,
+    },
+    text: {
+        fontWeight: 'normal'
     },
 })

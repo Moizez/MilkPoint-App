@@ -28,12 +28,7 @@ export default function TelaRetiradasPendentesResponsavel() {
 
     return (
         <Container>
-            <Header />
-
-            <Box>
-                <Titulo>Lista de retiradas pendentes</Titulo>
-            </Box>
-
+            <Header nameList={'Lista de retiradas pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
                 data={retiradaPendente}

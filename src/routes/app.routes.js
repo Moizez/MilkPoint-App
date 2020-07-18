@@ -37,6 +37,7 @@ function ResponsavelTab() {
             initialRouteName='Home'
             tabBarOptions={{
                 activeTintColor: '#FFF',
+                inactiveTintColor: '#000',
                 tabBarPosition: 'bottom',
                 animationEnabled: true,
                 swipeEnabled: true,
@@ -97,6 +98,7 @@ function ProdutorTab() {
             initialRouteName='Home'
             tabBarOptions={{
                 activeTintColor: '#FFF',
+                inactiveTintColor: '#000',
                 tabBarPosition: 'bottom',
                 animationEnabled: true,
                 swipeEnabled: true,
@@ -147,6 +149,7 @@ function LaticinioTab() {
             initialRouteName='Home'
             tabBarOptions={{
                 activeTintColor: '#FFF',
+                inactiveTintColor: '#000',
                 tabBarPosition: 'bottom',
                 animationEnabled: true,
                 swipeEnabled: true,
@@ -198,6 +201,7 @@ function TecnicoTab() {
             initialRouteName='Home'
             tabBarOptions={{
                 activeTintColor: '#FFF',
+                inactiveTintColor: '#000',
                 tabBarPosition: 'bottom',
                 animationEnabled: true,
                 swipeEnabled: true,

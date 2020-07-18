@@ -41,15 +41,6 @@ align-items: center;
 width: 150px;
 `;
 
-export const Box = styled.View`
-flex-direction: row;
-align-items: center;
-justify-content: space-between;
-margin-left: 10px;
-margin-right: 10px;
-margin-top: 13px;
-`;
-
 export const Titulo = styled.Text`
 font-size: 14px;
 color: #FFF;
@@ -66,5 +57,8 @@ border-top-right-radius: 3px;
 `;
 
 export const Calendar = styled.TouchableOpacity`
+position: absolute;
+right: 8;
+top: 150;
 `;
 
