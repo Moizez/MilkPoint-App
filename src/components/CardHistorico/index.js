@@ -24,7 +24,7 @@ const CardHistorico = ({ data, showModal }) => {
             <View style={styles.cardContainer}>
                 <View style={styles.infoCard}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.tanque.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
+                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tanque.tipo === 'BOVINO' ? 'bovino' : 'caprino'}</Text></Text>
                     {data.confirmacao === false && <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.tanque.responsavel.nome}</Text></Text>}
                     <Text style={styles.textInfo}>Valor solicitado: <Text style={styles.text}>{data.quantidade} litros</Text></Text>
                     <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 6,
-        shadowColor: '#000',
+        shadowColor: 'rgba(0,0,0,0.7)',
         shadowOpacity: 0.25,
         shadowRadius: 3.85,
         shadowOffset: {

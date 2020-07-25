@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { Modal, Keyboard, View, Text,  StyleSheet } from 'react-native'
+import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
 import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
@@ -16,9 +16,7 @@ import {
 
 export default function ListaTanques({ data }) {
 
-    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
-
-    const { user, loadListRetiradasPendentes } = useContext(AuthContext)
+    const { user, loadListRetiradasPendentes, baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [modalVisibleDois, setModalVisibleDois] = useState(false)
@@ -114,10 +112,10 @@ export default function ListaTanques({ data }) {
     return (
         <View style={styles.container}>
 
-            <View style={styles.cardContainer} onPress={() => { setModalVisible(true) }} activeOpacity={0.7}>
+            <View style={styles.cardContainer}>
                 <View style={styles.infoCard}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
+                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'bovino' : 'caprino'}</Text></Text>
                     <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
                     <Text style={styles.textInfo}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                     <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
@@ -141,7 +139,7 @@ export default function ListaTanques({ data }) {
                 <BoxFabBtn>
                     <FabBtn onPress={() => { setModalVisibleDois(true) }} activeOpacity={0.7}>
                         <Icon name='basket-fill' color='#FFF' size={20} />
-                        <FabText>Depositar</FabText>
+                        <FabText>Retirar</FabText>
                     </FabBtn>
                 </BoxFabBtn>
 

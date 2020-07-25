@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { Modal, Keyboard, View, Text,  StyleSheet } from 'react-native'
+import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
 import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
@@ -113,7 +113,7 @@ export default function ListaTanques({ data }) {
     return (
         <View style={styles.container}>
 
-            <View style={styles.cardContainer} onPress={() => { setModalVisible(true) }} activeOpacity={0.7}>
+            <View style={styles.cardContainer} activeOpacity={0.7}>
                 <View style={styles.infoCard}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
                     <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
@@ -124,7 +124,7 @@ export default function ListaTanques({ data }) {
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
-                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
+                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal}/>
             </View>
 
             <Modal

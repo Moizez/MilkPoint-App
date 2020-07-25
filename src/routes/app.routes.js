@@ -10,6 +10,7 @@ import TelaHistoricoProdutor from '../pages/HomeProdutor/TelaHistoricoProdutor'
 import TelaDepositosPendentesProdutor from '../pages/HomeProdutor/TelaDepositosPendentesProdutor'
 import TelaConfiguracaoProdutor from '../pages/HomeProdutor/TelaConfiguracaoProdutor'
 import TelaPerfilProdutor from '../pages/HomeProdutor/TelaPerfilProdutor'
+import DetalhesTanque from '../pages/DetalhesTanque'
 
 //Páginas TAB do Laticínio
 import HomeLaticinio from '../pages/HomeLaticinio'
@@ -88,6 +89,18 @@ function ResponsavelTab() {
                 }}
 
             />
+
+            <AppTab.Screen name='DetalhesTanque' component={DetalhesTanque}
+                options={{
+                    tabBarButton: () => null,
+                }}
+            />
+
+            <AppTab.Screen name='Perfil' component={TelaPerfilResponsavel}
+                options={{
+                    tabBarButton: () => null,
+                }}
+            />
         </AppTab.Navigator>
     )
 }
@@ -139,6 +152,19 @@ function ProdutorTab() {
                 }}
 
             />
+
+            <AppTab.Screen name='DetalhesTanque' component={DetalhesTanque}
+                options={{
+                    tabBarButton: () => null,
+                }}
+            />
+
+            <AppTab.Screen name='Perfil' component={TelaPerfilProdutor}
+                options={{
+                    tabBarButton: () => null,
+                }}
+            />
+
         </AppTab.Navigator>
     )
 }
@@ -190,6 +216,16 @@ function LaticinioTab() {
                     ),
                 }}
 
+            />
+            <AppTab.Screen name='DetalhesTanque' component={DetalhesTanque}
+                options={{
+                    tabBarButton: () => null,
+                }}
+            />
+            <AppTab.Screen name='Perfil' component={TelaPerfilLaticinio}
+                options={{
+                    tabBarButton: () => null,
+                }}
             />
         </AppTab.Navigator>
     )

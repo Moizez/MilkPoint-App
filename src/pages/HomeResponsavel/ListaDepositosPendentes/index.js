@@ -15,7 +15,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
-    const { user } = useContext(AuthContext)
+    const { user, loadListDepositos } = useContext(AuthContext)
 
     const [confirmacao, setConfirmacao] = useState(false)
     const [idDeposito, setIdDeposito] = useState(data.id)
@@ -60,6 +60,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
         await confirmacaoDeposito(true, idDeposito, efetuou)
+        await loadListDepositos()
         setVisibleCard(false)
     }
 
@@ -77,6 +78,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
         await confirmacaoDeposito(false, idDeposito, efetuou)
+        await loadListDepositos()
         setVisibleCard(false)
     }
 

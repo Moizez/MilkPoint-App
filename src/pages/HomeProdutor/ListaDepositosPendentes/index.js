@@ -12,7 +12,7 @@ export default function ListaDepositossPendentes({ data, onRefresh }) {
     let baseUrl = 'https://milkpointapi.cfapps.io/api/'
     let success = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user } = useContext(AuthContext)
+    const { user, loadListDepositos } = useContext(AuthContext)
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
@@ -44,6 +44,7 @@ export default function ListaDepositossPendentes({ data, onRefresh }) {
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
         await confirmacaoDeposito(false, idDeposito, efetuou)
+        await loadListDepositos()
         setModalCancelVisible(false)
     }
 

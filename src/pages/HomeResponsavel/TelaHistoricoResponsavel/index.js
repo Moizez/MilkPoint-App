@@ -10,18 +10,18 @@ import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, Box, Calendar, Titulo, List, BoxIconAviso,
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
 export default function TelaHistoricoResponsavel() {
 
-    const { loadListDepositos, loadListRetiradas, deposito, retirada } = useContext(AuthContext)
+    const { user, loadListDepositos, loadListRetiradas, deposito, retirada } = useContext(AuthContext)
 
     const [show, setShow] = useState(false)
-    const [newDate, setNewDate] = useState(new Date())
+    const [selectedDate, setSelectedDate] = useState(new Date())
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [value, setValue] = useState(false)
+    const [check, setCheck] = useState(true)
     const [dateDeposito, setDateDeposito] = useState([])
     const [dateRetirada, setDateRetirada] = useState([])
 
@@ -30,64 +30,61 @@ export default function TelaHistoricoResponsavel() {
     const onStateChange = ({ open }) => setState({ open });
     const { open } = state;
 
-    //Lista dos depositos por status
-    const depositos = deposito.filter(function (status) {
-        return status.confirmacao === true || status.excluido === true
-    })
+    //Lista dos depositos e retiradas por status e usuário logado
+    const responsavelId = p => p.tanque.responsavel.id == user.id
+    const status = s => s.confirmacao == true || s.excluido == true
+    const depositos = deposito.filter(responsavelId).filter(status)
+    const retiradas = retirada.filter(responsavelId).filter(status)
 
-    //Lista das retiradas por status
-    const retiradas = retirada.filter(function (status) {
-        return status.confirmacao === true || status.excluido === true
-    })
-
-    //Lista de todas os depositos pela data
-    const checkDateDeposito = async (value) => {
-        let day = moment(value).format('L')
+    //Lista de todos os depositos pela data
+    const checkDateDeposito = async () => {
+        let day = moment(selectedDate).format('L')
         const dayDeposito = await depositos.filter(function (r) {
             let dayRet = moment(r.dataNow).format('L')
             return dayRet === day
         })
-        return setDateDeposito(dayDeposito)
+        setDateDeposito(dayDeposito)
+        return dateDeposito
     }
 
     //Lista de todas as retiradas pela data
-    const checkDateRetirada = async (dado) => {
-        let day = moment(dado).format('L')
+    const checkDateRetirada = async () => {
+        let day = moment(selectedDate).format('L')
         const dayRetirada = await retiradas.filter(function (r) {
             let dayRet = moment(r.dataNow).format('L')
             return dayRet === day
         })
-        return setDateRetirada(dayRetirada)
+        setDateRetirada(dayRetirada)
+        return dateRetirada
     }
 
     useEffect(() => {
-        if (value == true) {
+        if (check == true) {
+            checkDateDeposito()
             loadListDepositos()
-            checkDateDeposito(newDate)
         } else {
+            checkDateRetirada()
             loadListRetiradas()
-            checkDateRetirada(newDate)
         }
-    }, [])
+    }, [selectedDate])
 
-    function onChange(dado) {
+    function onChange(value) {
         setShow(Platform.OS === 'ios')
-        setNewDate(dado)
-        onRefreshList(dado)
+        setSelectedDate(value)
     }
 
-    async function onRefreshList(dado) {
+    async function onRefreshList() {
         setIsRefreshing(true)
-        value === false ? await checkDateRetirada(dado) : await checkDateDeposito(dado)
+        check == false ? await checkDateRetirada(selectedDate) : await checkDateDeposito(selectedDate)
         setIsRefreshing(false)
     }
 
-    const showCalendar = () => { setShow(true) }
+    const showCalendar = () => setShow(true)
 
     return (
         <Container>
             <Header
-                nameList={`Lista de ${value == true ? 'DEPÓSITOS' : 'RETIRADAS'} do dia ${newDate && moment(newDate).format('L')}`}
+                nameList={`Lista de ${check == true ? 'DEPÓSITOS' : 'RETIRADAS'} do dia ${selectedDate && moment(selectedDate).format('L')}`}
                 onOpen={showCalendar}
                 calendar={<Icon name='calendar-month' color='#FFF' size={22} />}
             />
@@ -95,7 +92,7 @@ export default function TelaHistoricoResponsavel() {
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={value == false ? dateRetirada : dateDeposito}
+                data={check == false ? dateRetirada : dateDeposito}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <CardHistorico data={item} />}
@@ -119,7 +116,7 @@ export default function TelaHistoricoResponsavel() {
             {
                 show && (
                     <DatePicker
-                        date={newDate}
+                        date={selectedDate}
                         onChange={onChange}
                     />)
             }
@@ -128,19 +125,33 @@ export default function TelaHistoricoResponsavel() {
                 fabStyle={{ backgroundColor: 'black', borderWidth: 1, borderColor: 'white', shadowOpacity: 0 }}
                 color='#FFF'
                 open={open}
-                icon={open ? 'close' : 'plus'}
+                icon={open ? 'close' : 'magnify'}
                 actions={[
+                    {
+                        icon: 'calendar-search',
+                        label: 'Listar por data',
+                        color: '#fca311',
+                        onPress: () => {
+                            setShow(true)
+                        },
+                    },
                     {
                         icon: 'basket-fill',
                         label: 'Listar por depósitos',
                         color: '#2a9d8f',
-                        onPress: () => setValue(true),
+                        onPress: () => {
+                            setCheck(true)
+                            checkDateDeposito(selectedDate)
+                        },
                     },
                     {
                         icon: 'basket-unfill',
                         label: 'Listar por retiradas',
                         color: '#da1e37',
-                        onPress: () => setValue(false),
+                        onPress: () => {
+                            setCheck(false)
+                            checkDateRetirada(selectedDate)
+                        },
                     },
                 ]}
                 onStateChange={onStateChange}

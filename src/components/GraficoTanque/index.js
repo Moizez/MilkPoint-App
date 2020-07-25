@@ -2,10 +2,12 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Speedometer from 'react-native-speedometer-chart'
 import { BoxGrafico, BoxIconGrafico } from './styles'
+import { useNavigation } from '@react-navigation/native'
 
 export default function GraficoTanque({ dataGrafico, handleOpenModal }) {
 
     const capacidade = dataGrafico.qtdAtual + dataGrafico.qtdRestante
+    const navigation = useNavigation()
 
     function corGrafico() {
         if (dataGrafico.qtdAtual > (capacidade / 4) & dataGrafico.qtdAtual < (capacidade / 2)) {
@@ -18,7 +20,7 @@ export default function GraficoTanque({ dataGrafico, handleOpenModal }) {
     }
 
     return (
-        <BoxGrafico onPress={handleOpenModal}>
+        <BoxGrafico onLongPress={() => navigation.navigate('DetalhesTanque', { data: dataGrafico })} onPress={handleOpenModal}>
             <BoxIconGrafico>
                 {dataGrafico.tipo == 'BOVINO' ?
                     <Icon

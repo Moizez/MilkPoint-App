@@ -7,49 +7,62 @@ import moment from 'moment'
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
+import FabSearch from '../../../components/FabSearch'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, Titulo, List, Calendar, BoxIconAviso,
-    BoxIconUpdate, BoxIconDelete
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from './styles'
 
 export default function TelaHistoricoLaticinio() {
 
     const { user, loadListRetiradas, retirada } = useContext(AuthContext)
-    const [dateRetirada, setDateRetirada] = useState([])
+    const [dataRetirada, setDataRetirada] = useState([])
 
     const [show, setShow] = useState(false)
-    const [newDate, setNewDate] = useState(new Date())
+    const [selectedDate, setSelectedDate] = useState(new Date())
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [isTitle, setTitle] = useState(false)
 
+    //Filtrar por usuário e status
     const laticinio = r => r.laticinio.id == user.id
     const status = r => r.confirmacao != false || r.excluido != false
     const retiradas = retirada.filter(laticinio).filter(status)
 
+    //Filtrar por valor do pedido
+    async function getValor(value) {
+        const filterByValue = await retiradas.filter(function (v) {
+            return v.quantidade == value
+        })
+        setTitle(true)
+        setDataRetirada(filterByValue)
+        return dataRetirada
+    }
+
     //Lista de todas as retiradas pela data
-    const checkDate = async (value) => {
-        let day = moment(value).format('L')
+    const checkDate = async () => {
+        let day = moment(selectedDate).format('L')
         const dayRetirada = await retiradas.filter(function (r) {
             let dayRet = moment(r.dataNow).format('L')
             return dayRet === day
         })
-        return setDateRetirada(dayRetirada)
+        setTitle(false)
+        setDataRetirada(dayRetirada)
+        return dataRetirada
     }
 
     useEffect(() => {
+        checkDate()
         loadListRetiradas()
-        checkDate(newDate)
-    }, [])
+    }, [selectedDate])
 
     function onChange(value) {
         setShow(Platform.OS === 'ios')
-        setNewDate(value)
-        onRefreshList(value)
+        setSelectedDate(value)
     }
 
-    async function onRefreshList(value) {
+    async function onRefreshList() {
         setIsRefreshing(true)
-        await checkDate(value)
+        await checkDate(selectedDate)
         setIsRefreshing(false)
     }
 
@@ -58,14 +71,16 @@ export default function TelaHistoricoLaticinio() {
     return (
         <Container>
             <Header
-                nameList={`Lista de transações do dia ${newDate && moment(newDate).format('L')}`}
+                nameList={isTitle ?
+                    'Lista de transações pelo valor da retirada' :
+                    `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`}
                 onOpen={showCalendar}
                 calendar={<Icon name='calendar-month' color='#FFF' size={22} />}
             />
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={dateRetirada}
+                data={dataRetirada}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <CardHistorico data={item} />}
@@ -89,10 +104,15 @@ export default function TelaHistoricoLaticinio() {
             {
                 show && (
                     <DatePicker
-                        date={newDate}
+                        date={selectedDate}
                         onChange={onChange}
                     />)
             }
+
+            <FabSearch
+                getValor={getValor}
+                onOpen={showCalendar}
+            />
 
         </Container>
     );

@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 export const AuthContext = createContext({})
 
 //Url padrão da API
+//let baseUrl = 'http://192.168.0.127:8080/api/'
 let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function AuthProvider({ children }) {
@@ -138,7 +139,7 @@ export default function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{
             signed: !!user, user, loading, loadingAuth, depositoPendente, deposito, retiradaPendente,
-            retirada, tanque,
+            retirada, tanque, baseUrl,
             signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,
             loadListRetiradas, loadListTanques
         }}>

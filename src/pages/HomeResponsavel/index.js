@@ -7,15 +7,13 @@ import ListaTanques from '../HomeResponsavel/ListaTanques'
 import { AuthContext } from '../../contexts/auth'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, Box, Titulo, List, BoxIconAviso,
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
-let baseUrl = 'https://milkpointapi.cfapps.io/api/'
-
 export default function HomeResponsavel() {
 
-    const { user } = useContext(AuthContext)
+    const { user, baseUrl } = useContext(AuthContext)
     const [tanqueResponsavel, setTanqueResponsavel] = useState([])
     const [isRefreshing, setIsRefreshing] = useState(false)
 
@@ -40,7 +38,7 @@ export default function HomeResponsavel() {
 
     return (
         <Container>
-            <Header nameList={'Lista de tanques'}/> 
+            <Header nameList={'Lista de tanques'} />
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanqueResponsavel}

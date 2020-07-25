@@ -24,7 +24,7 @@ const CardInfo = ({ dataInfo, showModal, titlePerfil, infoPerfil }) => {
             <View style={styles.cardContainer}>
                 <View style={styles.infoCard}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{dataInfo.tanque.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{dataInfo.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
+                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{dataInfo.tanque.tipo === 'BOVINO' ? 'bovino' : 'caprino'}</Text></Text>
                     <Text style={styles.textInfo}>Valor solicitado: <Text style={styles.text}>{dataInfo.quantidade} litros</Text></Text>
                     <Text style={styles.textInfo}>{titlePerfil} <Text style={styles.text}>{infoPerfil}</Text></Text>
                     <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>

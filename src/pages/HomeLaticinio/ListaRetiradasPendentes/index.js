@@ -12,7 +12,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
     let baseUrl = 'https://milkpointapi.cfapps.io/api/'
     let success = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user } = useContext(AuthContext)
+    const { user, loadListRetiradas } = useContext(AuthContext)
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
@@ -44,6 +44,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
         await confirmacaoRetirada(false, idRetirada, efetuou)
+        await loadListRetiradas()
         setModalCancelVisible(false)
     }
 

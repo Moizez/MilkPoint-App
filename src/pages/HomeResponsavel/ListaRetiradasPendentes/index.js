@@ -15,7 +15,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
-    const { user } = useContext(AuthContext)
+    const { user, loadListRetiradas } = useContext(AuthContext)
 
     const [confirmacao, setConfirmacao] = useState(false)
     const [idRetirada, setIdRetirada] = useState(data.id)
@@ -60,6 +60,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
         await confirmacaoRetirada(true, idRetirada, efetuou)
+        await loadListRetiradas()
         setVisibleCard(false)
     }
 
@@ -77,6 +78,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
         await confirmacaoRetirada(false, idRetirada, efetuou)
+        await loadListRetiradas()
         setVisibleCard(false)
     }
 

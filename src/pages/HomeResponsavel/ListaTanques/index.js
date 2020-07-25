@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { View, Modal, Text, StyleSheet, TouchableOpacity, TouchableHighlight } from 'react-native'
+import { View, Modal, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import Speedometer from 'react-native-speedometer-chart'
 import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
@@ -8,6 +9,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 export default function ListaTanques({ data }) {
 
     const [modalVisible, setModalVisible] = useState(false)
+    const navigation = useNavigation()
     const capacidade = data.qtdAtual + data.qtdRestante
 
     function corGrafico() {
@@ -24,7 +26,7 @@ export default function ListaTanques({ data }) {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.cardButton} onPress={() => { setModalVisible(!modalVisible) }} activeOpacity={0.5}>
+            <TouchableOpacity style={styles.cardButton} onLongPress={() => navigation.navigate('DetalhesTanque', { data: data })} onPress={() => { setModalVisible(true) }} activeOpacity={0.5}>
                 <View style={styles.iconContainer}>
                     {data.tipo == 'BOVINO' ?
                         <Icon name='cow' color='blue' size={40} /> :

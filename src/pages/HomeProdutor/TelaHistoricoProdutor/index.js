@@ -7,24 +7,36 @@ import moment from 'moment'
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
+import FabSearch from '../../../components/FabSearch'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
-    BoxIconUpdate, BoxIconDelete
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from './styles'
 
 export default function TelaHistoricoProdutor() {
 
     const { user, loadListDepositos, deposito } = useContext(AuthContext)
-    const [dateDeposito, setDateDeposito] = useState([])
+    const [dataDeposito, setDataDeposito] = useState([])
 
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [isTitle, setTitle] = useState(false)
 
+    //Filtrar por usuário e status
     const produtor = d => d.produtor.id == user.id
     const status = d => d.confirmacao != false || d.excluido != false
     const depositos = deposito.filter(produtor).filter(status)
+
+    //Filtrar por valor do pedido
+    async function getValor(value) {
+        const filterByValue = await depositos.filter(function (v) {
+            return v.quantidade == value
+        })
+        setTitle(true)
+        setDataDeposito(filterByValue)
+        return dataDeposito
+    }
 
     //Lista de todos os depósitos pela data
     const checkDate = async () => {
@@ -33,8 +45,9 @@ export default function TelaHistoricoProdutor() {
             let dayDep = moment(d.dataNow).format('L')
             return dayDep === day
         })
-        setDateDeposito(dayDeposito)
-        return dateDeposito
+        setTitle(false)
+        setDataDeposito(dayDeposito)
+        return dataDeposito
     }
 
     useEffect(() => {
@@ -58,14 +71,16 @@ export default function TelaHistoricoProdutor() {
     return (
         <Container>
             <Header
-                nameList={`Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`}
+                nameList={isTitle ?
+                    'Lista de transações pelo valor do depósito' :
+                    `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`}
                 onOpen={showCalendar}
                 calendar={<Icon name='calendar-month' color='#FFF' size={22} />}
             />
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={dateDeposito}
+                data={dataDeposito}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <CardHistorico data={item} />}
@@ -93,6 +108,11 @@ export default function TelaHistoricoProdutor() {
                         onChange={onChange}
                     />)
             }
+
+            <FabSearch
+                getValor={getValor}
+                onOpen={showCalendar}
+            />
 
         </Container>
     );
