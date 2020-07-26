@@ -2,11 +2,11 @@ import React, { useState, useContext } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 
-import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
 import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
 import GraficoTanque from '../../../components/GraficoTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
+import Map from '../../../components/Map'
 
 import { AuthContext } from '../../../contexts/auth'
 
@@ -132,8 +132,8 @@ export default function ListaTanques({ data }) {
                 transparent={false}
                 visible={modalVisible}
             >
-                <ModalDetalheTanque
-                    dataTanque={data}
+                <Map
+                    dataMap={data}
                     onClose={handleCloseModal}
                 />
 

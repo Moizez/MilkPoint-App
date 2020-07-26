@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, Image, PermissionsAndroid } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react'
+import { View, Text, StyleSheet, Image, PermissionsAndroid, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MapView, { Marker, Callout } from 'react-native-maps'
 import MapViewDirections from 'react-native-maps-directions'
 import Geolocation from 'react-native-geolocation-service'
+import { getDistance, convertDistance } from 'geolib'
 
-
-export default function Map({ dataMap }) {
+export default function Map({ dataMap, onClose }) {
 
     const navigation = useNavigation()
+    const mapRef = useRef(null)
 
     let pinCow = require('../../assets/images/pin-cow.png')
     let pinSheep = require('../../assets/images/pin-sheep.png')
@@ -22,6 +23,14 @@ export default function Map({ dataMap }) {
         longitude: 0,
         error: null
     })
+
+    const getDistancia = () => {
+        let distance = getDistance(
+            { latitude: initialRegion.latitude, longitude: initialRegion.longitude },
+            { latitude: dataMap.latitude, longitude: dataMap.longitude }
+        )
+        return convertDistance(distance, 'km').toFixed(1)
+    }
 
     async function verifyLocationPermission() {
         try {
@@ -61,15 +70,21 @@ export default function Map({ dataMap }) {
 
     return (
         <View style={styles.container}>
+
+            <View style={styles.distanceView}>
+                <Text style={styles.distanceText}>Você está a {getDistancia()}km de distância</Text>
+            </View>
+
             <MapView
+                ref={mapRef}
                 style={styles.map}
                 showsUserLocation
                 loadingEnabled
                 region={{
                     latitude: initialRegion.latitude,
                     longitude: initialRegion.longitude,
-                    latitudeDelta: 0.2000,
-                    longitudeDelta: 0.1000
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421
                 }}
             >
                 {
@@ -80,6 +95,16 @@ export default function Map({ dataMap }) {
                             apikey="AIzaSyCqJEj4QwlweIp1dTC94eqJ6Kb5wUyYL_M"
                             strokeWidth={5}
                             strokeColor={dataMap.tipo == 'BOVINO' ? '#0077b6' : '#2a9d8f'}
+                            onReady={result => {
+                                mapRef.current.fitToCoordinates(result.coordinates, {
+                                    edgePadding: {
+                                        top: 100,
+                                        bottom: 100,
+                                        right: 100,
+                                        left: 100
+                                    }
+                                })
+                            }}
                         />
                     )
                 }
@@ -109,34 +134,25 @@ export default function Map({ dataMap }) {
 
             </MapView>
 
-
+            <TouchableOpacity style={styles.btnMap} onPress={onClose}>
+                <Text style={styles.btnMapText}>Fechar</Text>
+            </TouchableOpacity>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 2,
-        padding: 6,
+        flex: 1,
+        paddingHorizontal: 6,
         justifyContent: 'center',
         alignItems: 'center',
     },
     map: {
-        width: '100%', height: '100%'
-    },
-    viewButton: {
-        position: 'absolute',
-        backgroundColor: 'red',
-        justifyContent: 'center',
-        borderRadius: 3,
-        width: '95%',
-        height: 45,
-        top: 18
-    },
-    textBtn: {
-        textAlign: 'center',
-        color: '#FFF',
-        fontSize: 18
+        width: '100%',
+        height: '85%',
+        marginBottom: 5,
+        marginTop: 5
     },
     cardInfo: {
         width: 200,
@@ -146,6 +162,33 @@ const styles = StyleSheet.create({
     },
     textSimple: {
         fontWeight: 'normal'
+    },
+    distanceView: {
+        height: 40,
+        flexDirection: 'row',
+        width: '100%',
+        height: 30,
+        backgroundColor: '#292b2c',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'space-around'
+    },
+    distanceText: {
+        fontSize: 17,
+        color: '#FFF'
+    },
+    btnMap: {
+        width: '100%',
+        height: 45,
+        backgroundColor: '#292b2c',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    btnMapText: {
+        fontSize: 18,
+        color: '#FFF'
     }
 })
+
 

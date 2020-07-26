@@ -6,18 +6,10 @@ import {
     BoxModal, BoxTitulo, TituloInfo, BoxBtnModal, BtnVoltar, BtnText
 } from './styles'
 
-export default function ModalDetalheTanque({ dataTanque, onClose }) {
+export default function ModalDetalheTanque({ dataMap, onClose }) {
 
     return (
         <BoxModal>
-
-            <Map dataMap={dataTanque} />
-
-            <BoxBtnModal>
-                <BtnVoltar onPress={onClose}>
-                    <BtnText>Voltar</BtnText>
-                </BtnVoltar>
-            </BoxBtnModal>
 
         </BoxModal>
     );

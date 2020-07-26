@@ -37,7 +37,7 @@ export const BoxFabBtn = styled.View`
 align-items: center;
 position: absolute;
 bottom: 135px;
-right: 50px;
+right: 60px;
 `;
 
 export const FabBtn = styled.TouchableOpacity`
