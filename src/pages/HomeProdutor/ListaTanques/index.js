@@ -1,24 +1,17 @@
 import React, { useState, useContext } from 'react'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
+import { FAB } from 'react-native-paper'
 
 import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
 import GraficoTanque from '../../../components/GraficoTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
 import Map from '../../../components/Map'
-
 import { AuthContext } from '../../../contexts/auth'
-
-import {
-    BoxFabBtn, FabBtn, FabText
-} from './styles'
 
 export default function ListaTanques({ data }) {
 
-    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
-
-    const { user, loadListDepositosPendentes } = useContext(AuthContext)
+    const { user, loadListDepositosPendentes, baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [modalVisibleDois, setModalVisibleDois] = useState(false)
@@ -76,6 +69,7 @@ export default function ListaTanques({ data }) {
 
     const handleCloseModal = () => setModalVisible(false)
     const handleOpenModal = () => setModalVisible(true)
+    const handleOpenModalDois = () => setModalVisibleDois(true)
     const handleCloseModalDois = () => setModalVisibleDois(false)
     const closeAlertInfo = () => setAlertInfo(false)
     const closeAlertErroSuccess = () => setAlertVisible(false)
@@ -116,15 +110,15 @@ export default function ListaTanques({ data }) {
             <View style={styles.cardContainer} activeOpacity={0.7}>
                 <View style={styles.infoCard}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
+                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'bovino' : 'caprino'}</Text></Text>
                     <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                    <Text style={styles.textInfo}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
+                    <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                     <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
                 </View>
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
-                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal}/>
+                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
             </View>
 
             <Modal
@@ -132,17 +126,15 @@ export default function ListaTanques({ data }) {
                 transparent={false}
                 visible={modalVisible}
             >
-                <Map
-                    dataMap={data}
-                    onClose={handleCloseModal}
-                />
+                <Map dataMap={data} onClose={handleCloseModal} />
 
-                <BoxFabBtn>
-                    <FabBtn onPress={() => { setModalVisibleDois(true) }} activeOpacity={0.7}>
-                        <Icon name='basket-fill' color='#FFF' size={20} />
-                        <FabText>Depositar</FabText>
-                    </FabBtn>
-                </BoxFabBtn>
+                <FAB
+                    style={styles.fab}
+                    small={false}
+                    icon="basket-fill"
+                    color='#292b2c'
+                    onPress={() => setModalVisibleDois(true)}
+                />
 
             </Modal>
 
@@ -210,6 +202,14 @@ const styles = StyleSheet.create({
     },
     text: {
         fontWeight: 'normal'
-    }
-
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#2a9d8f',
+        borderWidth: 2,
+        borderColor: '#FFF'
+    },
 })

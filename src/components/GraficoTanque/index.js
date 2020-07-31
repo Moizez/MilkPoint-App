@@ -1,7 +1,6 @@
-import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import React from 'react'
+import { Image, StyleSheet, TouchableOpacity } from 'react-native'
 import Speedometer from 'react-native-speedometer-chart'
-import { BoxGrafico, BoxIconGrafico } from './styles'
 import { useNavigation } from '@react-navigation/native'
 
 export default function GraficoTanque({ dataGrafico, handleOpenModal }) {
@@ -20,21 +19,11 @@ export default function GraficoTanque({ dataGrafico, handleOpenModal }) {
     }
 
     return (
-        <BoxGrafico onLongPress={() => navigation.navigate('DetalhesTanque', { data: dataGrafico })} onPress={handleOpenModal}>
-            <BoxIconGrafico>
-                {dataGrafico.tipo == 'BOVINO' ?
-                    <Icon
-                        name='cow'
-                        color='blue'
-                        size={30}>
-                    </Icon> :
-                    <Icon
-                        name='sheep'
-                        color='green'
-                        size={30}>
-                    </Icon>
-                }
-            </BoxIconGrafico>
+        <TouchableOpacity style={styles.container} onLongPress={() => navigation.navigate('DetalhesTanque', { data: dataGrafico })} onPress={handleOpenModal}>
+            {dataGrafico.tipo == 'BOVINO' ?
+                <Image style={styles.goatImage} source={require('../../assets/images/cow-circle.png')} /> :
+                <Image style={styles.goatImage} source={require('../../assets/images/goat-circle.png')} />
+            }
 
             <Speedometer
                 value={dataGrafico.qtdAtual}
@@ -50,10 +39,22 @@ export default function GraficoTanque({ dataGrafico, handleOpenModal }) {
                 labelStyle={{ color: 'blue' }}
                 labelFormatter={number => `${number}`}
                 showPercent
-                percentStyle={{ color: 'black', fontSize: 20 }}
+                percentStyle={{ color: 'black', fontSize: 16 }}
             />
 
-        </BoxGrafico>
+        </TouchableOpacity>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#ececec',
+        padding: 5
+    },
+    goatImage: {
+        width: 35,
+        height: 35
+    }
+})
 

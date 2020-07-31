@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native'
 
-export default function ModalDepositoRetirada(props) {
+export default function ModalDepositoRetirada({ onClose, onConfirme }) {
 
     const [quantidade, setQuantidade] = useState()
 
@@ -16,7 +16,7 @@ export default function ModalDepositoRetirada(props) {
                     keyboardType='numeric'
                     value={quantidade}
                     autoFocus={true}
-                    onChangeText={setQuantidade}
+                    onChangeText={(quantidade) => setQuantidade(quantidade)}
                 />
 
                 <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 6 }}></View>
@@ -24,14 +24,14 @@ export default function ModalDepositoRetirada(props) {
                 <View style={styles.viewButtons}>
                     <TouchableOpacity
                         style={{ ...styles.buttons, backgroundColor: '#da1e37' }}
-                        onPress={() => props.onClose()}
+                        onPress={() => onClose()}
                     >
                         <Text style={styles.btnStyle}>Cancelar</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={{ ...styles.buttons, backgroundColor: '#2a9d8f', marginLeft: 15 }}
-                        onPress={() => props.onConfirme(quantidade)}
+                        onPress={() => onConfirme(quantidade)}
                     >
                         <Text style={styles.btnStyle}>Enviar</Text>
                     </TouchableOpacity>

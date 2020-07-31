@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { View, Modal, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Modal, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import Speedometer from 'react-native-speedometer-chart'
-import ModalDetalheTanque from '../../../components/ModalDetalheTanque'
+import Map from '../../../components/Map'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export default function ListaTanques({ data }) {
@@ -29,8 +29,8 @@ export default function ListaTanques({ data }) {
             <TouchableOpacity style={styles.cardButton} onLongPress={() => navigation.navigate('DetalhesTanque', { data: data })} onPress={() => { setModalVisible(true) }} activeOpacity={0.5}>
                 <View style={styles.iconContainer}>
                     {data.tipo == 'BOVINO' ?
-                        <Icon name='cow' color='blue' size={40} /> :
-                        <Icon name='sheep' color='green' size={40} />
+                        <Image style={styles.goatImage} source={require('../../../assets/images/cow-circle.png')} /> :
+                        <Image style={styles.goatImage} source={require('../../../assets/images/goat-circle.png')} />
                     }
                     <Text style={styles.title}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
                 </View>
@@ -66,11 +66,7 @@ export default function ListaTanques({ data }) {
                 transparent={false}
                 visible={modalVisible}
             >
-                <ModalDetalheTanque
-                    dataTanque={data}
-                    onClose={handleCloseModal}
-                />
-
+                <Map dataMap={data} onClose={handleCloseModal} />
             </Modal>
 
         </View>
@@ -110,5 +106,9 @@ const styles = StyleSheet.create({
     },
     text: {
         fontWeight: 'normal'
+    },
+    goatImage: {
+        width: 30,
+        height: 30
     }
 })

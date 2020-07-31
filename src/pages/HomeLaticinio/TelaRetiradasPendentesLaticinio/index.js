@@ -7,7 +7,7 @@ import ListaRetiradasPendentes from '../ListaRetiradasPendentes'
 import Header from '../../../components/Header'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, Box, Titulo, List, BoxIconAviso,
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
@@ -17,8 +17,8 @@ export default function TelaRetiradasPendentesLaticinio() {
     const [isRefreshing, setIsRefreshing] = useState(false)
 
     const retiradasPendentes = retiradaPendente.filter(function (retirada) {
-            return retirada.laticinio.id == user.id
-        })
+        return retirada.laticinio.id == user.id
+    })
 
     useEffect(() => {
         loadListRetiradasPendentes()
@@ -32,7 +32,7 @@ export default function TelaRetiradasPendentesLaticinio() {
 
     return (
         <Container>
-            <Header nameList={'Lista de retiradas pendentes'}/> 
+            <Header nameList={'Lista de retiradas pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
                 data={retiradasPendentes}

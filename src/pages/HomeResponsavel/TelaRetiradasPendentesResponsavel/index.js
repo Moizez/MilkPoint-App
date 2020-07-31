@@ -7,14 +7,19 @@ import Header from '../../../components/Header'
 import ListaRetiradasPendentes from '../ListaRetiradasPendentes'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, Box, Titulo, List, BoxIconAviso,
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
 export default function TelaRetiradasPendentesResponsavel() {
 
-    const { loadListRetiradasPendentes, retiradaPendente } = useContext(AuthContext)
+    const { user, loadListRetiradasPendentes, retiradaPendente } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
+
+    //Lista de retiradas pendentes apenas do responsável logado
+    const retiradasPendentes = retiradaPendente.filter(function (retirada) {
+        return retirada.tanque.responsavel.id == user.id
+    })
 
     useEffect(() => {
         loadListRetiradasPendentes()
@@ -31,7 +36,7 @@ export default function TelaRetiradasPendentesResponsavel() {
             <Header nameList={'Lista de retiradas pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={retiradaPendente}
+                data={retiradasPendentes}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <ListaRetiradasPendentes data={item} onRefresh={onRefreshList} />}

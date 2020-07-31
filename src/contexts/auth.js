@@ -17,6 +17,7 @@ export default function AuthProvider({ children }) {
     const [retirada, setRetirada] = useState([])
     const [user, setUser] = useState(null)
     const [tanque, setTanque] = useState([])
+    const [tanqueResponsavel, setTanqueResponsavel] = useState([])
 
     //Carregar lista de tanques 
     const loadListTanques = async () => {
@@ -27,10 +28,19 @@ export default function AuthProvider({ children }) {
         return tanque
     }
 
+    //Retona uma lista apenas com os tanques do responsável logado
+    const loadListTanquesResponsavel = async () => {
+        const response = await fetch(`${baseUrl}responsavel/${user.id}/tanque`)
+        const data = await response.json()
+        setTanqueResponsavel(data)
+
+        return tanqueResponsavel
+    }
+
     //Lista de depositos pendentes
     const loadListDepositosPendentes = async () => {
         const response = await fetch(`${baseUrl}deposito/listapendentes`)
-        const data = await response.json()        
+        const data = await response.json()
         setDepositoPendente(data)
 
         return depositoPendente
@@ -139,9 +149,9 @@ export default function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{
             signed: !!user, user, loading, loadingAuth, depositoPendente, deposito, retiradaPendente,
-            retirada, tanque, baseUrl,
+            retirada, tanque, tanqueResponsavel, baseUrl,
             signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,
-            loadListRetiradas, loadListTanques
+            loadListRetiradas, loadListTanques, loadListTanquesResponsavel
         }}>
             {children}
         </AuthContext.Provider>

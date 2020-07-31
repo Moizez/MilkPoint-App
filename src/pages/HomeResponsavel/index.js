@@ -13,18 +13,8 @@ import {
 
 export default function HomeResponsavel() {
 
-    const { user, baseUrl } = useContext(AuthContext)
-    const [tanqueResponsavel, setTanqueResponsavel] = useState([])
+    const { tanqueResponsavel, loadListTanquesResponsavel } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
-
-    //Retona uma lista apenas com os tanques do responsável logado
-    const loadListTanquesResponsavel = async () => {
-        const response = await fetch(`${baseUrl}responsavel/${user.id}/tanque`)
-        const data = await response.json()
-        setTanqueResponsavel(data)
-
-        return tanqueResponsavel
-    }
 
     useEffect(() => {
         loadListTanquesResponsavel()

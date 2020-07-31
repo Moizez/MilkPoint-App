@@ -9,13 +9,11 @@ import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 
 export default function ListaDepositosPendentes({ data, onRefresh }) {
 
-    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
-
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
-    const { user, loadListDepositos } = useContext(AuthContext)
+    const { user, loadListDepositos, loadListTanquesResponsavel, baseUrl } = useContext(AuthContext)
 
     const [confirmacao, setConfirmacao] = useState(false)
     const [idDeposito, setIdDeposito] = useState(data.id)
@@ -61,6 +59,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         setEfetuou(user.apelido)
         await confirmacaoDeposito(true, idDeposito, efetuou)
         await loadListDepositos()
+        await loadListTanquesResponsavel()
         setVisibleCard(false)
     }
 
@@ -79,6 +78,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         setEfetuou(user.apelido)
         await confirmacaoDeposito(false, idDeposito, efetuou)
         await loadListDepositos()
+        await loadListTanquesResponsavel()
         setVisibleCard(false)
     }
 

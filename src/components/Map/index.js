@@ -13,9 +13,14 @@ export default function Map({ dataMap, onClose }) {
     const mapRef = useRef(null)
 
     let pinCow = require('../../assets/images/pin-cow.png')
-    let pinSheep = require('../../assets/images/pin-sheep.png')
+    let pinGoat = require('../../assets/images/pin-goat.png')
     let lat = dataMap.latitude
     let long = dataMap.longitude
+
+    const [destination] = useState({
+        latitude: lat,
+        longitude: long,
+    })
 
     const [hasLocationPermission, setHasLocationPermission] = useState(false)
     const [initialRegion, setInitialRegion] = useState({
@@ -27,7 +32,7 @@ export default function Map({ dataMap, onClose }) {
     const getDistancia = () => {
         let distance = getDistance(
             { latitude: initialRegion.latitude, longitude: initialRegion.longitude },
-            { latitude: dataMap.latitude, longitude: dataMap.longitude }
+            { latitude: lat, longitude: long }
         )
         return convertDistance(distance, 'km').toFixed(1)
     }
@@ -46,11 +51,6 @@ export default function Map({ dataMap, onClose }) {
             console.warn(err)
         }
     }
-
-    const [destination] = useState({
-        latitude: lat,
-        longitude: long,
-    })
 
     useEffect(() => {
         verifyLocationPermission()
@@ -72,7 +72,7 @@ export default function Map({ dataMap, onClose }) {
         <View style={styles.container}>
 
             <View style={styles.distanceView}>
-                <Text style={styles.distanceText}>Você está a {getDistancia()}km de distância</Text>
+                <Text style={styles.distanceText}>Você está a {getDistancia()}km do tanque</Text>
             </View>
 
             <MapView
@@ -96,12 +96,14 @@ export default function Map({ dataMap, onClose }) {
                             strokeWidth={5}
                             strokeColor={dataMap.tipo == 'BOVINO' ? '#0077b6' : '#2a9d8f'}
                             onReady={result => {
+                                result.distance
+                                result.duration
                                 mapRef.current.fitToCoordinates(result.coordinates, {
                                     edgePadding: {
-                                        top: 100,
-                                        bottom: 100,
-                                        right: 100,
-                                        left: 100
+                                        top: 145,
+                                        bottom: 50,
+                                        right: 50,
+                                        left: 50
                                     }
                                 })
                             }}
@@ -113,7 +115,7 @@ export default function Map({ dataMap, onClose }) {
                     title={'Tanque: ' + dataMap.nome}
                     description={`Cabem: ${dataMap.qtdRestante} litros`}
                 >
-                    <Image source={dataMap.tipo == 'BOVINO' ? pinCow : pinSheep}
+                    <Image source={dataMap.tipo == 'BOVINO' ? pinCow : pinGoat}
                         style={{ height: 55, width: 55 }}
                     />
 
@@ -164,12 +166,12 @@ const styles = StyleSheet.create({
         fontWeight: 'normal'
     },
     distanceView: {
-        height: 40,
         flexDirection: 'row',
         width: '100%',
         height: 30,
         backgroundColor: '#292b2c',
-        borderRadius: 5,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
         alignItems: 'center',
         justifyContent: 'space-around'
     },
@@ -181,7 +183,8 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 45,
         backgroundColor: '#292b2c',
-        borderRadius: 5,
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
         alignItems: 'center',
         justifyContent: 'center'
     },

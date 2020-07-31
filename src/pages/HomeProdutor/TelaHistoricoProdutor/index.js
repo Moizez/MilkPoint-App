@@ -110,8 +110,17 @@ export default function TelaHistoricoProdutor() {
             }
 
             <FabSearch
+                styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
                 getValor={getValor}
                 onOpen={showCalendar}
+                mainIcon={'magnify'}
+                mainIconColor={'#FFF'}
+                icon1={'calendar-search'}
+                label1={'Listar por data'}
+                color1={'#da1e37'}
+                icon2={'numeric'}
+                label2={'Listar por valor'}
+                color2={'#2a9d8f'}
             />
 
         </Container>

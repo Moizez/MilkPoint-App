@@ -35,7 +35,6 @@ const AppTab = createBottomTabNavigator()
 function ResponsavelTab() {
     return (
         <AppTab.Navigator
-            initialRouteName='Home'
             tabBarOptions={{
                 activeTintColor: '#FFF',
                 inactiveTintColor: '#000',
@@ -108,7 +107,6 @@ function ResponsavelTab() {
 function ProdutorTab() {
     return (
         <AppTab.Navigator
-            initialRouteName='Home'
             tabBarOptions={{
                 activeTintColor: '#FFF',
                 inactiveTintColor: '#000',
@@ -172,7 +170,6 @@ function ProdutorTab() {
 function LaticinioTab() {
     return (
         <AppTab.Navigator
-            initialRouteName='Home'
             tabBarOptions={{
                 activeTintColor: '#FFF',
                 inactiveTintColor: '#000',
@@ -234,7 +231,6 @@ function LaticinioTab() {
 function TecnicoTab() {
     return (
         <AppTab.Navigator
-            initialRouteName='Home'
             tabBarOptions={{
                 activeTintColor: '#FFF',
                 inactiveTintColor: '#000',

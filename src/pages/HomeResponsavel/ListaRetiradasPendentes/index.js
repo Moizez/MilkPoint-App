@@ -9,13 +9,11 @@ import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 
 export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
-    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
-
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
-    const { user, loadListRetiradas } = useContext(AuthContext)
+    const { user, loadListRetiradas, loadListTanquesResponsavel, baseUrl } = useContext(AuthContext)
 
     const [confirmacao, setConfirmacao] = useState(false)
     const [idRetirada, setIdRetirada] = useState(data.id)
@@ -41,7 +39,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
     //Função para confirmar a retirada
     const handleConfirm = () => {
-        if (data.quantidade < data.tanque.qtdAtual) {
+        if (data.quantidade <= data.tanque.qtdAtual) {
             setJsonIcon('success')
             setAction(true)
             setAlertSimpleInfo(true)
@@ -61,6 +59,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setEfetuou(user.apelido)
         await confirmacaoRetirada(true, idRetirada, efetuou)
         await loadListRetiradas()
+        await loadListTanquesResponsavel()
         setVisibleCard(false)
     }
 
@@ -79,6 +78,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setEfetuou(user.apelido)
         await confirmacaoRetirada(false, idRetirada, efetuou)
         await loadListRetiradas()
+        await loadListTanquesResponsavel()
         setVisibleCard(false)
     }
 

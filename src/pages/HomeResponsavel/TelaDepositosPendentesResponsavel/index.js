@@ -7,14 +7,19 @@ import Header from '../../../components/Header'
 import ListaDepositosPendentes from '../ListaDepositosPendentes'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, Box, Titulo, List, BoxIconAviso,
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
 export default function TelaDepositosPendentesResponsavel() {
 
-    const { loadListDepositosPendentes, depositoPendente } = useContext(AuthContext)
+    const { user, loadListDepositosPendentes, depositoPendente } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
+
+    //Lista de depositos pendentes apenas do responsável logado
+    const depositosPendentes = depositoPendente.filter(function (deposito) {
+        return deposito.tanque.responsavel.id == user.id
+    })
 
     useEffect(() => {
         loadListDepositosPendentes()
@@ -31,7 +36,7 @@ export default function TelaDepositosPendentesResponsavel() {
             <Header nameList={'Lista de depósitos pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={depositoPendente}
+                data={depositosPendentes}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <ListaDepositosPendentes data={item} onRefresh={onRefreshList} />}

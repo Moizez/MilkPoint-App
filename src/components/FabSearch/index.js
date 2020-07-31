@@ -3,7 +3,10 @@ import { View, Modal, TextInput, Text, StyleSheet, TouchableOpacity } from 'reac
 import { FAB } from 'react-native-paper'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-export default function FabSearch({ getValor, onOpen }) {
+export default function FabSearch(
+    {
+        getValor, onOpen, styleFab, mainIcon, mainIconColor, icon1, label1, color1, icon2, label2, color2
+    }) {
 
     //Fab button
     const [state, setState] = useState({ open: false })
@@ -16,21 +19,21 @@ export default function FabSearch({ getValor, onOpen }) {
     return (
         <>
             <FAB.Group
-                fabStyle={{ backgroundColor: 'black', borderWidth: 1, borderColor: 'white', shadowOpacity: 0 }}
-                color='#FFF'
+                fabStyle={styleFab}
+                color={mainIconColor}
                 open={open}
-                icon={open ? 'close' : 'magnify'}
+                icon={open ? 'close' : mainIcon}
                 actions={[
                     {
-                        icon: 'numeric',
-                        label: 'Listar por valor',
-                        color: '#2a9d8f',
+                        icon: icon2,
+                        label: label2,
+                        color: color2,
                         onPress: () => setVisible(true),
                     },
                     {
-                        icon: 'calendar-search',
-                        label: 'Listar por data',
-                        color: '#da1e37',
+                        icon: icon1,
+                        label: label1,
+                        color: color1,
                         onPress: () => onOpen(),
                     },
                 ]}
