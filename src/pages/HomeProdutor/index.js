@@ -27,7 +27,7 @@ export default function HomeProdutor() {
 
     return (
         <Container>
-            <Header nameList={'Lista de tanques'}/> 
+            <Header msg={'Lista de tanques'}/> 
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanque}

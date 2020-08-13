@@ -9,10 +9,9 @@ import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 
 export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
-    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
     let success = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user, loadListRetiradas } = useContext(AuthContext)
+    const { user, loadListRetiradas, baseUrl } = useContext(AuthContext)
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
@@ -23,11 +22,12 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
     const [efetuou, setEfetuou] = useState(user.nomeFantasia)
 
     //Confirmação da retiradas pelo responsável
-    const confirmacaoRetirada = async (confirmacao, idRetirada, efetuou) => {
-        const data = new FormData();
-        data.append("confirmacao", confirmacao);
-        data.append("idRetirada", idRetirada);
-        data.append("efetuou", efetuou);
+    const confirmacaoRetirada = async (confirmacao, idRetirada, efetuou, observacao) => {
+        const data = new FormData()
+        data.append("confirmacao", confirmacao)
+        data.append("idRetirada", idRetirada)
+        data.append("efetuou", efetuou)
+        data.append("observacao", observacao)
 
         await fetch(`${baseUrl}retirada/confirmacao`, { method: 'POST', body: data })
     };
@@ -43,7 +43,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setConfirmacao(false)
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
-        await confirmacaoRetirada(false, idRetirada, efetuou)
+        await confirmacaoRetirada(false, idRetirada, efetuou, '')
         await loadListRetiradas()
         setModalCancelVisible(false)
     }

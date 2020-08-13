@@ -9,10 +9,9 @@ import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 
 export default function ListaDepositossPendentes({ data, onRefresh }) {
 
-    let baseUrl = 'https://milkpointapi.cfapps.io/api/'
     let success = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user, loadListDepositos } = useContext(AuthContext)
+    const { user, loadListDepositos, baseUrl } = useContext(AuthContext)
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
@@ -23,11 +22,12 @@ export default function ListaDepositossPendentes({ data, onRefresh }) {
     const [efetuou, setEfetuou] = useState(user.apelido)
 
     //Confirmação da depósitos pelo responsável
-    const confirmacaoDeposito = async (confirmacao, idDeposito, efetuou) => {
+    const confirmacaoDeposito = async (confirmacao, idDeposito, efetuou, observacao) => {
         const data = new FormData();
-        data.append("confirmacao", confirmacao);
-        data.append("idDeposito", idDeposito);
-        data.append("efetuou", efetuou);
+        data.append("confirmacao", confirmacao)
+        data.append("idDeposito", idDeposito)
+        data.append("efetuou", efetuou)
+        data.append("observacao", observacao)
 
         await fetch(`${baseUrl}deposito/confirmacao`, { method: 'POST', body: data })
     }
@@ -43,7 +43,7 @@ export default function ListaDepositossPendentes({ data, onRefresh }) {
         setConfirmacao(false)
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
-        await confirmacaoDeposito(false, idDeposito, efetuou)
+        await confirmacaoDeposito(false, idDeposito, efetuou, '')
         await loadListDepositos()
         setModalCancelVisible(false)
     }

@@ -18,7 +18,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
     const [confirmacao, setConfirmacao] = useState(false)
     const [idDeposito, setIdDeposito] = useState(data.id)
     const [efetuou, setEfetuou] = useState(user.apelido)
-    const [isAction, setAction] = useState()
+    const [isAction, setAction] = useState(Boolean)
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
@@ -28,18 +28,19 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
     const [isAlertErroSuccess, setAlertErroSuccess] = useState(false)
 
     //Confirmação da depositos pelo responsável
-    const confirmacaoDeposito = async (confirmacao, idDeposito, efetuou) => {
+    const confirmacaoDeposito = async (confirmacao, idDeposito, efetuou, observacao) => {
         const data = new FormData();
-        data.append("confirmacao", confirmacao);
-        data.append("idDeposito", idDeposito);
-        data.append("efetuou", efetuou);
+        data.append("confirmacao", confirmacao)
+        data.append("idDeposito", idDeposito)
+        data.append("efetuou", efetuou)
+        data.append('observacao', observacao)
 
         await fetch(`${baseUrl}deposito/confirmacao`, { method: 'POST', body: data })
     };
 
     //Função para confirmar a depósito
     const handleConfirm = () => {
-        if (data.quantidade < data.tanque.qtdRestante) {
+        if (data.quantidade <= data.tanque.qtdRestante) {
             setJsonIcon('success')
             setAction(true)
             setAlertSimpleInfo(true)
@@ -57,7 +58,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         setConfirmacao(true)
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
-        await confirmacaoDeposito(true, idDeposito, efetuou)
+        await confirmacaoDeposito(true, idDeposito, efetuou, '')
         await loadListDepositos()
         await loadListTanquesResponsavel()
         setVisibleCard(false)
@@ -69,14 +70,14 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         setAlertSimpleInfo(true)
     }
 
-    const doneCancel = async () => {
+    const doneCancel = async (observacao) => {
         setAlertSimpleInfo(false)
         setTypeMessage('Depósito cancelado com sucesso!')
         setAlertErroSuccess(true)
         setConfirmacao(false)
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
-        await confirmacaoDeposito(false, idDeposito, efetuou)
+        await confirmacaoDeposito(false, idDeposito, efetuou, observacao)
         await loadListDepositos()
         await loadListTanquesResponsavel()
         setVisibleCard(false)
@@ -91,7 +92,8 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
                         onConfirm={doneCancel}
                         onClose={hideModalInfo}
                         title='Aviso'
-                        message={'Deseja realmente CANCELAR esta RETIRADA?'}
+                        message={'Deseja realmente CANCELAR este DEPÓSITO?'}
+                        action
                     />
                 )
             } else {
@@ -101,7 +103,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
                         onConfirm={doneConfirm}
                         onClose={hideModalInfo}
                         title='Aviso'
-                        message={'Deseja realmente CONFIRMAR esta RETIRADA?'}
+                        message={'Deseja realmente CONFIRMAR este DEPÓSITO?'}
                     />
                 )
             }

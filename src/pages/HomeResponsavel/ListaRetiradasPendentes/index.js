@@ -18,7 +18,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
     const [confirmacao, setConfirmacao] = useState(false)
     const [idRetirada, setIdRetirada] = useState(data.id)
     const [efetuou, setEfetuou] = useState(user.apelido)
-    const [isAction, setAction] = useState()
+    const [isAction, setAction] = useState(Boolean)
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
@@ -28,11 +28,12 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
     const [isAlertErroSuccess, setAlertErroSuccess] = useState(false)
 
     //Confirmação da retiradas pelo responsável
-    const confirmacaoRetirada = async (confirmacao, idRetirada, efetuou) => {
-        const data = new FormData();
-        data.append("confirmacao", confirmacao);
-        data.append("idRetirada", idRetirada);
-        data.append("efetuou", efetuou);
+    const confirmacaoRetirada = async (confirmacao, idRetirada, efetuou, observacao) => {
+        const data = new FormData()
+        data.append("confirmacao", confirmacao)
+        data.append("idRetirada", idRetirada)
+        data.append("efetuou", efetuou)
+        data.append('observacao', observacao)
 
         await fetch(`${baseUrl}retirada/confirmacao`, { method: 'POST', body: data })
     };
@@ -57,7 +58,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setConfirmacao(true)
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
-        await confirmacaoRetirada(true, idRetirada, efetuou)
+        await confirmacaoRetirada(true, idRetirada, efetuou, '')
         await loadListRetiradas()
         await loadListTanquesResponsavel()
         setVisibleCard(false)
@@ -69,14 +70,14 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setAlertSimpleInfo(true)
     }
 
-    const doneCancel = async () => {
+    const doneCancel = async (observacao) => {
         setAlertSimpleInfo(false)
         setTypeMessage('Retirada cancelada com sucesso!')
         setAlertErroSuccess(true)
         setConfirmacao(false)
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
-        await confirmacaoRetirada(false, idRetirada, efetuou)
+        await confirmacaoRetirada(false, idRetirada, efetuou, observacao)
         await loadListRetiradas()
         await loadListTanquesResponsavel()
         setVisibleCard(false)
@@ -92,6 +93,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
                         onClose={hideModalInfo}
                         title='Aviso'
                         message={'Deseja realmente CANCELAR esta RETIRADA?'}
+                        action
                     />
                 )
             } else {

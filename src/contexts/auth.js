@@ -3,8 +3,9 @@ import AsyncStorage from '@react-native-community/async-storage'
 
 export const AuthContext = createContext({})
 
-//Url padrão da API
+//Url padrão da API 
 //let baseUrl = 'http://192.168.0.127:8080/api/'
+//let baseUrl = 'https://milkpoint.herokuapp.com/api/'
 let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function AuthProvider({ children }) {
@@ -50,7 +51,11 @@ export default function AuthProvider({ children }) {
     const loadListDepositos = async () => {
         const response = await fetch(`${baseUrl}deposito/listatodos`)
         const data = await response.json()
-        setDeposito(data)
+        const orderedByDate = data.sort(function (a, b) {
+            var dateA = new Date(a.dataNow), dateB = new Date(b.dataNow)
+            return dateB - dateA //Ordem decrescente
+        })
+        setDeposito(orderedByDate)
 
         return deposito
     }
@@ -68,7 +73,11 @@ export default function AuthProvider({ children }) {
     const loadListRetiradas = async () => {
         const response = await fetch(`${baseUrl}retirada/listatodos`)
         const data = await response.json()
-        setRetirada(data)
+        const orderedByDate = data.sort(function (a, b) {
+            var dateA = new Date(a.dataNow), dateB = new Date(b.dataNow)
+            return dateB - dateA //Ordem decrescente
+        })
+        setRetirada(orderedByDate)
 
         return retirada
     }

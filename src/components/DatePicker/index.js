@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function DatePicker({ date, onChange }) {
+export default function DatePicker({ date, onChange, display }) {
 
     const [dateNow, setDateNow] = useState(new Date(date));
 
@@ -9,7 +9,7 @@ export default function DatePicker({ date, onChange }) {
         <DateTimePicker
             value={dateNow}
             mode="date"
-            display="default"
+            display={display}
             onChange={(_, selectedDate) => {
                 const currentDate = selectedDate || dateNow
                 setDateNow(currentDate)

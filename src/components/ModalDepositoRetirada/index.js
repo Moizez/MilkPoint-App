@@ -15,7 +15,6 @@ export default function ModalDepositoRetirada({ onClose, onConfirme }) {
                     autoCapitalize='none'
                     keyboardType='numeric'
                     value={quantidade}
-                    autoFocus={true}
                     onChangeText={(quantidade) => setQuantidade(quantidade)}
                 />
 

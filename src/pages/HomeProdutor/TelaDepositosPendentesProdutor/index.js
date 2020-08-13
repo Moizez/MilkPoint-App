@@ -7,7 +7,7 @@ import ListaDepositosPendentes from '../ListaDepositosPendentes'
 import Header from '../../../components/Header'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, Box, Titulo, List, BoxIconAviso,
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
@@ -32,7 +32,7 @@ export default function TelaDepositosPendentesProdutor() {
 
     return (
         <Container>
-            <Header nameList={'Lista de depósitos pendentes'}/> 
+            <Header msg={'Lista de depósitos pendentes'}/> 
             <List
                 showsVerticalScrollIndicator={false}
                 data={depositosPendentes}

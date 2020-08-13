@@ -32,7 +32,7 @@ export default function TelaRetiradasPendentesLaticinio() {
 
     return (
         <Container>
-            <Header nameList={'Lista de retiradas pendentes'} />
+            <Header msg={'Lista de retiradas pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
                 data={retiradasPendentes}

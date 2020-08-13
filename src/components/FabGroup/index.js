@@ -7,10 +7,11 @@ import 'moment/locale/pt-br'
 
 import DatePicker from '../DatePicker'
 
-export default function FabSearch(
+export default function FabGroup(
     {
-        getValor, filterFifteenDays, filterOneMonth, filterCustomDays,
-        styleFab, mainIcon, mainIconColor, icon1, label1, color1, icon2, label2, color2
+        getValor, filterFifteenDaysDeposito, filterOneMonthDeposito, filterCustomDays, changeCheck,
+        filterFifteenDaysRetirada, filterOneMonthRetirada,
+        styleFab, mainIcon, mainIconColor, checkDateDeposito, checkDateRetirada
     }) {
 
     //Fab button
@@ -40,16 +41,38 @@ export default function FabSearch(
                 icon={open ? 'close' : mainIcon}
                 actions={[
                     {
-                        icon: icon2,
-                        label: label2,
-                        color: color2,
+                        icon: 'basket-fill',
+                        label: 'Listar por depósitos',
+                        color: '#2a9d8f',
                         style: styles.fabActions,
-                        onPress: () => setVisible(true),
+                        onPress: () => {
+                            changeCheck(true)
+                            checkDateDeposito()
+                        },
                     },
                     {
-                        icon: icon1,
-                        label: label1,
-                        color: color1,
+                        icon: 'basket-unfill',
+                        label: 'Listar por retiradas',
+                        color: '#da1e37',
+                        style: styles.fabActions,
+                        onPress: () => {
+                            changeCheck(false)
+                            checkDateRetirada()
+                        },
+                    },
+                    {
+                        icon: 'account-search',
+                        label: 'Listar por pessoa',
+                        color: '#6d597a',
+                        style: styles.fabActions,
+                        onPress: () => {
+                            setShow(true)
+                        },
+                    },
+                    {
+                        icon: 'calendar-search',
+                        label: 'Listar por data',
+                        color: '#fca311',
                         style: styles.fabActions,
                         onPress: () => setModalSearch(true),
                     },
@@ -114,17 +137,48 @@ export default function FabSearch(
                         </View>
 
                         <View style={{ width: '100%', height: 0.5, backgroundColor: '#DDD', marginVertical: 5 }}></View>
-
+                        <Text>DEPÓSITOS</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity style={styles.someDays} onPress={() => {
-                                filterFifteenDays()
+                                changeCheck(true)
+                                filterFifteenDaysDeposito()
                                 setModalSearch(false)
                             }}>
                                 <Text style={styles.textDays}>Últimos 15 dias</Text>
                                 <Icon name='calendar-clock' size={25} color={'#000'} />
                             </TouchableOpacity>
                             <TouchableOpacity style={{ ...styles.someDays, marginLeft: 10, backgroundColor: '#e76f51' }} onPress={() => {
-                                filterOneMonth()
+                                changeCheck(true)
+                                filterOneMonthDeposito()
+                                setModalSearch(false)
+                            }}>
+                                <Text style={styles.textDays}>Últimos 30 dias</Text>
+                                <Icon name='calendar-clock' size={25} color={'#000'} />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{ alignItems: 'center' }}>
+                            <Text style={styles.textDays}>Selecione a data inicial da busca:</Text>
+                            <TouchableOpacity style={styles.dateSearch} onPress={() => setShow(true)}>
+                                <Text style={styles.textDays}>{moment(selectedDate).locale('pt-br').format('dddd, D [de] MMMM [de] YYYY')}</Text>
+                                <Icon name='calendar' size={25} color={'#000'} />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={{ width: '100%', height: 3, backgroundColor: '#000', marginVertical: 5 }}></View>
+                        <Text>RETIRADAS</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity style={styles.someDays} onPress={() => {
+                                changeCheck(false)
+                                filterFifteenDaysRetirada()
+                                setModalSearch(false)
+                            }}>
+                                <Text style={styles.textDays}>Últimos 15 dias</Text>
+                                <Icon name='calendar-clock' size={25} color={'#000'} />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{ ...styles.someDays, marginLeft: 10, backgroundColor: '#e76f51' }} onPress={() => {
+                                changeCheck(false)
+                                filterOneMonthRetirada()
                                 setModalSearch(false)
                             }}>
                                 <Text style={styles.textDays}>Últimos 30 dias</Text>
@@ -149,6 +203,7 @@ export default function FabSearch(
                     <DatePicker
                         date={selectedDate}
                         onChange={onChange}
+                        display='spinner'
                     />)
             }
         </>

@@ -3,6 +3,7 @@ import { AuthContext } from '../../../contexts/auth'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
+import 'moment/locale/pt-br'
 
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
@@ -20,8 +21,15 @@ export default function TelaHistoricoLaticinio() {
 
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
+    const [customDate, setCustomDate] = useState()
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [isTitle, setTitle] = useState(false)
+    const [msg, setMsg] = useState('')
+
+    let msgDefault = `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`
+    let msgForValue = 'Lista de transações pelo valor da retirada'
+    let msg15Days = 'Lista de transações dos últimos 15 dias'
+    let msg30Days = 'Lista de transações do último mês'
+    let msgCustomDays = `Lista de transações de ${moment(customDate).format('l')} até ${moment().format('l')}`
 
     //Filtrar por usuário e status
     const laticinio = r => r.laticinio.id == user.id
@@ -33,8 +41,45 @@ export default function TelaHistoricoLaticinio() {
         const filterByValue = await retiradas.filter(function (v) {
             return v.quantidade == value
         })
-        setTitle(true)
+        setMsg(msgForValue)
         setDataRetirada(filterByValue)
+        return dataRetirada
+    }
+
+    //Filtrar pelos últimos 15 dias
+    const filterFifteenDays = async () => {
+        let fifteenDays = moment().locale('en').subtract(15, 'days').format('L')
+        const fifteenDaysAgo = await retiradas.filter(function (d) {
+            let dayRet = moment(d.dataNow).locale('en').format('L')
+            return moment(dayRet).isSameOrAfter(fifteenDays, 'days')
+        })
+        setMsg(msg15Days)
+        setDataRetirada(fifteenDaysAgo)
+        return dataRetirada
+    }
+
+    //Filtrar pelos últimos 30 dias
+    const filterOneMonth = async () => {
+        let oneMonth = moment().locale('en').subtract(1, 'month').format('L')
+        const oneMonthAgo = await retiradas.filter(function (d) {
+            let dayRet = moment(d.dataNow).locale('en').format('L')
+            return moment(dayRet).isSameOrAfter(oneMonth, 'days')
+        })
+        setMsg(msg30Days)
+        setDataRetirada(oneMonthAgo)
+        return dataRetirada
+    }
+
+    //Filtrar por data personalizada
+    const filterCustomDays = async (value) => {
+        setCustomDate(value)
+        let customDay = moment(value).locale('en').format('L')
+        const customDayAgo = await retiradas.filter(function (d) {
+            let dayRet = moment(d.dataNow).locale('en').format('L')
+            return moment(dayRet).isSameOrAfter(customDay, 'days')
+        })
+        setMsg(msgCustomDays)
+        setDataRetirada(customDayAgo)
         return dataRetirada
     }
 
@@ -45,7 +90,7 @@ export default function TelaHistoricoLaticinio() {
             let dayRet = moment(r.dataNow).format('L')
             return dayRet === day
         })
-        setTitle(false)
+        setMsg(msgDefault)
         setDataRetirada(dayRetirada)
         return dataRetirada
     }
@@ -66,14 +111,12 @@ export default function TelaHistoricoLaticinio() {
         setIsRefreshing(false)
     }
 
-    const showCalendar = () => { setShow(true) }
+    const showCalendar = () => setShow(true)
 
     return (
         <Container>
             <Header
-                nameList={isTitle ?
-                    'Lista de transações pelo valor da retirada' :
-                    `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`}
+                msg={msg}
                 onOpen={showCalendar}
                 calendar={<Icon name='calendar-month' color='#FFF' size={22} />}
             />
@@ -85,7 +128,7 @@ export default function TelaHistoricoLaticinio() {
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <CardHistorico data={item} />}
                 ListEmptyComponent={
-                    <BoxNomeAviso>
+                    <BoxNomeAviso onLongPress={() => setSelectedDate(moment().format())}>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>
@@ -112,14 +155,18 @@ export default function TelaHistoricoLaticinio() {
             <FabSearch
                 styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
                 getValor={getValor}
+                filterFifteenDays={filterFifteenDays}
+                filterOneMonth={filterOneMonth}
+                filterCustomDays={filterCustomDays}
                 onOpen={showCalendar}
                 mainIcon={'magnify'}
+                mainIconColor={'#FFF'}
                 icon1={'calendar-search'}
                 label1={'Listar por data'}
-                color1={'#da1e37'}
+                color1={'#fca311'}
                 icon2={'numeric'}
                 label2={'Listar por valor'}
-                color2={'#2a9d8f'}
+                color2={'#0077b6'}
             />
 
         </Container>

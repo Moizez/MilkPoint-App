@@ -2,11 +2,11 @@ import React, { useState, useContext } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { AuthContext } from '../../contexts/auth'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { Modal, StyleSheet, View, Text, TouchableOpacity, Image, ImageBackground } from 'react-native'
+import { Modal, StyleSheet, View, Text, TouchableOpacity, ImageBackground } from 'react-native'
 
 import ModalInfo from '../../components/ModalInfo'
 
-export default function Header({ nameList, onOpen, calendar }) {
+export default function Header({ msg, onOpen, calendar }) {
 
     const perfilCover = () => {
         if (user.perfil == 1) {
@@ -62,7 +62,7 @@ export default function Header({ nameList, onOpen, calendar }) {
 
             <View style={styles.containerNameList}>
                 <View>
-                    <Text style={styles.tituloBody}>{nameList}</Text>
+                    <Text style={styles.tituloBody}>{msg}</Text>
                 </View>
                 <TouchableOpacity onPress={onOpen}>
                     {calendar}

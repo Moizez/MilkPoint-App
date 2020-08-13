@@ -1,12 +1,15 @@
-import React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useContext } from 'react'
+import { View, Text, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
+import { AuthContext } from '../../contexts/auth'
+
 const CardHistorico = ({ data, showModal }) => {
 
     let dayHour = moment(data.dataNow).locale('pt-br').format('L [às] LT[h]')
+    const { user } = useContext(AuthContext)
 
     const bucketColor = (status) => {
         if (data.confirmacao == true) {
@@ -19,18 +22,22 @@ const CardHistorico = ({ data, showModal }) => {
     }
     let status = bucketColor()
 
+
+
     return (
         <View style={styles.container}>
             <View style={styles.cardContainer}>
                 <View style={styles.infoCard}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.tanque.nome}</Text></Text>
                     <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tanque.tipo === 'BOVINO' ? 'bovino' : 'caprino'}</Text></Text>
+                    {user.perfil === 2 && <Text style={styles.textInfo}>Solicitante: <Text style={styles.text}>{data.produtor?.nome || data.laticinio?.nomeFantasia}</Text></Text>}
                     {data.confirmacao === false && <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.tanque.responsavel.nome}</Text></Text>}
                     <Text style={styles.textInfo}>Valor solicitado: <Text style={styles.text}>{data.quantidade} litros</Text></Text>
                     <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 8 }}></View>
                     {data.excluido === true ? <Text style={styles.textInfo}>Cancelado por: <Text style={styles.text}>{data.efetuou}</Text></Text>
                         : <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.tanque.responsavel.nome}</Text></Text>}
+                    {data.observacao !== '' && <Text style={styles.textInfo}>Motivo: <Text style={styles.text}>{data.observacao}</Text></Text>}
                 </View>
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>

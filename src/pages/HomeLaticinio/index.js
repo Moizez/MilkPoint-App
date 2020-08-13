@@ -28,7 +28,7 @@ export default function HomeLaticinio() {
 
     return (
         <Container>
-            <Header nameList={'Lista de tanques'} />
+            <Header msg={'Lista de tanques'} />
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanque}
