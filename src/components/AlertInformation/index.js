@@ -18,7 +18,7 @@ const AlertInformation = ({ title, message, onClose, onConfirm, dataInfo, qtd })
                     <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 16 }}>{message}</Text>
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 6 }}></View>
                     <Text style={styles.textMsgInfo}><Text style={{ fontWeight: 'bold' }}>Nome do tanque: </Text>{dataInfo.nome}</Text>
-                    <Text style={styles.textMsgInfo}><Text style={{ fontWeight: 'bold' }}>Tipo do leite: </Text>{dataInfo.tipo === 'BOVINO' ? 'bovino' : 'caprino'}</Text>
+                    <Text style={styles.textMsgInfo}><Text style={{ fontWeight: 'bold' }}>Tipo do leite: </Text>{dataInfo.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text>
                     <Text style={styles.textMsgInfo}><Text style={{ fontWeight: 'bold' }}>Valor solicitado: </Text>{qtd} litros</Text>
                 </View>
 

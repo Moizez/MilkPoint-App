@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native'
 
 import Speedometer from 'react-native-speedometer-chart'
 import Map from '../../../components/Map'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 export default function ListaTanques({ data }) {
 

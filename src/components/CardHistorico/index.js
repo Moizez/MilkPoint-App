@@ -29,9 +29,8 @@ const CardHistorico = ({ data, showModal }) => {
             <View style={styles.cardContainer}>
                 <View style={styles.infoCard}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.tanque.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tanque.tipo === 'BOVINO' ? 'bovino' : 'caprino'}</Text></Text>
+                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
                     {user.perfil === 2 && <Text style={styles.textInfo}>Solicitante: <Text style={styles.text}>{data.produtor?.nome || data.laticinio?.nomeFantasia}</Text></Text>}
-                    {data.confirmacao === false && <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.tanque.responsavel.nome}</Text></Text>}
                     <Text style={styles.textInfo}>Valor solicitado: <Text style={styles.text}>{data.quantidade} litros</Text></Text>
                     <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 8 }}></View>

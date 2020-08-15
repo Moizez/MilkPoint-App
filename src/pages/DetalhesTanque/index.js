@@ -1,6 +1,7 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import moment from 'moment'
+import 'moment/locale/pt-br'
 
 import { AuthContext } from '../../contexts/auth'
 
@@ -8,10 +9,61 @@ export default function DetalhesTanque({ route }) {
 
     const { data } = route.params
 
-    const { user } = useContext(AuthContext)
+    const { user, loadListDepositos, loadListRetiradas, deposito, retirada } = useContext(AuthContext)
+
     let nascimento = moment(data.dataCriacao).locale('pt-br').format('L')
     let capacidade = data.qtdAtual + data.qtdRestante
-    let tipo = data.tipo == 'BOVINO' ? 'bovino' : 'caprino'
+    let tipo = data.tipo == 'BOVINO' ? 'Bovino' : 'Caprino'
+
+    //Lista dos depositos e retiradas por status e usuário logado
+    const responsavelId = p => p.tanque.responsavel.id == user.id
+    const status = s => s.confirmacao == true
+    const depositos = deposito.filter(responsavelId).filter(status)
+    const retiradas = retirada.filter(responsavelId).filter(status)
+
+    //Soma de todos os depositos confirmados desde a criação do tanque
+    const somar = (acumulado, x) => acumulado + x
+    const totalDepositos = depositos.map((s) => s.quantidade).reduce(somar, 0)
+
+    //Soma dos depositos dos últimos 15 dias
+    const depDays = moment().locale('en').subtract(15, 'days').format('L')
+    const depFifteenDays = depositos.filter(function (q) {
+        const regDay = moment(q.dataNow).locale('en').format('L')
+        return moment(regDay).isSameOrAfter(depDays, 'days')
+    })
+    const totalQuinzenal = depFifteenDays.map((qtd) => qtd.quantidade).reduce(somar, 0)
+
+    //Soma dos depositos dos últimos 30 dias
+    const oneMonth = moment().locale('en').subtract(1, 'month').format('L')
+    const depOneMonth = depositos.filter(function (q) {
+        const regDay = moment(q.dataNow).locale('en').format('L')
+        return moment(regDay).isSameOrAfter(oneMonth, 'days')
+    })
+    const totalMensal = depOneMonth.map((qtd) => qtd.quantidade).reduce(somar, 0)
+
+    //Soma de todas as retiradas confirmadas desde a criação do tanque
+    const totalRetitadas = retiradas.map((s) => s.quantidade).reduce(somar, 0)
+
+    //Soma das retiradas dos últimos 15 dias
+    const retDays = moment().locale('en').subtract(15, 'days').format('L')
+    const retFifteenDays = retiradas.filter(function (q) {
+        const regDay = moment(q.dataNow).locale('en').format('L')
+        return moment(regDay).isSameOrAfter(retDays, 'days')
+    })
+    const totalRetQuinzenal = retFifteenDays.map((qtd) => qtd.quantidade).reduce(somar, 0)
+
+    //Soma das retiradas dos últimos 30 dias
+    const oneMonthRet = moment().locale('en').subtract(1, 'month').format('L')
+    const retOneMonth = retiradas.filter(function (q) {
+        const regDay = moment(q.dataNow).locale('en').format('L')
+        return moment(regDay).isSameOrAfter(oneMonthRet, 'days')
+    })
+    const totalRetMensal = retOneMonth.map((qtd) => qtd.quantidade).reduce(somar, 0)
+
+    useEffect(() => {
+        loadListDepositos()
+        loadListRetiradas()
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -24,7 +76,7 @@ export default function DetalhesTanque({ route }) {
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
                     <Text style={styles.textItem}>Capacidade: <Text style={styles.text}>{capacidade} litros</Text></Text>
                     <Text style={styles.textItem}>Volume atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                    <Text style={styles.textItem}>Cabem ainda: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
+                    <Text style={styles.textItem}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                     <Text style={styles.textItem}>Tipo do leite: <Text style={styles.text}>{tipo}</Text></Text>
                     <Text style={styles.textItem}>Data de criação: <Text style={styles.text}>{nascimento}</Text></Text>
                     <Text style={styles.textItem}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
@@ -43,13 +95,13 @@ export default function DetalhesTanque({ route }) {
                     <Text style={styles.tituloItem}>MOVIMENTAÇÕES</Text>
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
                     <Text style={styles.textItem}>Total de depósitos:</Text>
-                    <Text style={styles.textItem}>- No último mês: <Text style={styles.text}>3000 litros</Text></Text>
-                    <Text style={styles.textItem}>- Na última semana: <Text style={styles.text}>344 litros</Text></Text>
-                    <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>25000 litros</Text></Text>
-                    <Text style={styles.textItem}>Total de retiradas:</Text>
-                    <Text style={styles.textItem}>- No último mês: <Text style={styles.text}>3000 litros</Text></Text>
-                    <Text style={styles.textItem}>- Na última semana: <Text style={styles.text}>344 litros</Text></Text>
-                    <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>25000 litros</Text></Text>
+                    <Text style={styles.textItem}>- Nos últimos 15 dias: <Text style={styles.text}>{totalQuinzenal} litros</Text></Text>
+                    <Text style={styles.textItem}>- Nos últimos 30 dias: <Text style={styles.text}>{totalMensal} litros</Text></Text>
+                    <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>{totalDepositos} litros</Text></Text>
+                    <Text style={{ ...styles.textItem, marginTop: 10 }}>Total de retiradas:</Text>
+                    <Text style={styles.textItem}>- Nos últimos 15 dias: <Text style={styles.text}>{totalRetQuinzenal} litros</Text></Text>
+                    <Text style={styles.textItem}>- Nos últimos 30 dias: <Text style={styles.text}>{totalRetMensal} litros</Text></Text>
+                    <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>{totalRetitadas} litros</Text></Text>
                 </View>
                 <View style={styles.ContainerButtons}>
                     <TouchableOpacity style={styles.buttons}>
@@ -113,11 +165,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     textItem: {
+        fontWeight: 'bold',
         fontSize: 17
     },
     text: {
         fontSize: 17,
-        fontFamily: 'Lato',
+        fontWeight: 'normal',
     },
     cardItem: {
         flex: 1,

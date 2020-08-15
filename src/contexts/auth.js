@@ -51,11 +51,7 @@ export default function AuthProvider({ children }) {
     const loadListDepositos = async () => {
         const response = await fetch(`${baseUrl}deposito/listatodos`)
         const data = await response.json()
-        const orderedByDate = data.sort(function (a, b) {
-            var dateA = new Date(a.dataNow), dateB = new Date(b.dataNow)
-            return dateB - dateA //Ordem decrescente
-        })
-        setDeposito(orderedByDate)
+        setDeposito(data)
 
         return deposito
     }
@@ -73,11 +69,7 @@ export default function AuthProvider({ children }) {
     const loadListRetiradas = async () => {
         const response = await fetch(`${baseUrl}retirada/listatodos`)
         const data = await response.json()
-        const orderedByDate = data.sort(function (a, b) {
-            var dateA = new Date(a.dataNow), dateB = new Date(b.dataNow)
-            return dateB - dateA //Ordem decrescente
-        })
-        setRetirada(orderedByDate)
+        setRetirada(data)
 
         return retirada
     }

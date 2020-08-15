@@ -1,17 +1,15 @@
 import React, { useState } from 'react'
-import { View, Modal, TextInput, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import { FAB } from 'react-native-paper'
+import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import moment from 'moment'
-import 'moment/locale/pt-br'
+import { FAB } from 'react-native-paper'
 
-import DatePicker from '../DatePicker'
+import ModalSearch from '../ModalSearch'
 
 export default function FabGroup(
     {
-        getValor, filterFifteenDaysDeposito, filterOneMonthDeposito, filterCustomDays, changeCheck,
-        filterFifteenDaysRetirada, filterOneMonthRetirada,
-        styleFab, mainIcon, mainIconColor, checkDateDeposito, checkDateRetirada
+        filterFifteenDaysDeposito, filterOneMonthDeposito, filterCustomDays, changeCheck,
+        filterFifteenDaysRetirada, filterOneMonthRetirada, styleFab, mainIcon, mainIconColor,
+        checkDateDeposito, checkDateRetirada, findByName
     }) {
 
     //Fab button
@@ -20,20 +18,53 @@ export default function FabGroup(
     const { open } = state
 
     const [isVisible, setVisible] = useState(false)
-    const [modalSearch, setModalSearch] = useState(false)
-    const [value, setValue] = useState()
-    const [show, setShow] = useState(false)
-    const [selectedDate, setSelectedDate] = useState(new Date())
+    const [modalName, setModalName] = useState(false)
+    const [value, setValue] = useState('')
 
-    function onChange(value) {
-        setShow(Platform.OS === 'ios')
-        setSelectedDate(value)
-        filterCustomDays(value)
-        setModalSearch(false)
-    }
+
+    const [type, setType] = useState(false)
+
+    const hideModal = () => setVisible(false)
 
     return (
         <>
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={modalName}
+            >
+                <View style={styles.container}>
+                    <View style={styles.containerModal}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Text style={styles.textInfo}>Buscar pelo nome</Text>
+                            <TouchableOpacity onPress={() => setModalName(false)}>
+                                <Icon name='close-circle' size={30} color={'#da1e37'} />
+                            </TouchableOpacity>
+                        </View>
+                        <TextInput style={styles.input}
+                            placeholder='Digite o nome procurado'
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            keyboardType='default'
+                            value={value}
+                            autoFocus={true}
+                            onChangeText={setValue}
+                        />
+
+                        <TouchableOpacity
+                            style={{ ...styles.button, backgroundColor: '#292b2c' }}
+                            onPress={() => {
+                                findByName(value)
+                                setModalName(false)
+                                setValue('')
+                            }}
+                        >
+                            <Text style={styles.btnStyle}>Ok</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+
             <FAB.Group
                 fabStyle={styleFab}
                 color={mainIconColor}
@@ -46,6 +77,8 @@ export default function FabGroup(
                         color: '#2a9d8f',
                         style: styles.fabActions,
                         onPress: () => {
+                            setType(true)
+                            setVisible(true)
                             changeCheck(true)
                             checkDateDeposito()
                         },
@@ -56,6 +89,8 @@ export default function FabGroup(
                         color: '#da1e37',
                         style: styles.fabActions,
                         onPress: () => {
+                            setType(false)
+                            setVisible(true)
                             changeCheck(false)
                             checkDateRetirada()
                         },
@@ -65,16 +100,7 @@ export default function FabGroup(
                         label: 'Listar por pessoa',
                         color: '#6d597a',
                         style: styles.fabActions,
-                        onPress: () => {
-                            setShow(true)
-                        },
-                    },
-                    {
-                        icon: 'calendar-search',
-                        label: 'Listar por data',
-                        color: '#fca311',
-                        style: styles.fabActions,
-                        onPress: () => setModalSearch(true),
+                        onPress: () => {}//setModalName(true) 
                     },
                 ]}
                 onStateChange={onStateChange}
@@ -86,126 +112,24 @@ export default function FabGroup(
             />
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={true}
                 visible={isVisible}
             >
-                <View style={styles.container}>
-                    <View style={styles.containerModal}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={styles.textInfo}>Buscar pelo valor do depósito</Text>
-                            <TouchableOpacity onPress={() => setVisible(false)}>
-                                <Icon name='close-circle' size={30} color={'#da1e37'} />
-                            </TouchableOpacity>
-                        </View>
-                        <TextInput style={styles.input}
-                            placeholder='Digite a quantidade buscada'
-                            autoCorrect={false}
-                            autoCapitalize='none'
-                            keyboardType='numeric'
-                            value={value}
-                            autoFocus={true}
-                            onChangeText={setValue}
-                        />
-
-                        <TouchableOpacity
-                            style={{ ...styles.button, backgroundColor: '#292b2c' }}
-                            onPress={() => {
-                                getValor(value)
-                                setVisible(false)
-                                setValue('')
-                            }}
-                        >
-                            <Text style={styles.btnStyle}>Ok</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
-
-            <Modal
-                animationType='slide'
-                transparent={true}
-                visible={modalSearch}
-            >
-                <View style={styles.container}>
-                    <View style={styles.containerModal}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ ...styles.textInfo, marginRight: 120 }}>Busca personalizada</Text>
-                            <TouchableOpacity onPress={() => setModalSearch(false)}>
-                                <Icon name='close-circle' size={30} color={'#da1e37'} />
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#DDD', marginVertical: 5 }}></View>
-                        <Text>DEPÓSITOS</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={styles.someDays} onPress={() => {
-                                changeCheck(true)
-                                filterFifteenDaysDeposito()
-                                setModalSearch(false)
-                            }}>
-                                <Text style={styles.textDays}>Últimos 15 dias</Text>
-                                <Icon name='calendar-clock' size={25} color={'#000'} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ ...styles.someDays, marginLeft: 10, backgroundColor: '#e76f51' }} onPress={() => {
-                                changeCheck(true)
-                                filterOneMonthDeposito()
-                                setModalSearch(false)
-                            }}>
-                                <Text style={styles.textDays}>Últimos 30 dias</Text>
-                                <Icon name='calendar-clock' size={25} color={'#000'} />
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={{ alignItems: 'center' }}>
-                            <Text style={styles.textDays}>Selecione a data inicial da busca:</Text>
-                            <TouchableOpacity style={styles.dateSearch} onPress={() => setShow(true)}>
-                                <Text style={styles.textDays}>{moment(selectedDate).locale('pt-br').format('dddd, D [de] MMMM [de] YYYY')}</Text>
-                                <Icon name='calendar' size={25} color={'#000'} />
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={{ width: '100%', height: 3, backgroundColor: '#000', marginVertical: 5 }}></View>
-                        <Text>RETIRADAS</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={styles.someDays} onPress={() => {
-                                changeCheck(false)
-                                filterFifteenDaysRetirada()
-                                setModalSearch(false)
-                            }}>
-                                <Text style={styles.textDays}>Últimos 15 dias</Text>
-                                <Icon name='calendar-clock' size={25} color={'#000'} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ ...styles.someDays, marginLeft: 10, backgroundColor: '#e76f51' }} onPress={() => {
-                                changeCheck(false)
-                                filterOneMonthRetirada()
-                                setModalSearch(false)
-                            }}>
-                                <Text style={styles.textDays}>Últimos 30 dias</Text>
-                                <Icon name='calendar-clock' size={25} color={'#000'} />
-                            </TouchableOpacity>
-                        </View>
-
-                        <View style={{ alignItems: 'center' }}>
-                            <Text style={styles.textDays}>Selecione a data inicial da busca:</Text>
-                            <TouchableOpacity style={styles.dateSearch} onPress={() => setShow(true)}>
-                                <Text style={styles.textDays}>{moment(selectedDate).locale('pt-br').format('dddd, D [de] MMMM [de] YYYY')}</Text>
-                                <Icon name='calendar' size={25} color={'#000'} />
-                            </TouchableOpacity>
-                        </View>
-
-                    </View>
-                </View>
+                <ModalSearch
+                    type={type}
+                    hideModal={hideModal}
+                    changeCheck={changeCheck}
+                    checkDateDeposito={checkDateDeposito}
+                    checkDateRetirada={checkDateRetirada}
+                    filterFifteenDaysDeposito={filterFifteenDaysDeposito}
+                    filterOneMonthDeposito={filterOneMonthDeposito}
+                    filterFifteenDaysRetirada={filterFifteenDaysRetirada}
+                    filterOneMonthRetirada={filterOneMonthRetirada}
+                    filterCustomDays={filterCustomDays}
+                />
 
             </Modal>
-            {
-                show && (
-                    <DatePicker
-                        date={selectedDate}
-                        onChange={onChange}
-                        display='spinner'
-                    />)
-            }
         </>
     );
 }
@@ -293,3 +217,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 })
+
+/*
+
+
+ */

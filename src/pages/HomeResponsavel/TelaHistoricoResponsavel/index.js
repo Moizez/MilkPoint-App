@@ -23,25 +23,38 @@ export default function TelaHistoricoResponsavel() {
 
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
-    const [customDate, setCustomDate] = useState()
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [check, setCheck] = useState(false)
+    const [check, setCheck] = useState(true)
     const [dataDeposito, setDataDeposito] = useState([])
     const [dataRetirada, setDataRetirada] = useState([])
     const [msg, setMsg] = useState('')
+    //const [customDate, setCustomDate] = useState()
 
     //Mensagens das ações de listagens
     let checkMsg = check ? 'DEPÓSITOS' : 'RETIRADAS'
+    let msgName = `Lista de ${check ? 'produtores' : 'laticínios'}`
     let msgDefault = `Lista de ${checkMsg} do dia ${selectedDate && moment(selectedDate).format('L')}`
     let msg15Days = `Lista de ${checkMsg} dos últimos 15 dias`
     let msg30Days = `Lista de ${checkMsg} do último mês`
-    let msgCustomDays = `Lista de ${checkMsg} de ${moment(customDate).format('l')} até ${moment().format('l')}`
+    let msgCustomDays = `Lista de ${checkMsg} personalizada`
+    //let msgCustomDays = `Lista de ${checkMsg} de ${moment(customDate).format('l')} até ${moment().format('l')}`
 
     //Lista dos depositos e retiradas por status e usuário logado
     const responsavelId = p => p.tanque.responsavel.id == user.id
     const status = s => s.confirmacao == true || s.excluido == true
     const depositos = deposito.filter(responsavelId).filter(status)
     const retiradas = retirada.filter(responsavelId).filter(status)
+    const depositos_retiradas = depositos.concat(retiradas)
+
+    //Filtrar pelo nome da pessoa
+    async function findByName(value) {
+        const filterByName = await depositos_retiradas.filter(function (n) {
+            return n.produtor.nome || n.laticinio.nome == value
+        })
+        setMsg(msgName)
+        setDataDeposito(filterByName)
+        return dataDeposito
+    }
 
     //Filtrar pelos últimos 15 dias
     const filterFifteenDaysDeposito = async () => {
@@ -69,7 +82,6 @@ export default function TelaHistoricoResponsavel() {
 
     //Filtrar por data personalizada
     const filterCustomDaysDeposito = async (value) => {
-        setCustomDate(value)
         let customDay = moment(value).locale('en').format('L')
         const customDayAgo = await depositos.filter(function (d) {
             let regDay = moment(d.dataNow).locale('en').format('L')
@@ -118,7 +130,6 @@ export default function TelaHistoricoResponsavel() {
 
     //Filtrar por data personalizada
     const filterCustomDaysRetirada = async (value) => {
-        setCustomDate(value)
         let customDay = moment(value).locale('en').format('L')
         const customDayAgo = await retiradas.filter(function (d) {
             let regDay = moment(d.dataNow).locale('en').format('L')
@@ -163,10 +174,7 @@ export default function TelaHistoricoResponsavel() {
     }
 
     const showCalendar = () => setShow(true)
-    const changeCheck = (value) => {
-        setCheck(value)
-        console.log(value)
-    }
+    const changeCheck = (value) => { setCheck(value) }
 
     return (
         <Container>
@@ -208,6 +216,7 @@ export default function TelaHistoricoResponsavel() {
 
             <FabGroup
                 styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
+                findByName={findByName}
                 filterFifteenDaysDeposito={filterFifteenDaysDeposito}
                 filterOneMonthDeposito={filterOneMonthDeposito}
                 filterFifteenDaysRetirada={filterFifteenDaysRetirada}

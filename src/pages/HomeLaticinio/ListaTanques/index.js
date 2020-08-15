@@ -117,7 +117,7 @@ export default function ListaTanques({ data }) {
             <View style={styles.cardContainer}>
                 <View style={styles.infoCard}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'bovino' : 'caprino'}</Text></Text>
+                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
                     <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
                     <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                     <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
