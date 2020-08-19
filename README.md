@@ -4,7 +4,7 @@ PROTÓTIPO DE UM APLICATIVO MÓVEL PARA O PROGRAMA DE AQUISIÇÃO DE ALIMENTO DO
 ## Versão 1.0:
 - Versão inicial do projeto, já com a possibilidade de realizar o login entre diferentes perfis, realizar depositos e retiradas, além do responsável poder confirmar ou não ambas as ações dos produtores e laticinios.
 
-## Versão 1.1:
+### Versão 1.1:
 - Ajustes do layout para resoluções inferiores
 - Melhorias no calendário e na exibição da lista de histórico
 - Componentização de alguns módulos
@@ -28,7 +28,7 @@ PROTÓTIPO DE UM APLICATIVO MÓVEL PARA O PROGRAMA DE AQUISIÇÃO DE ALIMENTO DO
 - Implementação de registros com a soma de depositos e retiradas de cada tanque, mostrando por quinzena, mensalmente e desde a criação do tanque na tela de detalhes do tanque para o perfil do responsável
 - Criação da tela de carregamento (splash screen)
 
-## Bibliotecas utilizadas no projeto:
+### Bibliotecas utilizadas no projeto:
 - React Navigation: https://reactnavigation.org/docs/getting-started
 - React Vector Icons: https://github.com/oblador/react-native-vector-icons
 - Speedometer Chart: https://www.npmjs.com/package/react-native-speedometer-chart
