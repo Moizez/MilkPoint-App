@@ -21,7 +21,7 @@ export default function SignIn() {
     //Animação da tela de login
     const [offset] = useState(new Animated.ValueXY({ x: 0, y: 100 }))
     const [opacity] = useState(new Animated.Value(0))
-    const [logo] = useState(new Animated.ValueXY({ x: 225, y: 225 }))
+    const [logo] = useState(new Animated.ValueXY({ x: 220, y: 220 }))
 
     //Ciclo da animação da tela de login
     useEffect(() => {
@@ -33,7 +33,7 @@ export default function SignIn() {
             Animated.spring(offset.y, {
                 toValue: 0,
                 speed: 4,
-                bounciness: 20,
+                bounciness: 12,
             }),
             Animated.timing(opacity, {
                 toValue: 1,
