@@ -29,9 +29,15 @@ PROTÓTIPO DE UM APLICATIVO MÓVEL PARA O PROGRAMA DE AQUISIÇÃO DE ALIMENTO DO
 - Criação da tela de carregamento
 
 ## Bibliotecas utilizadas no projeto:
-React Navigation: https://reactnavigation.org/docs/getting-started
-React Vector Icons: https://github.com/oblador/react-native-vector-icons
-Speedometer Chart: https://www.npmjs.com/package/react-native-speedometer-chart
+- React Navigation: https://reactnavigation.org/docs/getting-started
+- React Vector Icons: https://github.com/oblador/react-native-vector-icons
+- Speedometer Chart: https://www.npmjs.com/package/react-native-speedometer-chart
+- Maps: https://github.com/react-native-community/react-native-maps
+- Lottie: https://airbnb.io/lottie/#/
+- Moment: https://momentjs.com/docs/
+- NativeBase: https://docs.nativebase.io/
+- NativePaper: https://callstack.github.io/react-native-paper/
+- DateTimePicker: https://github.com/react-native-community/datetimepicker
   
 
 
