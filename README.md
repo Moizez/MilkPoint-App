@@ -19,14 +19,14 @@ PROTÓTIPO DE UM APLICATIVO MÓVEL PARA O PROGRAMA DE AQUISIÇÃO DE ALIMENTO DO
 - Criação de buscas quinzenais no histórico de cada perfil
 - Criação de buscas mensais no histórico de cada perfil
 - Criação de buscas por data personalizada no histórico de cada perfil
-- Correção na listagem do histórico, agora o nome do solicitante aparece para o responsavel
+- Correção na listagem do histórico, agora o nome do solicitante aparece para o responsável
 - Contabilização dos litros depositados por quinzena, mensal e desde a criação 
 - Ao clicar e segurar em um tanque, será direcionado para uma página de detalhes do mesmo
-- Ajustes no tratamento de erros do login como email e senhas vazios ou incorretos
+- Ajustes no tratamento de erros do login como e-mail e senhas vazios ou incorretos
 - Criação da pagina de recuperação de senha (ainda sem funcionalidade)
-- Ajustes nas exibições dos depositos e retiradas pendentes, agora a lista é ordenada por data e hora (ascendente)
+- Ajustes nas exibições dos depósitos e retiradas pendentes, agora a lista é ordenada por data e hora (ascendente)
 - Ajustes nas exibições dos históricos de todos os perfis, agora a lista é ordenada por data e hora (descendente)
-- Implementação de registros com a soma de depositos e retiradas de cada tanque, mostrando por quinzena, mensalmente e desde a criação do tanque na tela de detalhes do tanque para o perfil do responsável
+- Implementação de registros com a soma de depósitos e retiradas de cada tanque, mostrando por quinzena, mensalmente e desde a criação do tanque na tela de detalhes do tanque para o perfil do responsável
 - Criação da tela de carregamento (splash screen)
 
 ## Bibliotecas utilizadas no projeto:
