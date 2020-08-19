@@ -35,7 +35,7 @@ export default function TelaHistoricoResponsavel() {
     let msgName = `Lista de ${check ? 'produtores' : 'laticínios'}`
     let msgDefault = `Lista de ${checkMsg} do dia ${selectedDate && moment(selectedDate).format('L')}`
     let msg15Days = `Lista de ${checkMsg} dos últimos 15 dias`
-    let msg30Days = `Lista de ${checkMsg} do último mês`
+    let msg30Days = `Lista de ${checkMsg} dos últimos 30 dias`
     let msgCustomDays = `Lista de ${checkMsg} personalizada`
     //let msgCustomDays = `Lista de ${checkMsg} de ${moment(customDate).format('l')} até ${moment().format('l')}`
 

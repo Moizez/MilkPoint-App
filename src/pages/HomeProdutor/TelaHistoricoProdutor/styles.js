@@ -5,7 +5,7 @@ flex: 1;
 background-color: #292b2c;
 `;
 
-export const BoxNomeAviso = styled.TouchableOpacity`
+export const BoxNomeAviso = styled.View`
 padding-top: 15px;
 background-color: #FFF;
 border-top-left-radius: 8px;

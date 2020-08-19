@@ -28,7 +28,7 @@ export default function TelaHistoricoProdutor() {
     let msgDefault = `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`
     let msgForValue = 'Lista de transações pelo valor do depósito'
     let msg15Days = 'Lista de transações dos últimos 15 dias'
-    let msg30Days = 'Lista de transações do último mês'
+    let msg30Days = 'Lista de transações dos últimos 30 dias'
     let msgCustomDays = 'Lista de DEPÓSITOS personalizada'
 
 
@@ -129,7 +129,7 @@ export default function TelaHistoricoProdutor() {
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <CardHistorico data={item} />}
                 ListEmptyComponent={
-                    <BoxNomeAviso onLongPress={() => setSelectedDate(moment().format())}>
+                    <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>

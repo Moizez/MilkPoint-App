@@ -9,6 +9,7 @@ export default function DatePicker({ date, onChange, display }) {
         <DateTimePicker
             value={dateNow}
             mode="date"
+            maximumDate={new Date()}
             display={display}
             onChange={(_, selectedDate) => {
                 const currentDate = selectedDate || dateNow
