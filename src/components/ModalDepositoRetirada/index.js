@@ -13,7 +13,7 @@ export default function ModalDepositoRetirada({ onClose, onConfirme }) {
                     placeholder='Quantidade em litros'
                     autoCorrect={false}
                     autoCapitalize='none'
-                    keyboardType='numeric'
+                    keyboardType="phone-pad"
                     value={quantidade}
                     onChangeText={(quantidade) => setQuantidade(quantidade)}
                 />

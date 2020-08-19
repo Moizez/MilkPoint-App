@@ -29,7 +29,7 @@ export default function TelaHistoricoLaticinio() {
     let msgForValue = 'Lista de transações pelo valor da retirada'
     let msg15Days = 'Lista de transações dos últimos 15 dias'
     let msg30Days = 'Lista de transações do último mês'
-    let msgCustomDays = `Lista de transações de ${moment(customDate).format('l')} até ${moment().format('l')}`
+    let msgCustomDays = 'Lista de RETIRADAS personalizada'
 
     //Filtrar por usuário e status
     const laticinio = r => r.laticinio.id == user.id

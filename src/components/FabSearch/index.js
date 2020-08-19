@@ -79,7 +79,7 @@ export default function FabSearch(
                             placeholder='Digite a quantidade buscada'
                             autoCorrect={false}
                             autoCapitalize='none'
-                            keyboardType='numeric'
+                            keyboardType='phone-pad'
                             value={value}
                             autoFocus={true}
                             onChangeText={setValue}
@@ -149,6 +149,7 @@ export default function FabSearch(
                     <DatePicker
                         date={selectedDate}
                         onChange={onChange}
+                        display={'spinner'}
                     />)
             }
         </>

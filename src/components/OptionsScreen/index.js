@@ -92,7 +92,7 @@ export default function OptionsScreen() {
 
             <View style={styles.versionContainer}>
                 <Text>Milk Point</Text>
-                <Text style={{ color: '#adb5bd' }}>Versão 1.0</Text>
+                <Text style={{ color: '#adb5bd' }}>Versão 1.1</Text>
             </View>
             <LottieView style={{ height: 48, marginTop: 2 }} source={require('../../assets/lottie/farm-icon.json')} autoPlay loop />
         </View >

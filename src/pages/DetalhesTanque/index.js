@@ -91,18 +91,20 @@ export default function DetalhesTanque({ route }) {
                     <Text style={styles.textItem}>Rua/Comunidade: <Text style={styles.text}>{data.logradouro}</Text></Text>
                     <Text style={styles.textItem}>Complemento: <Text style={styles.text}>{data.complemento}</Text></Text>
                 </View>
-                <View style={styles.cardItem}>
-                    <Text style={styles.tituloItem}>MOVIMENTAÇÕES</Text>
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
-                    <Text style={styles.textItem}>Total de depósitos:</Text>
-                    <Text style={styles.textItem}>- Nos últimos 15 dias: <Text style={styles.text}>{totalQuinzenal} litros</Text></Text>
-                    <Text style={styles.textItem}>- Nos últimos 30 dias: <Text style={styles.text}>{totalMensal} litros</Text></Text>
-                    <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>{totalDepositos} litros</Text></Text>
-                    <Text style={{ ...styles.textItem, marginTop: 10 }}>Total de retiradas:</Text>
-                    <Text style={styles.textItem}>- Nos últimos 15 dias: <Text style={styles.text}>{totalRetQuinzenal} litros</Text></Text>
-                    <Text style={styles.textItem}>- Nos últimos 30 dias: <Text style={styles.text}>{totalRetMensal} litros</Text></Text>
-                    <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>{totalRetitadas} litros</Text></Text>
-                </View>
+                {user.perfil === 2 &&
+                    <View style={styles.cardItem}>
+                        <Text style={styles.tituloItem}>MOVIMENTAÇÕES</Text>
+                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
+                        <Text style={styles.textItem}>Total de depósitos:</Text>
+                        <Text style={styles.textItem}>- Nos últimos 15 dias: <Text style={styles.text}>{totalQuinzenal} litros</Text></Text>
+                        <Text style={styles.textItem}>- Nos últimos 30 dias: <Text style={styles.text}>{totalMensal} litros</Text></Text>
+                        <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>{totalDepositos} litros</Text></Text>
+                        <Text style={{ ...styles.textItem, marginTop: 10 }}>Total de retiradas:</Text>
+                        <Text style={styles.textItem}>- Nos últimos 15 dias: <Text style={styles.text}>{totalRetQuinzenal} litros</Text></Text>
+                        <Text style={styles.textItem}>- Nos últimos 30 dias: <Text style={styles.text}>{totalRetMensal} litros</Text></Text>
+                        <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>{totalRetitadas} litros</Text></Text>
+                    </View>
+                }
                 <View style={styles.ContainerButtons}>
                     <TouchableOpacity style={styles.buttons}>
                         <Text style={styles.textButton}>Gerar Relatório</Text>

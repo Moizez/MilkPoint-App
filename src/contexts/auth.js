@@ -1,5 +1,8 @@
 import React, { useState, useEffect, createContext } from 'react';
 import AsyncStorage from '@react-native-community/async-storage'
+import { Modal } from 'react-native'
+
+import AlertErrorSuccess from '../components/AlertErrorSuccess'
 
 export const AuthContext = createContext({})
 
@@ -10,7 +13,11 @@ let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function AuthProvider({ children }) {
 
+    let error = require('../assets/lottie/error-icon.json')
+    const [errorMsg, setErrorMsg] = useState('')
+
     const [loading, setLoading] = useState(true)
+    const [isVisible, setVisible] = useState(false)
     const [loadingAuth, setLoadingAuth] = useState(false)
     const [depositoPendente, setDepositoPendente] = useState([])
     const [deposito, setDeposito] = useState([])
@@ -88,11 +95,31 @@ export default function AuthProvider({ children }) {
         loadStorage()
     }, [])
 
+    //Alertas de erro
+    const correctLogin = () => {
+        if (isVisible) {
+            return (
+                <AlertErrorSuccess
+                    onClose={closeAlertErroSuccess}
+                    title='Aviso'
+                    message={errorMsg}
+                    titleButton='Ok'
+                    jsonPath={error}
+                    buttonColor={'#292b2c'}
+                />
+            )
+        }
+    }
+
+    const closeAlertErroSuccess = () => { setVisible(false) }
+
     //Funcao para logar o usuário
     const signIn = async (email, password) => {
         setLoadingAuth(true)
         if (email.trim().length == 0 || password.trim().length == 0) {
-            alert('Preencha seu e-mail e senha corretamente!')
+            setErrorMsg('Preencha seu e-mail ou senha corretamente!')
+            setVisible(true)
+            correctLogin()
             setLoadingAuth(false)
             return
         } else {
@@ -113,16 +140,18 @@ export default function AuthProvider({ children }) {
             }
 
             const response = await fetch(`${baseUrl}login`, dado)
-            const data = await response.json()
 
             try {
                 if (response.status == 200) {
+                    const data = await response.json()
                     setUser(data)
                     storageUser(data)
                     setLoadingAuth(false)
                     return
                 } else {
-                    alert(response.status)
+                    setErrorMsg('E-mail ou senha são inválidos! Tente novamente.')
+                    setVisible(true)
+                    correctLogin()
                     setLoadingAuth(false)
                     return
                 }
@@ -148,14 +177,25 @@ export default function AuthProvider({ children }) {
     }
 
     return (
-        <AuthContext.Provider value={{
-            signed: !!user, user, loading, loadingAuth, depositoPendente, deposito, retiradaPendente,
-            retirada, tanque, tanqueResponsavel, baseUrl,
-            signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,
-            loadListRetiradas, loadListTanques, loadListTanquesResponsavel
-        }}>
-            {children}
-        </AuthContext.Provider>
-    );
+
+        <>
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={isVisible}
+            >
+                {correctLogin()}
+            </Modal>
+
+            <AuthContext.Provider value={{
+                signed: !!user, user, loading, loadingAuth, depositoPendente, deposito, retiradaPendente,
+                retirada, tanque, tanqueResponsavel, baseUrl,
+                signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,
+                loadListRetiradas, loadListTanques, loadListTanquesResponsavel
+            }}>
+                {children}
+            </AuthContext.Provider>
+        </>
+    )
 }
 

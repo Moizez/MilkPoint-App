@@ -126,11 +126,9 @@ export default function SignIn() {
                             )
                     }
                 </SubmitButton>
-
-                <Link onPress={() => navigation.navigate('SignUp')}>
-                    <LinkText>Cadastrar-se</LinkText>
+                <Link onPress={() => navigation.navigate('ForgotPassword')}>
+                    <LinkText>Esqueceu sua senha?</LinkText>
                 </Link>
-
             </Animated.View>
         </Container>
     );

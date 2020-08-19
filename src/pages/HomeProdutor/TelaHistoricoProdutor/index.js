@@ -29,7 +29,8 @@ export default function TelaHistoricoProdutor() {
     let msgForValue = 'Lista de transações pelo valor do depósito'
     let msg15Days = 'Lista de transações dos últimos 15 dias'
     let msg30Days = 'Lista de transações do último mês'
-    let msgCustomDays = `Lista de transações de ${moment(customDate).format('l')} até ${moment().format('l')}`
+    let msgCustomDays = 'Lista de DEPÓSITOS personalizada'
+
 
     //Filtrar por usuário e status
     const produtor = d => d.produtor.id == user.id

@@ -113,13 +113,13 @@ export default function Map({ dataMap, onClose }) {
                 <Marker
                     coordinate={{ latitude: lat, longitude: long }}
                     title={'Tanque: ' + dataMap.nome}
-                    description={`Cabem: ${dataMap.qtdRestante} litros`}
+                    description={`Ainda cabe: ${dataMap.qtdRestante} litros`}
                 >
                     <Image source={dataMap.tipo == 'BOVINO' ? pinCow : pinGoat}
                         style={{ height: 55, width: 55 }}
                     />
 
-                    <Callout onPress={() => navigation.navigate('DetalhesTanque', { data: dataMap })}>
+                    <Callout>
                         <View style={styles.cardInfo}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center' }}>
                                 <Text style={{ fontWeight: 'bold' }}>Informações do Tanque</Text>
@@ -128,7 +128,7 @@ export default function Map({ dataMap, onClose }) {
                             <View style={{ width: '100%', height: 0.5, backgroundColor: '#DDD', marginVertical: 3 }}></View>
                             <Text style={styles.titleCard}>Tanque: <Text style={styles.textSimple}>{dataMap.nome}</Text></Text>
                             <Text style={styles.titleCard}>Vol. atual: <Text style={styles.textSimple}>{dataMap.qtdAtual} litros</Text></Text>
-                            <Text style={styles.titleCard}>Cabem: <Text style={styles.textSimple}>{dataMap.qtdRestante} litros</Text></Text>
+                            <Text style={styles.titleCard}>Ainda cabe: <Text style={styles.textSimple}>{dataMap.qtdRestante} litros</Text></Text>
                             <Text style={styles.titleCard}>Responsável: <Text style={styles.textSimple}>{dataMap.responsavel.nome}</Text></Text>
                         </View>
                     </Callout>

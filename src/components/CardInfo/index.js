@@ -1,12 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
+import { AuthContext } from '../../contexts/auth'
+
 const CardInfo = ({ dataInfo, showModal, titlePerfil, infoPerfil }) => {
 
     let dayHour = moment(dataInfo.dataNow).locale('pt-br').format('L [às] LT[h]')
+
+    const { user } = useContext(AuthContext)
 
     const bucketColor = (status) => {
         if (dataInfo.confirmacao == true) {
@@ -25,8 +29,9 @@ const CardInfo = ({ dataInfo, showModal, titlePerfil, infoPerfil }) => {
                 <View style={styles.infoCard}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{dataInfo.tanque.nome}</Text></Text>
                     <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{dataInfo.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
+                    <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{dataInfo.tanque.responsavel.nome}</Text></Text>
                     <Text style={styles.textInfo}>Valor solicitado: <Text style={styles.text}>{dataInfo.quantidade} litros</Text></Text>
-                    <Text style={styles.textInfo}>{titlePerfil} <Text style={styles.text}>{infoPerfil}</Text></Text>
+                    {user.perfil == 2 && <Text style={styles.textInfo}>{titlePerfil} <Text style={styles.text}>{infoPerfil}</Text></Text>}
                     <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>
                 </View>
 

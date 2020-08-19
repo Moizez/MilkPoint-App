@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 //Páginas
 import SignIn from '../pages/SignIn'
-import SignUp from '../pages/SignUp'
+import ForgotPassword from '../pages/ForgotPassword'
 
 const AuthStack = createStackNavigator()
 
@@ -16,10 +16,9 @@ export default function AuthRoutes() {
                 component={SignIn}
                 options={{ headerShown: false }}
             />
-
             <AuthStack.Screen
-                name='SignUp'
-                component={SignUp}
+                name='ForgotPassword'
+                component={ForgotPassword}
                 options={{
                     headerStyle: {
                         backgroundColor: '#292b2c',
