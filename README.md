@@ -30,6 +30,8 @@ PROTÓTIPO DE UM APLICATIVO MÓVEL PARA O PROGRAMA DE AQUISIÇÃO DE ALIMENTO DO
 - Agora quando o responsável realizar um cancelamento, ele pode deixar um comentário dizendo o motivo da ação
 - Os calendários agora só permitem selecionar datas até o presente dia, não mais datas futuras
 - Criação da tela de carregamento (splash screen)
+- A cor do ícone do calendário agora muda conforme o filtro selecionado
+- Tela de saída do app para melhor percepção do usuário quando realizar a ação de sair
 
 ## Bibliotecas utilizadas no projeto:
 - React Navigation: https://reactnavigation.org/docs/getting-started
