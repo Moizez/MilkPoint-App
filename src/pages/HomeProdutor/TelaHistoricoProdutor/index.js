@@ -24,6 +24,7 @@ export default function TelaHistoricoProdutor() {
     const [customDate, setCustomDate] = useState()
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [msg, setMsg] = useState('')
+    const [color, setColor] = useState('#FFF')
 
     let msgDefault = `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`
     let msgForValue = 'Lista de transações pelo valor do depósito'
@@ -42,6 +43,7 @@ export default function TelaHistoricoProdutor() {
         const filterByValue = await depositos.filter(function (v) {
             return v.quantidade == value
         })
+        setColor('#FFF')
         setMsg(msgForValue)
         setDataDeposito(filterByValue)
         return dataDeposito
@@ -54,6 +56,7 @@ export default function TelaHistoricoProdutor() {
             let dayDep = moment(d.dataNow).locale('en').format('L')
             return moment(dayDep).isSameOrAfter(fifteenDays, 'days')
         })
+        setColor('#e9c46a')
         setMsg(msg15Days)
         setDataDeposito(fifteenDaysAgo)
         return dataDeposito
@@ -66,6 +69,7 @@ export default function TelaHistoricoProdutor() {
             let dayDep = moment(d.dataNow).locale('en').format('L')
             return moment(dayDep).isSameOrAfter(oneMonth, 'days')
         })
+        setColor('#e76f51')
         setMsg(msg30Days)
         setDataDeposito(oneMonthAgo)
         return dataDeposito
@@ -79,6 +83,7 @@ export default function TelaHistoricoProdutor() {
             let dayDep = moment(d.dataNow).locale('en').format('L')
             return moment(dayDep).isSameOrAfter(customDay, 'days')
         })
+        setColor('#DDD')
         setMsg(msgCustomDays)
         setDataDeposito(customDayAgo)
         return dataDeposito
@@ -103,10 +108,12 @@ export default function TelaHistoricoProdutor() {
 
     function onChange(value) {
         setShow(Platform.OS === 'ios')
+        setColor('#FFF')
         setSelectedDate(value)
     }
 
     async function onRefreshList() {
+        setColor('#FFF')
         setIsRefreshing(true)
         await checkDate(selectedDate)
         setIsRefreshing(false)
@@ -119,7 +126,7 @@ export default function TelaHistoricoProdutor() {
             <Header
                 msg={msg}
                 onOpen={showCalendar}
-                calendar={<Icon name='calendar-month' color='#FFF' size={22} />}
+                calendar={<Icon name='calendar-month' color={color} size={22} />}
             />
 
             <List

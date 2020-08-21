@@ -113,7 +113,8 @@ const styles = StyleSheet.create({
         marginBottom: 3,
     },
     tituloBody: {
-        color: '#FFF'
+        color: '#FFF',
+        fontSize: 15
     },
     image: {
         width: 80,

@@ -136,7 +136,8 @@ const styles = StyleSheet.create({
     ContainerButtons: {
         flex: 0.25,
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        marginTop: 10
     },
     buttons: {
         backgroundColor: '#292b2c',

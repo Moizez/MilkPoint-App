@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, Text, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, ImageBackground, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 
@@ -32,7 +32,7 @@ export default function TelaPerfilProdutor() {
             <View style={styles.containerTitulo}>
                 <Text style={styles.titulo}>Minha Conta</Text>
             </View>
-            <View style={styles.containerCard}>
+            <ScrollView style={styles.containerCard}>
                 <View style={styles.cardItem}>
                     <Text style={styles.tituloItem}>DADOS CADASTRAIS</Text>
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
@@ -60,7 +60,7 @@ export default function TelaPerfilProdutor() {
                         <Text style={styles.textButton}>Alterar Senha</Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </ScrollView>
 
         </View>
     );
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     containerCard: {
         flex: 1,
         marginHorizontal: 12,
-        padding: 12
+        padding: 8
     },
     containerImage: {
         marginRight: 6,
@@ -121,20 +121,23 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     textItem: {
-        fontSize: 16
+        fontSize: 16,
+        fontWeight: 'bold'
     },
     text: {
         fontSize: 16,
-        fontFamily: 'Lato',
+        fontWeight: 'normal'
+
     },
     cardItem: {
         flex: 1,
-        marginVertical: 5,
+        marginVertical: 15,
     },
     ContainerButtons: {
         flex: 0.25,
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        marginTop: 10
     },
     buttons: {
         backgroundColor: '#292b2c',

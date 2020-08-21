@@ -28,6 +28,7 @@ export default function TelaHistoricoResponsavel() {
     const [dataDeposito, setDataDeposito] = useState([])
     const [dataRetirada, setDataRetirada] = useState([])
     const [msg, setMsg] = useState('')
+    const [color, setColor] = useState('#FFF')
     //const [customDate, setCustomDate] = useState()
 
     //Mensagens das ações de listagens
@@ -63,6 +64,7 @@ export default function TelaHistoricoResponsavel() {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(fifteenDays, 'days')
         })
+        setColor('#e9c46a')
         setMsg(msg15Days)
         setDataDeposito(fifteenDaysAgo)
         return dataDeposito
@@ -75,6 +77,7 @@ export default function TelaHistoricoResponsavel() {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(oneMonth, 'days')
         })
+        setColor('#e76f51')
         setMsg(msg30Days)
         setDataDeposito(oneMonthAgo)
         return dataDeposito
@@ -87,6 +90,7 @@ export default function TelaHistoricoResponsavel() {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(customDay, 'days')
         })
+        setColor('#DDD')
         setMsg(msgCustomDays)
         setDataDeposito(customDayAgo)
         return dataDeposito
@@ -111,6 +115,7 @@ export default function TelaHistoricoResponsavel() {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(fifteenDays, 'days')
         })
+        setColor('#e9c46a')
         setMsg(msg15Days)
         setDataRetirada(fifteenDaysAgo)
         return dataRetirada
@@ -123,6 +128,7 @@ export default function TelaHistoricoResponsavel() {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(oneMonth, 'days')
         })
+        setColor('#e76f51')
         setMsg(msg30Days)
         setDataRetirada(oneMonthAgo)
         return dataRetirada
@@ -135,6 +141,7 @@ export default function TelaHistoricoResponsavel() {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(customDay, 'days')
         })
+        setColor('#DDD')
         setMsg(msgCustomDays)
         setDataRetirada(customDayAgo)
         return dataRetirada
@@ -164,10 +171,12 @@ export default function TelaHistoricoResponsavel() {
 
     function onChange(value) {
         setShow(Platform.OS === 'ios')
+        setColor('#FFF')
         setSelectedDate(value)
     }
 
     async function onRefreshList() {
+        setColor('#FFF')
         setIsRefreshing(true)
         check ? await checkDateDeposito(selectedDate) : await checkDateRetirada(selectedDate)
         setIsRefreshing(false)
@@ -181,7 +190,7 @@ export default function TelaHistoricoResponsavel() {
             <Header
                 msg={msg}
                 onOpen={showCalendar}
-                calendar={<Icon name='calendar-month' color='#FFF' size={22} />}
+                calendar={<Icon name='calendar-month' color={color} size={22} />}
             />
 
             <List

@@ -24,6 +24,8 @@ export default function TelaHistoricoLaticinio() {
     const [customDate, setCustomDate] = useState()
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [msg, setMsg] = useState('')
+    const [color, setColor] = useState('#FFF')
+
 
     let msgDefault = `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`
     let msgForValue = 'Lista de transações pelo valor da retirada'
@@ -41,6 +43,7 @@ export default function TelaHistoricoLaticinio() {
         const filterByValue = await retiradas.filter(function (v) {
             return v.quantidade == value
         })
+        setColor('#FFF')
         setMsg(msgForValue)
         setDataRetirada(filterByValue)
         return dataRetirada
@@ -53,6 +56,7 @@ export default function TelaHistoricoLaticinio() {
             let dayRet = moment(d.dataNow).locale('en').format('L')
             return moment(dayRet).isSameOrAfter(fifteenDays, 'days')
         })
+        setColor('#e9c46a')
         setMsg(msg15Days)
         setDataRetirada(fifteenDaysAgo)
         return dataRetirada
@@ -65,6 +69,7 @@ export default function TelaHistoricoLaticinio() {
             let dayRet = moment(d.dataNow).locale('en').format('L')
             return moment(dayRet).isSameOrAfter(oneMonth, 'days')
         })
+        setColor('#e76f51')
         setMsg(msg30Days)
         setDataRetirada(oneMonthAgo)
         return dataRetirada
@@ -78,6 +83,7 @@ export default function TelaHistoricoLaticinio() {
             let dayRet = moment(d.dataNow).locale('en').format('L')
             return moment(dayRet).isSameOrAfter(customDay, 'days')
         })
+        setColor('#DDD')
         setMsg(msgCustomDays)
         setDataRetirada(customDayAgo)
         return dataRetirada
@@ -102,10 +108,12 @@ export default function TelaHistoricoLaticinio() {
 
     function onChange(value) {
         setShow(Platform.OS === 'ios')
+        setColor('#FFF')
         setSelectedDate(value)
     }
 
     async function onRefreshList() {
+        setColor('#FFF')
         setIsRefreshing(true)
         await checkDate(selectedDate)
         setIsRefreshing(false)
@@ -118,7 +126,7 @@ export default function TelaHistoricoLaticinio() {
             <Header
                 msg={msg}
                 onOpen={showCalendar}
-                calendar={<Icon name='calendar-month' color='#FFF' size={22} />}
+                calendar={<Icon name='calendar-month' color={color} size={22} />}
             />
 
             <List

@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import { Modal } from 'react-native'
 
 import AlertErrorSuccess from '../components/AlertErrorSuccess'
+import LoadScreen from '../components/LoadScreen'
 
 export const AuthContext = createContext({})
 
@@ -26,6 +27,8 @@ export default function AuthProvider({ children }) {
     const [user, setUser] = useState(null)
     const [tanque, setTanque] = useState([])
     const [tanqueResponsavel, setTanqueResponsavel] = useState([])
+    const [time, setTime] = useState(false)
+
 
     //Carregar lista de tanques 
     const loadListTanques = async () => {
@@ -165,9 +168,13 @@ export default function AuthProvider({ children }) {
 
     //Função para deslogar o usuário
     const logOut = async () => {
+        setTime(true)
         await AsyncStorage.clear()
             .then(() => {
-                setUser(null)
+                setTimeout(() => {
+                    setUser(null)
+                    setTime(false)
+                }, 2000);
             })
     }
 
@@ -179,6 +186,15 @@ export default function AuthProvider({ children }) {
     return (
 
         <>
+            <Modal
+                animationType='fade'
+                transparent={false}
+                visible={time}
+            >
+                <LoadScreen msg='SAINDO' />
+
+            </Modal>
+
             <Modal
                 animationType='fade'
                 transparent={true}
