@@ -26,7 +26,6 @@ PROTÓTIPO DE UM APLICATIVO MÓVEL PARA O PROGRAMA DE AQUISIÇÃO DE ALIMENTO DO
 - Criação da pagina de recuperação de senha (ainda sem funcionalidade)
 - Ajustes nas exibições dos depósitos e retiradas pendentes, agora a lista é ordenada por data e hora (ascendente)
 - Ajustes nas exibições dos históricos de todos os perfis, agora a lista é ordenada por data e hora (descendente)
-- Implementação de registros com a soma de depósitos e retiradas de cada tanque, mostrando por quinzena, mensalmente e desde a criação do tanque na tela de detalhes do tanque para o perfil do responsável
 - Agora quando o responsável realizar um cancelamento, ele pode deixar um comentário dizendo o motivo da ação
 - Os calendários agora só permitem selecionar datas até o presente dia, não mais datas futuras
 - Criação da tela de carregamento (splash screen)
