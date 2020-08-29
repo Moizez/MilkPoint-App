@@ -21,7 +21,7 @@ const ModalChoice = ({ dataInfo, hideModal, handleCancel, handleConfirm, titlePe
                 <View style={styles.viewMessage}>
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{dataInfo.tanque.nome}</Text></Text>
                     <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{dataInfo.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
-                    <Text style={styles.textInfo}>Valor solicitado: <Text style={styles.text}>{dataInfo.quantidade} litros</Text></Text>
+                    <Text style={styles.textInfo}>Qtd. solicitada: <Text style={styles.text}>{dataInfo.quantidade.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} litros</Text></Text>
                     <Text style={styles.textInfo}>{titlePerfil} <Text style={styles.text}>{infoPerfil}</Text></Text>
                     <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>
                 </View>

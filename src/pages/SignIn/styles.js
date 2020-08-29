@@ -4,6 +4,7 @@ export const Container = styled.KeyboardAvoidingView`
 flex: 1;
 align-items: center;
 justify-content: center;
+behavior: 'padding';
 `;
 
 export const BoxImage = styled.View`
@@ -14,7 +15,7 @@ justify-content: center;
 export const Input = styled.TextInput.attrs({
     placeholderTextColor: '#343a40',
 })`
-background: rgba(0,0,0,0.20);
+background: #d3d3d3;
 font-size: 18px;
 width: 90%;
 color: #000;

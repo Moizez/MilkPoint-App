@@ -29,6 +29,11 @@ import TelaPerfilResponsavel from '../pages/HomeResponsavel/TelaPerfilResponsave
 
 //Páginas TAB do Técnico
 import HomeTecnico from '../pages/HomeTecnico'
+import TelaConfiguracaoTecnico from '../pages/HomeTecnico/TelaConfiguracaoTecnico'
+import TelaProdutores from '../pages/HomeTecnico/TelaProdutores'
+import TelaLaticinios from '../pages/HomeTecnico/TelaLaticinios'
+import TelaResponsaveis from '../pages/HomeTecnico/TelaResponsaveis'
+
 
 const AppTab = createBottomTabNavigator()
 
@@ -123,7 +128,7 @@ function ProdutorTab() {
                     tabBarIcon: ({ color }) => (
                         <Icon name="home" color={color} size={30} />
                     ),
-                }} Depósitos Pendentes
+                }}
             />
             <AppTab.Screen name='Depositos' component={TelaDepositosPendentesProdutor}
                 options={{
@@ -186,7 +191,7 @@ function LaticinioTab() {
                     tabBarIcon: ({ color }) => (
                         <Icon name="home" color={color} size={30} />
                     ),
-                }} Depósitos Pendentes
+                }}
 
             />
             <AppTab.Screen name='Retiradas' component={TelaRetiradasPendentesLaticinio}
@@ -247,7 +252,42 @@ function TecnicoTab() {
                     tabBarIcon: ({ color }) => (
                         <Icon name="home" color={color} size={30} />
                     ),
-                }} Depósitos Pendentes
+                }}
+            />
+            <AppTab.Screen name='Produtores' component={TelaProdutores}
+                options={{
+                    tabBarLabel: 'Produtores',
+                    tabBarIcon: ({ }) => (
+                        <Icon name="account-cowboy-hat" color={'#2a9d8f'} size={30} />
+                    ),
+                }}
+            />
+            <AppTab.Screen name='Laticínios' component={TelaLaticinios}
+                options={{
+                    tabBarLabel: 'Laticínios',
+                    tabBarIcon: ({ }) => (
+                        <Icon name="account-tie" color={'#da1e37'} size={30} />
+                    ),
+                }}
+
+            />
+            <AppTab.Screen name='Responsáveis' component={TelaResponsaveis}
+                options={{
+                    tabBarLabel: 'Responsáveis',
+                    tabBarIcon: ({ }) => (
+                        <Icon name="account-cog" color={'#fca311'} size={30} />
+                    ),
+                }}
+
+            />
+            <AppTab.Screen name='Mais' component={TelaConfiguracaoTecnico}
+                options={{
+                    tabBarLabel: 'Mais',
+                    tabBarIcon: ({ }) => (
+                        <Icon name="dots-vertical" color={'#0077b6'} size={30} />
+                    ),
+                }}
+
             />
         </AppTab.Navigator>
     )

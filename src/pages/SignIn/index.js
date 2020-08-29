@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Animated, StyleSheet, Keyboard, ActivityIndicator } from 'react-native'
+import { Animated, StyleSheet, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import { AuthContext } from '../../contexts/auth'
 
-import { Container, BoxImage, Input, SubmitButton, SubmitText, Link, LinkText } from './styles'
+import { BoxImage, Input, SubmitButton, SubmitText, Link, LinkText } from './styles'
 
 export default function SignIn() {
     const navigation = useNavigation()
@@ -81,7 +81,7 @@ export default function SignIn() {
     }
 
     return (
-        <Container>
+        <KeyboardAvoidingView style={st.containerBody} behavior='padding'>
             <BoxImage>
                 <Animated.Image style={{
                     width: logo.x,
@@ -130,11 +130,16 @@ export default function SignIn() {
                     <LinkText>Esqueceu sua senha?</LinkText>
                 </Link>
             </Animated.View>
-        </Container>
+        </KeyboardAvoidingView>
     );
 }
 
 const st = StyleSheet.create({
+    containerBody: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     boxInput: {
         flex: 1,
         alignItems: 'center',

@@ -6,7 +6,7 @@ import { AuthContext } from '../../contexts/auth'
 import ListaTanques from '../HomeProdutor/ListaTanques'
 import Header from '../../components/Header'
 
-import { Container, BoxNomeAviso, NomeAviso, Box, Titulo, List, BoxIconAviso,
+import { Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 

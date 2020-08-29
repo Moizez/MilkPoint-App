@@ -41,7 +41,7 @@ export default function Map({ dataMap, onClose }) {
         try {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-            );
+            )
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
                 setHasLocationPermission(true)
             } else {

@@ -8,9 +8,9 @@ import LoadScreen from '../components/LoadScreen'
 export const AuthContext = createContext({})
 
 //Url padrão da API 
-//let baseUrl = 'http://192.168.0.127:8080/api/'
+let baseUrl = 'http://192.168.0.127:8080/api/'
 //let baseUrl = 'https://milkpoint.herokuapp.com/api/'
-let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+//let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function AuthProvider({ children }) {
 
@@ -152,7 +152,7 @@ export default function AuthProvider({ children }) {
                     setLoadingAuth(false)
                     return
                 } else {
-                    setErrorMsg('E-mail ou senha são inválidos! Tente novamente.')
+                    setErrorMsg('E-mail ou senha inválidos! Tente novamente.')
                     setVisible(true)
                     correctLogin()
                     setLoadingAuth(false)
