@@ -13,8 +13,10 @@ export default function Header({ msg, onOpen, calendar }) {
             return require('../../assets/images/cover.png')
         } else if (user.perfil == 2) {
             return require('../../assets/images/cover2.png')
-        } else {
+        } else if(user.perfil == 3) {
             return require('../../assets/images/cover3.png')
+        }else {
+            return require('../../assets/images/cover4.png')
         }
     }
 
@@ -46,6 +48,7 @@ export default function Header({ msg, onOpen, calendar }) {
                         {user.perfil == 1 && ('Produtor')}
                         {user.perfil == 2 && ('Responsável')}
                         {user.perfil == 3 && ('Laticínio')}
+                        {user.perfil == 4 && ('Técnico')}
                     </Text>
                 </View>
                 <View style={styles.containerNome}>

@@ -33,6 +33,7 @@ import TelaConfiguracaoTecnico from '../pages/HomeTecnico/TelaConfiguracaoTecnic
 import TelaProdutores from '../pages/HomeTecnico/TelaProdutores'
 import TelaLaticinios from '../pages/HomeTecnico/TelaLaticinios'
 import TelaResponsaveis from '../pages/HomeTecnico/TelaResponsaveis'
+import TelaPerfilTecnico from '../pages/HomeTecnico/TelaPerfilTecnico'
 
 
 const AppTab = createBottomTabNavigator()
@@ -266,7 +267,7 @@ function TecnicoTab() {
                 options={{
                     tabBarLabel: 'Laticínios',
                     tabBarIcon: ({ }) => (
-                        <Icon name="account-tie" color={'#da1e37'} size={30} />
+                        <Icon name="account-tie" color={'#da1e37'} size={33} />
                     ),
                 }}
 
@@ -275,7 +276,7 @@ function TecnicoTab() {
                 options={{
                     tabBarLabel: 'Responsáveis',
                     tabBarIcon: ({ }) => (
-                        <Icon name="account-cog" color={'#fca311'} size={30} />
+                        <Icon name="account-cog" color={'#fca311'} size={33} />
                     ),
                 }}
 
@@ -288,6 +289,16 @@ function TecnicoTab() {
                     ),
                 }}
 
+            />
+            <AppTab.Screen name='DetalhesTanque' component={DetalhesTanque}
+                options={{
+                    tabBarButton: () => null,
+                }}
+            />
+            <AppTab.Screen name='Perfil' component={TelaPerfilTecnico}
+                options={{
+                    tabBarButton: () => null,
+                }}
             />
         </AppTab.Navigator>
     )

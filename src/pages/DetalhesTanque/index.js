@@ -110,7 +110,7 @@ export default function DetalhesTanque({ route }) {
                         <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>{totalDepositos} litros</Text></Text>
                     </View>
                 }
-                {user.perfil === 2 &&
+                {user.perfil === 2 || user.perfil === 4 && 
                     <View style={styles.cardItem}>
                         <Text style={styles.tituloItem}>MOVIMENTAÇÕES</Text>
                         <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>

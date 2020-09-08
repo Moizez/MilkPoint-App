@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { AuthContext } from '../../contexts/auth'
+import { FAB } from 'react-native-paper'
+import { StyleSheet, Modal } from 'react-native'
 
-import ListaTanques from '../HomeProdutor/ListaTanques'
+import { AuthContext } from '../../contexts/auth'
+import ListaTanques from '../HomeTecnico/ListaTanques'
 import Header from '../../components/Header'
+import ModalCreateTanque from '../../components/ModalCreateTanque'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -15,6 +18,7 @@ export default function HomeTecnico() {
 
     const { loadListTanques, tanque } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [isVisible, setVisible] = useState(false)
 
     useEffect(() => {
         loadListTanques()
@@ -25,6 +29,8 @@ export default function HomeTecnico() {
         await loadListTanques()
         setIsRefreshing(false)
     }
+
+    const closeModal = () => { setVisible(false) }
 
     return (
         <Container>
@@ -51,6 +57,34 @@ export default function HomeTecnico() {
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
+            <FAB
+                style={styles.fab}
+                small={false}
+                icon="plus"
+                color='#FFF'
+                onPress={() => setVisible(true)}
+            />
+            <Modal
+                visible={isVisible}
+                animationType='fade'
+                transparent={false}
+            >
+                <ModalCreateTanque
+                    onClose={closeModal}
+                />
+            </Modal>
         </Container>
     );
 }
+
+const styles = StyleSheet.create({
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#000',
+        borderWidth: 2,
+        borderColor: '#FFF'
+    },
+})

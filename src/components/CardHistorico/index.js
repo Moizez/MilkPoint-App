@@ -9,7 +9,8 @@ import { numberToReal } from '../Helpers'
 
 const CardHistorico = ({ data }) => {
 
-    let dayHour = moment(data.dataNow).locale('pt-br').format('L [às] LT[h]')
+    let dateHour = moment(data.dataNow).locale('pt-br').format('L [às] LT[h]')
+    let requestDate = moment(data.dataSolicitacao).locale('pt-br').format('L [às] LT[h]')
     const { user } = useContext(AuthContext)
     const [isExpand, setExpand] = useState(false)
 
@@ -28,25 +29,27 @@ const CardHistorico = ({ data }) => {
 
     const renderInfo = () => {
         return (
-            <View style={styles.infoCard}>
+            <TouchableOpacity style={{ ...styles.infoCard, backgroundColor: '#FFF' }} onPress={() => setExpand(false)}>
+                <Text style={{ ...styles.textInfo, textAlign: 'center', marginBottom: 5 }}>Mais informações</Text>
                 <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
                 <Text style={styles.textInfo}>Valor: <Text style={styles.text}>{result}</Text></Text>
-                {data.excluido === true ? <Text style={styles.textInfo}>Cancelado por: <Text style={styles.text}>{data.efetuou}</Text></Text>
+                {data.excluido ? <Text style={styles.textInfo}>Cancelado por: <Text style={styles.text}>{data.efetuou}</Text></Text>
                     : <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.tanque.responsavel.nome}</Text></Text>}
+                <Text style={styles.textInfo}>Data da solicitação: <Text style={styles.text}>{requestDate}</Text></Text>
                 {data.observacao !== '' && <Text style={styles.textInfo}>Motivo: <Text style={styles.text}>{data.observacao}</Text></Text>}
-            </View>
+            </TouchableOpacity>
         )
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.cardContainer}>
-                <View style={styles.infoCard}>
+                <TouchableOpacity style={styles.infoCard} onPress={()=> setExpand(!isExpand)}>
                     {user.perfil != 2 && <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.tanque.nome}</Text></Text>}
                     {user.perfil === 2 && <Text style={styles.textInfo}>Solicitante: <Text style={styles.text}>{data.produtor?.nome || data.laticinio?.nomeFantasia}</Text></Text>}
                     <Text style={styles.textInfo}>Qtd. solicitada: <Text style={styles.text}>{data.quantidade.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} litros</Text></Text>
-                    <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>
-                </View>
+                    <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dateHour}</Text></Text>
+                </TouchableOpacity>
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
@@ -61,7 +64,6 @@ const CardHistorico = ({ data }) => {
             <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd' }}></View>
 
             {isExpand && renderInfo()}
-
             {isExpand && <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd' }}></View>}
 
             <TouchableOpacity style={styles.buttonColapse} onPress={() => setExpand(!isExpand)}>
@@ -75,8 +77,9 @@ const CardHistorico = ({ data }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#faf9f9',
+        backgroundColor: '#ececec',
         margin: 12,
+        borderRadius: 5,
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 3.85,
@@ -93,18 +96,16 @@ const styles = StyleSheet.create({
     infoCard: {
         backgroundColor: '#faf9f9',
         justifyContent: 'center',
-        alignItems: 'flex-start',
-        flex: 2,
+        flex: 1.9,
         padding: 6,
-
     },
     buttonCard: {
-        flex: 0.7,
+        flex: 0.6,
         margin: 3,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 6,
-        shadowColor: 'rgba(0,0,0,0.7)',
+        shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 3.85,
         shadowOffset: {
@@ -120,11 +121,12 @@ const styles = StyleSheet.create({
     text: {
         fontWeight: 'normal'
     },
-
     buttonColapse: {
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#f4f3ee'
+        backgroundColor: '#f4f3ee',
+        borderBottomRightRadius: 5,
+        borderBottomLeftRadius: 5
     },
     textColapse: {
         textAlign: 'center',
@@ -134,20 +136,3 @@ const styles = StyleSheet.create({
 })
 
 export default CardHistorico
-
-/*
-
-<View style={styles.infoCard}>
-                    <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.tanque.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
-                    {user.perfil === 2 && <Text style={styles.textInfo}>Solicitante: <Text style={styles.text}>{data.produtor?.nome || data.laticinio?.nomeFantasia}</Text></Text>}
-                    <Text style={styles.textInfo}>Qtd. solicitada: <Text style={styles.text}>{data.quantidade} litros</Text></Text>
-                    <Text style={styles.textInfo}>Valor: <Text style={styles.text}>R$ {data.valor.toFixed(2)}</Text></Text>
-                    <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 8 }}></View>
-                    {data.excluido === true ? <Text style={styles.textInfo}>Cancelado por: <Text style={styles.text}>{data.efetuou}</Text></Text>
-                        : <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.tanque.responsavel.nome}</Text></Text>}
-                    {data.observacao !== '' && <Text style={styles.textInfo}>Motivo: <Text style={styles.text}>{data.observacao}</Text></Text>}
-                </View>
-
- */

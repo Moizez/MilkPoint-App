@@ -8,8 +8,8 @@ import LoadScreen from '../components/LoadScreen'
 export const AuthContext = createContext({})
 
 //Url padrão da API 
-let baseUrl = 'http://192.168.0.127:8080/api/'
-//let baseUrl = 'https://milkpoint.herokuapp.com/api/'
+//let baseUrl = 'http://192.168.0.128:8080/api/'
+let baseUrl = 'https://milkpoint.herokuapp.com/api/'
 //let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 
 export default function AuthProvider({ children }) {
@@ -29,6 +29,37 @@ export default function AuthProvider({ children }) {
     const [tanqueResponsavel, setTanqueResponsavel] = useState([])
     const [time, setTime] = useState(false)
 
+    //Perfis
+    const [produtor, setProdutor] = useState([])
+    const [laticinio, setLaticinio] = useState([])
+    const [responsavel, setResponsavel] = useState([])
+
+    //Carregar lista de produtores
+    const loadListProdutores = async () => {
+        const response = await fetch(`${baseUrl}produtor`)
+        const data = await response.json()
+        setProdutor(data)
+
+        return produtor
+    }
+
+    //Carregar lista de laticinios
+    const loadListLaticinios = async () => {
+        const response = await fetch(`${baseUrl}laticinio`)
+        const data = await response.json()
+        setLaticinio(data)
+
+        return laticinio
+    }
+
+    //Carregar lista de responsaveis
+    const loadListResponsaveis = async () => {
+        const response = await fetch(`${baseUrl}responsavel`)
+        const data = await response.json()
+        setResponsavel(data)
+
+        return responsavel
+    }
 
     //Carregar lista de tanques 
     const loadListTanques = async () => {
@@ -143,7 +174,7 @@ export default function AuthProvider({ children }) {
             }
 
             const response = await fetch(`${baseUrl}login`, dado)
-
+            
             try {
                 if (response.status == 200) {
                     const data = await response.json()
@@ -205,9 +236,10 @@ export default function AuthProvider({ children }) {
 
             <AuthContext.Provider value={{
                 signed: !!user, user, loading, loadingAuth, depositoPendente, deposito, retiradaPendente,
-                retirada, tanque, tanqueResponsavel, baseUrl,
+                retirada, tanque, tanqueResponsavel, baseUrl, produtor, laticinio, responsavel,
                 signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,
-                loadListRetiradas, loadListTanques, loadListTanquesResponsavel
+                loadListRetiradas, loadListTanques, loadListTanquesResponsavel, loadListProdutores,
+                loadListLaticinios,loadListResponsaveis
             }}>
                 {children}
             </AuthContext.Provider>

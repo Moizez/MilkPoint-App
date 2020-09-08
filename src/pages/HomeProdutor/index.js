@@ -12,7 +12,7 @@ import { Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
 
 export default function HomeProdutor() {
 
-    const { loadListTanques, tanque } = useContext(AuthContext)
+    const {user, loadListTanques, tanque } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
 
     useEffect(() => {

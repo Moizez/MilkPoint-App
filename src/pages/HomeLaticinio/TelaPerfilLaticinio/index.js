@@ -131,20 +131,19 @@ const styles = StyleSheet.create({
     },
     cardItem: {
         flex: 1,
-        marginVertical: 15,
+        marginVertical: 10,
     },
     ContainerButtons: {
-        flex: 0.25,
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginTop: 10
+        marginVertical: 5
     },
     buttons: {
         backgroundColor: '#292b2c',
         justifyContent: 'center',
         width: '40%',
         height: 45,
-        borderRadius: 5
+        borderRadius: 5,
 
     },
     textButton: {

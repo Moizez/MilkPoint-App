@@ -1,12 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Image, StyleSheet, TouchableOpacity } from 'react-native'
 import Speedometer from 'react-native-speedometer-chart'
 import { useNavigation } from '@react-navigation/native'
+
+import { AuthContext } from '../../contexts/auth'
 
 export default function GraficoTanque({ dataGrafico, handleOpenModal }) {
 
     const capacidade = dataGrafico.qtdAtual + dataGrafico.qtdRestante
     const navigation = useNavigation()
+
+    const { user, loadListProdutores, produtor } = useContext(AuthContext)
 
     function corGrafico() {
         if (dataGrafico.qtdAtual > (capacidade / 4) & dataGrafico.qtdAtual < (capacidade / 2)) {
@@ -57,4 +61,3 @@ const styles = StyleSheet.create({
         height: 35
     }
 })
-

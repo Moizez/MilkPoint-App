@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
-import { View, Text, ScrollView, StyleSheet, ImageBackground, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, ScrollView, ImageBackground, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 
 import { AuthContext } from '../../../contexts/auth'
 
-export default function TelaPerfilResponsavel() {
+export default function TelaPerfilTecnico() {
 
     const { user } = useContext(AuthContext)
     let nascimento = moment(user.dataNascimento).locale('pt-br').format('L')
@@ -14,7 +14,7 @@ export default function TelaPerfilResponsavel() {
         <View style={styles.container}>
             <ImageBackground
                 style={styles.containerPerfil}
-                source={require('../../../assets/images/cover2.png')}
+                source={require('../../../assets/images/cover4.png')}
                 resizeMode='cover'
             >
                 <View style={styles.containerImage}>
@@ -49,7 +49,7 @@ export default function TelaPerfilResponsavel() {
                     <Text style={styles.textItem}>Cidade: <Text style={styles.text}>{user.localidade}</Text></Text>
                     <Text style={styles.textItem}>CEP: <Text style={styles.text}>{user.cep}</Text></Text>
                     <Text style={styles.textItem}>Bairro: <Text style={styles.text}>{user.bairro}</Text></Text>
-                    <Text style={styles.textItem}>Rua/Comunidade: <Text style={styles.text}>{user.logradouro}</Text></Text>
+                    <Text style={styles.textItem}>Rua: <Text style={styles.text}>{user.logradouro}</Text></Text>
                     <Text style={styles.textItem}>Complemento: <Text style={styles.text}>{user.complemento}</Text></Text>
                 </View>
                 <View style={styles.ContainerButtons}>
