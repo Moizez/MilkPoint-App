@@ -16,11 +16,19 @@ import {
 
 export default function HomeTecnico() {
 
-    const { loadListTanques, tanque } = useContext(AuthContext)
+    const { loadListTanques, tanque, responsavel, loadListResponsaveis } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [isVisible, setVisible] = useState(false)
 
+    const getIdNome = () => {
+        let id = responsavel.map((id) => id.id)
+        let nome = responsavel.map((nome) => nome.nome)
+        let idNome = id.concat(nome)
+    }
+    getIdNome()
+
     useEffect(() => {
+        loadListResponsaveis()
         loadListTanques()
     }, [])
 
@@ -70,6 +78,8 @@ export default function HomeTecnico() {
                 transparent={false}
             >
                 <ModalCreateTanque
+                    dataMap={tanque}
+                    data={responsavel}
                     onClose={closeModal}
                 />
             </Modal>

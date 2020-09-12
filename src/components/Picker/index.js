@@ -1,30 +1,29 @@
-import React from 'react';
-import RNPickerSelect from 'react-native-picker-select';
-import { PickerView } from './styles';
+import React from 'react'
+import RNPickerSelect from 'react-native-picker-select'
+import { View, StyleSheet } from 'react-native'
 
-export default function Picker({ onChange }) {
+export default function Picker({ onChange, title, dataItem }) {
+
     return (
-        <PickerView>
+        <View style={styles.container}>
             <RNPickerSelect
-                style={{
-                    inputIOS: {
-                        height: 50,
-                        padding: 5,
-                        backgroundColor: '#FFF',
-                        fontSize: 16
-                    }
-                }}
-                placeholder={{
-                    label: 'Listar por?',
-                    color: '#222',
-                    value: true,
-                }}
+                placeholder={title}
                 onValueChange={(value) => onChange(value)}
-                items={[
-                    { label: 'Depositos', value: true, color: 'green' },
-                    { label: 'Retiradas', value: false, color: 'red' },
-                ]}
+                items={dataItem}
             />
-        </PickerView>
+        </View>
     )
 }
+
+
+export const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#FFF',
+        borderBottomWidth: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '45%',
+        height: 45,
+        borderRadius: 8
+    }
+})

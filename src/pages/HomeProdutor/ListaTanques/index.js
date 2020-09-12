@@ -28,7 +28,7 @@ export default function ListaTanques({ data }) {
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
-    //Solicitação de retirada pelo laticinio
+    //Solicitação de depósito pelo produtor
     const requestDeposito = async (quantidade, idProd, idTanque) => {
         const data = new FormData();
         data.append("quantidade", quantidade);
