@@ -4,8 +4,8 @@
 
 </h1>
 
- # Nubank | Clone
-> Protótipo de um aplicativo móvel para o **Programa de Aquisição de Alimento do Estado do Ceará (PAA - Leite)**.
+ # MilkPoint | Mobile
+> Protótipo de um aplicativo móvel para o Programa de Aquisição de Alimento do Estado do Ceará – **PAA - Leite**.
 <p align="left">
 <img src="https://img.shields.io/static/v1?label=react-native&message=framework&color=blue&style=for-the-badge&logo=REACT"/>
 <img src="http://img.shields.io/static/v1?label=STATUS&message=DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
@@ -104,9 +104,3 @@ Moisés Henrique | Analista de Sistemas
 - E-mail: moizezhenrique@gmail.com
 - Twitter: [@moizezhenrique](https://twitter.com/moizezhenrique)
 - Instagram: [@moizezhenrique](https://www.instagram.com/moizezhenrique)
-
-
-  
-
-
-
