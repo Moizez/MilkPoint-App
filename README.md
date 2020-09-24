@@ -1,47 +1,114 @@
-# Milk-Point Mobile
-PROTÓTIPO DE UM APLICATIVO MÓVEL PARA O PROGRAMA DE AQUISIÇÃO DE ALIMENTO DO ESTADO DO CEARÁ (PAA - LEITE)
+# MilkPoint Mobile
+> PROTÓTIPO DE UM APLICATIVO MÓVEL PARA O PROGRAMA DE AQUISIÇÃO DE ALIMENTO DO ESTADO DO CEARÁ (PAA - LEITE)
 
-## Releases:
-### Versão 1.0:
-- Versão inicial do projeto, já com a possibilidade de realizar o login entre diferentes perfis, realizar depositos e retiradas, além do responsável poder confirmar ou não ambas as ações dos produtores e laticinios.
+<h1 align="center">
+ 
+![picpay-logo](https://user-images.githubusercontent.com/29413231/94051938-ab66cf80-fdae-11ea-9077-c2ef6bfa17f9.png)
 
-### Versão 1.1:
-- Ajustes do layout para resoluções inferiores
-- Melhorias no calendário e na exibição da lista de histórico
-- Componentização de alguns módulos
-- Ajustes na lista do histórico, na seleção por data e valor para os perfis produtor e laticínio
-- O mapa agora mostra a rota e a distancia entre o usuário e o tanque selecionado
-- Ao clicar no pin que marca o local do tanque é mostrado detalhes do mesmo
-- Mudanças nos ícones de ovelha para cabra e outra figura para a vaca
-- Correções nos bugs de atualizações dos tanques na home e correção para iniciar sempre na home de cada perfil
-- Implementação do sistema de retirada total para o laticínio
-- Ajustes nos botões de retirada e deposito para os perfis produtor e laticínio
-- Criação de buscas quinzenais no histórico de cada perfil
-- Criação de buscas mensais no histórico de cada perfil
-- Criação de buscas por data personalizada no histórico de cada perfil
-- Correção na listagem do histórico, agora o nome do solicitante aparece para o responsável
-- Ao clicar e segurar em um tanque, será direcionado para uma página de detalhes do mesmo
-- Contabilização dos litros depositados por quinzena, mensal e desde a criação de forma individual por cada perfil mostrado na telha de detalhes do tanque
-- Ajustes no tratamento de erros do login como e-mail e senhas vazios ou incorretos
-- Criação da pagina de recuperação de senha (ainda sem funcionalidade)
-- Ajustes nas exibições dos depósitos e retiradas pendentes, agora a lista é ordenada por data e hora (ascendente)
-- Ajustes nas exibições dos históricos de todos os perfis, agora a lista é ordenada por data e hora (descendente)
-- Agora quando o responsável realizar um cancelamento, ele pode deixar um comentário dizendo o motivo da ação
-- Os calendários agora só permitem selecionar datas até o presente dia, não mais datas futuras
-- Criação da tela de carregamento (splash screen)
-- A cor do ícone do calendário agora muda conforme o filtro selecionado
-- Tela de saída do app para melhor percepção do usuário quando realizar a ação de sair
+</h1>
 
-## Bibliotecas utilizadas no projeto:
-- React Navigation: https://reactnavigation.org/docs/getting-started
-- React Vector Icons: https://github.com/oblador/react-native-vector-icons
-- Speedometer Chart: https://www.npmjs.com/package/react-native-speedometer-chart
-- Maps: https://github.com/react-native-community/react-native-maps
-- Lottie: https://airbnb.io/lottie/#/
-- Moment: https://momentjs.com/docs/
-- NativeBase: https://docs.nativebase.io/
-- NativePaper: https://callstack.github.io/react-native-paper/
-- DateTimePicker: https://github.com/react-native-community/datetimepicker
+ # Nubank | Clone
+> Clone da interface do app do banco digital mais popular do Brail, o Nubank feito em React Native CLI.
+<p align="left">
+<img src="https://img.shields.io/static/v1?label=react-native&message=framework&color=blue&style=for-the-badge&logo=REACT"/>
+<img src="http://img.shields.io/static/v1?label=STATUS&message=DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
+</p>
+
+## Índice
+- [Demonstração](#Demonstração)
+- [Apresentação](#Apresentação)
+- [Instalação](#Instalação)
+- [Etapas](#Etapas)
+- [Tecnologias](#Tecnologias)
+- [Contato](#Contato)
+
+## Demonstração
+<h1 align="center">
+ 
+ ![PicPay-Clone](/picpay.gif)
+ 
+</h1>
+
+## Apresentação
+Este projeto foi realizado para minha prática pessoal e como forma de contribuição para a comunidade de desenvolvedores, não visando nenhum lucro,
+apenas focado em compartilhar conhecimento e crescimento profissional. Para a criação deste clone do **Nubank** utilizei como base o [vídeo](https://youtu.be/DDm0M_rZLJo) da Rocketseat do Diego Fernandes.
+
+## Instalação
+```bash
+  # Tendo em mente que você já tem instalado o NPM e o Yarn, primeiro faça o clone ou faça o download deste repositório:
+  $ git clone https://github.com/Moizez/PicPay-Clone.git
+
+  # Em seguida abra o terminal na pasta do projeto e execute o comando abaixo para instalar as dependências.
+  $ npm install ou yarn
+
+   # Dê um link completo pra que os icons fiquem visíveis no projeto.
+   $ react-native link
+
+  # Execute no dispositivo movel
+  $ npx react-native run-android
+
+```
+Obs: Em caso de dúvidas consulte a documentação oficial do [react native](https://reactnative.dev/docs/0.60/getting-started).
+
+#### Passo Adicional no Android
+
+Para que os gestos sejam habilitados no Android é necessário um passo a mais, que é bem simples, abra o arquivo `android/app/src/main/java/<pacote_do_projeto>/MainActivity.java`, e começe importando os pacotes como abaixo:
+
+```java
+// ...
+import com.facebook.react.ReactActivity;
+// Importações adicionadas
+import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.ReactRootView;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+```
+
+Feito a importação vamos criar um método novo, logo abaixo do `getMainComponentName()`, ficando:
+
+```java
+public class MainActivity extends ReactActivity {
+  @Override
+  protected String getMainComponentName() { ... }
+  // Método adicionado
+  @Override
+  protected ReactActivityDelegate createReactActivityDelegate() {
+    return new ReactActivityDelegate(this, getMainComponentName()) {
+      @Override
+      protected ReactRootView createRootView() {
+        return new RNGestureHandlerEnabledRootView(MainActivity.this);
+      }
+    };
+  }
+}
+  
+```
+
+## Etapas
+- [x] Criação das pages e dos arquivos de estilos
+- [x] Criação do componente header
+- [x] Criação do componente tab
+- [x] Criação do card na home
+- [x] Criação do componente menu
+- [x] Implementação das animações
+
+## Tecnologias
+|Tecnologias | Versão |
+|------------|--------|
+|react        |**16.13.1** |
+|react-native |**0.63.2** |
+|react-native-gesture-handler |**^1.8.0** |
+|react-native-qrcode-svg     |**^6.0.6** |
+|react-native-svg     |**^12.1.0** |
+|reactotron-react-native     |**^5.0.0** |
+|styled-components     |**^5.1.1** |
+
+## Contato
+Moisés Henrique | Analista de Sistemas
+- E-mail: moizezhenrique@gmail.com
+- Twitter: [@moizezhenrique](https://twitter.com/moizezhenrique)
+- Instagram: [@moizezhenrique](https://www.instagram.com/moizezhenrique)
+
+
   
 
 
