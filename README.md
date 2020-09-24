@@ -1,6 +1,3 @@
-# MilkPoint Mobile
-> PROTÓTIPO DE UM APLICATIVO MÓVEL PARA O PROGRAMA DE AQUISIÇÃO DE ALIMENTO DO ESTADO DO CEARÁ (PAA - LEITE)
-
 <h1 align="center">
  
 ![picpay-logo](https://user-images.githubusercontent.com/29413231/94051938-ab66cf80-fdae-11ea-9077-c2ef6bfa17f9.png)
@@ -8,7 +5,7 @@
 </h1>
 
  # Nubank | Clone
-> Clone da interface do app do banco digital mais popular do Brail, o Nubank feito em React Native CLI.
+> Protótipo de um aplicativo móvel para o **Programa de Aquisição de Alimento do Estado do Ceará (PAA - Leite)**.
 <p align="left">
 <img src="https://img.shields.io/static/v1?label=react-native&message=framework&color=blue&style=for-the-badge&logo=REACT"/>
 <img src="http://img.shields.io/static/v1?label=STATUS&message=DESENVOLVIMENTO&color=GREEN&style=for-the-badge"/>
