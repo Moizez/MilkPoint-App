@@ -9,7 +9,7 @@
 <p align="left">
 <img src="https://img.shields.io/static/v1?label=react-native&message=framework&color=blue&style=for-the-badge&logo=REACT"/>
  <a href="https://github.com/Moizez/Milk-Point" alt="Activity">
- <img src="https://img.shields.io/github/commit-activity/m/badges/shields" /></a>
+ <img src="https://img.shields.io/github/commit-activity/m/badges/shields&style=for-the-badge" /></a>
 <img src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=yellow&style=for-the-badge"/>
 </p>
 
