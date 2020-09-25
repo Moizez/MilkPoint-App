@@ -8,7 +8,6 @@
 > Protótipo de um aplicativo móvel para o Programa de Aquisição de Alimento do Estado do Ceará – **PAA - Leite**.
 <p align="left">
 <img src="https://img.shields.io/static/v1?label=react-native&message=framework&color=blue&style=for-the-badge&logo=REACT"/>
-<a href="https://github.com/badges/shields/graphs/contributors" alt="Contributors">
 <img src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=yellow&style=for-the-badge"/>
 </p>
 
