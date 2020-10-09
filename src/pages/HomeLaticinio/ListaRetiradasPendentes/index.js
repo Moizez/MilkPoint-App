@@ -11,7 +11,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
     let success = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user, loadListRetiradas, baseUrl } = useContext(AuthContext)
+    const { user, loadListRetiradasResolvidas, baseUrl } = useContext(AuthContext)
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
@@ -44,7 +44,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setIdRetirada(data.id)
         setEfetuou(user.apelido)
         await confirmacaoRetirada(false, idRetirada, efetuou, '')
-        await loadListRetiradas()
+        await loadListRetiradasResolvidas()
         setModalCancelVisible(false)
     }
 

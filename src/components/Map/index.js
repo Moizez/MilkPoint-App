@@ -6,6 +6,7 @@ import MapView, { Marker, Callout } from 'react-native-maps'
 import MapViewDirections from 'react-native-maps-directions'
 import Geolocation from 'react-native-geolocation-service'
 import { getDistance, convertDistance } from 'geolib'
+import key from '../../../api.key'
 
 export default function Map({ dataMap, onClose }) {
 
@@ -92,7 +93,7 @@ export default function Map({ dataMap, onClose }) {
                         <MapViewDirections
                             origin={initialRegion}
                             destination={destination}
-                            apikey="AIzaSyCqJEj4QwlweIp1dTC94eqJ6Kb5wUyYL_M"
+                            apikey={key.google.secret}
                             strokeWidth={5}
                             strokeColor={dataMap.tipo == 'BOVINO' ? '#0077b6' : '#2a9d8f'}
                             onReady={result => {

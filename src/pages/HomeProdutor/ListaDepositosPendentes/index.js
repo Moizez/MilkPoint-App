@@ -6,12 +6,13 @@ import CardInfo from '../../../components/CardInfo'
 import ModalCancel from '../../../components/ModalCancel'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
+import api from '../../../services/api'
 
-export default function ListaDepositossPendentes({ data, onRefresh }) {
+export default function ListaDepositosPendentes({ data, onRefresh }) {
 
     let success = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user, loadListDepositos, baseUrl } = useContext(AuthContext)
+    const { user, loadListDepositosResolvidos, baseUrl } = useContext(AuthContext)
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
@@ -44,7 +45,7 @@ export default function ListaDepositossPendentes({ data, onRefresh }) {
         setIdDeposito(data.id)
         setEfetuou(user.apelido)
         await confirmacaoDeposito(false, idDeposito, efetuou, '')
-        await loadListDepositos()
+        await loadListDepositosResolvidos()
         setModalCancelVisible(false)
     }
 

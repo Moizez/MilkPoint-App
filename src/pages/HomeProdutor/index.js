@@ -5,15 +5,24 @@ import { AuthContext } from '../../contexts/auth'
 
 import ListaTanques from '../HomeProdutor/ListaTanques'
 import Header from '../../components/Header'
+import api from '../../services/api'
 
-import { Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
+import {
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
 export default function HomeProdutor() {
 
-    const {user, loadListTanques, tanque } = useContext(AuthContext)
+    const [tanque, setTanque] = useState([])
     const [isRefreshing, setIsRefreshing] = useState(false)
+
+    const loadListTanques = async () => {
+        const response = await api.get('tanque')
+
+        let tanque = response.data
+        setTanque(tanque)
+    }
 
     useEffect(() => {
         loadListTanques()
@@ -27,7 +36,7 @@ export default function HomeProdutor() {
 
     return (
         <Container>
-            <Header msg={'Lista de tanques'}/> 
+            <Header msg={'Lista de tanques'} />
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanque}

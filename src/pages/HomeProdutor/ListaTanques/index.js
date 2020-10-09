@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import { FAB } from 'react-native-paper'
+import moment from 'moment'
+import 'moment/locale/pt-br'
 
 import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
 import GraficoTanque from '../../../components/GraficoTanque'
@@ -28,6 +31,28 @@ export default function ListaTanques({ data }) {
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
+    //Enviar SMS
+    const sendSms = async (value) => {
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+        headers.append("Accept", 'application/json')
+
+        const data = {
+            phoneNumber: user.phoneNumber,
+            message: `\n
+            Solicitação de DEPÓSITO do produtor ${user.nome}:
+            - Quantidade: ${value} litros;
+            - Data: ${moment(new Date()).locale('pt-br').format('L')}.`
+        }
+
+        await fetch('https://milkpoint.herokuapp.com/api/sms',
+            {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(data)
+            })
+    }
+
     //Solicitação de depósito pelo produtor
     const requestDeposito = async (quantidade, idProd, idTanque) => {
         const data = new FormData();
@@ -37,6 +62,30 @@ export default function ListaTanques({ data }) {
 
         await fetch(`${baseUrl}deposito`, { method: 'POST', body: data })
     };
+
+    const saveDepositoAsync = async (quantidade, idProd, idTanque) => {
+        const deposito = {
+            quantidade: quantidade,
+            idProd: idProd,
+            idTanque: idTanque
+        }
+
+        const existeDeposito = await AsyncStorage.getItem('@Deposito')
+
+        let novoDeposito = JSON.parse(existeDeposito);
+        if (!novoDeposito) {
+            novoDeposito = []
+            novoDeposito.push(deposito)
+        }
+
+        //let id = String(Math.floor(Math.random() * 10000))
+        await AsyncStorage.setItem('@deposito', JSON.stringify(novoDeposito)).then(() => {
+            console.log('Salvo com sucesso!')
+        })
+            .catch(() => {
+                console.log('Erro ao salvar!')
+            })
+    }
 
     function handleDeposito(value) {
         if (isNaN(value) || value <= 0) {
@@ -61,7 +110,9 @@ export default function ListaTanques({ data }) {
         setAlertVisible(true)
         setIdProd(user.id)
         setIdTanque(data.id)
+        //await saveDepositoAsync(value, idProd, idTanque)
         await requestDeposito(value, idProd, idTanque)
+        sendSms(value)
         loadListDepositosPendentes()
         setModalVisibleDois(false)
         setModalVisible(false)
@@ -69,40 +120,9 @@ export default function ListaTanques({ data }) {
 
     const handleCloseModal = () => setModalVisible(false)
     const handleOpenModal = () => setModalVisible(true)
-    const handleOpenModalDois = () => setModalVisibleDois(true)
     const handleCloseModalDois = () => setModalVisibleDois(false)
     const closeAlertInfo = () => setAlertInfo(false)
     const closeAlertErroSuccess = () => setAlertVisible(false)
-
-    const ErrorSuccesAlert = () => {
-        if (alertVisible) {
-            return (
-                <AlertErrorSuccess
-                    onClose={closeAlertErroSuccess}
-                    title='Aviso'
-                    message={typeMessage}
-                    titleButton='Ok'
-                    jsonPath={msgType}
-                    buttonColor={'#292b2c'}
-                />
-            )
-        }
-    }
-
-    const InformationAlert = () => {
-        if (isAlertInfo) {
-            return (
-                <AlertInformation
-                    dataInfo={data}
-                    qtd={qtdInfo}
-                    onConfirm={handleConfirm}
-                    onClose={closeAlertInfo}
-                    title='Aviso'
-                    message={'Confirme os dados'}
-                />
-            )
-        }
-    }
 
     return (
         <View style={styles.container}>
@@ -154,7 +174,16 @@ export default function ListaTanques({ data }) {
                 transparent={true}
                 visible={isAlertInfo}
             >
-                {InformationAlert()}
+                {isAlertInfo &&
+                    <AlertInformation
+                        dataInfo={data}
+                        qtd={qtdInfo}
+                        onConfirm={handleConfirm}
+                        onClose={closeAlertInfo}
+                        title='Aviso'
+                        message={'Confirme os dados'}
+                    />
+                }
             </Modal>
 
             <Modal
@@ -162,7 +191,16 @@ export default function ListaTanques({ data }) {
                 transparent={true}
                 visible={alertVisible}
             >
-                {ErrorSuccesAlert()}
+                {alertVisible &&
+                    <AlertErrorSuccess
+                        onClose={closeAlertErroSuccess}
+                        title='Aviso'
+                        message={typeMessage}
+                        titleButton='Ok'
+                        jsonPath={msgType}
+                        buttonColor={'#292b2c'}
+                    />
+                }
             </Modal>
 
         </View >

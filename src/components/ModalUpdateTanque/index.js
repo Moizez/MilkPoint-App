@@ -11,35 +11,41 @@ import DatePicker from '../DatePicker'
 import { AuthContext } from '../../contexts/auth'
 import AlertErrorSuccess from '../AlertErrorSuccess'
 
-export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }) {
+export default function ModalUpdateTanque({ onCloseModal, dataTanque, showAlertErroSuccess }) {
 
     let pinCow = require('../../assets/images/pin-cow.png')
     let pinGoat = require('../../assets/images/pin-goat.png')
+    let typeLeite = dataTanque.tipo == 'BOVINO' ? 1 : 2
+    let typeResp = dataTanque.responsavel.id
 
-    const { baseUrl, cepUrl, loadListTanques, loadListResponsaveis, responsavel } = useContext(AuthContext)
+    const { baseUrl,
+        cepUrl,
+        loadListTanques,
+        loadListResponsaveis,
+        responsavel
+    } = useContext(AuthContext)
 
     const [show, setShow] = useState(false)
-    const [nome, setNome] = useState('')
-    const [capacidade, setCapacidade] = useState(null)
-    const [qtdAtual, setQtdAtual] = useState(0)
-    const [dataCriacao, setDataCriacao] = useState(new Date())
-    const [tipo, setTipo] = useState(0)
-    const [responsavelId, setResponsavelId] = useState()
+    const [nome, setNome] = useState(dataTanque.nome)
+    const [capacidade, setCapacidade] = useState()
+    const [qtdAtual, setQtdAtual] = useState(dataTanque.qtdAtual.toString())
+    const [dataCriacao, setDataCriacao] = useState(dataTanque.dataCriacao)
+    const [tipo, setTipo] = useState()
+    const [responsavelId, setResponsavelId] = useState(typeResp)
     const [status, setStatus] = useState()
-    const [isEnabled, setIsEnabled] = useState(true)
     const [alertVisible, setAlertVisible] = useState(false)
     const [modalVisible, setModalVisible] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
+    const [idTanque] = useState(dataTanque.id)
     const [valorCap, setValorCap] = useState(0)
     const [respList, setRespList] = useState([])
 
     //Endereço
-    const [cep, setCep] = useState('')
-    const [bairro, setBairro] = useState('')
-    const [localidade, setLocalidade] = useState('')
-    const [logradouro, setLogradouro] = useState('')
-    const [uf, setUf] = useState('')
-    const [findCep, setFindCep] = useState('')
+    const [cep, setCep] = useState(dataTanque.cep)
+    const [bairro, setBairro] = useState(dataTanque.bairro)
+    const [localidade, setLocalidade] = useState(dataTanque.localidade)
+    const [logradouro, setLogradouro] = useState(dataTanque.logradouro)
+    const [uf, setUf] = useState(dataTanque.uf)
     const [dataLocal, setDataLocal] = useState([])
 
     //Map
@@ -52,8 +58,16 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
         error: null
     })
 
+    useEffect(() => {
+        loadListTanques()
+        loadListResponsaveis()
+        getResponsavel()
+        setLat(initialRegion.latitude)
+        setLong(initialRegion.longitude)
+    }, [])
+
     const buscaCep = async () => {
-        const response = await fetch(`${cepUrl}${findCep}/json/`)
+        const response = await fetch(`${cepUrl}${cep}/json/`)
         const data = await response.json()
         setDataLocal(data)
         setCep(data.cep)
@@ -99,25 +113,37 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
         }
     }, [hasLocationPermission])
 
+    const typeCapacidade = () => {
+        let valor
+        if (dataTanque.capacidade == 'MIL') valor = 1
+        else if (dataTanque.capacidade == 'DOISMIL') valor = 2
+        else if (dataTanque.capacidade == 'TRESMIL') valor = 3
+        else if (dataTanque.capacidade == 'QUATROMIL') valor = 4
+        else if (dataTanque.capacidade == 'QUATROMILEQUINHENTOS') valor = 5
+        return valor
+    }
+
+    const typeStatus = () => {
+        let statusAtual = dataTanque.status == 'ATIVO' ? 1 : 2
+        return statusAtual
+    }
+
     const onChangeCapacidade = (value) => {
-        if (value == 1) { setCapacidade('MIL'), setValorCap(1000) }
-        else if (value == 2) { setCapacidade('DOISMIL'), setValorCap(2000) }
-        else if (value == 3) { setCapacidade('TRESMIL'), setValorCap(3000) }
-        else if (value == 4) { setCapacidade('QUATROMIL'), setValorCap(4000) }
-        else if (value == 5) { setCapacidade('QUATROMILEQUINHENTOS', setValorCap(4500)) }
+        if (value == 1) setCapacidade('MIL')
+        else if (value == 2) setCapacidade('DOISMIL')
+        else if (value == 3) setCapacidade('TRESMIL')
+        else if (value == 4) setCapacidade('QUATROMIL')
+        else if (value == 5) setCapacidade('QUATROMILEQUINHENTOS')
     }
 
     const onChangeTipo = (value) => {
-        if (value == '1') { setTipo('BOVINO') }
-        else if (value == '2') { setTipo('CAPRINO') }
+        if (value == 1) { setTipo('BOVINO') }
+        else if (value == 2) { setTipo('CAPRINO') }
     }
 
-    useEffect(() => {
-        loadListResponsaveis()
-        getResponsavel()
-        setLat(initialRegion.latitude)
-        setLong(initialRegion.longitude)
-    }, [])
+    const onChangeStatus = (value) => {
+        value == 1 ? setStatus('ATIVO') : setStatus('INATIVO')
+    }
 
     const getResponsavel = async () => {
         let responsaveis = await responsavel.map(item => ({
@@ -127,6 +153,9 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
         }))
         setRespList(responsaveis)
     }
+
+    const closeAlertErroSuccess = () => setAlertVisible(false)
+    const onChangeResponsavel = value => setResponsavelId(value)
 
     function onChangeDatePicker(value) {
         setShow(Platform.OS === 'ios')
@@ -139,25 +168,15 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
         setModalVisible(false)
     }
 
-    const onChangeResponsavel = value => setResponsavelId(value)
-    const closeAlertErroSuccess = () => setAlertVisible(false)
-    const onChangeStaus = () => {
-        setIsEnabled(!isEnabled)
-        let enabled = isEnabled ? 'INATIVO' : 'ATIVO'
-        setStatus(enabled)
-    }
-
-    //Criação do tanque
-    const createTanque = async (
-        nome, capacidade, qtdAtual, dataCriacao, tipo, responsavelId,
-        status, lat, long, cep, bairro, logradouro, localidade, uf
-    ) => {
+    const updateTanque = async (idTanque, nome, capacidade, qtdAtual, dataCriacao, tipo, responsavelId,
+        status, lat, long, cep, bairro, logradouro, localidade, uf) => {
 
         const headers = new Headers();
         headers.append("Content-Type", "application/json")
         headers.append("Accept", 'application/json')
 
         const data = {
+            id: idTanque,
             nome: nome,
             capacidade: capacidade,
             qtdAtual: qtdAtual,
@@ -176,44 +195,28 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
             },
         }
 
-        await fetch(`${baseUrl}tanque`,
+        await fetch(`${baseUrl}tanque/` + parseInt(idTanque),
             {
-                method: 'POST',
+                method: 'PUT',
                 headers: headers,
                 body: JSON.stringify(data)
             })
     }
 
-    const handleCreate = async () => {
+    const handleUpdate = async () => {
         if (nome == '') {
             setTypeMessage('Preencha o nome do tanque!')
-            setAlertVisible(true)
-        } else if (!tipo) {
-            setTypeMessage('Selecione o tipo do leite!')
-            setAlertVisible(true)
-        } else if (!capacidade) {
-            setTypeMessage('Selecione a capacidade do tanque!')
-            setAlertVisible(true)
-        } else if (qtdAtual > valorCap) {
-            setTypeMessage('Quantidade atual excede a capacidade máxima!')
             setAlertVisible(true)
         } else if (isNaN(qtdAtual) || qtdAtual < 0) {
             setTypeMessage('Digite um valor válido para a quantidade atual!')
             setAlertVisible(true)
-        } else if (!responsavelId) {
-            setTypeMessage('Selecione um responsável!')
-            setAlertVisible(true)
-        } else if (lat == 0 || long == 0) {
-            setTypeMessage('Abra o mapa e clique no local onde o tanque foi instalado!')
-            setAlertVisible(true)
-        }
-        else {
-            await createTanque(
-                nome, capacidade, qtdAtual, dataCriacao, tipo, responsavelId,
+        } else {
+            await updateTanque(
+                idTanque, nome, capacidade, qtdAtual, dataCriacao, tipo, responsavelId,
                 status, lat, long, cep, bairro, logradouro, localidade, uf
             )
-            onCloseModal()
             showAlertErroSuccess()
+            onCloseModal()
             await loadListTanques()
         }
     }
@@ -221,7 +224,7 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Cadastro de Tanque</Text>
+                <Text style={styles.title}>Editar de Tanque</Text>
             </View>
             <View style={styles.inputContainer}>
                 <Text style={{ ...styles.titleInput, textAlign: 'center', fontWeight: 'bold' }}>Características</Text>
@@ -243,7 +246,7 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 5 }}>
                     <PickerView
                         onChange={onChangeTipo}
-                        title={{ label: 'Tipo?', value: null, color: '#000' }}
+                        title={{ label: 'Tipo?', value: typeLeite, color: '#000' }}
                         dataItem={[
                             { label: 'Bovino', value: 1, color: '#da1e37' },
                             { label: 'Caprino', value: 2, color: '#0077b6' },
@@ -251,7 +254,7 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                     />
                     <PickerView
                         onChange={onChangeCapacidade}
-                        title={{ label: 'Capacidade?', value: null, color: '#000' }}
+                        title={{ label: 'Capacidade?', value: typeCapacidade(), color: '#000' }}
                         dataItem={[
                             { label: '1000 litros', value: 1, color: '#da1e37' },
                             { label: '2000 litros', value: 2, color: '#0077b6' },
@@ -265,14 +268,16 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                     <Text style={{ ...styles.titleInput }}>Volume Atual</Text>
                     <Text style={{ ...styles.titleInput }}>Data de Criação</Text>
                 </View>
+
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                     <TextInput style={{ ...styles.input, width: '45%' }}
                         placeholder="Em litros"
                         autoCorrect={false}
                         autoCapitalize="none"
                         value={qtdAtual}
+                        defaultValue={dataTanque.qtdAtual}
                         keyboardType='phone-pad'
-                        onChangeText={(text) => setQtdAtual(text)}
+                        onChangeText={(text) => setQtdAtual(parseInt(text))}
                     />
                     <TouchableOpacity onPress={() => setShow(true)} style={{ ...styles.input, width: '45%', justifyContent: 'center', flexDirection: 'row', alignItems: 'center' }}>
                         <Text style={{ ...styles.titleInput, marginRight: 5 }}>{moment(dataCriacao).locale('pt-br').format('L')}</Text>
@@ -286,26 +291,18 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                 <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 }}>
                     <PickerView
                         onChange={onChangeResponsavel}
-                        title={{ label: 'Responsável?', value: null, color: '#000' }}
+                        title={{ label: 'Responsável?', value: typeResp, color: '#000' }}
                         dataItem={respList}
                     />
-                    <View style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderWidth: 0.5,
-                        width: '45%',
-                        height: 45,
-                        borderRadius: 8
-                    }}>
-                        <Switch
-                            value={isEnabled}
-                            trackColor={{ false: "#767577", true: "#b7e4c7" }}
-                            thumbColor={isEnabled ? "#2a9d8f" : "#f4f3f4"}
-                            onValueChange={onChangeStaus}
-                        />
-                        <Text style={{ ...styles.textInfo, fontWeight: 'normal' }}>{isEnabled ? 'ATIVO' : 'INATIVO'}</Text>
-                    </View>
+
+                    <PickerView
+                        onChange={onChangeStatus}
+                        title={{ label: 'Status?', value: typeStatus(), color: '#000' }}
+                        dataItem={[
+                            { label: 'Ativo', value: 1, color: '#2a9d8f' },
+                            { label: 'Inativo', value: 2, color: '#da1e37' },
+                        ]}
+                    />
                 </View>
                 <Text style={{ ...styles.titleInput, textAlign: 'center', fontWeight: 'bold' }}>Endereço</Text>
                 <View style={{ backgroundColor: '#DDD', width: '100%', height: 0.5, marginVertical: 3 }} />
@@ -316,8 +313,8 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                         autoCorrect={false}
                         autoCapitalize="none"
                         keyboardType='phone-pad'
-                        value={findCep}
-                        onChangeText={(text) => setFindCep(text)}
+                        value={cep}
+                        onChangeText={(text) => setCep(text)}
                     />
                     <TouchableOpacity onPress={() => buscaCep()} style={{ ...styles.btnMap, width: '20%', borderRadius: 5 }}>
                         <Icon name='magnify' size={35} color={'#FFF'} />
@@ -332,13 +329,13 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                         placeholder="Nome da cidade"
                         autoCorrect={false}
                         autoCapitalize="sentences"
-                        value={dataLocal.localidade ? dataLocal.localidade : localidade}
+                        value={localidade}
                         onChangeText={(text) => setLocalidade(text)}
                     />
                     <TextInput style={{ ...styles.input, width: '45%' }}
                         placeholder="Ex: CE"
                         autoCorrect={false}
-                        autoCapitalize="sentences"
+                        autoCapitalize="none"
                         value={dataLocal.uf ? dataLocal.uf : uf}
                         onChangeText={(text) => setUf(text)}
                     />
@@ -363,7 +360,7 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                         onChangeText={(text) => setLogradouro(text)}
                     />
                 </View>
-                <Text style={{ ...styles.titleInput, textAlign: 'center', fontWeight: 'bold' }}>Marcar Local do Tanque</Text>
+                <Text style={{ ...styles.titleInput, textAlign: 'center', fontWeight: 'bold' }}>Marcar Loca do Tanque</Text>
                 <View style={{ backgroundColor: '#DDD', width: '100%', height: 0.5, marginVertical: 3 }} />
                 <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.btnOpenMap}>
                     <Text style={{ ...styles.fontLocal, color: '#FFF', fontSize: 16 }}>{lat == 0 ? 'Abrir Mapa' : 'Tanque já Marcado'}</Text>
@@ -377,7 +374,7 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                 <TouchableOpacity onPress={onCloseModal} style={{ ...styles.buttonStyle, backgroundColor: '#da1e37' }}>
                     <Text style={styles.btnMapText}>Cancelar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => handleCreate()} style={styles.buttonStyle}>
+                <TouchableOpacity onPress={() => handleUpdate()} style={styles.buttonStyle}>
                     <Text style={styles.btnMapText}>Salvar</Text>
                 </TouchableOpacity>
             </View>
@@ -428,7 +425,7 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                                     </View>
                                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#DDD', marginVertical: 3 }}></View>
                                     <Text style={styles.titleCard}>Tanque: <Text style={styles.textSimple}>{nome}</Text></Text>
-                                    <Text style={styles.titleCard}>Vol. atual: <Text style={styles.textSimple}>{qtdAtual} litros</Text></Text>
+                                    <Text style={styles.titleCard}>Vol. Atual: <Text style={styles.textSimple}>{qtdAtual} litros</Text></Text>
                                     <Text style={styles.titleCard}>Status: <Text style={styles.textSimple}>{status}</Text></Text>
                                     <Text style={styles.titleCard}>Responsável: <Text style={styles.textSimple}>Leandro Rêgo</Text></Text>
                                 </View>

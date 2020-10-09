@@ -16,7 +16,7 @@ import {
 
 export default function TelaHistoricoProdutor() {
 
-    const { user, loadListDepositos, deposito } = useContext(AuthContext)
+    const { user, loadListDepositosResolvidos, depositoResolvido } = useContext(AuthContext)
     const [dataDeposito, setDataDeposito] = useState([])
 
     const [show, setShow] = useState(false)
@@ -35,8 +35,7 @@ export default function TelaHistoricoProdutor() {
 
     //Filtrar por usuário e status
     const produtor = d => d.produtor.id == user.id
-    const status = d => d.confirmacao != false || d.excluido != false
-    const depositos = deposito.filter(produtor).filter(status)
+    const depositos = depositoResolvido.filter(produtor)
 
     //Filtrar por valor do pedido
     async function getValor(value) {
@@ -103,7 +102,7 @@ export default function TelaHistoricoProdutor() {
 
     useEffect(() => {
         checkDate()
-        loadListDepositos()
+        loadListDepositosResolvidos()
     }, [selectedDate])
 
     function onChange(value) {

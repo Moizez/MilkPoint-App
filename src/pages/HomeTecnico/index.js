@@ -8,6 +8,7 @@ import { AuthContext } from '../../contexts/auth'
 import ListaTanques from '../HomeTecnico/ListaTanques'
 import Header from '../../components/Header'
 import ModalCreateTanque from '../../components/ModalCreateTanque'
+import AlertErrorSuccess from '../../components/AlertErrorSuccess'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -19,13 +20,7 @@ export default function HomeTecnico() {
     const { loadListTanques, tanque, responsavel, loadListResponsaveis } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [isVisible, setVisible] = useState(false)
-
-    const getIdNome = () => {
-        let id = responsavel.map((id) => id.id)
-        let nome = responsavel.map((nome) => nome.nome)
-        let idNome = id.concat(nome)
-    }
-    getIdNome()
+    const [alertVisible, setAlertVisible] = useState(false)
 
     useEffect(() => {
         loadListResponsaveis()
@@ -38,7 +33,9 @@ export default function HomeTecnico() {
         setIsRefreshing(false)
     }
 
-    const closeModal = () => { setVisible(false) }
+    const closeModal = () => setVisible(false)
+    const closeAlertErroSuccess = () => setAlertVisible(false)
+    const showAlertErroSuccess = () => setAlertVisible(true)
 
     return (
         <Container>
@@ -80,9 +77,28 @@ export default function HomeTecnico() {
                 <ModalCreateTanque
                     dataMap={tanque}
                     data={responsavel}
-                    onClose={closeModal}
+                    onCloseModal={closeModal}
+                    showAlertErroSuccess={showAlertErroSuccess}
                 />
             </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={alertVisible}
+            >
+                {alertVisible &&
+                    <AlertErrorSuccess
+                        onClose={closeAlertErroSuccess}
+                        title='Aviso'
+                        message='Tanque criado com sucesso!'
+                        titleButton='Ok'
+                        jsonPath={require('../../assets/lottie/success-icon.json')}
+                        buttonColor={'#292b2c'}
+                    />
+                }
+            </Modal>
+
         </Container>
     );
 }

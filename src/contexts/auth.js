@@ -4,6 +4,7 @@ import { Modal } from 'react-native'
 
 import AlertErrorSuccess from '../components/AlertErrorSuccess'
 import LoadScreen from '../components/LoadScreen'
+import api from '../services/api'
 
 export const AuthContext = createContext({})
 
@@ -22,14 +23,16 @@ export default function AuthProvider({ children }) {
     const [isVisible, setVisible] = useState(false)
     const [loadingAuth, setLoadingAuth] = useState(false)
     const [depositoPendente, setDepositoPendente] = useState([])
+    const [depositoResolvido, setDepositoResolvido] = useState([])
     const [deposito, setDeposito] = useState([])
     const [retiradaPendente, setRetiradaPendente] = useState([])
+    const [retiradaResolvida, setRetiradaResolvida] = useState([])
     const [retirada, setRetirada] = useState([])
     const [user, setUser] = useState(null)
     const [tanque, setTanque] = useState([])
     const [tanqueResponsavel, setTanqueResponsavel] = useState([])
     const [time, setTime] = useState(false)
-    
+
     //Perfis
     const [produtor, setProdutor] = useState([])
     const [laticinio, setLaticinio] = useState([])
@@ -37,83 +40,90 @@ export default function AuthProvider({ children }) {
 
     //Carregar lista de produtores
     const loadListProdutores = async () => {
-        const response = await fetch(`${baseUrl}produtor`)
-        const data = await response.json()
-        setProdutor(data)
+        const response = await api.get('produtor')
+        setProdutor(response.data)
 
         return produtor
     }
 
     //Carregar lista de laticinios
     const loadListLaticinios = async () => {
-        const response = await fetch(`${baseUrl}laticinio`)
-        const data = await response.json()
-        setLaticinio(data)
+        const response = await api.get('laticinio')
+        setLaticinio(response.data)
 
         return laticinio
     }
 
     //Carregar lista de responsaveis
     const loadListResponsaveis = async () => {
-        const response = await fetch(`${baseUrl}responsavel`)
-        const data = await response.json()
-        setResponsavel(data)
+        const response = await api.get('responsavel')
+        setResponsavel(response.data)
 
         return responsavel
     }
 
     //Carregar lista de tanques 
     const loadListTanques = async () => {
-        const response = await fetch(`${baseUrl}tanque`)
-        const data = await response.json()
-        setTanque(data)
+        const response = await api.get('tanque')
+        setTanque(response.data)
 
         return tanque
     }
 
     //Retona uma lista apenas com os tanques do responsável logado
     const loadListTanquesResponsavel = async () => {
-        const response = await fetch(`${baseUrl}responsavel/${user.id}/tanque`)
-        const data = await response.json()
-        setTanqueResponsavel(data)
+        const response = await api.get(`responsavel/${user.id}/tanque`)
+        setTanqueResponsavel(response.data)
 
         return tanqueResponsavel
     }
 
     //Lista de depositos pendentes
     const loadListDepositosPendentes = async () => {
-        const response = await fetch(`${baseUrl}deposito/listapendentes`)
-        const data = await response.json()
-        setDepositoPendente(data)
+        const response = await api.get('deposito/listapendentes')
+        setDepositoPendente(response.data)
 
         return depositoPendente
     }
 
     //Lista de todos os depositos
     const loadListDepositos = async () => {
-        const response = await fetch(`${baseUrl}deposito/listatodos`)
-        const data = await response.json()
-        setDeposito(data)
+        const response = await api.get('deposito/listatodos')
+        setDeposito(response.data)
 
         return deposito
     }
 
+    //Lista de todos os depositos excluidos ou confirmados
+    const loadListDepositosResolvidos = async () => {
+        const response = await api.get('deposito/resolvidos')
+        setDepositoResolvido(response.data)
+
+        return depositoResolvido
+    }
+
     //Lista de retiradas pendentes
     const loadListRetiradasPendentes = async () => {
-        const response = await fetch(`${baseUrl}retirada/listapendentes`)
-        const data = await response.json()
-        setRetiradaPendente(data)
+        const response = await api.get('retirada/listapendentes')
+        setRetiradaPendente(response.data)
 
         return retiradaPendente
     }
 
     //Lista de todos os retiradas
     const loadListRetiradas = async () => {
-        const response = await fetch(`${baseUrl}retirada/listatodos`)
-        const data = await response.json()
-        setRetirada(data)
+        const response = await api.get('retirada/listatodos')
+        setRetirada(response.data)
 
         return retirada
+    }
+
+    //Lista de todos os depositos excluidos ou confirmados
+    const loadListRetiradasResolvidas = async () => {
+        const response = await api.get('retirada/resolvidos')
+        setRetiradaResolvida(response.data)
+
+        return retiradaResolvida
     }
 
     //Carregar usuário do AsyncStorage
@@ -201,7 +211,7 @@ export default function AuthProvider({ children }) {
     //Função para deslogar o usuário
     const logOut = async () => {
         setTime(true)
-        await AsyncStorage.clear()
+        await AsyncStorage.removeItem('Auth_user')
             .then(() => {
                 setTimeout(() => {
                     setUser(null)
@@ -238,9 +248,10 @@ export default function AuthProvider({ children }) {
             <AuthContext.Provider value={{
                 signed: !!user, user, loading, loadingAuth, depositoPendente, deposito, retiradaPendente,
                 retirada, tanque, tanqueResponsavel, baseUrl, cepUrl, produtor, laticinio, responsavel,
+                depositoResolvido, retiradaResolvida,
                 signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,
                 loadListRetiradas, loadListTanques, loadListTanquesResponsavel, loadListProdutores,
-                loadListLaticinios, loadListResponsaveis
+                loadListLaticinios, loadListResponsaveis, loadListDepositosResolvidos, loadListRetiradasResolvidas
             }}>
                 {children}
             </AuthContext.Provider>

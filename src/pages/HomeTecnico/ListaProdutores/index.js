@@ -12,7 +12,7 @@ export default function ListaProdutores({ data }) {
 
     //Solicitação de retirada pelo laticinio
     const requestStatus = async (status, idProd) => {
-        await fetch(`${baseUrl}produtor` + '/' + parseInt(idProd), {
+        await fetch(`${baseUrl}produtor/` + parseInt(idProd), {
             method: 'PUT',
             headers: {
                 "Accept": "application/json",
@@ -31,7 +31,7 @@ export default function ListaProdutores({ data }) {
 
     const renderInfo = () => {
         return (
-            <View style={{...styles.infoCard, backgroundColor: '#FFF'}}>
+            <View style={{ ...styles.infoCard, backgroundColor: '#FFF' }}>
                 <Text style={{ ...styles.textInfo, textAlign: 'center' }}>Endereço</Text>
                 <Text style={styles.textInfo}>Rua: <Text style={styles.text}>{data.logradouro}</Text></Text>
                 <Text style={styles.textInfo}>Bairro: <Text style={styles.text}>{data.bairro}</Text></Text>

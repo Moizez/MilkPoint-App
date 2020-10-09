@@ -16,7 +16,7 @@ import {
 
 export default function TelaHistoricoLaticinio() {
 
-    const { user, loadListRetiradas, retirada } = useContext(AuthContext)
+    const { user, loadListRetiradasResolvidas, retiradaResolvida } = useContext(AuthContext)
     const [dataRetirada, setDataRetirada] = useState([])
 
     const [show, setShow] = useState(false)
@@ -35,8 +35,7 @@ export default function TelaHistoricoLaticinio() {
 
     //Filtrar por usuário e status
     const laticinio = r => r.laticinio.id == user.id
-    const status = r => r.confirmacao != false || r.excluido != false
-    const retiradas = retirada.filter(laticinio).filter(status)
+    const retiradas = retiradaResolvida.filter(laticinio)
 
     //Filtrar por valor do pedido
     async function getValor(value) {
@@ -103,7 +102,7 @@ export default function TelaHistoricoLaticinio() {
 
     useEffect(() => {
         checkDate()
-        loadListRetiradas()
+        loadListRetiradasResolvidas()
     }, [selectedDate])
 
     function onChange(value) {
