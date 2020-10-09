@@ -10,9 +10,7 @@
 <p align="center">
 <img alt="React native" src="https://img.shields.io/static/v1?label=react-native&message=framework&color=blue&style=for-the-badge&logo=REACT"/>
  
- <img alt="GitHub top language" src="https://img.shields.io/static/github/languages/top/Moizez/Milk-Point.svg">
- 
- <a href="https://github.com/Moizez/Milk-Point" alt="Activity">
+<a href="https://github.com/Moizez/Milk-Point" alt="Activity">
  <img src="http://img.shields.io/static/v1?label=COMMIT%20ACTIVITY&message=95/month&color=9cf&style=for-the-badge"/></a>
 <img src="http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=yellow&style=for-the-badge"/>
 </p>
