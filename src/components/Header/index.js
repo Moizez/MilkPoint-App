@@ -73,7 +73,7 @@ export default function Header({ msg, onOpen, calendar }) {
             </View>
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={true}
                 visible={isVisible}
             >

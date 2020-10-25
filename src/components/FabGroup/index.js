@@ -1,15 +1,16 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput, TouchableWithoutFeedback } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { FAB } from 'react-native-paper'
 
 import ModalSearch from '../ModalSearch'
+import AlertErrorSuccess from '../AlertErrorSuccess'
+import ActionButton from '../ActionButton'
 
 export default function FabGroup(
     {
-        filterFifteenDaysDeposito, filterOneMonthDeposito, filterCustomDays, changeCheck,
-        filterFifteenDaysRetirada, filterOneMonthRetirada, styleFab, mainIcon, mainIconColor,
-        checkDateDeposito, checkDateRetirada, findByName
+        filterFifteenDays, filterOneMonth, filterCustomDays, changeCheck,
+        styleFab, mainIcon, mainIconColor, findByName, onLoad
     }) {
 
     //Fab button
@@ -17,52 +18,43 @@ export default function FabGroup(
     const onStateChange = ({ open }) => setState({ open })
     const { open } = state
 
+    const [alertVisible, setAlertVisible] = useState(false)
     const [isVisible, setVisible] = useState(false)
     const [modalName, setModalName] = useState(false)
-    const [value, setValue] = useState('')
-
+    const [selectionModal, setSelectionModal] = useState(false)
 
     const [type, setType] = useState(false)
 
     const hideModal = () => setVisible(false)
+    const closeSelectionModal = () => setSelectionModal(false)
+    const closeAlertErroSuccess = () => setAlertVisible(false)
+    let error = require('../../assets/lottie/error-icon.json')
 
     return (
         <>
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={true}
                 visible={modalName}
             >
+                <TouchableWithoutFeedback onPress={() => setModalName(false)}>
+                    <View style={styles.offset} />
+                </TouchableWithoutFeedback>
                 <View style={styles.container}>
                     <View style={styles.containerModal}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={styles.textInfo}>Buscar pelo nome</Text>
-                            <TouchableOpacity onPress={() => setModalName(false)}>
-                                <Icon name='close-circle' size={30} color={'#da1e37'} />
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <View>
+                                <Text style={styles.textInfo}>Buscar pelo nome do {type ? 'produtor' : 'laticínio'}</Text>
+                            </View>
+                            <TouchableOpacity style={{ marginLeft: 45 }} onPress={() => setModalName(false)}>
+                                <Icon name='close-box' size={30} color={'#da1e37'} />
                             </TouchableOpacity>
                         </View>
-                        <TextInput style={styles.input}
-                            placeholder='Digite o nome procurado'
-                            autoCorrect={false}
-                            autoCapitalize='none'
-                            keyboardType='default'
-                            value={value}
-                            autoFocus={true}
-                            onChangeText={setValue}
-                        />
-
-                        <TouchableOpacity
-                            style={{ ...styles.button, backgroundColor: '#292b2c' }}
-                            onPress={() => {
-                                findByName(value)
-                                setModalName(false)
-                                setValue('')
-                            }}
-                        >
-                            <Text style={styles.btnStyle}>Ok</Text>
-                        </TouchableOpacity>
                     </View>
                 </View>
+                <TouchableWithoutFeedback onPress={() => setModalName(false)}>
+                    <View style={styles.offset} />
+                </TouchableWithoutFeedback>
             </Modal>
 
             <FAB.Group
@@ -72,16 +64,13 @@ export default function FabGroup(
                 icon={open ? 'close' : mainIcon}
                 actions={[
                     {
-                        icon: 'basket-fill',
-                        label: 'Listar por depósitos',
-                        color: '#2a9d8f',
+                        icon: 'magnify',
+                        label: 'Busca avançada',
+                        color: '#7209b7',
                         style: styles.fabActions,
                         onPress: () => {
-                            setType(true)
-                            setVisible(true)
-                            changeCheck(true)
-                            checkDateDeposito()
-                        },
+                            setSelectionModal(true)
+                        }
                     },
                     {
                         icon: 'basket-unfill',
@@ -89,18 +78,17 @@ export default function FabGroup(
                         color: '#da1e37',
                         style: styles.fabActions,
                         onPress: () => {
-                            setType(false)
-                            setVisible(true)
                             changeCheck(false)
-                            checkDateRetirada()
                         },
                     },
                     {
-                        icon: 'account-search',
-                        label: 'Listar por pessoa',
-                        color: '#6d597a',
+                        icon: 'basket-fill',
+                        label: 'Listar por depósitos',
+                        color: '#2a9d8f',
                         style: styles.fabActions,
-                        onPress: () => {}//setModalName(true) 
+                        onPress: () => {
+                            changeCheck(true)
+                        },
                     },
                 ]}
                 onStateChange={onStateChange}
@@ -110,7 +98,6 @@ export default function FabGroup(
                     }
                 }}
             />
-
             <Modal
                 animationType='fade'
                 transparent={true}
@@ -118,17 +105,71 @@ export default function FabGroup(
             >
                 <ModalSearch
                     type={type}
+                    onLoad={onLoad}
                     hideModal={hideModal}
+                    findByName={findByName}
                     changeCheck={changeCheck}
-                    checkDateDeposito={checkDateDeposito}
-                    checkDateRetirada={checkDateRetirada}
-                    filterFifteenDaysDeposito={filterFifteenDaysDeposito}
-                    filterOneMonthDeposito={filterOneMonthDeposito}
-                    filterFifteenDaysRetirada={filterFifteenDaysRetirada}
-                    filterOneMonthRetirada={filterOneMonthRetirada}
+                    filterFifteenDays={filterFifteenDays}
+                    filterOneMonth={filterOneMonth}
                     filterCustomDays={filterCustomDays}
+                    closeSelectionModal={closeSelectionModal}
                 />
+            </Modal>
 
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={alertVisible}
+            >
+                {alertVisible &&
+                    <AlertErrorSuccess
+                        onClose={closeAlertErroSuccess}
+                        title='Aviso'
+                        message={'Digite um nome válido!'}
+                        titleButton='Ok'
+                        buttonColor={'#292b2c'}
+                        jsonPath={error}
+                    />
+                }
+            </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={selectionModal}
+            >
+                <TouchableWithoutFeedback onPress={() => setSelectionModal(false)}>
+                    <View style={styles.offset} />
+                </TouchableWithoutFeedback>
+                <View style={styles.container}>
+                    <View style={styles.selectionModal}>
+                        <Text style={styles.textInfo}>Você deseja pesquisar por?</Text>
+                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                            <ActionButton
+                                onAction={() => {
+                                    setType(true)
+                                    setVisible(true)
+                                }}
+                                btnColor='#2a9d8f'
+                                title='Depositos'
+                                nameIcon='chart-donut'
+                            />
+                            <ActionButton
+                                onAction={() => {
+                                    setType(false)
+                                    setVisible(true)
+                                }}
+                                btnColor='#da1e37'
+                                title='Retiradas'
+                                nameIcon='gauge-full'
+                            />
+                        </View>
+                    </View>
+                </View>
+                <TouchableWithoutFeedback onPress={() => setSelectionModal(false)}>
+                    <View style={styles.offset} />
+                </TouchableWithoutFeedback>
             </Modal>
         </>
     );
@@ -136,17 +177,20 @@ export default function FabGroup(
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: 'rgba(0,0,0,0.7)',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    offset: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.7)',
     },
     containerModal: {
         width: '95%',
         margin: 10,
         backgroundColor: '#FFF',
-        borderRadius: 10,
-        padding: 15,
+        borderRadius: 8,
+        padding: 10,
         alignItems: 'center',
         shadowColor: '#000',
         shadowOpacity: 0.25,
@@ -157,29 +201,17 @@ const styles = StyleSheet.create({
         },
         elevation: 5
     },
-    input: {
-        backgroundColor: '#DDD',
-        textAlign: 'center',
-        fontSize: 18,
-        width: '90%',
-        color: '#000',
-        marginTop: 15,
-        marginBottom: 15,
-        padding: 10,
-        borderRadius: 8,
-    },
     button: {
         borderRadius: 5,
         padding: 10,
         elevation: 2,
         width: '90%',
-        marginTop: 8,
+        marginTop: 5,
     },
     textInfo: {
         fontWeight: 'bold',
         textAlign: 'center',
-        fontSize: 18,
-        marginRight: 25,
+        fontSize: 17,
     },
     btnStyle: {
         color: '#FFF',
@@ -188,7 +220,7 @@ const styles = StyleSheet.create({
     },
     someDays: {
         backgroundColor: '#e9c46a',
-        height: 35,
+        height: 45,
         padding: 8,
         alignItems: 'center',
         justifyContent: 'center',
@@ -198,7 +230,7 @@ const styles = StyleSheet.create({
     },
     dateSearch: {
         backgroundColor: '#adb5bd',
-        height: 35,
+        height: 45,
         padding: 8,
         alignItems: 'center',
         justifyContent: 'center',
@@ -215,10 +247,19 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    selectionModal: {
+        width: '95%',
+        backgroundColor: '#FFF',
+        borderRadius: 8,
+        padding: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 3.85,
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        elevation: 5,
     }
 })
-
-/*
-
-
- */

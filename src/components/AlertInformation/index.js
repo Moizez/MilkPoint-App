@@ -2,48 +2,53 @@ import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import LottieView from 'lottie-react-native'
 
+import ActionButton from '../ActionButton'
+
 const AlertInformation = ({ title, message, onClose, onConfirm, dataInfo, qtd }) => {
 
     return (
         <View style={styles.centerView}>
 
             <View style={styles.modalView}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={styles.modalText}>{title}</Text>
-                    <LottieView style={{ height: 40 }} source={require('../../assets/lottie/information-icon.json')} autoPlay loop />
-                </View>
-                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 6 }}></View>
-
+                <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 18 }}>{message}</Text>
                 <View style={styles.viewMessage}>
-                    <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 16 }}>{message}</Text>
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 6 }}></View>
-                    <Text style={styles.textMsgInfo}><Text style={{ fontWeight: 'bold' }}>Nome do tanque: </Text>{dataInfo.nome}</Text>
-                    <Text style={styles.textMsgInfo}><Text style={{ fontWeight: 'bold' }}>Tipo do leite: </Text>{dataInfo.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text>
-                    <Text style={styles.textMsgInfo}><Text style={{ fontWeight: 'bold' }}>Valor solicitado: </Text>{qtd} litros</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textMsgInfo}>Nome</Text>
+                            <Text style={styles.text}>{dataInfo.nome}</Text>
+                        </View>
+                        <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textMsgInfo}>Tipo do leite</Text>
+                            <Text style={styles.text}>{dataInfo.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text>
+                        </View>
+                        <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textMsgInfo}>Valor</Text>
+                            <Text style={styles.text}>{qtd} litros</Text>
+                        </View>
+                    </View>
                 </View>
 
-                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginTop: 20 }}></View>
+                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginBottom: 10 }}></View>
 
                 <View style={styles.viewButtons}>
-                    <TouchableOpacity
-                        style={{ ...styles.buttons, backgroundColor: '#da1e37' }}
-                        onPress={onClose}
-                    >
-                        <Text style={styles.textButtons}>Cancelar</Text>
+                    <ActionButton
+                        onAction={onClose}
+                        btnColor='#da1e37'
+                        title='Cancelar'
+                        nameIcon='close-circle'
+                    />
 
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={{ ...styles.buttons, backgroundColor: '#2a9d8f', marginLeft: 15 }}
-                        onPress={() => onConfirm(qtd)}
-                    >
-                        <Text style={styles.textButtons}>Continuar</Text>
-
-                    </TouchableOpacity>
-
+                    <ActionButton
+                        onAction={() => onConfirm(qtd)}
+                        btnColor='#2a9d8f'
+                        title='Enviar'
+                        nameIcon='send-circle'
+                    />
                 </View>
 
-            </View>
+            </View >
         </View >
     );
 }
@@ -53,16 +58,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.7)',
         justifyContent: 'center',
         alignItems: 'center',
-        alignContent: 'center',
         flex: 1,
     },
     modalView: {
         width: '95%',
-        margin: 10,
         backgroundColor: '#FFF',
-        borderRadius: 10,
-        padding: 15,
-        alignItems: 'center',
+        borderRadius: 8,
+        padding: 10,
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 3.85,
@@ -74,13 +76,14 @@ const styles = StyleSheet.create({
     },
     viewButtons: {
         flexDirection: 'row',
+        justifyContent: 'space-around'
     },
     viewMessage: {
-        marginTop: 15,
+        marginVertical: 10,
         width: '100%',
-        backgroundColor: '#ececec',
-        borderRadius: 10,
-        padding: 10,
+        backgroundColor: '#DDD',
+        borderRadius: 8,
+        padding: 5,
     },
     buttons: {
         borderRadius: 5,
@@ -90,7 +93,8 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     textMsgInfo: {
-        fontSize: 16,
+        fontSize: 17,
+        fontWeight: 'bold'
     },
     textButtons: {
         color: '#FFF',
@@ -110,6 +114,9 @@ const styles = StyleSheet.create({
         },
         elevation: 5,
         marginRight: 15,
+    },
+    text: {
+        fontSize: 17
     }
 })
 

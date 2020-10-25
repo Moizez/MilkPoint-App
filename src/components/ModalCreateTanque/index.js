@@ -11,12 +11,14 @@ import DatePicker from '../DatePicker'
 import { AuthContext } from '../../contexts/auth'
 import AlertErrorSuccess from '../AlertErrorSuccess'
 
-export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }) {
+export default function ModalCreateTanque({
+    onCloseModal, showAlertErroSuccess, onRefreshList
+}) {
 
     let pinCow = require('../../assets/images/pin-cow.png')
     let pinGoat = require('../../assets/images/pin-goat.png')
 
-    const { baseUrl, cepUrl, loadListTanques, loadListResponsaveis, responsavel } = useContext(AuthContext)
+    const { baseUrl, cepUrl, loadListResponsaveis, responsavel } = useContext(AuthContext)
 
     const [show, setShow] = useState(false)
     const [nome, setNome] = useState('')
@@ -212,9 +214,9 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
                 nome, capacidade, qtdAtual, dataCriacao, tipo, responsavelId,
                 status, lat, long, cep, bairro, logradouro, localidade, uf
             )
+            await onRefreshList()
             onCloseModal()
             showAlertErroSuccess()
-            await loadListTanques()
         }
     }
 
@@ -392,7 +394,7 @@ export default function ModalCreateTanque({ onCloseModal, showAlertErroSuccess }
             }
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={false}
                 visible={modalVisible}
             >

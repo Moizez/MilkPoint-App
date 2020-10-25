@@ -1,69 +1,148 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, TouchableWithoutFeedback } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 
-const ModalChoice = ({ dataInfo, hideModal, handleCancel, handleConfirm, titlePerfil, infoPerfil }) => {
+import ActionButton from '../ActionButton'
 
-    let dayHour = moment(dataInfo.dataNow).locale('pt-br').format('dddd[,] L [às] LT[h]')
+const ModalChoice = ({
+    dataInfo, hideModal, handleConfirm,
+    titlePerfil, infoPerfil, doneCancel
+}) => {
+
+    let dayHour = moment(dataInfo.dataNow).locale('pt-br').format('D [de] MMM [às] LT[h]')
+    const [isExpand, setExpand] = useState(false)
+    const [observation, setObservation] = useState('')
+
+    const handleDescription = () => {
+        return (
+            <>
+                <View style={{ alignItems: 'center' }}>
+                    <Text style={styles.textInfo}>Deseja realmente RECUSAR esta solicitação?</Text>
+
+                    <TextInput style={styles.input}
+                        placeholder='Por favor, informe o motivo'
+                        autoCorrect={true}
+                        autoCapitalize='sentences'
+                        multiline={true}
+                        value={observation}
+                        onChangeText={(text) => setObservation(text)}
+                    />
+
+                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                        <ActionButton
+                            onAction={() => setExpand(!isExpand)}
+                            btnColor='#da1e37'
+                            title='Fechar'
+                            nameIcon='close-circle'
+                        />
+
+                        <View style={{ marginHorizontal: 8 }} />
+
+                        <ActionButton
+                            onAction={() => doneCancel(observation)}
+                            btnColor='#2a9d8f'
+                            title='Confirmar'
+                            nameIcon='check-circle'
+                        />
+                    </View>
+                </View>
+            </>
+        )
+    }
+
 
     return (
-        <View style={styles.container}>
-            <View style={styles.modalView}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={styles.title}>Informações sobre a solicitação</Text>
-                    <TouchableOpacity onPress={hideModal}>
-                        <Icon name='close-circle' size={30} color={'#da1e37'} />
-                    </TouchableOpacity>
-                </View>
-                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 6 }}></View>
+        <>
+            <TouchableWithoutFeedback onPress={hideModal}>
+                <View style={styles.offset} />
+            </TouchableWithoutFeedback>
+            <View style={styles.container}>
+                <View style={styles.modalView}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={styles.title}>Informações sobre a solicitação</Text>
+                        <TouchableOpacity onPress={hideModal}>
+                            <Icon name='close-box' size={30} color={'#da1e37'} />
+                        </TouchableOpacity>
+                    </View>
 
-                <View style={styles.viewMessage}>
-                    <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{dataInfo.tanque.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{dataInfo.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
-                    <Text style={styles.textInfo}>Qtd. solicitada: <Text style={styles.text}>{dataInfo.quantidade.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} litros</Text></Text>
-                    <Text style={styles.textInfo}>{titlePerfil} <Text style={styles.text}>{infoPerfil}</Text></Text>
-                    <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>
-                </View>
+                    <View style={styles.viewMessage}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textInfo}>Tanque</Text>
+                                <Text style={styles.text}>{dataInfo.tanque.nome}</Text>
+                            </View>
+                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textInfo}>Tipo do leite</Text>
+                                <Text style={styles.text}>{dataInfo.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text>
+                            </View>
+                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textInfo}>Quantidade</Text>
+                                <Text style={styles.text}>{dataInfo.quantidade.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} litros</Text>
+                            </View>
+                        </View>
+                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textInfo}>{titlePerfil}</Text>
+                                <Text style={styles.text}>{infoPerfil}</Text>
+                            </View>
+                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textInfo}>Data</Text>
+                                <Text style={styles.text}>{dayHour}</Text>
+                            </View>
+                        </View>
+                    </View>
 
-                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginTop: 20 }}></View>
+                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 10 }}></View>
 
-                <View style={styles.viewButtons}>
-                    <TouchableOpacity
-                        style={{ ...styles.button, backgroundColor: '#da1e37' }}
-                        onPress={() => handleCancel()}
-                    >
-                        <Text style={styles.btnStyle}>Cancelar Solicitação</Text>
-                    </TouchableOpacity>
+                    {!isExpand &&
+                        <View style={styles.viewButtons}>
+                            <ActionButton
+                                onAction={() => setExpand(!isExpand)}
+                                btnColor='#da1e37'
+                                title='Recusar'
+                                nameIcon='delete-circle'
+                            />
+                            <ActionButton
+                                onAction={() => handleConfirm(dataInfo.quantidade)}
+                                btnColor='#2a9d8f'
+                                title='Aceitar'
+                                nameIcon='check-circle'
+                            />
+                        </View>
+                    }
 
-                    <TouchableOpacity
-                        style={{ ...styles.button, backgroundColor: '#2a9d8f', marginLeft: 15 }}
-                        onPress={() => handleConfirm(dataInfo.quantidade)}
-                    >
-                        <Text style={styles.btnStyle}>Confirmar Solicitação</Text>
-
-                    </TouchableOpacity>
+                    {isExpand && handleDescription()}
                 </View>
             </View>
-        </View>
-
+            <TouchableWithoutFeedback onPress={hideModal}>
+                <View style={styles.offset} />
+            </TouchableWithoutFeedback>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: 'rgba(0,0,0,0.7)',
         justifyContent: 'center',
         alignItems: 'center',
     },
+    offset: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+    },
     modalView: {
         width: '95%',
-        margin: 10,
         backgroundColor: '#FFF',
-        borderRadius: 10,
-        padding: 15,
-        alignItems: 'center',
+        borderRadius: 8,
+        padding: 10,
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 3.85,
@@ -81,7 +160,7 @@ const styles = StyleSheet.create({
     },
     textInfo: {
         fontWeight: 'bold',
-        fontSize: 14.5,
+        fontSize: 15,
     },
     text: {
         fontWeight: 'normal'
@@ -89,12 +168,13 @@ const styles = StyleSheet.create({
     viewMessage: {
         marginTop: 15,
         width: '100%',
-        backgroundColor: '#ececec',
-        borderRadius: 10,
+        backgroundColor: '#DDD',
+        borderRadius: 8,
         padding: 10,
     },
     viewButtons: {
         flexDirection: 'row',
+        justifyContent: 'space-around'
     },
     button: {
         borderRadius: 5,
@@ -110,6 +190,17 @@ const styles = StyleSheet.create({
         color: '#FFF',
         textAlign: 'center',
         fontSize: 16,
+    },
+    input: {
+        backgroundColor: '#DDD',
+        textAlign: 'center',
+        fontSize: 18,
+        width: 320,
+        height: 78,
+        color: '#000',
+        marginVertical: 10,
+        padding: 15,
+        borderRadius: 8,
     },
 })
 

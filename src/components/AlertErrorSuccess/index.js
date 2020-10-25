@@ -2,7 +2,9 @@ import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 import LottieView from 'lottie-react-native'
 
-const AlertErrorSuccess = ({ title, message, buttonColor, titleButton, jsonPath, onClose }) => {
+import ActionButton from '../ActionButton'
+
+const AlertErrorSuccess = ({ title, message, jsonPath, onClose }) => {
 
     return (
         <View style={styles.container}>
@@ -16,13 +18,13 @@ const AlertErrorSuccess = ({ title, message, buttonColor, titleButton, jsonPath,
 
                 <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 10 }}></View>
 
-                <TouchableOpacity
-                    style={{ ...styles.button, backgroundColor: buttonColor }}
-                    onPress={onClose}
-                >
-                    <Text style={styles.textButton}>{titleButton}</Text>
-
-                </TouchableOpacity>
+                <ActionButton
+                    onAction={onClose}
+                    btnColor='#292b2c'
+                    nameIcon='check-circle'
+                    btnSize={'100%'}
+                    btnAlign={'center'}
+                />
 
             </View>
         </View>

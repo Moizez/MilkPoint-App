@@ -29,24 +29,43 @@ const CardInfo = ({ dataInfo, showModal, titlePerfil, infoPerfil }) => {
 
     const renderInfo = () => {
         return (
-            <TouchableOpacity style={{ ...styles.infoCard, backgroundColor: '#FFF' }} onPress={() => setExpand(false)}>
-                <Text style={{ ...styles.textInfo, textAlign: 'center', marginBottom: 5 }}>Mais informações</Text>
-                <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{dataInfo.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
-                <Text style={styles.textInfo}>Valor: <Text style={styles.text}>{result}</Text></Text>
-                {user.perfil != 2 && <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{dataInfo.tanque.responsavel.nome}</Text></Text>}
-            </TouchableOpacity>
+            <>
+                <Text style={{ ...styles.textInfo, textAlign: 'center', marginBottom: 3 }}>Mais informações</Text>
+                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd' }}></View>
+                <TouchableOpacity style={{ ...styles.infoCard, backgroundColor: '#FFF' }} onPress={() => setExpand(false)}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textInfo}>Tipo do leite</Text>
+                            <Text style={styles.text}>{dataInfo.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text>
+                        </View>
+                        <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textInfo}>Valor</Text>
+                            <Text style={styles.text}>{result}</Text>
+                        </View>
+                        {user.perfil != 2 && <>
+                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textInfo}>Responsável</Text>
+                                <Text style={styles.text}>{dataInfo.tanque.responsavel.nome}</Text>
+                            </View>
+                        </>}
+                    </View>
+
+                </TouchableOpacity>
+            </>
         )
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.cardContainer}>
-                <TouchableOpacity style={styles.infoCard} onPress={() => setExpand(!isExpand)}>
+                <View style={styles.infoCard}>
                     {user.perfil != 2 && <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{dataInfo.tanque.nome}</Text></Text>}
                     {user.perfil == 2 && <Text style={styles.textInfo}>{titlePerfil} <Text style={styles.text}>{infoPerfil}</Text></Text>}
                     <Text style={styles.textInfo}>Qtd. solicitada: <Text style={styles.text}>{dataInfo.quantidade.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} litros</Text></Text>
                     <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dayHour}</Text></Text>
-                </TouchableOpacity>
+                </View>
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
@@ -64,7 +83,7 @@ const CardInfo = ({ dataInfo, showModal, titlePerfil, infoPerfil }) => {
             {isExpand && <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd' }}></View>}
 
             <TouchableOpacity style={styles.buttonColapse} onPress={() => setExpand(!isExpand)}>
-                <Text style={styles.textColapse}>{isExpand ? '-' : '+'}</Text>
+                <Text style={styles.textColapse}>{isExpand ? '–' : '+'}</Text>
             </TouchableOpacity>
 
         </View>
@@ -129,7 +148,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
         fontSize: 18,
-    }
+    },
+
 })
 
 export default CardInfo

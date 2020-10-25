@@ -389,7 +389,7 @@ export default function ModalUpdateTanque({ onCloseModal, dataTanque, showAlertE
             }
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={false}
                 visible={modalVisible}
             >
