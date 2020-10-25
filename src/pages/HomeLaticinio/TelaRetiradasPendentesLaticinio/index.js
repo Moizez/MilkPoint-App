@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import ListaRetiradasPendentes from '../ListaRetiradasPendentes'
 import Header from '../../../components/Header'
+import Loader from '../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -13,18 +14,16 @@ import {
 
 export default function TelaRetiradasPendentesLaticinio() {
 
-    const { user, loadListRetiradasPendentes, retiradaPendente } = useContext(AuthContext)
+    const { user, loadListRetiradasPendentes, retiradaPendente, loadingPages } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
 
-    const retiradasPendentes = retiradaPendente.filter(function (retirada) {
-        return retirada.laticinio.id == user.id
-    })
+    const retiradasPendentes = retiradaPendente.filter(r => r.laticinio.id === user.id)
 
     useEffect(() => {
         loadListRetiradasPendentes()
     }, [])
 
-    async function onRefreshList() {
+    const onRefreshList = async () => {
         setIsRefreshing(true)
         await loadListRetiradasPendentes()
         setIsRefreshing(false)
@@ -41,7 +40,7 @@ export default function TelaRetiradasPendentesLaticinio() {
                 renderItem={({ item }) => <ListaRetiradasPendentes data={item} onRefresh={onRefreshList} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
+                        <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>
                             <BoxIconUpdate>
@@ -50,11 +49,12 @@ export default function TelaRetiradasPendentesLaticinio() {
                             </BoxIconUpdate>
                             <BoxIconDelete>
                                 <Icon name='gesture-tap-hold' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e segure para cancelar uma retirada</NomeAviso>
+                                <NomeAviso>Clique para cancelar uma retirada</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
+            {loadingPages && !isRefreshing && <Loader />}
         </Container>
     );
 }

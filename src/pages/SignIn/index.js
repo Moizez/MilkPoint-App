@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Animated, StyleSheet, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
+import { Animated, StyleSheet, View, Text, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+
 
 import { AuthContext } from '../../contexts/auth'
 
@@ -81,60 +83,72 @@ export default function SignIn() {
     }
 
     return (
-        <KeyboardAvoidingView style={st.containerBody} behavior='padding'>
-            <BoxImage>
-                <Animated.Image style={{
-                    width: logo.x,
-                    height: logo.y,
-                }}
-                    source={require('../../assets/images/mkLogo.png')} />
-            </BoxImage>
+        <>
+            <KeyboardAvoidingView style={styles.containerBody} behavior='padding'>
+                <BoxImage>
+                    <Animated.Image style={{
+                        width: logo.x,
+                        height: logo.y,
+                    }}
+                        source={require('../../assets/images/mkLogo.png')} />
+                </BoxImage>
+                <Text style={styles.text}>Realize sua autenticação</Text>
+                <Animated.View
+                    style={[
+                        styles.boxInput,
+                        {
+                            opacity: opacity,
+                            transform: [
+                                { translateY: offset.y }
+                            ]
+                        }
+                    ]}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Input style={styles.input}
+                            placeholder='E-mail'
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            value={email}
+                            onChangeText={(text) => setEmail(text)}
+                        />
+                        <View style={styles.icon}>
+                            <Icon name='email' size={28} color='#000' />
+                        </View>
+                    </View>
 
-            <Animated.View
-                style={[
-                    st.boxInput,
-                    {
-                        opacity: opacity,
-                        transform: [
-                            { translateY: offset.y }
-                        ]
-                    }
-                ]}>
-                <Input
-                    placeholder='E-mail'
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    value={email}
-                    onChangeText={(text) => setEmail(text)}
-                />
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Input
+                            placeholder='Senha'
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            value={password}
+                            secureTextEntry={true}
+                            onChangeText={(text) => setPassword(text)}
+                        />
+                        <View style={styles.icon}>
+                            <Icon name='lock' size={28} color='#000' />
+                        </View>
+                    </View>
 
-                <Input
-                    placeholder='Senha'
-                    autoCorrect={false}
-                    autoCapitalize='none'
-                    value={password}
-                    secureTextEntry={true}
-                    onChangeText={(text) => setPassword(text)}
-                />
-
-                <SubmitButton onPress={handleLogin}>
-                    {
-                        loadingAuth ? (
-                            <ActivityIndicator size={20} color="#FFF" />
-                        ) : (
-                                <SubmitText>Entrar</SubmitText>
-                            )
-                    }
-                </SubmitButton>
-                <Link onPress={() => navigation.navigate('ForgotPassword')}>
-                    <LinkText>Esqueceu sua senha?</LinkText>
-                </Link>
-            </Animated.View>
-        </KeyboardAvoidingView>
+                    <SubmitButton onPress={handleLogin}>
+                        {
+                            loadingAuth ? (
+                                <ActivityIndicator size={20} color="#FFF" />
+                            ) : (
+                                    <SubmitText>Entrar</SubmitText>
+                                )
+                        }
+                    </SubmitButton>
+                    <Link onPress={() => navigation.navigate('ForgotPassword')}>
+                        <LinkText>Esqueceu sua senha?</LinkText>
+                    </Link>
+                </Animated.View>
+            </KeyboardAvoidingView>
+        </>
     );
 }
 
-const st = StyleSheet.create({
+const styles = StyleSheet.create({
     containerBody: {
         flex: 1,
         alignItems: 'center',
@@ -144,7 +158,20 @@ const st = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '90%',
+        width: '75%',
         paddingBottom: 30
+    },
+    icon: {
+        backgroundColor: '#d3d3d3',
+        height: 50,
+        width: 45,
+        borderTopRightRadius: 8,
+        borderBottomRightRadius: 8,
+        marginBottom: 15,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    text: {
+        fontSize: 18,
     }
 })

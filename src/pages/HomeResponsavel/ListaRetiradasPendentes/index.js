@@ -11,14 +11,19 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
-    let msgType = jsonIcon == 'error' ? error : success
+    let cancel = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user, loadListRetiradas, loadListTanquesResponsavel, baseUrl } = useContext(AuthContext)
+    const errorChange = () => {
+        if (jsonIcon === 'error') return error
+        if (jsonIcon === 'success') return success
+        else return cancel
+    }
+
+    const { user, loadListRetiradasResolvidas, loadListTanquesResponsavel, baseUrl } = useContext(AuthContext)
 
     const [confirmacao, setConfirmacao] = useState(false)
     const [idRetirada, setIdRetirada] = useState(data.id)
     const [efetuou, setEfetuou] = useState(user.nome)
-    const [isAction, setAction] = useState(Boolean)
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
@@ -42,7 +47,6 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
     const handleConfirm = () => {
         if (data.quantidade <= data.tanque.qtdAtual) {
             setJsonIcon('success')
-            setAction(true)
             setAlertSimpleInfo(true)
         } else {
             setJsonIcon('error')
@@ -59,54 +63,35 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         setIdRetirada(data.id)
         setEfetuou(user.nome)
         await confirmacaoRetirada(true, idRetirada, efetuou, '')
-        await loadListRetiradas()
-        await loadListTanquesResponsavel()
+        loadListRetiradasResolvidas()
+        loadListTanquesResponsavel()
         setVisibleCard(false)
     }
 
-    //Função para cancelar a retirada
-    const handleCancel = () => {
-        setAction(false)
-        setAlertSimpleInfo(true)
-    }
-
     const doneCancel = async (observacao) => {
-        setAlertSimpleInfo(false)
+        setJsonIcon('cancel')
         setTypeMessage('Retirada cancelada com sucesso!')
         setAlertErroSuccess(true)
         setConfirmacao(false)
         setIdRetirada(data.id)
         setEfetuou(user.nome)
         await confirmacaoRetirada(false, idRetirada, efetuou, observacao)
-        await loadListRetiradas()
-        await loadListTanquesResponsavel()
+        loadListRetiradasResolvidas()
+        loadListTanquesResponsavel()
         setVisibleCard(false)
     }
 
     const InfoAlertSimple = () => {
         if (isAlertSimpleInfo) {
-            if (isAction === false) {
-                return (
-                    <AlertSimpleInfo
-                        dataInfo={data}
-                        onConfirm={doneCancel}
-                        onClose={hideModalInfo}
-                        title='Aviso'
-                        message={'Deseja realmente CANCELAR esta RETIRADA?'}
-                        action
-                    />
-                )
-            } else {
-                return (
-                    <AlertSimpleInfo
-                        dataInfo={data}
-                        onConfirm={doneConfirm}
-                        onClose={hideModalInfo}
-                        title='Aviso'
-                        message={'Deseja realmente CONFIRMAR esta RETIRADA?'}
-                    />
-                )
-            }
+            return (
+                <AlertSimpleInfo
+                    dataInfo={data}
+                    onConfirm={doneConfirm}
+                    onClose={hideModalInfo}
+                    title='Aviso'
+                    message={'Deseja realmente CONFIRMAR esta RETIRADA?'}
+                />
+            )
         }
     }
 
@@ -118,7 +103,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
                     title='Aviso'
                     message={typeMessage}
                     titleButton='Ok'
-                    jsonPath={msgType}
+                    jsonPath={errorChange()}
                     buttonColor={'#292b2c'}
                 />
             )
@@ -143,14 +128,14 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
             />
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={true}
                 visible={isVisibleCard}
             >
                 <ModalChoice
                     dataInfo={data}
                     hideModal={hideModal}
-                    handleCancel={handleCancel}
+                    doneCancel={doneCancel}
                     handleConfirm={handleConfirm}
                     titlePerfil={'Laticínio: '}
                     infoPerfil={data.laticinio.nome}

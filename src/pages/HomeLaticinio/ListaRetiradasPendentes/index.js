@@ -95,7 +95,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
             />
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={true}
                 visible={modalCancelVisible}
             >

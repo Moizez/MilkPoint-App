@@ -1,15 +1,27 @@
-import React, { useContext, useEffect, use } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import { FAB } from 'react-native-paper'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
 import { AuthContext } from '../../contexts/auth'
+import Map from '../../components/Map'
 
 export default function DetalhesTanque({ route }) {
 
     const { data } = route.params
 
-    const { user, loadListDepositos, loadListRetiradas, deposito, retirada } = useContext(AuthContext)
+    const {
+        user,
+        loadListDepositosResolvidos,
+        depositoResolvido,
+        loadListRetiradasResolvidas,
+        retiradaResolvida
+    } = useContext(AuthContext)
+    const [modalVisible, setModalVisible] = useState(false)
+
+    const handleCloseModal = () => setModalVisible(false)
 
     let nascimento = moment(data.dataCriacao).locale('pt-br').format('L')
     let capacidade = data.qtdAtual + data.qtdRestante
@@ -18,16 +30,15 @@ export default function DetalhesTanque({ route }) {
     //Lista dos depositos e retiradas por status e usuário logado
     const responsavelId = p => p.tanque.responsavel.id == user.id
     const tanqueRetId = t => t.tanque.id == data.id
-    const status = s => s.confirmacao == true
-    const depositos = deposito.filter(responsavelId).filter(status)
-    const retiradas = retirada.filter(responsavelId).filter(status)
+    const depositos = depositoResolvido.filter(responsavelId)
+    const retiradas = retiradaResolvida.filter(responsavelId)
 
     const laticinioId = l => l.laticinio.id == user.id
-    const retiradasLat = retirada.filter(laticinioId).filter(status).filter(tanqueRetId)
+    const retiradasLat = retiradaResolvida.filter(laticinioId).filter(tanqueRetId)
     const loadPerfilRet = user.perfil === 3 ? retiradasLat : retiradas
 
     const produtorId = p => p.produtor.id == user.id
-    const depositosPro = deposito.filter(produtorId).filter(status).filter(tanqueRetId)
+    const depositosPro = depositoResolvido.filter(produtorId).filter(tanqueRetId)
     const loadPerfilPro = user.perfil === 1 ? depositosPro : depositos
 
     //Soma de todos os depositos confirmados desde a criação do tanque
@@ -70,8 +81,8 @@ export default function DetalhesTanque({ route }) {
     const totalRetMensal = retOneMonth.map((qtd) => qtd.quantidade).reduce(somar, 0)
 
     useEffect(() => {
-        loadListDepositos()
-        loadListRetiradas()
+        loadListDepositosResolvidos()
+        loadListRetiradasResolvidas()
     }, [])
 
     return (
@@ -98,7 +109,12 @@ export default function DetalhesTanque({ route }) {
                     <Text style={styles.textItem}>CEP: <Text style={styles.text}>{data.cep}</Text></Text>
                     <Text style={styles.textItem}>Bairro: <Text style={styles.text}>{data.bairro}</Text></Text>
                     <Text style={styles.textItem}>Rua/Comunidade: <Text style={styles.text}>{data.logradouro}</Text></Text>
-                    <Text style={styles.textItem}>Complemento: <Text style={styles.text}>{data.complemento}</Text></Text>
+                    {data.complemento && <Text style={styles.textItem}>Complemento: <Text style={styles.text}>{data.complemento}</Text></Text>}
+
+                    <TouchableOpacity onPress={() => setModalVisible(true)} style={{ ...styles.ContainerButtons, marginBottom: 0 }}>
+                        <Text style={styles.textButton}>Como Chegar?</Text>
+                        <Icon name='google-maps' color='#FFF' size={30} />
+                    </TouchableOpacity>
                 </View>
                 {user.perfil === 1 &&
                     <View style={styles.cardItem}>
@@ -110,7 +126,7 @@ export default function DetalhesTanque({ route }) {
                         <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>{totalDepositos} litros</Text></Text>
                     </View>
                 }
-                {user.perfil === 2 || user.perfil === 4 && 
+                {user.perfil === 2 &&
                     <View style={styles.cardItem}>
                         <Text style={styles.tituloItem}>MOVIMENTAÇÕES</Text>
                         <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
@@ -134,12 +150,24 @@ export default function DetalhesTanque({ route }) {
                         <Text style={styles.textItem}>- Desde a criação: <Text style={styles.text}>{totalRetitadas} litros</Text></Text>
                     </View>
                 }
-                <View style={styles.ContainerButtons}>
-                    <TouchableOpacity style={styles.buttons}>
-                        <Text style={styles.textButton}>Gerar Relatório</Text>
-                    </TouchableOpacity>
-                </View>
+
+                <Modal
+                    animationType='slide'
+                    transparent={false}
+                    visible={modalVisible}
+                >
+                    <Map dataMap={data} onClose={handleCloseModal} />
+                </Modal>
+
             </ScrollView>
+
+            <FAB
+                style={styles.fab}
+                small={false}
+                icon="file-pdf-outline"
+                color='#FFF'
+                onPress={() => { }}
+            />
 
         </View>
     );
@@ -208,22 +236,28 @@ const styles = StyleSheet.create({
         marginVertical: 15,
     },
     ContainerButtons: {
-        flex: 0.25,
         flexDirection: 'row',
-        justifyContent: 'space-around'
-    },
-    buttons: {
-        backgroundColor: '#292b2c',
         justifyContent: 'center',
-        width: '95%',
+        alignItems: 'center',
+        backgroundColor: '#292b2c',
+        width: '100%',
         height: 45,
         borderRadius: 5,
-        marginTop: 10,
-        marginBottom: 15
+        marginTop: 15,
     },
     textButton: {
         textAlign: 'center',
         fontSize: 16,
-        color: '#FFF'
-    }
+        color: '#FFF',
+        marginRight: 20,
+    },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#292b2c',
+        borderWidth: 1,
+        borderColor: '#FFF'
+    },
 })

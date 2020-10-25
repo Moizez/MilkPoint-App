@@ -35,16 +35,16 @@ export default function TelaResponsaveis() {
         renderItem={({ item }) => <ListaResponsaveis data={item} />}
         ListEmptyComponent={
           <BoxNomeAviso>
-            <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
+            <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
             <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
             <BoxIconAviso>
               <BoxIconUpdate>
                 <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-                <NomeAviso>Clique e arraste para atualizar os tanques</NomeAviso>
+                <NomeAviso>Clique e arraste para atualizar a lista de responsáveis</NomeAviso>
               </BoxIconUpdate>
               <BoxIconDelete>
                 <Icon name='gesture-tap' color='#adb5bd' size={60} />
-                <NomeAviso>Clique no tanque para mais detalhes e opções</NomeAviso>
+                <NomeAviso>Clique no responsável para mais detalhes e opções</NomeAviso>
               </BoxIconDelete>
             </BoxIconAviso>
           </BoxNomeAviso>}

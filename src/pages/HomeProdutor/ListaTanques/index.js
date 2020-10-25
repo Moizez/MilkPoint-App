@@ -1,15 +1,13 @@
 import React, { useState, useContext } from 'react'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
-import { FAB } from 'react-native-paper'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
-import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
+import ModalDeposito from '../../../components/ModalDeposito'
 import GraficoTanque from '../../../components/GraficoTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
-import Map from '../../../components/Map'
 import { AuthContext } from '../../../contexts/auth'
 
 export default function ListaTanques({ data }) {
@@ -17,7 +15,6 @@ export default function ListaTanques({ data }) {
     const { user, loadListDepositosPendentes, baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
-    const [modalVisibleDois, setModalVisibleDois] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
@@ -88,6 +85,7 @@ export default function ListaTanques({ data }) {
     }
 
     function handleDeposito(value) {
+        console.log(value)
         if (isNaN(value) || value <= 0) {
             setJsonIcon('error')
             setTypeMessage('Valor inválido, digite a quantidade novamente!')
@@ -113,14 +111,12 @@ export default function ListaTanques({ data }) {
         //await saveDepositoAsync(value, idProd, idTanque)
         await requestDeposito(value, idProd, idTanque)
         sendSms(value)
-        loadListDepositosPendentes()
-        setModalVisibleDois(false)
+        await loadListDepositosPendentes()
         setModalVisible(false)
     }
 
     const handleCloseModal = () => setModalVisible(false)
     const handleOpenModal = () => setModalVisible(true)
-    const handleCloseModalDois = () => setModalVisibleDois(false)
     const closeAlertInfo = () => setAlertInfo(false)
     const closeAlertErroSuccess = () => setAlertVisible(false)
 
@@ -142,30 +138,13 @@ export default function ListaTanques({ data }) {
             </View>
 
             <Modal
-                animationType='slide'
-                transparent={false}
+                animationType='fade'
+                transparent={true}
                 visible={modalVisible}
             >
-                <Map dataMap={data} onClose={handleCloseModal} />
-
-                <FAB
-                    style={styles.fab}
-                    small={false}
-                    icon="basket-fill"
-                    color='#292b2c'
-                    onPress={() => setModalVisibleDois(true)}
-                />
-
-            </Modal>
-
-            <Modal
-                animationType='slide'
-                transparent={true}
-                visible={modalVisibleDois}
-            >
-                <ModalDepositoRetirada
+                <ModalDeposito
                     onConfirme={handleDeposito}
-                    onClose={handleCloseModalDois}
+                    onClose={handleCloseModal}
                 />
             </Modal>
 

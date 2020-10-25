@@ -2,9 +2,11 @@ import React, { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../../../contexts/auth'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import api from '../../../services/api'
 
 import Header from '../../../components/Header'
 import ListaDepositosPendentes from '../ListaDepositosPendentes'
+import Loader from '../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -13,21 +15,26 @@ import {
 
 export default function TelaDepositosPendentesResponsavel() {
 
-    const { user, loadListDepositosPendentes, depositoPendente } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [depositoPendente, setDepositoPendente] = useState([])
+    const [loading, setLoading] = useState(false)
 
-    //Lista de depositos pendentes apenas do responsável logado
-    const depositosPendentes = depositoPendente.filter(function (deposito) {
-        return deposito.tanque.responsavel.id == user.id
-    })
+    const loadDepositosPendentes = async () => {
+        setLoading(true)
+        const response = await api.get('deposito/listapendentes')
+        const result = response.data.filter(d => d.tanque.responsavel.id === user.id)
+        setDepositoPendente(result)
+        setLoading(false)
+    }
 
     useEffect(() => {
-        loadListDepositosPendentes()
+        loadDepositosPendentes()
     }, [])
 
     async function onRefreshList() {
         setIsRefreshing(true)
-        await loadListDepositosPendentes()
+        await loadDepositosPendentes()
         setIsRefreshing(false)
     }
 
@@ -36,7 +43,7 @@ export default function TelaDepositosPendentesResponsavel() {
             <Header msg={'Lista de depósitos pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={depositosPendentes}
+                data={depositoPendente}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <ListaDepositosPendentes data={item} onRefresh={onRefreshList} />}
@@ -51,11 +58,12 @@ export default function TelaDepositosPendentesResponsavel() {
                             </BoxIconUpdate>
                             <BoxIconDelete>
                                 <Icon name='gesture-tap' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique no depósito para confirmar ou cancelar</NomeAviso>
+                                <NomeAviso>Clique no depósito para aceitar ou recusar</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
+            {loading && !isRefreshing && <Loader />}
         </Container>
     );
 }

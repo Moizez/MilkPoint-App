@@ -1,36 +1,36 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { AuthContext } from '../../contexts/auth'
+import api from '../../services/api'
 
 import ListaTanques from '../HomeProdutor/ListaTanques'
 import Header from '../../components/Header'
-import api from '../../services/api'
+import Loader from '../../components/Loader'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
-    BoxIconUpdate, BoxIconDelete
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from './styles'
 
 export default function HomeProdutor() {
 
     const [tanque, setTanque] = useState([])
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [loading, setLoading] = useState(false)
 
-    const loadListTanques = async () => {
+    const loadTanques = async () => {
+        setLoading(true)
         const response = await api.get('tanque')
-
-        let tanque = response.data
-        setTanque(tanque)
+        setTanque(response.data)
+        setLoading(false)
     }
 
     useEffect(() => {
-        loadListTanques()
+        loadTanques()
     }, [])
 
     async function onRefreshList() {
         setIsRefreshing(true)
-        await loadListTanques()
+        await loadTanques()
         setIsRefreshing(false)
     }
 
@@ -45,7 +45,7 @@ export default function HomeProdutor() {
                 renderItem={({ item }) => <ListaTanques data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
+                        <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>
                             <BoxIconUpdate>
@@ -53,12 +53,13 @@ export default function HomeProdutor() {
                                 <NomeAviso>Clique e arraste para atualizar os tanques</NomeAviso>
                             </BoxIconUpdate>
                             <BoxIconDelete>
-                                <Icon name='gesture-tap' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique no tanque para mais detalhes e opções</NomeAviso>
+                                <Icon name='gesture-tap-hold' color='#adb5bd' size={60} />
+                                <NomeAviso>Clique e segure no tanque para mais detalhes</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
+            {loading && !isRefreshing && <Loader />}
         </Container >
     );
 }

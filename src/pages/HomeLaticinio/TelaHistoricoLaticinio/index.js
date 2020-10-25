@@ -4,11 +4,13 @@ import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
+import api from '../../../services/api'
 
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
 import FabSearch from '../../../components/FabSearch'
+import Loader from '../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
@@ -16,16 +18,16 @@ import {
 
 export default function TelaHistoricoLaticinio() {
 
-    const { user, loadListRetiradasResolvidas, retiradaResolvida } = useContext(AuthContext)
-    const [dataRetirada, setDataRetirada] = useState([])
+    const { user } = useContext(AuthContext)
 
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
-    const [customDate, setCustomDate] = useState()
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [msg, setMsg] = useState('')
     const [color, setColor] = useState('#FFF')
-
+    const [loading, setLoading] = useState(false)
+    const [retiradaResolvida, setRetiradaResolvida] = useState([])
+    const [mainData, setMainData] = useState([])
 
     let msgDefault = `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`
     let msgForValue = 'Lista de transações pelo valor da retirada'
@@ -33,76 +35,78 @@ export default function TelaHistoricoLaticinio() {
     let msg30Days = 'Lista de transações dos últimos 30 dias'
     let msgCustomDays = 'Lista de RETIRADAS personalizada'
 
-    //Filtrar por usuário e status
-    const laticinio = r => r.laticinio.id == user.id
-    const retiradas = retiradaResolvida.filter(laticinio)
-
     //Filtrar por valor do pedido
-    async function getValor(value) {
-        const filterByValue = await retiradas.filter(function (v) {
-            return v.quantidade == value
-        })
+    function getValor(value) {
+        setLoading(true)
+        const filterByValue = retiradaResolvida.filter(r => r.quantidade == value)
         setColor('#FFF')
         setMsg(msgForValue)
-        setDataRetirada(filterByValue)
-        return dataRetirada
+        setMainData(filterByValue)
+        setLoading(false)
     }
 
     //Filtrar pelos últimos 15 dias
-    const filterFifteenDays = async () => {
+    const filterFifteenDays = () => {
+        setLoading(true)
         let fifteenDays = moment().locale('en').subtract(15, 'days').format('L')
-        const fifteenDaysAgo = await retiradas.filter(function (d) {
+        const fifteenDaysAgo = retiradaResolvida.filter(function (d) {
             let dayRet = moment(d.dataNow).locale('en').format('L')
             return moment(dayRet).isSameOrAfter(fifteenDays, 'days')
         })
         setColor('#e9c46a')
         setMsg(msg15Days)
-        setDataRetirada(fifteenDaysAgo)
-        return dataRetirada
+        setMainData(fifteenDaysAgo)
+        setLoading(false)
     }
 
     //Filtrar pelos últimos 30 dias
-    const filterOneMonth = async () => {
+    const filterOneMonth = () => {
+        setLoading(true)
         let oneMonth = moment().locale('en').subtract(1, 'month').format('L')
-        const oneMonthAgo = await retiradas.filter(function (d) {
+        const oneMonthAgo = retiradaResolvida.filter(function (d) {
             let dayRet = moment(d.dataNow).locale('en').format('L')
             return moment(dayRet).isSameOrAfter(oneMonth, 'days')
         })
         setColor('#e76f51')
         setMsg(msg30Days)
-        setDataRetirada(oneMonthAgo)
-        return dataRetirada
+        setMainData(oneMonthAgo)
+        setLoading(false)
     }
 
     //Filtrar por data personalizada
-    const filterCustomDays = async (value) => {
-        setCustomDate(value)
+    const filterCustomDays = (value) => {
+        setLoading(true)
         let customDay = moment(value).locale('en').format('L')
-        const customDayAgo = await retiradas.filter(function (d) {
+        const customDayAgo = retiradaResolvida.filter(function (d) {
             let dayRet = moment(d.dataNow).locale('en').format('L')
             return moment(dayRet).isSameOrAfter(customDay, 'days')
         })
         setColor('#DDD')
         setMsg(msgCustomDays)
-        setDataRetirada(customDayAgo)
-        return dataRetirada
+        setMainData(customDayAgo)
+        setLoading(false)
     }
 
     //Lista de todas as retiradas pela data
-    const checkDate = async () => {
+    const loadPage = async () => {
+        setLoading(true)
+        const laticinio = r => r.laticinio.id == user.id
+        const response = await api.get('retirada/resolvidos')
+        setRetiradaResolvida(response.data)
+
+        const filterData = response.data.filter(laticinio)
         let day = moment(selectedDate).format('L')
-        const dayRetirada = await retiradas.filter(function (r) {
-            let dayRet = moment(r.dataNow).format('L')
-            return dayRet === day
+        const data = filterData.filter(function (r) {
+            let regDay = moment(r.dataNow).format('L')
+            return regDay === day
         })
         setMsg(msgDefault)
-        setDataRetirada(dayRetirada)
-        return dataRetirada
+        setMainData(data)
+        setLoading(false)
     }
 
     useEffect(() => {
-        checkDate()
-        loadListRetiradasResolvidas()
+        loadPage()
     }, [selectedDate])
 
     function onChange(value) {
@@ -114,7 +118,7 @@ export default function TelaHistoricoLaticinio() {
     async function onRefreshList() {
         setColor('#FFF')
         setIsRefreshing(true)
-        await checkDate(selectedDate)
+        await loadPage()
         setIsRefreshing(false)
     }
 
@@ -130,18 +134,18 @@ export default function TelaHistoricoLaticinio() {
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={dataRetirada}
+                data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <CardHistorico data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
+                        <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>
                             <BoxIconUpdate>
                                 <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e arraste para atualizar as transações</NomeAviso>
+                                <NomeAviso>Clique e arraste para atualizar a lista</NomeAviso>
                             </BoxIconUpdate>
                             <BoxIconDelete>
                                 <Icon name='calendar' color='#adb5bd' size={60} />
@@ -175,7 +179,7 @@ export default function TelaHistoricoLaticinio() {
                 label2={'Listar por valor'}
                 color2={'#0077b6'}
             />
-
+            {loading && !isRefreshing && <Loader />}
         </Container>
     );
 }

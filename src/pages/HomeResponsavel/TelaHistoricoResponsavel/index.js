@@ -4,11 +4,13 @@ import { AuthContext } from '../../../contexts/auth'
 import { RefreshControl, StyleSheet } from 'react-native'
 import moment from 'moment'
 import 'moment/locale/pt-br'
+import api from '../../../services/api'
 
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
 import FabGroup from '../../../components/FabGroup'
+import Loader from '../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -17,156 +19,90 @@ import {
 
 export default function TelaHistoricoResponsavel() {
 
-    const {
-        user, loadListDepositos, loadListRetiradas, deposito, retirada
-    } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
 
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [check, setCheck] = useState(true)
-    const [dataDeposito, setDataDeposito] = useState([])
-    const [dataRetirada, setDataRetirada] = useState([])
     const [msg, setMsg] = useState('')
     const [color, setColor] = useState('#FFF')
-    //const [customDate, setCustomDate] = useState()
+    const [loading, setLoading] = useState(false)
+    const [mainData, setMainData] = useState([])
+    const [dataTemp, setDataTemp] = useState([])
 
-    //Mensagens das ações de listagens
+    //Mensagens das ações de listagem
     let checkMsg = check ? 'DEPÓSITOS' : 'RETIRADAS'
-    let msgName = `Lista de ${check ? 'produtores' : 'laticínios'}`
     let msgDefault = `Lista de ${checkMsg} do dia ${selectedDate && moment(selectedDate).format('L')}`
     let msg15Days = `Lista de ${checkMsg} dos últimos 15 dias`
     let msg30Days = `Lista de ${checkMsg} dos últimos 30 dias`
     let msgCustomDays = `Lista de ${checkMsg} personalizada`
-    //let msgCustomDays = `Lista de ${checkMsg} de ${moment(customDate).format('l')} até ${moment().format('l')}`
-
-    //Lista dos depositos e retiradas por status e usuário logado
-    const responsavelId = p => p.tanque.responsavel.id == user.id
-    const status = s => s.confirmacao == true || s.excluido == true
-    const depositos = deposito.filter(responsavelId).filter(status)
-    const retiradas = retirada.filter(responsavelId).filter(status)
-    const depositos_retiradas = depositos.concat(retiradas)
 
     //Filtrar pelo nome da pessoa
-    async function findByName(value) {
-        const filterByName = await depositos_retiradas.filter(function (n) {
-            return n.produtor.nome || n.laticinio.nome == value
-        })
-        setMsg(msgName)
-        setDataDeposito(filterByName)
-        return dataDeposito
+    async function findByName(value, type) {
+        setMsg(type ? `Busca de depósitos pelo nome: ${value}` : `Busca de retiradas pelo nome: ${value}`)
+        let tipo = type ? 'deposito' : 'retirada'
+        const response = await api.get(`${tipo}/buscar/${value}`)
+        setMainData(response.data)
+        setLoading(false)
     }
 
     //Filtrar pelos últimos 15 dias
-    const filterFifteenDaysDeposito = async () => {
+    const filterFifteenDays = async () => {
         let fifteenDays = moment().locale('en').subtract(15, 'days').format('L')
-        const fifteenDaysAgo = await depositos.filter(function (d) {
+        const fifteenDaysAgo = dataTemp.filter(function (d) {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(fifteenDays, 'days')
         })
         setColor('#e9c46a')
         setMsg(msg15Days)
-        setDataDeposito(fifteenDaysAgo)
-        return dataDeposito
+        setMainData(fifteenDaysAgo)
     }
 
     //Filtrar pelos últimos 30 dias
-    const filterOneMonthDeposito = async () => {
+    const filterOneMonth = async () => {
         let oneMonth = moment().locale('en').subtract(1, 'month').format('L')
-        const oneMonthAgo = await depositos.filter(function (d) {
+        const oneMonthAgo = dataTemp.filter(function (d) {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(oneMonth, 'days')
         })
         setColor('#e76f51')
         setMsg(msg30Days)
-        setDataDeposito(oneMonthAgo)
-        return dataDeposito
+        setMainData(oneMonthAgo)
     }
 
     //Filtrar por data personalizada
-    const filterCustomDaysDeposito = async (value) => {
+    const filterCustomDays = async (value) => {
         let customDay = moment(value).locale('en').format('L')
-        const customDayAgo = await depositos.filter(function (d) {
+        const customDayAgo = dataTemp.filter(function (d) {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(customDay, 'days')
         })
         setColor('#DDD')
         setMsg(msgCustomDays)
-        setDataDeposito(customDayAgo)
-        return dataDeposito
+        setMainData(customDayAgo)
     }
 
-    //Lista de todos os depositos pela data
-    const checkDateDeposito = async () => {
+    const loadPage = async () => {
+        setLoading(true)
+        const responsavelId = p => p.tanque.responsavel.id == user.id
+        let tipo = check ? 'deposito' : 'retirada'
+        const response = await api.get(`${tipo}/resolvidos`)
+        const result = response.data.filter(responsavelId)
+        setDataTemp(result)
+
         let day = moment(selectedDate).format('L')
-        const dayDeposito = await depositos.filter(function (r) {
+        const data = result.filter(function (r) {
             let regDay = moment(r.dataNow).format('L')
             return regDay === day
         })
         setMsg(msgDefault)
-        setDataDeposito(dayDeposito)
-        return dataDeposito
-    }
-
-    //Filtrar retiradas pelos últimos 15 dias
-    const filterFifteenDaysRetirada = async () => {
-        let fifteenDays = moment().locale('en').subtract(15, 'days').format('L')
-        const fifteenDaysAgo = await retiradas.filter(function (d) {
-            let regDay = moment(d.dataNow).locale('en').format('L')
-            return moment(regDay).isSameOrAfter(fifteenDays, 'days')
-        })
-        setColor('#e9c46a')
-        setMsg(msg15Days)
-        setDataRetirada(fifteenDaysAgo)
-        return dataRetirada
-    }
-
-    //Filtrar pelos últimos 30 dias
-    const filterOneMonthRetirada = async () => {
-        let oneMonth = moment().locale('en').subtract(1, 'month').format('L')
-        const oneMonthAgo = await retiradas.filter(function (d) {
-            let regDay = moment(d.dataNow).locale('en').format('L')
-            return moment(regDay).isSameOrAfter(oneMonth, 'days')
-        })
-        setColor('#e76f51')
-        setMsg(msg30Days)
-        setDataRetirada(oneMonthAgo)
-        return dataRetirada
-    }
-
-    //Filtrar por data personalizada
-    const filterCustomDaysRetirada = async (value) => {
-        let customDay = moment(value).locale('en').format('L')
-        const customDayAgo = await retiradas.filter(function (d) {
-            let regDay = moment(d.dataNow).locale('en').format('L')
-            return moment(regDay).isSameOrAfter(customDay, 'days')
-        })
-        setColor('#DDD')
-        setMsg(msgCustomDays)
-        setDataRetirada(customDayAgo)
-        return dataRetirada
-    }
-
-    //Lista de todas as retiradas pela data
-    const checkDateRetirada = async () => {
-        let day = moment(selectedDate).format('L')
-        const dayRetirada = await retiradas.filter(function (r) {
-            let regDay = moment(r.dataNow).format('L')
-            return regDay === day
-        })
-        setMsg(msgDefault)
-        setDataRetirada(dayRetirada)
-        return dataRetirada
+        setMainData(data)
+        setLoading(false)
     }
 
     useEffect(() => {
-        if (check) {
-            checkDateDeposito()
-            loadListDepositos()
-        } else {
-            checkDateRetirada()
-            loadListRetiradas()
-        }
+        loadPage()
     }, [selectedDate, check])
 
     function onChange(value) {
@@ -175,10 +111,10 @@ export default function TelaHistoricoResponsavel() {
         setSelectedDate(value)
     }
 
-    async function onRefreshList() {
+    const onRefreshList = async () => {
         setColor('#FFF')
         setIsRefreshing(true)
-        check ? await checkDateDeposito(selectedDate) : await checkDateRetirada(selectedDate)
+        await loadPage()
         setIsRefreshing(false)
     }
 
@@ -190,26 +126,26 @@ export default function TelaHistoricoResponsavel() {
             <Header
                 msg={msg}
                 onOpen={showCalendar}
-                calendar={<Icon name='calendar-month' color={color} size={22} />}
+                calendar={<Icon name='calendar-search' color={color} size={22} />}
             />
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={check ? dataDeposito : dataRetirada}
+                data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <CardHistorico data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
+                        <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>
                             <BoxIconUpdate>
                                 <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e arraste para atualizar as transações</NomeAviso>
+                                <NomeAviso>Clique e arraste para atualizar a lista</NomeAviso>
                             </BoxIconUpdate>
                             <BoxIconDelete>
-                                <Icon name='calendar' color='#adb5bd' size={60} />
+                                <Icon name='calendar-search' color='#adb5bd' size={60} />
                                 <NomeAviso>Clique no ícone do calendário para filtrar por data</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
@@ -226,18 +162,15 @@ export default function TelaHistoricoResponsavel() {
             <FabGroup
                 styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
                 findByName={findByName}
-                filterFifteenDaysDeposito={filterFifteenDaysDeposito}
-                filterOneMonthDeposito={filterOneMonthDeposito}
-                filterFifteenDaysRetirada={filterFifteenDaysRetirada}
-                filterOneMonthRetirada={filterOneMonthRetirada}
-                filterCustomDays={check ? filterCustomDaysDeposito : filterCustomDaysRetirada}
+                filterFifteenDays={filterFifteenDays}
+                filterOneMonth={filterOneMonth}
+                filterCustomDays={filterCustomDays}
                 changeCheck={changeCheck}
-                checkDateDeposito={checkDateDeposito}
-                checkDateRetirada={checkDateRetirada}
                 onOpen={showCalendar}
                 mainIcon={'magnify'}
                 mainIconColor={'#FFF'}
             />
+            {loading && !isRefreshing && <Loader />}
         </Container>
     );
 }

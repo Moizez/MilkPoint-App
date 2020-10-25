@@ -12,7 +12,7 @@ export default function ListaLaticinios({ data }) {
 
     //Solicitação de retirada pelo laticinio
     const requestStatus = async (status, idLat) => {
-        await fetch(`${baseUrl}produtor` + '/' + parseInt(idLat), {
+        await fetch(`${baseUrl}laticinio` + '/' + parseInt(idLat), {
             method: 'PUT',
             headers: {
                 "Accept": "application/json",
@@ -31,26 +31,66 @@ export default function ListaLaticinios({ data }) {
 
     const renderInfo = () => {
         return (
-            <View style={{...styles.infoCard, backgroundColor: '#FFF'}}>
-                <Text style={{ ...styles.textInfo, textAlign: 'center' }}>Endereço</Text>
-                <Text style={styles.textInfo}>Rua: <Text style={styles.text}>{data.logradouro}</Text></Text>
-                <Text style={styles.textInfo}>Bairro: <Text style={styles.text}>{data.bairro}</Text></Text>
-                <Text style={styles.textInfo}>Cidade: <Text style={styles.text}>{data.localidade}</Text></Text>
-                <Text style={styles.textInfo}>CEP: <Text style={styles.text}>{data.cep}</Text></Text>
-                <Text style={styles.textInfo}>Estado: <Text style={styles.text}>{data.uf}</Text></Text>
-                <Text style={styles.textInfo}>Complemento: <Text style={styles.text}>{data.complemento}</Text></Text>
-                <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center' }}>
-                    <Text style={styles.textInfo}>Situação do produtor: </Text>
-                    <Switch
-                        value={isAtivo}
-                        thumbColor={isAtivo ? "#2a9d8f" : "#f4f3f4"}
-                        trackColor={{ false: "#767577", true: "#b7e4c7" }}
-                        onValueChange={value => {
-                            setAtivo(value)
-                            handleStatus(value)
-                        }}
-                    />
-                    <Text style={{ ...styles.textInfo, marginLeft: 8, fontWeight: 'normal' }}>{isAtivo ? 'ATIVO' : 'INATIVO'}</Text>
+            <View style={{ ...styles.infoCard, backgroundColor: '#FFF' }}>
+                <Text style={{ ...styles.textInfo, textAlign: 'center', marginBottom: 3 }}>Endereço</Text>
+                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd' }}></View>
+                <View style={{ ...styles.infoCard, backgroundColor: '#FFF' }}>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textInfo}>Rua</Text>
+                            <Text style={styles.text}>{data.logradouro}</Text>
+                        </View>
+                        <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textInfo}>Bairro</Text>
+                            <Text style={styles.text}>{data.bairro}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textInfo}>Cidade</Text>
+                            <Text style={styles.text}>{data.localidade}</Text>
+                        </View>
+                        <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textInfo}>CEP</Text>
+                            <Text style={styles.text}>{data.cep}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <View style={{ flex: 0.3, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textInfo}>Estado</Text>
+                            <Text style={styles.text}>{data.uf}</Text>
+                        </View>
+                        <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                        <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                            <Text style={styles.textInfo}>Complemento</Text>
+                            <Text style={styles.text}>{data.complemento}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+
+                    <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
+                        <Text style={styles.textInfo}>Situação do laticínio: </Text>
+                        <Switch
+                            value={isAtivo}
+                            thumbColor={isAtivo ? "#2a9d8f" : "#f4f3f4"}
+                            trackColor={{ false: "#767577", true: "#b7e4c7" }}
+                            onValueChange={value => {
+                                setAtivo(value)
+                                handleStatus(value)
+                            }}
+                        />
+                        <Text style={{ ...styles.textInfo, marginLeft: 8, fontWeight: 'normal' }}>{isAtivo ? 'ATIVO' : 'INATIVO'}</Text>
+                    </View>
                 </View>
             </View>
         )
@@ -58,12 +98,12 @@ export default function ListaLaticinios({ data }) {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.cardContainer} onPress={() => setExpand(!isExpand)} activeOpacity={0.7}>
-                <View style={styles.infoCard}>
+            <View style={styles.cardContainer}>
+                <TouchableOpacity onPress={() => setExpand(!isExpand)} activeOpacity={1} style={styles.infoCard}>
                     <Text style={styles.textInfo}>Nome: <Text style={styles.text}>{data.nome}</Text></Text>
                     <Text style={styles.textInfo}>Empresa: <Text style={styles.text}>{data.nomeFantasia}</Text></Text>
                     <Text style={styles.textInfo}>E-mail: <Text style={styles.text}>{data.email}</Text></Text>
-                </View>
+                </TouchableOpacity>
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
                 <View style={styles.avatarContainer}>
                     <Image style={styles.avatar}
@@ -71,7 +111,7 @@ export default function ListaLaticinios({ data }) {
                         resizeMode='cover'
                     ></Image>
                 </View>
-            </TouchableOpacity>
+            </View>
 
             <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd' }}></View>
 

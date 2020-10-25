@@ -4,11 +4,13 @@ import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
+import api from '../../../services/api'
 
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
 import FabSearch from '../../../components/FabSearch'
+import Loader from '../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
@@ -16,15 +18,16 @@ import {
 
 export default function TelaHistoricoProdutor() {
 
-    const { user, loadListDepositosResolvidos, depositoResolvido } = useContext(AuthContext)
-    const [dataDeposito, setDataDeposito] = useState([])
+    const { user } = useContext(AuthContext)
 
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
-    const [customDate, setCustomDate] = useState()
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [msg, setMsg] = useState('')
     const [color, setColor] = useState('#FFF')
+    const [loading, setLoading] = useState(false)
+    const [depositoResolvido, setDepositoResolvido] = useState([])
+    const [mainData, setMainData] = useState([])
 
     let msgDefault = `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`
     let msgForValue = 'Lista de transações pelo valor do depósito'
@@ -32,77 +35,76 @@ export default function TelaHistoricoProdutor() {
     let msg30Days = 'Lista de transações dos últimos 30 dias'
     let msgCustomDays = 'Lista de DEPÓSITOS personalizada'
 
-
-    //Filtrar por usuário e status
-    const produtor = d => d.produtor.id == user.id
-    const depositos = depositoResolvido.filter(produtor)
+    const onLoad = () => setLoading(true)
 
     //Filtrar por valor do pedido
-    async function getValor(value) {
-        const filterByValue = await depositos.filter(function (v) {
-            return v.quantidade == value
-        })
+    const getValor = (value) => {
+        const filterByValue = depositoResolvido.filter(d => d.quantidade == value)
         setColor('#FFF')
         setMsg(msgForValue)
-        setDataDeposito(filterByValue)
-        return dataDeposito
+        setMainData(filterByValue)
+        setLoading(false)
     }
 
     //Filtrar pelos últimos 15 dias
-    const filterFifteenDays = async () => {
+    const filterFifteenDays = () => {
         let fifteenDays = moment().locale('en').subtract(15, 'days').format('L')
-        const fifteenDaysAgo = await depositos.filter(function (d) {
+        const fifteenDaysAgo = depositoResolvido.filter(function (d) {
             let dayDep = moment(d.dataNow).locale('en').format('L')
             return moment(dayDep).isSameOrAfter(fifteenDays, 'days')
         })
         setColor('#e9c46a')
         setMsg(msg15Days)
-        setDataDeposito(fifteenDaysAgo)
-        return dataDeposito
+        setMainData(fifteenDaysAgo)
+        setLoading(false)
     }
 
     //Filtrar pelos últimos 30 dias
-    const filterOneMonth = async () => {
+    const filterOneMonth = () => {
         let oneMonth = moment().locale('en').subtract(1, 'month').format('L')
-        const oneMonthAgo = await depositos.filter(function (d) {
+        const oneMonthAgo = depositoResolvido.filter(function (d) {
             let dayDep = moment(d.dataNow).locale('en').format('L')
             return moment(dayDep).isSameOrAfter(oneMonth, 'days')
         })
         setColor('#e76f51')
         setMsg(msg30Days)
-        setDataDeposito(oneMonthAgo)
-        return dataDeposito
+        setMainData(oneMonthAgo)
+        setLoading(false)
     }
 
     //Filtrar por data personalizada
-    const filterCustomDays = async (value) => {
-        setCustomDate(value)
+    const filterCustomDays = (value) => {
         let customDay = moment(value).locale('en').format('L')
-        const customDayAgo = await depositos.filter(function (d) {
+        const customDayAgo = depositoResolvido.filter(function (d) {
             let dayDep = moment(d.dataNow).locale('en').format('L')
             return moment(dayDep).isSameOrAfter(customDay, 'days')
         })
         setColor('#DDD')
         setMsg(msgCustomDays)
-        setDataDeposito(customDayAgo)
-        return dataDeposito
+        setMainData(customDayAgo)
+        setLoading(false)
     }
 
     //Lista de todos os depósitos pela data selecionada
-    const checkDate = async () => {
+    const loadPage = async () => {
+        setLoading(true)
+        const produtor = d => d.produtor.id == user.id
+        const response = await api.get('deposito/resolvidos')
+        setDepositoResolvido(response.data)
+
+        const filterData = response.data.filter(produtor)
         let day = moment(selectedDate).format('L')
-        const dayDeposito = await depositos.filter(function (d) {
-            let dayDep = moment(d.dataNow).format('L')
-            return dayDep === day
+        const data = filterData.filter(function (r) {
+            let regDay = moment(r.dataNow).format('L')
+            return regDay === day
         })
         setMsg(msgDefault)
-        setDataDeposito(dayDeposito)
-        return dataDeposito
+        setMainData(data)
+        setLoading(false)
     }
 
     useEffect(() => {
-        checkDate()
-        loadListDepositosResolvidos()
+        loadPage()
     }, [selectedDate])
 
     function onChange(value) {
@@ -114,7 +116,7 @@ export default function TelaHistoricoProdutor() {
     async function onRefreshList() {
         setColor('#FFF')
         setIsRefreshing(true)
-        await checkDate(selectedDate)
+        await loadPage()
         setIsRefreshing(false)
     }
 
@@ -127,16 +129,15 @@ export default function TelaHistoricoProdutor() {
                 onOpen={showCalendar}
                 calendar={<Icon name='calendar-month' color={color} size={22} />}
             />
-
             <List
                 showsVerticalScrollIndicator={false}
-                data={dataDeposito}
+                data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <CardHistorico data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
+                        <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>
                             <BoxIconUpdate>
@@ -144,7 +145,7 @@ export default function TelaHistoricoProdutor() {
                                 <NomeAviso>Clique e arraste para atualizar as transações</NomeAviso>
                             </BoxIconUpdate>
                             <BoxIconDelete>
-                                <Icon name='calendar' color='#adb5bd' size={60} />
+                                <Icon name='calendar-search' color='#adb5bd' size={60} />
                                 <NomeAviso>Clique no ícone do calendário para filtrar por data</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
@@ -162,6 +163,7 @@ export default function TelaHistoricoProdutor() {
             <FabSearch
                 styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
                 getValor={getValor}
+                onLoad={onLoad}
                 filterFifteenDays={filterFifteenDays}
                 filterOneMonth={filterOneMonth}
                 filterCustomDays={filterCustomDays}
@@ -175,7 +177,7 @@ export default function TelaHistoricoProdutor() {
                 label2={'Listar por valor'}
                 color2={'#0077b6'}
             />
-
+            {loading && !isRefreshing && <Loader />}
         </Container>
     );
 }

@@ -51,15 +51,26 @@ export default function ListaTanques({ data }) {
                     percentStyle={{ color: 'black', fontSize: 22 }}
                 />
 
-                <View style={{ width: '95%', height: 1, backgroundColor: '#adb5bd', marginVertical: 10 }}></View>
+                <View style={{ width: '95%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 10 }}></View>
 
-                <View>
-                    <Text>- Volume atual do tanque é de <Text style={{ fontWeight: 'bold' }}>{data.qtdAtual} litros</Text></Text>
-                    <Text>- Faltam <Text style={{ fontWeight: 'bold' }}>{data.qtdRestante} litros</Text> para completar o tanque</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                        <Text style={{ fontWeight: 'bold' }}>Capacidade</Text>
+                        <Text>{capacidade} litros</Text>
+                    </View>
+                    <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                        <Text style={{ fontWeight: 'bold' }}>Volume atual</Text>
+                        <Text>{data.qtdAtual} litros</Text>
+                    </View>
+                    <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                        <Text style={{ fontWeight: 'bold' }}>Cabem</Text>
+                        <Text>{data.qtdRestante} litros</Text>
+                    </View>
                 </View>
 
             </TouchableOpacity>
-
             <Modal
                 animationType='slide'
                 transparent={false}
@@ -67,7 +78,6 @@ export default function ListaTanques({ data }) {
             >
                 <Map dataMap={data} onClose={handleCloseModal} />
             </Modal>
-
         </View>
     );
 }

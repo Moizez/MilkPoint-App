@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import ListaDepositosPendentes from '../ListaDepositosPendentes'
 import Header from '../../../components/Header'
+import Loader from '../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -13,18 +14,16 @@ import {
 
 export default function TelaDepositosPendentesProdutor() {
 
-    const { user, loadListDepositosPendentes, depositoPendente } = useContext(AuthContext)
+    const { user, loadListDepositosPendentes, depositoPendente, loadingPages } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
 
-    const depositosPendentes = depositoPendente.filter(function (deposito) {
-        return deposito.produtor.id == user.id
-    })
+    const depositosPendentes = depositoPendente.filter(p => p.produtor.id === user.id)
 
     useEffect(() => {
         loadListDepositosPendentes()
     }, [])
 
-    async function onRefreshList() {
+    const onRefreshList = async () => {
         setIsRefreshing(true)
         await loadListDepositosPendentes()
         setIsRefreshing(false)
@@ -32,7 +31,7 @@ export default function TelaDepositosPendentesProdutor() {
 
     return (
         <Container>
-            <Header msg={'Lista de depósitos pendentes'}/> 
+            <Header msg={'Lista de depósitos pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
                 data={depositosPendentes}
@@ -41,7 +40,7 @@ export default function TelaDepositosPendentesProdutor() {
                 renderItem={({ item }) => (<ListaDepositosPendentes data={item} onRefresh={onRefreshList} />)}
                 ListEmptyComponent={
                     <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
+                        <NomeAviso style={{ marginBottom: 70 }}>Não há depósitos pendentes!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>
                             <BoxIconUpdate>
@@ -49,12 +48,13 @@ export default function TelaDepositosPendentesProdutor() {
                                 <NomeAviso>Clique e arraste para atualizar a lista</NomeAviso>
                             </BoxIconUpdate>
                             <BoxIconDelete>
-                                <Icon name='gesture-tap-hold' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e segure para cancelar um depósito</NomeAviso>
+                                <Icon name='gesture-tap' color='#adb5bd' size={60} />
+                                <NomeAviso>Clique para cancelar um depósito</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
+            {loadingPages && !isRefreshing && <Loader />}
         </Container>
     );
 }

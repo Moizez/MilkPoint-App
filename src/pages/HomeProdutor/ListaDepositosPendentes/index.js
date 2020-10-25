@@ -6,7 +6,6 @@ import CardInfo from '../../../components/CardInfo'
 import ModalCancel from '../../../components/ModalCancel'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
-import api from '../../../services/api'
 
 export default function ListaDepositosPendentes({ data, onRefresh }) {
 
@@ -97,7 +96,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
             />
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={true}
                 visible={modalCancelVisible}
             >

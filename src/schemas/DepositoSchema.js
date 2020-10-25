@@ -1,7 +1,7 @@
 export default class DepositoSchema {
   static schema = {
     name: 'Deposito',
-    id: 'string',
+    id: 'int',
     properties: {
       id: { type: 'string', indexed: true },
       idProd: 'int',

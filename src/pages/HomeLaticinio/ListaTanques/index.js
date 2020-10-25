@@ -1,9 +1,7 @@
 import React, { useState, useContext } from 'react'
-import { FAB } from 'react-native-paper'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 
-import Map from '../../../components/Map'
-import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
+import ModalRetirada from '../../../components/ModalRetirada'
 import GraficoTanque from '../../../components/GraficoTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
@@ -15,7 +13,6 @@ export default function ListaTanques({ data }) {
     const { user, loadListRetiradasPendentes, baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
-    const [modalVisibleDois, setModalVisibleDois] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
@@ -24,11 +21,6 @@ export default function ListaTanques({ data }) {
     const [idLat, setIdLat] = useState(user.id)
     const [idTanque, setIdTanque] = useState(data.id)
     const [qtdInfo, setQtdInfo] = useState()
-
-    //Fab button
-    const [state, setState] = useState({ open: false })
-    const onStateChange = ({ open }) => setState({ open })
-    const { open } = state
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
@@ -45,9 +37,17 @@ export default function ListaTanques({ data }) {
     };
 
     function handleRetirada(value) {
-        if (isNaN(value) || value <= 0) {
+        if (data.qtdAtual == 0) {
+            setJsonIcon('error')
+            setTypeMessage('O tanque está vazio!')
+            setAlertVisible(true)
+        } else if (isNaN(value) || value <= 0) {
             setJsonIcon('error')
             setTypeMessage('Valor inválido, digite a quantidade novamente!')
+            setAlertVisible(true)
+        } else if (data.qtdAtual == 0) {
+            setJsonIcon('error')
+            setTypeMessage('O tanque está vazio!')
             setAlertVisible(true)
         } else if (value > data.qtdAtual) {
             setJsonIcon('error')
@@ -69,13 +69,11 @@ export default function ListaTanques({ data }) {
         setIdTanque(data.id)
         await requestRetirada(value, idLat, idTanque)
         loadListRetiradasPendentes()
-        setModalVisibleDois(false)
         setModalVisible(false)
     }
 
     const handleCloseModal = () => setModalVisible(false)
     const handleOpenModal = () => setModalVisible(true)
-    const handleCloseModalDois = () => setModalVisibleDois(false)
     const closeAlertInfo = () => { setAlertInfo(false) }
     const closeAlertErroSuccess = () => setAlertVisible(false)
     const changeRetirada = () => setRetiradaTotal(true)
@@ -129,52 +127,13 @@ export default function ListaTanques({ data }) {
             </View>
 
             <Modal
-                animationType='slide'
-                transparent={false}
+                animationType='fade'
+                transparent={true}
                 visible={modalVisible}
             >
-                <Map dataMap={data} onClose={handleCloseModal} />
-
-                <FAB.Group
-                    fabStyle={{ backgroundColor: '#da1e37', borderWidth: 2, borderColor: '#FFF' }}
-                    color={'#292b2c'}
-                    open={open}
-                    icon={open ? 'close' : 'basket-unfill'}
-                    actions={[
-                        {
-                            icon: 'gauge-full',
-                            label: 'Retirada total',
-                            color: '#da1e37',
-                            onPress: () => {
-                                let valor = data.qtdAtual
-                                handleRetirada(valor)
-                            },
-                        },
-                        {
-                            icon: 'numeric',
-                            label: 'Retirada parcial',
-                            color: '#da1e37',
-                            onPress: () => setModalVisibleDois(true),
-                        },
-                    ]}
-                    onStateChange={onStateChange}
-                    onPress={() => {
-                        if (open) {
-                            // do something if the speed dial is open
-                        }
-                    }}
-                />
-
-            </Modal>
-
-            <Modal
-                animationType='slide'
-                transparent={true}
-                visible={modalVisibleDois}
-            >
-                <ModalDepositoRetirada
+                <ModalRetirada
                     onConfirme={handleRetirada}
-                    onClose={handleCloseModalDois}
+                    onClose={handleCloseModal}
                     onChange={changeRetirada}
                     data={data}
                 />

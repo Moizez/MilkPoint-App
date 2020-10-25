@@ -1,10 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import api from '../../services/api'
 
 import Header from '../../components/Header'
 import ListaTanques from '../HomeResponsavel/ListaTanques'
 import { AuthContext } from '../../contexts/auth'
+import Loader from '../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -13,14 +15,19 @@ import {
 
 export default function HomeResponsavel() {
 
-    const { tanqueResponsavel, loadListTanquesResponsavel } = useContext(AuthContext)
+    const { tanqueResponsavel, loadListTanquesResponsavel, loadingPages } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+    const onLoader = (value) => {
+        setLoading(value)
+    }
 
     useEffect(() => {
         loadListTanquesResponsavel()
     }, [])
 
-    async function onRefreshList() {
+    const onRefreshList = async () => {
         setIsRefreshing(true)
         await loadListTanquesResponsavel()
         setIsRefreshing(false)
@@ -34,10 +41,10 @@ export default function HomeResponsavel() {
                 data={tanqueResponsavel}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => (<ListaTanques data={item} />)}
+                renderItem={({ item }) => <ListaTanques data={item} onLoader={onLoader} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanque disponível!</NomeAviso>
+                        <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>
                             <BoxIconUpdate>
@@ -45,12 +52,14 @@ export default function HomeResponsavel() {
                                 <NomeAviso>Clique e arraste para atualizar os tanques</NomeAviso>
                             </BoxIconUpdate>
                             <BoxIconDelete>
-                                <Icon name='gesture-tap' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique no tanque para mais detalhes</NomeAviso>
+                                <Icon name='gesture-tap-hold' color='#adb5bd' size={60} />
+                                <NomeAviso>Clique e segure no tanque para mais detalhes</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
+            {loading && <Loader />}
+            {loadingPages && !isRefreshing && <Loader />}
         </Container>
     );
 }

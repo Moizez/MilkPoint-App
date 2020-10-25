@@ -9,7 +9,7 @@ import api from '../services/api'
 export const AuthContext = createContext({})
 
 //Url padrão da API 
-//let baseUrl = 'http://192.168.0.128:8080/api/'
+//let baseUrl = 'http://192.168.0.129:8080/api/'
 let baseUrl = 'https://milkpoint.herokuapp.com/api/'
 //let baseUrl = 'https://milkpointapi.cfapps.io/api/'
 let cepUrl = 'https://viacep.com.br/ws/'
@@ -20,6 +20,7 @@ export default function AuthProvider({ children }) {
     const [errorMsg, setErrorMsg] = useState('')
 
     const [loading, setLoading] = useState(true)
+    const [loadingPages, setLoadingPages] = useState(true)
     const [isVisible, setVisible] = useState(false)
     const [loadingAuth, setLoadingAuth] = useState(false)
     const [depositoPendente, setDepositoPendente] = useState([])
@@ -72,16 +73,20 @@ export default function AuthProvider({ children }) {
 
     //Retona uma lista apenas com os tanques do responsável logado
     const loadListTanquesResponsavel = async () => {
+        setLoadingPages(true)
         const response = await api.get(`responsavel/${user.id}/tanque`)
         setTanqueResponsavel(response.data)
+        setLoadingPages(false)
 
         return tanqueResponsavel
     }
 
     //Lista de depositos pendentes
     const loadListDepositosPendentes = async () => {
+        setLoadingPages(true)
         const response = await api.get('deposito/listapendentes')
         setDepositoPendente(response.data)
+        setLoadingPages(false)
 
         return depositoPendente
     }
@@ -96,16 +101,20 @@ export default function AuthProvider({ children }) {
 
     //Lista de todos os depositos excluidos ou confirmados
     const loadListDepositosResolvidos = async () => {
+        setLoadingPages(true)
         const response = await api.get('deposito/resolvidos')
         setDepositoResolvido(response.data)
+        setLoadingPages(false)
 
         return depositoResolvido
     }
 
     //Lista de retiradas pendentes
     const loadListRetiradasPendentes = async () => {
+        setLoadingPages(true)
         const response = await api.get('retirada/listapendentes')
         setRetiradaPendente(response.data)
+        setLoadingPages(false)
 
         return retiradaPendente
     }
@@ -246,7 +255,7 @@ export default function AuthProvider({ children }) {
             </Modal>
 
             <AuthContext.Provider value={{
-                signed: !!user, user, loading, loadingAuth, depositoPendente, deposito, retiradaPendente,
+                signed: !!user, user, loading, loadingPages, loadingAuth, depositoPendente, deposito, retiradaPendente,
                 retirada, tanque, tanqueResponsavel, baseUrl, cepUrl, produtor, laticinio, responsavel,
                 depositoResolvido, retiradaResolvida,
                 signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,

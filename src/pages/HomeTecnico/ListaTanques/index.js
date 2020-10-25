@@ -10,9 +10,19 @@ import Map from '../../../components/Map'
 import { AuthContext } from '../../../contexts/auth'
 import ModalUpdateTanque from '../../../components/ModalUpdateTanque'
 
-export default function ListaTanques({ data }) {
+export default function ListaTanques({ data, onRefresh }) {
 
-    const { baseUrl, loadListDepositosPendentes, loadListTanques, depositoPendente, retiradaPendente } = useContext(AuthContext)
+    const {
+        baseUrl,
+        loadListDepositosPendentes,
+        loadListRetiradasPendentes,
+        loadListRetiradasResolvidas,
+        loadListDepositosResolvidos,
+        depositoResolvido,
+        depositoPendente,
+        retiradaPendente,
+        retiradaResolvida
+    } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
@@ -43,17 +53,27 @@ export default function ListaTanques({ data }) {
             })
     }
 
-    const idTanqueAtual = i => i.tanque.id == data.id
-    const selectedTanque = depositoPendente.filter(idTanqueAtual)
+    const depPendentes = depositoPendente.filter(i => i.tanque.id == data.id)
+    const retPendentes = retiradaPendente.filter(i => i.tanque.id == data.id)
+    const retResolvidas = depositoResolvido.filter(i => i.tanque.id == data.id)
+    const depResolvidos = retiradaResolvida.filter(i => i.tanque.id == data.id)
+
+
 
     useEffect(() => {
         loadListDepositosPendentes()
+        loadListRetiradasPendentes()
+        loadListRetiradasResolvidas()
+        loadListDepositosResolvidos()
     }, [])
 
     const handleDelete = async () => {
-        if (selectedTanque.length > 0) {
+        if (depPendentes.length > 0 |
+            retPendentes.length > 0 |
+            depResolvidos.length > 0 |
+            retResolvidas.length > 0) {
             setJsonIcon('error')
-            setErrorMsg('Existem depósitos pendentes para este tanque!')
+            setErrorMsg('Não é permitido excluir tanques já com transações registradas')
             setAlertVisible(true)
         } else {
             setAlertInfo(true)
@@ -63,7 +83,8 @@ export default function ListaTanques({ data }) {
     const handleConfirm = async () => {
         setIdTanque(data.id)
         await deleteTanque(idTanque)
-        await loadListTanques()
+        await onRefresh()
+        setAlertInfo(false)
     }
 
     const handleCloseModal = () => setModalVisible(false)

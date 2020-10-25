@@ -2,9 +2,11 @@ import React, { useState, useEffect, useContext } from 'react'
 import { AuthContext } from '../../../contexts/auth'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import api from '../../../services/api'
 
 import Header from '../../../components/Header'
 import ListaRetiradasPendentes from '../ListaRetiradasPendentes'
+import Loader from '../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -13,21 +15,26 @@ import {
 
 export default function TelaRetiradasPendentesResponsavel() {
 
-    const { user, loadListRetiradasPendentes, retiradaPendente } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
+    const [retiradaPendente, setRetiradaPendente] = useState([])
+    const [loading, setLoading] = useState(false)
 
-    //Lista de retiradas pendentes apenas do responsável logado
-    const retiradasPendentes = retiradaPendente.filter(function (retirada) {
-        return retirada.tanque.responsavel.id == user.id
-    })
+    const loadRetiradasPendentes = async () => {
+        setLoading(true)
+        const response = await api.get('retirada/listapendentes')
+        const result = response.data.filter(r => r.tanque.responsavel.id === user.id)
+        setRetiradaPendente(result)
+        setLoading(false)
+    }
 
     useEffect(() => {
-        loadListRetiradasPendentes()
+        loadRetiradasPendentes()
     }, [])
 
     async function onRefreshList() {
         setIsRefreshing(true)
-        await loadListRetiradasPendentes()
+        await loadRetiradasPendentes()
         setIsRefreshing(false)
     }
 
@@ -36,7 +43,7 @@ export default function TelaRetiradasPendentesResponsavel() {
             <Header msg={'Lista de retiradas pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={retiradasPendentes}
+                data={retiradaPendente}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <ListaRetiradasPendentes data={item} onRefresh={onRefreshList} />}
@@ -51,11 +58,12 @@ export default function TelaRetiradasPendentesResponsavel() {
                             </BoxIconUpdate>
                             <BoxIconDelete>
                                 <Icon name='gesture-tap' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique na retirada para confirmar ou cancelar</NomeAviso>
+                                <NomeAviso>Clique na retirada para aceitar ou recusar</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
+            {loading && !isRefreshing && <Loader />}
         </Container>
     );
 }
