@@ -1,6 +1,6 @@
 <h1 align="center">
  
-![logoMk](https://user-images.githubusercontent.com/29413231/94259243-8b492480-ff04-11ea-91f5-87308db30e80.png)
+![mk-banner](https://user-images.githubusercontent.com/29413231/98022079-ea436880-1de3-11eb-9f8c-5aad2670f272.png)
 
 </h1>
 
