@@ -30,9 +30,6 @@
   <img src="https://i.ibb.co/znmYVJr/photo-2020-11-03-16-57-49.jpg" />
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="https://i.ibb.co/YNHD291/photo-2020-11-03-16-57-48.jpg" />
- <img src="https://i.ibb.co/3TbpjnR/3-Tela-inicial-produtor.jpg" alt="3 - Tela inicial produtor" border="0">
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- <img src="https://i.ibb.co/3TbpjnR/3-Tela-inicial-produtor.jpg" alt="3 - Tela inicial produtor" border="0">
 </p>
 
 #### Tela de Inicila do Produtor e Laticínio
