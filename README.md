@@ -27,14 +27,14 @@
 
 #### Tela de Login e Logout
 <p>
- <img src="https://i.ibb.co/znmYVJr/1-Tela-de-login.jpg" width=”25px” height=”44px” alt="1 - Tela de login" border="0">
+ <img src="https://i.ibb.co/znmYVJr/1-Tela-de-login.jpg" width=”20%” height=”40%” alt="1 - Tela de login" border="0">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="https://i.ibb.co/YNHD291/photo-2020-11-03-16-57-48.jpg" />
 </p>
 
 #### Tela de Inicila do Produtor e Laticínio
 <p>
- <img src="https://i.ibb.co/3TbpjnR/3-Tela-inicial-produtor.jpg" width=”250px” height=”445px” alt="3 - Tela inicial produtor" border="0">
+ <img src="https://i.ibb.co/3TbpjnR/3-Tela-inicial-produtor.jpg" width=”20%” height=”40%” alt="3 - Tela inicial produtor" border="0">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  <img src="https://i.ibb.co/3TbpjnR/3-Tela-inicial-produtor.jpg" alt="3 - Tela inicial produtor" border="0">
 </p>
