@@ -1,8 +1,9 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import 'moment/locale/pt-br'
+import api from '../../../services/api'
 
 import ModalDeposito from '../../../components/ModalDeposito'
 import GraficoTanque from '../../../components/GraficoTanque'
@@ -10,9 +11,9 @@ import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
 import { AuthContext } from '../../../contexts/auth'
 
-export default function ListaTanques({ data }) {
+export default function ListaTanques({ data, loadTanques }) {
 
-    const { user, loadListDepositosPendentes, baseUrl } = useContext(AuthContext)
+    const { user, loadListPendentesProdutor, baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
@@ -27,6 +28,10 @@ export default function ListaTanques({ data }) {
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
+
+    useEffect(() => {
+        loadTanques()
+    }, [])
 
     //Enviar SMS
     const sendSms = async (value) => {
@@ -52,6 +57,7 @@ export default function ListaTanques({ data }) {
 
     //Solicitação de depósito pelo produtor
     const requestDeposito = async (quantidade, idProd, idTanque) => {
+
         const data = new FormData();
         data.append("quantidade", quantidade);
         data.append("idProd", idProd);
@@ -84,20 +90,26 @@ export default function ListaTanques({ data }) {
             })
     }
 
-    function handleDeposito(value) {
-        console.log(value)
-        if (isNaN(value) || value <= 0) {
-            setJsonIcon('error')
-            setTypeMessage('Valor inválido, digite a quantidade novamente!')
-            setAlertVisible(true)
-        } else if (value > data.qtdRestante) {
-            setJsonIcon('error')
-            setTypeMessage('Seu depósito excede o valor máximo aceito pelo tanque!')
-            setAlertVisible(true)
+    const handleDeposito = async (value) => {
+        if (data.status) {
+            if (isNaN(value) || value <= 0) {
+                setJsonIcon('error')
+                setTypeMessage('Valor inválido, digite a quantidade novamente!')
+                setAlertVisible(true)
+            } else if (value > data.qtdRestante) {
+                setJsonIcon('error')
+                setTypeMessage('Seu depósito excede o valor máximo aceito pelo tanque!')
+                setAlertVisible(true)
+            } else {
+                setQtdInfo(value)
+                setJsonIcon('success')
+                setAlertInfo(true)
+            }
         } else {
-            setQtdInfo(value)
-            setJsonIcon('success')
-            setAlertInfo(true)
+            await loadTanques()
+            setJsonIcon('error')
+            setTypeMessage('Este tanque está desativado!')
+            setAlertVisible(true)
         }
         Keyboard.dismiss()
     }
@@ -110,8 +122,8 @@ export default function ListaTanques({ data }) {
         setIdTanque(data.id)
         //await saveDepositoAsync(value, idProd, idTanque)
         await requestDeposito(value, idProd, idTanque)
-        sendSms(value)
-        await loadListDepositosPendentes()
+        //sendSms(value)
+        loadListPendentesProdutor()
         setModalVisible(false)
     }
 
@@ -128,7 +140,7 @@ export default function ListaTanques({ data }) {
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
                     <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
                     <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                    <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
+                    <Text style={styles.textInfo}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                     <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
                 </View>
 

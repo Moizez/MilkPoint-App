@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Animated, StyleSheet, View, Text, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
+import { Animated, TouchableOpacity, StyleSheet, View, Text, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-
 import { AuthContext } from '../../contexts/auth'
+import ActionButton from '../../components/ActionButton'
 
 import { BoxImage, Input, SubmitButton, SubmitText, Link, LinkText } from './styles'
 
@@ -15,6 +15,7 @@ export default function SignIn() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const { signIn, loadingAuth } = useContext(AuthContext)
+    const [eye, setEye] = useState(false)
 
     async function handleLogin() {
         await signIn(email, password)
@@ -27,7 +28,7 @@ export default function SignIn() {
 
     //Ciclo da animação da tela de login
     useEffect(() => {
-
+        setEye(true)
         keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow)
         keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide)
 
@@ -122,12 +123,18 @@ export default function SignIn() {
                             autoCorrect={false}
                             autoCapitalize='none'
                             value={password}
-                            secureTextEntry={true}
+                            secureTextEntry={eye ? true : false}
                             onChangeText={(text) => setPassword(text)}
                         />
-                        <View style={styles.icon}>
-                            <Icon name='lock' size={28} color='#000' />
-                        </View>
+                        {password ?
+                            <TouchableOpacity onPress={() => setEye(!eye)} style={styles.icon} activeOpacity={1}>
+                                <Icon name={eye ? 'eye' : 'eye-off'} size={28} color='#000' />
+                            </TouchableOpacity>
+                            :
+                            <View style={styles.icon}>
+                                <Icon name='lock' size={28} color='#000' />
+                            </View>
+                        }
                     </View>
 
                     <SubmitButton onPress={handleLogin}>

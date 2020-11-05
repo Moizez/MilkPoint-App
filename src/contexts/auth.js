@@ -9,9 +9,9 @@ import api from '../services/api'
 export const AuthContext = createContext({})
 
 //Url padrão da API 
-//let baseUrl = 'http://192.168.0.129:8080/api/'
-let baseUrl = 'https://milkpoint.herokuapp.com/api/'
-//let baseUrl = 'https://milkpointapi.cfapps.io/api/'
+//let baseUrl = 'http://192.168.0.100:8080/api/'
+//let baseUrl = 'https://milkpoint.herokuapp.com/api/'
+let baseUrl = 'https://milkpoint.serviceapp.net.br/api/' //Leandro
 let cepUrl = 'https://viacep.com.br/ws/'
 
 export default function AuthProvider({ children }) {
@@ -24,6 +24,8 @@ export default function AuthProvider({ children }) {
     const [isVisible, setVisible] = useState(false)
     const [loadingAuth, setLoadingAuth] = useState(false)
     const [depositoPendente, setDepositoPendente] = useState([])
+    const [depositoPendenteProdutor, setDepositoPendenteProdutor] = useState([])
+    const [retiradaPendenteLaticinio, setDepositoPendenteLaticinio] = useState([])
     const [depositoResolvido, setDepositoResolvido] = useState([])
     const [deposito, setDeposito] = useState([])
     const [retiradaPendente, setRetiradaPendente] = useState([])
@@ -38,6 +40,31 @@ export default function AuthProvider({ children }) {
     const [produtor, setProdutor] = useState([])
     const [laticinio, setLaticinio] = useState([])
     const [responsavel, setResponsavel] = useState([])
+    const [tecnico, setTecnico] = useState([])
+
+    const loadListPendentesProdutor = async () => {
+        setLoadingPages(true)
+        const response = await api.get(`deposito/pendentes/${user.id}`)
+        setDepositoPendenteProdutor(response.data)
+        setLoadingPages(false)
+        return depositoPendenteProdutor
+    }
+
+    const loadListPendentesLaticinio = async () => {
+        setLoadingPages(true)
+        const response = await api.get(`retirada/pendentes/${user.id}`)
+        setDepositoPendenteLaticinio(response.data)
+        setLoadingPages(false)
+        return retiradaPendenteLaticinio
+    }
+
+    //Carregar lista de tecnicos
+    const loadListTecnicos = async () => {
+        const response = await api.get('tecnico')
+        setTecnico(response.data)
+
+        return tecnico
+    }
 
     //Carregar lista de produtores
     const loadListProdutores = async () => {
@@ -257,10 +284,12 @@ export default function AuthProvider({ children }) {
             <AuthContext.Provider value={{
                 signed: !!user, user, loading, loadingPages, loadingAuth, depositoPendente, deposito, retiradaPendente,
                 retirada, tanque, tanqueResponsavel, baseUrl, cepUrl, produtor, laticinio, responsavel,
-                depositoResolvido, retiradaResolvida,
+                depositoResolvido, retiradaResolvida, depositoPendenteProdutor, retiradaPendenteLaticinio,
+                tecnico,
                 signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,
                 loadListRetiradas, loadListTanques, loadListTanquesResponsavel, loadListProdutores,
-                loadListLaticinios, loadListResponsaveis, loadListDepositosResolvidos, loadListRetiradasResolvidas
+                loadListLaticinios, loadListResponsaveis, loadListDepositosResolvidos, loadListRetiradasResolvidas,
+                loadListPendentesProdutor, loadListPendentesLaticinio, loadListTecnicos
             }}>
                 {children}
             </AuthContext.Provider>

@@ -7,26 +7,31 @@ export default function ListaProdutores({ data }) {
 
     const { baseUrl } = useContext(AuthContext)
     const [isExpand, setExpand] = useState(false)
-    const [isAtivo, setAtivo] = useState()
-    const [idProd, setIdProd] = useState()
+    const [status, setStatus] = useState(null)
+    const [idProd] = useState(data.id)
 
-    //Solicitação de retirada pelo laticinio
     const requestStatus = async (status, idProd) => {
-        await fetch(`${baseUrl}produtor/` + parseInt(idProd), {
-            method: 'PUT',
-            headers: {
-                "Accept": "application/json",
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                status: status,
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+        headers.append("Accept", 'application/json')
+
+        const data = { id: idProd, status: status }
+
+        await fetch(`${baseUrl}produtor/` + parseInt(idProd),
+            {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(data)
             })
-        })
     }
 
-    const handleStatus = async (value) => {
-        setIdProd(data.id)
-        await requestStatus(value, idProd)
+    useEffect(() => {
+        setStatus(data.status)
+    }, [])
+
+    const onChangeStaus = async () => {
+        setStatus(previousState => !previousState)
+        await requestStatus(status, idProd)
     }
 
     const renderInfo = () => {
@@ -81,15 +86,12 @@ export default function ListaProdutores({ data }) {
                     <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={styles.textInfo}>Situação do produtor: </Text>
                         <Switch
-                            value={isAtivo}
-                            thumbColor={isAtivo ? "#2a9d8f" : "#f4f3f4"}
+                            value={status}
                             trackColor={{ false: "#767577", true: "#b7e4c7" }}
-                            onValueChange={value => {
-                                setAtivo(value)
-                                handleStatus(value)
-                            }}
+                            thumbColor={status ? "#2a9d8f" : "#f4f3f4"}
+                            onValueChange={onChangeStaus}
                         />
-                        <Text style={{ ...styles.textInfo, marginLeft: 8, fontWeight: 'normal' }}>{isAtivo ? 'ATIVO' : 'INATIVO'}</Text>
+                        <Text style={{ ...styles.textInfo, marginLeft: 8, fontWeight: 'normal' }}>{status ? 'ATIVO' : 'INATIVO'}</Text>
                     </View>
                 </View>
             </View>

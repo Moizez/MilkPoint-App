@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 
 import ModalRetirada from '../../../components/ModalRetirada'
@@ -8,9 +8,9 @@ import AlertInformation from '../../../components/AlertInformation'
 
 import { AuthContext } from '../../../contexts/auth'
 
-export default function ListaTanques({ data }) {
+export default function ListaTanques({ data, loadTanques }) {
 
-    const { user, loadListRetiradasPendentes, baseUrl } = useContext(AuthContext)
+    const { user, loadListPendentesLaticinio, baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
@@ -26,6 +26,10 @@ export default function ListaTanques({ data }) {
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
+    useEffect(() => {
+        loadTanques()
+    }, [])
+
     //Solicitação de retirada pelo laticinio
     const requestRetirada = async (quantidade, idLat, idTanque) => {
         const data = new FormData()
@@ -36,27 +40,34 @@ export default function ListaTanques({ data }) {
         await fetch(`${baseUrl}retirada`, { method: 'POST', body: data })
     };
 
-    function handleRetirada(value) {
-        if (data.qtdAtual == 0) {
-            setJsonIcon('error')
-            setTypeMessage('O tanque está vazio!')
-            setAlertVisible(true)
-        } else if (isNaN(value) || value <= 0) {
-            setJsonIcon('error')
-            setTypeMessage('Valor inválido, digite a quantidade novamente!')
-            setAlertVisible(true)
-        } else if (data.qtdAtual == 0) {
-            setJsonIcon('error')
-            setTypeMessage('O tanque está vazio!')
-            setAlertVisible(true)
-        } else if (value > data.qtdAtual) {
-            setJsonIcon('error')
-            setTypeMessage('Sua retirada excede o valor máximo aceito pelo tanque!')
-            setAlertVisible(true)
+    const handleRetirada = async (value) => {
+        if (data.status) {
+            if (data.qtdAtual == 0) {
+                setJsonIcon('error')
+                setTypeMessage('O tanque está vazio!')
+                setAlertVisible(true)
+            } else if (isNaN(value) || value <= 0) {
+                setJsonIcon('error')
+                setTypeMessage('Valor inválido, digite a quantidade novamente!')
+                setAlertVisible(true)
+            } else if (data.qtdAtual == 0) {
+                setJsonIcon('error')
+                setTypeMessage('O tanque está vazio!')
+                setAlertVisible(true)
+            } else if (value > data.qtdAtual) {
+                setJsonIcon('error')
+                setTypeMessage('Sua retirada excede o valor máximo aceito pelo tanque!')
+                setAlertVisible(true)
+            } else {
+                setQtdInfo(value)
+                setJsonIcon('success')
+                setAlertInfo(true)
+            }
         } else {
-            setQtdInfo(value)
-            setJsonIcon('success')
-            setAlertInfo(true)
+            await loadTanques()
+            setJsonIcon('error')
+            setTypeMessage('Este tanque está desativado!')
+            setAlertVisible(true)
         }
         Keyboard.dismiss()
     }
@@ -68,7 +79,7 @@ export default function ListaTanques({ data }) {
         setIdLat(user.id)
         setIdTanque(data.id)
         await requestRetirada(value, idLat, idTanque)
-        loadListRetiradasPendentes()
+        loadListPendentesLaticinio()
         setModalVisible(false)
     }
 
@@ -117,7 +128,7 @@ export default function ListaTanques({ data }) {
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
                     <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
                     <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                    <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
+                    <Text style={styles.textInfo}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                     <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
                 </View>
 

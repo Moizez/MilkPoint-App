@@ -14,18 +14,16 @@ import {
 
 export default function TelaDepositosPendentesProdutor() {
 
-    const { user, loadListDepositosPendentes, depositoPendente, loadingPages } = useContext(AuthContext)
+    const { loadListPendentesProdutor, depositoPendenteProdutor, loadingPages } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
 
-    const depositosPendentes = depositoPendente.filter(p => p.produtor.id === user.id)
-
     useEffect(() => {
-        loadListDepositosPendentes()
+        loadListPendentesProdutor()
     }, [])
 
     const onRefreshList = async () => {
         setIsRefreshing(true)
-        await loadListDepositosPendentes()
+        await loadListPendentesProdutor()
         setIsRefreshing(false)
     }
 
@@ -34,7 +32,7 @@ export default function TelaDepositosPendentesProdutor() {
             <Header msg={'Lista de depósitos pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={depositosPendentes}
+                data={depositoPendenteProdutor}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => (<ListaDepositosPendentes data={item} onRefresh={onRefreshList} />)}

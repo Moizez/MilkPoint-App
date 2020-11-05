@@ -34,6 +34,8 @@ export default function TelaHistoricoProdutor() {
     let msg15Days = 'Lista de transações dos últimos 15 dias'
     let msg30Days = 'Lista de transações dos últimos 30 dias'
     let msgCustomDays = 'Lista de DEPÓSITOS personalizada'
+    let msgConfirmados = 'Lista de DEPÓSITOS confirmados'
+    let msgCancelados = 'Lista de DEPÓSITOS cancelados'
 
     const onLoad = () => setLoading(true)
 
@@ -85,6 +87,16 @@ export default function TelaHistoricoProdutor() {
         setLoading(false)
     }
 
+    const loadResolved = async (type) => {
+        setLoading(true)
+        const tipo = type ? 'confirmados' : 'cancelados'
+        const response = await api.get(`deposito/${tipo}/${user.id}`)
+        setMsg(type ? msgConfirmados : msgCancelados)
+        setColor(type ? '#2a9d8f' : '#da1e37')
+        setMainData(response.data)
+        setLoading(false)
+    }
+
     //Lista de todos os depósitos pela data selecionada
     const loadPage = async () => {
         setLoading(true)
@@ -98,6 +110,7 @@ export default function TelaHistoricoProdutor() {
             let regDay = moment(r.dataNow).format('L')
             return regDay === day
         })
+        setColor('#FFF')
         setMsg(msgDefault)
         setMainData(data)
         setLoading(false)
@@ -116,6 +129,7 @@ export default function TelaHistoricoProdutor() {
     async function onRefreshList() {
         setColor('#FFF')
         setIsRefreshing(true)
+        setSelectedDate(new Date())
         await loadPage()
         setIsRefreshing(false)
     }
@@ -163,6 +177,7 @@ export default function TelaHistoricoProdutor() {
             <FabSearch
                 styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
                 getValor={getValor}
+                loadResolved={loadResolved}
                 onLoad={onLoad}
                 filterFifteenDays={filterFifteenDays}
                 filterOneMonth={filterOneMonth}
@@ -170,12 +185,6 @@ export default function TelaHistoricoProdutor() {
                 onOpen={showCalendar}
                 mainIcon={'magnify'}
                 mainIconColor={'#FFF'}
-                icon1={'calendar-search'}
-                label1={'Listar por data'}
-                color1={'#fca311'}
-                icon2={'numeric'}
-                label2={'Listar por valor'}
-                color2={'#0077b6'}
             />
             {loading && !isRefreshing && <Loader />}
         </Container>

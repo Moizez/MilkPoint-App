@@ -276,7 +276,7 @@ function TecnicoTab() {
                 options={{
                     tabBarLabel: 'Responsáveis',
                     tabBarIcon: ({ }) => (
-                        <Icon name="account-cog" color={'#fca311'} size={33} />
+                        <Icon name="account-hard-hat" color={'#fca311'} size={33} />
                     ),
                 }}
 

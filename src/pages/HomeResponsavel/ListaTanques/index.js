@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
-import { View, Modal, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
 import Speedometer from 'react-native-speedometer-chart'
-import Map from '../../../components/Map'
 
 export default function ListaTanques({ data }) {
 
-    const [modalVisible, setModalVisible] = useState(false)
     const navigation = useNavigation()
     const capacidade = data.qtdAtual + data.qtdRestante
 
@@ -21,11 +19,9 @@ export default function ListaTanques({ data }) {
         }
     }
 
-    const handleCloseModal = () => { setModalVisible(false) }
-
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.cardButton} onLongPress={() => navigation.navigate('DetalhesTanque', { data: data })} onPress={() => { setModalVisible(true) }} activeOpacity={0.5}>
+            <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('DetalhesTanque', { data: data })} activeOpacity={0.9}>
                 <View style={styles.iconContainer}>
                     {data.tipo == 'BOVINO' ?
                         <Image style={styles.goatImage} source={require('../../../assets/images/cow-circle.png')} /> :
@@ -71,13 +67,7 @@ export default function ListaTanques({ data }) {
                 </View>
 
             </TouchableOpacity>
-            <Modal
-                animationType='slide'
-                transparent={false}
-                visible={modalVisible}
-            >
-                <Map dataMap={data} onClose={handleCloseModal} />
-            </Modal>
+
         </View>
     );
 }

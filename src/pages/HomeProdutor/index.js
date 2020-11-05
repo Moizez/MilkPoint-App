@@ -19,7 +19,7 @@ export default function HomeProdutor() {
 
     const loadTanques = async () => {
         setLoading(true)
-        const response = await api.get('tanque')
+        const response = await api.get(`tanque/ativos`)
         setTanque(response.data)
         setLoading(false)
     }
@@ -42,7 +42,7 @@ export default function HomeProdutor() {
                 data={tanque}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <ListaTanques data={item} />}
+                renderItem={({ item }) => <ListaTanques data={item} loadTanques={loadTanques} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>

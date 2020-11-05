@@ -14,18 +14,16 @@ import {
 
 export default function TelaRetiradasPendentesLaticinio() {
 
-    const { user, loadListRetiradasPendentes, retiradaPendente, loadingPages } = useContext(AuthContext)
+    const { loadListPendentesLaticinio, retiradaPendenteLaticinio, loadingPages } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
 
-    const retiradasPendentes = retiradaPendente.filter(r => r.laticinio.id === user.id)
-
     useEffect(() => {
-        loadListRetiradasPendentes()
+        loadListPendentesLaticinio()
     }, [])
 
     const onRefreshList = async () => {
         setIsRefreshing(true)
-        await loadListRetiradasPendentes()
+        await loadListPendentesLaticinio()
         setIsRefreshing(false)
     }
 
@@ -34,7 +32,7 @@ export default function TelaRetiradasPendentesLaticinio() {
             <Header msg={'Lista de retiradas pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={retiradasPendentes}
+                data={retiradaPendenteLaticinio}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <ListaRetiradasPendentes data={item} onRefresh={onRefreshList} />}

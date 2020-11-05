@@ -19,24 +19,33 @@ import {
 
 export default function HomeTecnico() {
 
-    const { user, responsavel } = useContext(AuthContext)
+    const { user } = useContext(AuthContext)
+
+    //Fab button
+    const [state, setState] = useState({ open: false })
+    const onStateChange = ({ open }) => setState({ open })
+    const { open } = state
 
     const [tanque, setTanque] = useState([])
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [loading, setLoading] = useState(false)
     const [isVisible, setVisible] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
+    const [status, setStatus] = useState(true)
 
     const loadTanques = async () => {
         setLoading(true)
-        const response = await api.get(`tecnico/${user.id}/tanque`)
+        const state = status ? 'ativos' : 'inativos'
+        const response = await api.get(`tanque/${state}`)
         setTanque(response.data)
         setLoading(false)
     }
 
+    const onLoad = (value) => setLoading(value)
+
     useEffect(() => {
         loadTanques()
-    }, [])
+    }, [status])
 
     const onRefreshList = async () => {
         setIsRefreshing(true)
@@ -50,13 +59,22 @@ export default function HomeTecnico() {
 
     return (
         <Container>
-            <Header msg={'Lista de tanques'} />
+            <Header
+                msg={status ? 'Lista de tanques ATIVOS' : 'Lista de tanques INATIVOS'}
+                disabled={true}
+                calendar={
+                    <Icon
+                        name={status ? 'beaker-check' : 'beaker-remove'}
+                        color={status ? '#2a9d8f' : '#da1e37'}
+                        size={25}
+                    />}
+            />
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanque}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <ListaTanques data={item} onRefresh={onRefreshList} />}
+                renderItem={({ item }) => <ListaTanques data={item} onLoad={onLoad} onRefresh={loadTanques} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
@@ -73,12 +91,41 @@ export default function HomeTecnico() {
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
-            <FAB
-                style={styles.fab}
-                small={false}
-                icon="plus"
+
+            <FAB.Group
+                fabStyle={styles.fab}
                 color='#FFF'
-                onPress={() => setVisible(true)}
+                open={open}
+                icon={open ? 'close' : 'menu'}
+                actions={[
+                    {
+                        icon: 'plus',
+                        label: 'Criar Tanque',
+                        color: '#0077b6',
+                        style: styles.fabActions,
+                        onPress: () => setVisible(true)
+                    },
+                    {
+                        icon: 'beaker-check',
+                        label: 'Tanques Ativos',
+                        color: '#2a9d8f',
+                        style: styles.fabActions,
+                        onPress: () => setStatus(true)
+                    },
+                    {
+                        icon: 'beaker-remove',
+                        label: 'Tanques Inativos',
+                        color: '#da1e37',
+                        style: styles.fabActions,
+                        onPress: () => setStatus(false)
+                    },
+                ]}
+                onStateChange={onStateChange}
+                onPress={() => {
+                    if (open) {
+                        // do something if the speed dial is open
+                    }
+                }}
             />
             <Modal
                 visible={isVisible}
@@ -87,10 +134,10 @@ export default function HomeTecnico() {
             >
                 <ModalCreateTanque
                     dataMap={tanque}
-                    data={responsavel}
                     onCloseModal={closeModal}
                     showAlertErroSuccess={showAlertErroSuccess}
-                    onRefreshList={onRefreshList}
+                    onRefresh={loadTanques}
+                    onLoad={onLoad}
                 />
             </Modal>
 
@@ -117,12 +164,14 @@ export default function HomeTecnico() {
 
 const styles = StyleSheet.create({
     fab: {
-        position: 'absolute',
-        margin: 16,
-        right: 0,
-        bottom: 0,
-        backgroundColor: '#000',
+        backgroundColor: '#292b2c',
         borderWidth: 2,
         borderColor: '#FFF'
+    },
+    fabActions: {
+        width: 50,
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
 })

@@ -10,19 +10,9 @@ import Map from '../../../components/Map'
 import { AuthContext } from '../../../contexts/auth'
 import ModalUpdateTanque from '../../../components/ModalUpdateTanque'
 
-export default function ListaTanques({ data, onRefresh }) {
+export default function ListaTanques({ data, onRefresh, onLoad }) {
 
-    const {
-        baseUrl,
-        loadListDepositosPendentes,
-        loadListRetiradasPendentes,
-        loadListRetiradasResolvidas,
-        loadListDepositosResolvidos,
-        depositoResolvido,
-        depositoPendente,
-        retiradaPendente,
-        retiradaResolvida
-    } = useContext(AuthContext)
+    const { baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
@@ -31,65 +21,69 @@ export default function ListaTanques({ data, onRefresh }) {
     const [alertVisible, setAlertVisible] = useState(false)
     const [errorMsg, setErrorMsg] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
+    const [status, setStatus] = useState(false)
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
-    //Função para deletar um tanque
-    const deleteTanque = async (idTanque) => {
+    const changeIconJson = (value) => setJsonIcon(value)
+
+    const onChangeState = async (idTanque, status) => {
 
         const headers = new Headers();
         headers.append("Content-Type", "application/json")
         headers.append("Accept", 'application/json')
 
-        const data = { id: idTanque }
+        const data = { id: idTanque, status: status }
 
-        await fetch(`${baseUrl}tanque/${idTanque}`,
+        await fetch(`${baseUrl}tanque/` + parseInt(idTanque),
             {
-                method: 'DELETE',
+                method: 'PUT',
                 headers: headers,
                 body: JSON.stringify(data)
             })
     }
 
-    const depPendentes = depositoPendente.filter(i => i.tanque.id == data.id)
-    const retPendentes = retiradaPendente.filter(i => i.tanque.id == data.id)
-    const retResolvidas = depositoResolvido.filter(i => i.tanque.id == data.id)
-    const depResolvidos = retiradaResolvida.filter(i => i.tanque.id == data.id)
-
-
-
     useEffect(() => {
-        loadListDepositosPendentes()
-        loadListRetiradasPendentes()
-        loadListRetiradasResolvidas()
-        loadListDepositosResolvidos()
+        setStatus(data.status)
     }, [])
 
-    const handleDelete = async () => {
-        if (depPendentes.length > 0 |
-            retPendentes.length > 0 |
-            depResolvidos.length > 0 |
-            retResolvidas.length > 0) {
+    const handleChangeStateInative = async () => {
+        if (data.depPendenteCount > 0 | data.retPendenteCount > 0) {
+            setStatus(false)
             setJsonIcon('error')
-            setErrorMsg('Não é permitido excluir tanques já com transações registradas')
-            setAlertVisible(true)
+            setErrorMsg('Há depósitos ou retiradas pendentes, '
+                + 'deseja realmente desativa-lo?')
+            setAlertInfo(true)
         } else {
+            setStatus(false)
+            setErrorMsg('Deseja realmente desativar este tanque?')
             setAlertInfo(true)
         }
     }
 
+    const handleChangeStateActive = async () => {
+        setErrorMsg('Deseja realmente ativar este tanque?')
+        setStatus(true)
+        setAlertInfo(true)
+    }
+
     const handleConfirm = async () => {
-        setIdTanque(data.id)
-        await deleteTanque(idTanque)
-        await onRefresh()
+        onLoad(true)
         setAlertInfo(false)
+        setIdTanque(data.id)
+        await onChangeState(idTanque, status)
+        await onRefresh()
+        onLoad(false)
     }
 
     const handleCloseModal = () => setModalVisible(false)
     const handleOpenModal = () => setModalVisible(true)
-    const closeAlertInfo = () => setAlertInfo(false)
+    const closeAlertInfo = () => {
+        setStatus(!status)
+        setAlertInfo(false)
+    }
     const closeModal = () => setModalUpdate(false)
     const closeAlertErroSuccess = () => setAlertVisible(false)
     const showAlertErroSuccess = () => {
@@ -108,10 +102,19 @@ export default function ListaTanques({ data, onRefresh }) {
 
     const rightActions = () => {
         return (
-            <TouchableOpacity onPress={() => handleDelete()} style={{ ...styles.actions, backgroundColor: '#da1e37' }}>
-                <Icon name='delete' size={25} color={'#FFF'} />
-                <Text style={styles.actionText}>Excluir</Text>
-            </TouchableOpacity>
+            <>
+                {status ?
+                    <TouchableOpacity onPress={() => handleChangeStateInative()} style={{ ...styles.actions, backgroundColor: '#da1e37' }}>
+                        <Icon name='beaker-remove' size={25} color={'#FFF'} />
+                        <Text style={styles.actionText}>Inativar</Text>
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity onPress={() => handleChangeStateActive()} style={{ ...styles.actions, backgroundColor: '#2a9d8f' }}>
+                        <Icon name='beaker-check' size={25} color={'#FFF'} />
+                        <Text style={styles.actionText}>Ativar</Text>
+                    </TouchableOpacity>
+                }
+            </>
         )
     }
 
@@ -153,7 +156,7 @@ export default function ListaTanques({ data, onRefresh }) {
                         onConfirm={handleConfirm}
                         onClose={closeAlertInfo}
                         title='Aviso'
-                        message={'Deseja realmente APAGAR este TANQUE?'}
+                        message={errorMsg}
                     />}
             </Modal>
 
@@ -164,8 +167,10 @@ export default function ListaTanques({ data, onRefresh }) {
             >
                 <ModalUpdateTanque
                     dataTanque={data}
+                    onRefresh={onRefresh}
                     onCloseModal={closeModal}
                     showAlertErroSuccess={showAlertErroSuccess}
+                    changeIconJson={changeIconJson}
                 />
             </Modal>
 
@@ -234,11 +239,28 @@ const styles = StyleSheet.create({
         elevation: 5,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#2a9d8f',
-        width: 60
+        backgroundColor: '#0077b6',
+        width: 75
     },
     actionText: {
         fontSize: 16,
         color: '#FFF'
     }
 })
+
+/*/Função para deletar um tanque
+   const deleteTanque = async (idTanque) => {
+
+       const headers = new Headers();
+       headers.append("Content-Type", "application/json")
+       headers.append("Accept", 'application/json')
+
+       const data = { id: idTanque }
+
+       await fetch(`${baseUrl}tanque/${idTanque}`,
+           {
+               method: 'DELETE',
+               headers: headers,
+               body: JSON.stringify(data)
+           })
+   }*/

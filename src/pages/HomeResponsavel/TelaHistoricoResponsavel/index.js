@@ -24,86 +24,85 @@ export default function TelaHistoricoResponsavel() {
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [check, setCheck] = useState(true)
     const [msg, setMsg] = useState('')
     const [color, setColor] = useState('#FFF')
     const [loading, setLoading] = useState(false)
     const [mainData, setMainData] = useState([])
-    const [dataTemp, setDataTemp] = useState([])
+    const [secondaryData, setSecondaryData] = useState([])
+    const [status, setStatus] = useState(true)
+
+    const onLoad = (value) => setLoading(value)
 
     //Mensagens das ações de listagem
-    let checkMsg = check ? 'DEPÓSITOS' : 'RETIRADAS'
+    let checkMsg = status ? 'DEPÓSITOS' : 'RETIRADAS'
     let msgDefault = `Lista de ${checkMsg} do dia ${selectedDate && moment(selectedDate).format('L')}`
-    let msg15Days = `Lista de ${checkMsg} dos últimos 15 dias`
-    let msg30Days = `Lista de ${checkMsg} dos últimos 30 dias`
-    let msgCustomDays = `Lista de ${checkMsg} personalizada`
 
     //Filtrar pelo nome da pessoa
-    async function findByName(value, type) {
-        setMsg(type ? `Busca de depósitos pelo nome: ${value}` : `Busca de retiradas pelo nome: ${value}`)
-        let tipo = type ? 'deposito' : 'retirada'
+    const findByName = async (value) => {
+        setLoading(true)
+        setMsg(status ? `Busca de depósitos pelo nome: ${value}` : `Busca de retiradas pelo nome: ${value}`)
+        let tipo = status ? 'deposito' : 'retirada'
         const response = await api.get(`${tipo}/buscar/${value}`)
         setMainData(response.data)
         setLoading(false)
     }
 
     //Filtrar pelos últimos 15 dias
-    const filterFifteenDays = async () => {
+    const filterFifteenDays = () => {
         let fifteenDays = moment().locale('en').subtract(15, 'days').format('L')
-        const fifteenDaysAgo = dataTemp.filter(function (d) {
+        const fifteenDaysAgo = secondaryData.filter(function (d) {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(fifteenDays, 'days')
         })
         setColor('#e9c46a')
-        setMsg(msg15Days)
+        setMsg(`Lista de ${status ? 'DEPÓSITOS' : 'RETIRADAS'} dos últimos 15 dias`)
         setMainData(fifteenDaysAgo)
     }
 
     //Filtrar pelos últimos 30 dias
-    const filterOneMonth = async () => {
+    const filterOneMonth = () => {
         let oneMonth = moment().locale('en').subtract(1, 'month').format('L')
-        const oneMonthAgo = dataTemp.filter(function (d) {
+        const oneMonthAgo = secondaryData.filter(function (d) {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(oneMonth, 'days')
         })
         setColor('#e76f51')
-        setMsg(msg30Days)
+        setMsg(`Lista de ${status ? 'DEPÓSITOS' : 'RETIRADAS'} dos últimos 30 dias`)
         setMainData(oneMonthAgo)
     }
 
     //Filtrar por data personalizada
-    const filterCustomDays = async (value) => {
+    const filterCustomDays = (value) => {
         let customDay = moment(value).locale('en').format('L')
-        const customDayAgo = dataTemp.filter(function (d) {
+        const customDayAgo = secondaryData.filter(function (d) {
             let regDay = moment(d.dataNow).locale('en').format('L')
             return moment(regDay).isSameOrAfter(customDay, 'days')
         })
         setColor('#DDD')
-        setMsg(msgCustomDays)
+        setMsg(`Lista de ${status ? 'DEPÓSITOS' : 'RETIRADAS'} personalizada`)
         setMainData(customDayAgo)
     }
 
-    const loadPage = async () => {
+    useEffect(() => {
+        loadList()
+    }, [selectedDate, status])
+
+    const loadList = async () => {
         setLoading(true)
-        const responsavelId = p => p.tanque.responsavel.id == user.id
-        let tipo = check ? 'deposito' : 'retirada'
-        const response = await api.get(`${tipo}/resolvidos`)
-        const result = response.data.filter(responsavelId)
-        setDataTemp(result)
+        const state = status ? 'deposito' : 'retirada'
+        const response = await api.get(`${state}/resolvidos/responsavel/${user.id}`)
+        setSecondaryData(response.data)
 
         let day = moment(selectedDate).format('L')
-        const data = result.filter(function (r) {
+        const result = response.data.filter(function (r) {
             let regDay = moment(r.dataNow).format('L')
             return regDay === day
         })
+        setMainData(result)
         setMsg(msgDefault)
-        setMainData(data)
+        setColor('#DDD')
         setLoading(false)
     }
-
-    useEffect(() => {
-        loadPage()
-    }, [selectedDate, check])
 
     function onChange(value) {
         setShow(Platform.OS === 'ios')
@@ -114,12 +113,13 @@ export default function TelaHistoricoResponsavel() {
     const onRefreshList = async () => {
         setColor('#FFF')
         setIsRefreshing(true)
-        await loadPage()
+        setSelectedDate(new Date())
+        await loadList()
         setIsRefreshing(false)
     }
 
     const showCalendar = () => setShow(true)
-    const changeCheck = (value) => { setCheck(value) }
+    const changeState = (value) => setStatus(value)
 
     return (
         <Container>
@@ -128,7 +128,6 @@ export default function TelaHistoricoResponsavel() {
                 onOpen={showCalendar}
                 calendar={<Icon name='calendar-search' color={color} size={22} />}
             />
-
             <List
                 showsVerticalScrollIndicator={false}
                 data={mainData}
@@ -162,10 +161,11 @@ export default function TelaHistoricoResponsavel() {
             <FabGroup
                 styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
                 findByName={findByName}
+                onLoad={onLoad}
                 filterFifteenDays={filterFifteenDays}
                 filterOneMonth={filterOneMonth}
                 filterCustomDays={filterCustomDays}
-                changeCheck={changeCheck}
+                changeState={changeState}
                 onOpen={showCalendar}
                 mainIcon={'magnify'}
                 mainIconColor={'#FFF'}

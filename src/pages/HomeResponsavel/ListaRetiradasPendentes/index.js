@@ -124,7 +124,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
                 showModal={showModal}
                 dataInfo={data}
                 titlePerfil={'Laticínio: '}
-                infoPerfil={data.laticinio.nome}
+                infoPerfil={data.laticinio.nomeFantasia}
             />
 
             <Modal
@@ -138,7 +138,7 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
                     doneCancel={doneCancel}
                     handleConfirm={handleConfirm}
                     titlePerfil={'Laticínio: '}
-                    infoPerfil={data.laticinio.nome}
+                    infoPerfil={data.laticinio.nomeFantasia}
                 />
             </Modal>
 

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image, Switch } from 'react-native'
 
 import { AuthContext } from '../../../contexts/auth'
@@ -7,29 +7,32 @@ export default function ListaResponsaveis({ data }) {
 
     const { baseUrl } = useContext(AuthContext)
     const [isExpand, setExpand] = useState(false)
-    const [isAtivo, setAtivo] = useState()
-    const [idResp, setIdResp] = useState()
+    const [status, setStatus] = useState(null)
+    const [idResp] = useState(data.id)
 
-    //Solicitação de retirada pelo laticinio
     const requestStatus = async (status, idResp) => {
-        await fetch(`${baseUrl}responsavel` + '/' + parseInt(idResp), {
-            method: 'PUT',
-            headers: {
-                "Accept": "application/json",
-                "Content-type": "application/json",
-            },
-            body: JSON.stringify({
-                status: status,
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+        headers.append("Accept", 'application/json')
+
+        const data = { id: idResp, status: status }
+
+        await fetch(`${baseUrl}responsavel/` + parseInt(idResp),
+            {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(data)
             })
-        })
     }
 
-    const handleStatus = async (value) => {
-        setIdResp(data.id)
-        await requestStatus(value, idResp)
-    }
+    useEffect(() => {
+        setStatus(data.status)
+    }, [])
 
-    let count = '0123456789 0123456789'
+    const onChangeStaus = async () => {
+        setStatus(previousState => !previousState)
+        await requestStatus(status, idResp)
+    }
 
     const renderInfo = () => {
         return (
@@ -83,15 +86,12 @@ export default function ListaResponsaveis({ data }) {
                     <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
                         <Text style={styles.textInfo}>Situação do responsável: </Text>
                         <Switch
-                            value={isAtivo}
-                            thumbColor={isAtivo ? "#2a9d8f" : "#f4f3f4"}
+                            value={status}
                             trackColor={{ false: "#767577", true: "#b7e4c7" }}
-                            onValueChange={value => {
-                                setAtivo(value)
-                                handleStatus(value)
-                            }}
+                            thumbColor={status ? "#2a9d8f" : "#f4f3f4"}
+                            onValueChange={onChangeStaus}
                         />
-                        <Text style={{ ...styles.textInfo, marginLeft: 8, fontWeight: 'normal' }}>{isAtivo ? 'ATIVO' : 'INATIVO'}</Text>
+                        <Text style={{ ...styles.textInfo, marginLeft: 8, fontWeight: 'normal' }}>{status ? 'ATIVO' : 'INATIVO'}</Text>
                     </View>
                 </View>
             </View>
@@ -121,7 +121,7 @@ export default function ListaResponsaveis({ data }) {
             {isExpand && <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd' }}></View>}
 
             <TouchableOpacity style={styles.buttonColapse} onPress={() => setExpand(!isExpand)}>
-                <Text style={styles.textColapse}>{isExpand ? '-' : '+'}</Text>
+                <Text style={styles.textColapse}>{isExpand ? '–' : '+'}</Text>
             </TouchableOpacity>
         </View>
 

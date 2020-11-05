@@ -34,6 +34,8 @@ export default function TelaHistoricoLaticinio() {
     let msg15Days = 'Lista de transações dos últimos 15 dias'
     let msg30Days = 'Lista de transações dos últimos 30 dias'
     let msgCustomDays = 'Lista de RETIRADAS personalizada'
+    let msgConfirmados = 'Lista de RETIRADAS confirmadas'
+    let msgCancelados = 'Lista de RETIRADAS canceladas'
 
     //Filtrar por valor do pedido
     function getValor(value) {
@@ -87,6 +89,17 @@ export default function TelaHistoricoLaticinio() {
         setLoading(false)
     }
 
+    const loadResolved = async (type) => {
+        setLoading(true)
+        const tipo = type ? 'confirmados' : 'cancelados'
+        const response = await api.get(`retirada/${tipo}/${user.id}`)
+        setMsg(type ? msgConfirmados : msgCancelados)
+        setColor(type ? '#2a9d8f' : '#da1e37')
+        setMainData(response.data)
+        setLoading(false)
+    }
+
+
     //Lista de todas as retiradas pela data
     const loadPage = async () => {
         setLoading(true)
@@ -118,6 +131,7 @@ export default function TelaHistoricoLaticinio() {
     async function onRefreshList() {
         setColor('#FFF')
         setIsRefreshing(true)
+        setSelectedDate(new Date())
         await loadPage()
         setIsRefreshing(false)
     }
@@ -166,6 +180,7 @@ export default function TelaHistoricoLaticinio() {
             <FabSearch
                 styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
                 getValor={getValor}
+                loadResolved={loadResolved}
                 filterFifteenDays={filterFifteenDays}
                 filterOneMonth={filterOneMonth}
                 filterCustomDays={filterCustomDays}

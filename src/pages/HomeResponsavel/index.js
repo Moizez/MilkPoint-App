@@ -1,7 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import api from '../../services/api'
 
 import Header from '../../components/Header'
 import ListaTanques from '../HomeResponsavel/ListaTanques'
