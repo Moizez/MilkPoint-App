@@ -17,15 +17,14 @@
 
 ## Índice
 - [Apresentação](#Apresentação)
-- [Guia de Uso](#Guia de Uso)
+- [Guia de Uso](#GuiadeUso)
 - [Demonstração](#Demonstração)
 - [Instalação](#Instalação)
 - [Tecnologias](#Tecnologias)
 - [Contato](#Contato)
 
 ## Apresentação
-Este projeto foi realizado para minha prática pessoal e como forma de contribuição para a comunidade de desenvolvedores, não visando nenhum lucro,
-apenas focado em compartilhar conhecimento e crescimento profissional. Para a criação deste clone do **Nubank** utilizei como base o [vídeo](https://youtu.be/DDm0M_rZLJo) da Rocketseat do Diego Fernandes.
+Este projeto foi realizado para obtenção do título de Analista de Sistemas à banca examinadora do Curso de Análise e Desenvolvimento de Sistemas, do Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Norte além de se tornar um projeto de extensão no mesmo instituto mencionado.
 
 ## Guia de Uso
 Em caso de dúvidas consulte de como testar a aplicação, acesse este [guia de uso](https://moizez.github.io/milkpoint-app/).
