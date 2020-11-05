@@ -8,23 +8,22 @@ import DatePicker from '../DatePicker'
 import ActionButton from '../ActionButton'
 
 export default function ModalSearch({
-    type, hideModal, filterFifteenDays, changeCheck, findByName,
+    type, hideModal, filterFifteenDays, findByName, onLoad,
     filterOneMonth, filterCustomDays, closeSelectionModal
 }) {
 
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
-    const [isExpand, setExpand] = useState(false)
     const [value, setValue] = useState('')
 
     const onChange = (value) => {
-        setShow(Platform.OS === 'ios')
-        setSelectedDate(value)
-        type ? changeCheck(true) : changeCheck(false)
-        filterCustomDays(value)
         closeSelectionModal()
         hideModal()
-        //onLoad()
+        onLoad(true)
+        setShow(Platform.OS === 'ios')
+        setSelectedDate(value)
+        filterCustomDays(value)
+        onLoad(false)
     }
 
     return (
@@ -44,10 +43,11 @@ export default function ModalSearch({
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                         <ActionButton
                             onAction={() => {
-                                type ? changeCheck(true) : changeCheck(false)
-                                filterFifteenDays()
                                 closeSelectionModal()
                                 hideModal()
+                                onLoad(true)
+                                filterFifteenDays()
+                                onLoad(false)
                             }}
                             btnColor='#e9c46a'
                             title='Últimos 15 dias'
@@ -62,10 +62,11 @@ export default function ModalSearch({
 
                         <ActionButton
                             onAction={() => {
-                                type ? changeCheck(true) : changeCheck(false)
-                                filterOneMonth()
                                 closeSelectionModal()
                                 hideModal()
+                                onLoad(true)
+                                filterOneMonth()
+                                onLoad(false)
                             }}
                             btnColor='#e76f51'
                             title='Últimos 30 dias'
@@ -84,7 +85,7 @@ export default function ModalSearch({
                             onAction={() => setShow(true)}
                             btnColor='#adb5bd'
                             title={moment(selectedDate).locale('pt-br').format('dddd, D [de] MMMM [de] YYYY')}
-                            nameIcon='calendar-month'
+                            nameIcon='calendar-search'
                             btnSize='98%'
                             fontSize={16}
                             iconSize={25}
@@ -108,10 +109,9 @@ export default function ModalSearch({
                             <ActionButton
                                 onAction={() => {
                                     if (value) {
-                                        findByName(value, type)
                                         closeSelectionModal()
                                         hideModal()
-                                        onLoad()
+                                        findByName(value)
                                         setValue('')
                                     } else { setAlertVisible(true) }
                                 }}
@@ -122,8 +122,6 @@ export default function ModalSearch({
                         </View>
                     </View>
                 </View>
-
-                {isExpand && searchProfile()}
 
                 {
                     show && (
@@ -174,13 +172,6 @@ const styles = StyleSheet.create({
         color: '#000',
         padding: 10,
         borderRadius: 5,
-    },
-    button: {
-        borderRadius: 5,
-        padding: 10,
-        elevation: 2,
-        width: '90%',
-        marginTop: 8,
     },
     textInfo: {
         fontWeight: 'bold',

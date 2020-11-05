@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, Modal, StyleSheet, TextInput, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, TouchableOpacity, Modal, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { FAB } from 'react-native-paper'
 
@@ -9,7 +9,7 @@ import ActionButton from '../ActionButton'
 
 export default function FabGroup(
     {
-        filterFifteenDays, filterOneMonth, filterCustomDays, changeCheck,
+        filterFifteenDays, filterOneMonth, filterCustomDays, changeState,
         styleFab, mainIcon, mainIconColor, findByName, onLoad
     }) {
 
@@ -78,7 +78,7 @@ export default function FabGroup(
                         color: '#da1e37',
                         style: styles.fabActions,
                         onPress: () => {
-                            changeCheck(false)
+                            changeState(false)
                         },
                     },
                     {
@@ -87,7 +87,7 @@ export default function FabGroup(
                         color: '#2a9d8f',
                         style: styles.fabActions,
                         onPress: () => {
-                            changeCheck(true)
+                            changeState(true)
                         },
                     },
                 ]}
@@ -108,7 +108,6 @@ export default function FabGroup(
                     onLoad={onLoad}
                     hideModal={hideModal}
                     findByName={findByName}
-                    changeCheck={changeCheck}
                     filterFifteenDays={filterFifteenDays}
                     filterOneMonth={filterOneMonth}
                     filterCustomDays={filterCustomDays}
@@ -143,26 +142,33 @@ export default function FabGroup(
                 </TouchableWithoutFeedback>
                 <View style={styles.container}>
                     <View style={styles.selectionModal}>
-                        <Text style={styles.textInfo}>Você deseja pesquisar por?</Text>
+                        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginHorizontal: 5}}>
+                            <Text style={styles.textInfo}>Você deseja pesquisar por?</Text>
+                            <TouchableOpacity onPress={() => setSelectionModal(false)}>
+                                <Icon name='close-box' size={28} color='#da1e37' />
+                            </TouchableOpacity>
+                        </View>
                         <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
                             <ActionButton
                                 onAction={() => {
                                     setType(true)
+                                    changeState(true)
                                     setVisible(true)
                                 }}
                                 btnColor='#2a9d8f'
                                 title='Depositos'
-                                nameIcon='chart-donut'
+                                nameIcon='basket-fill'
                             />
                             <ActionButton
                                 onAction={() => {
                                     setType(false)
+                                    changeState(false)
                                     setVisible(true)
                                 }}
                                 btnColor='#da1e37'
                                 title='Retiradas'
-                                nameIcon='gauge-full'
+                                nameIcon='basket-unfill'
                             />
                         </View>
                     </View>

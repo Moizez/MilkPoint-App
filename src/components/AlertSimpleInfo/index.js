@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import LottieView from 'lottie-react-native'
 
 import ActionButton from '../ActionButton'
 
@@ -10,7 +9,7 @@ const AlertSimpleInfo = ({ title, message, onClose, onConfirm }) => {
         <View style={styles.container}>
             <View style={styles.modalView}>
                 <View style={styles.viewMessage}>
-                    <Text style={{ textAlign: 'center', fontSize: 18 }}>{message}</Text>
+                    <Text style={{ textAlign: 'center', fontSize: 17 }}>{message}</Text>
                 </View>
 
                 <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 6 }}></View>

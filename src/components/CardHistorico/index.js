@@ -86,7 +86,7 @@ const CardHistorico = ({ data }) => {
                     <Text style={styles.textInfo}>Qtd. solicitada: <Text style={styles.text}>{data.quantidade.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.')} litros</Text></Text>
                     <Text style={styles.textInfo}>Data: <Text style={styles.text}>{dateHour}</Text></Text>
                 </View>
-
+                
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
                 <View style={styles.buttonCard}>

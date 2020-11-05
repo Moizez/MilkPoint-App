@@ -35,7 +35,7 @@ export default function ModalDeposito({ onClose, onConfirme }) {
                         <ActionButton
                             onAction={onClose}
                             btnColor='#da1e37'
-                            title='Cancelar'
+                            title='Fechar'
                             nameIcon='close-circle'
                         />
                         <ActionButton

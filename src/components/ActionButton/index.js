@@ -4,10 +4,11 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const ActionButton = ({
     title, btnColor, nameIcon, onAction, btnSize, marginRight,
-    btnAlign, colorText, fontSize, colorIcon, iconSize
+    btnAlign, colorText, fontSize, colorIcon, iconSize, active
 }) => {
     return (
         <TouchableOpacity
+            disabled={active}
             onPress={onAction}
             style={{
                 ...styles.button,

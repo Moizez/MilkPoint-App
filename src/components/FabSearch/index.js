@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, Modal, TextInput, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import { FAB } from 'react-native-paper'
+import { AuthContext } from '../../contexts/auth'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
@@ -12,8 +13,10 @@ import AlertErrorSuccess from '../AlertErrorSuccess'
 export default function FabSearch(
     {
         getValor, filterFifteenDays, filterOneMonth, filterCustomDays, onLoad,
-        styleFab, mainIcon, mainIconColor, icon1, label1, color1, icon2, label2, color2
+        styleFab, mainIcon, mainIconColor, loadResolved
     }) {
+
+    const { user } = useContext(AuthContext)
 
     //Fab button
     const [state, setState] = useState({ open: false })
@@ -37,23 +40,6 @@ export default function FabSearch(
 
     return (
         <>
-            <Modal
-                animationType='fade'
-                transparent={true}
-                visible={alertVisible}
-            >
-                {alertVisible &&
-                    <AlertErrorSuccess
-                        onClose={() => setAlertVisible(false)}
-                        title='Aviso'
-                        message={'Digite um valor válido!'}
-                        titleButton='Ok'
-                        buttonColor={'#292b2c'}
-                        jsonPath={error}
-                    />
-                }
-            </Modal>
-
             <FAB.Group
                 fabStyle={styleFab}
                 color={mainIconColor}
@@ -61,18 +47,31 @@ export default function FabSearch(
                 icon={open ? 'close' : mainIcon}
                 actions={[
                     {
-                        icon: icon2,
-                        label: label2,
-                        color: color2,
+                        icon: 'magnify',
+                        label: 'Busca avançada',
+                        color: '#7209b7',
                         style: styles.fabActions,
-                        onPress: () => setVisible(true),
+                        onPress: () => {
+                            setModalSearch(true)
+                        }
                     },
                     {
-                        icon: icon1,
-                        label: label1,
-                        color: color1,
+                        icon: 'beaker-remove',
+                        label: 'Listar por cancelados',
+                        color: '#da1e37',
                         style: styles.fabActions,
-                        onPress: () => setModalSearch(true),
+                        onPress: () => {
+                            loadResolved(false)
+                        },
+                    },
+                    {
+                        icon: 'beaker-check',
+                        label: 'Listar por confirmados',
+                        color: '#2a9d8f',
+                        style: styles.fabActions,
+                        onPress: () => {
+                            loadResolved(true)
+                        },
                     },
                 ]}
                 onStateChange={onStateChange}
@@ -94,35 +93,9 @@ export default function FabSearch(
                 <View style={styles.container}>
                     <View style={styles.containerModal}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <Text style={styles.textInfo}>Buscar pelo valor da solicitação</Text>
                             <TouchableOpacity onPress={() => setVisible(false)}>
                                 <Icon name='close-box' size={30} color={'#da1e37'} />
                             </TouchableOpacity>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <TextInput style={styles.input}
-                                placeholder='Digite um valor'
-                                autoCorrect={false}
-                                autoCapitalize='none'
-                                keyboardType='phone-pad'
-                                value={value}
-                                autoFocus={true}
-                                onChangeText={setValue}
-                            />
-                            <View style={{ marginHorizontal: 5 }} />
-                            <ActionButton
-                                onAction={() => {
-                                    if (value) {
-                                        getValor(value)
-                                        setVisible(false)
-                                        //onLoad()
-                                        setValue('')
-                                    } else { setAlertVisible(true) }
-                                }}
-                                btnColor='#000'
-                                nameIcon='magnify'
-                                btnSize={50}
-                            />
                         </View>
                     </View>
                 </View>
@@ -142,7 +115,7 @@ export default function FabSearch(
                 <View style={styles.container}>
                     <View style={styles.containerModal}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={{ ...styles.textInfo, marginRight: 120 }}>Busca personalizada</Text>
+                            <Text style={{ ...styles.textInfo, marginRight: 160 }}>Busca avançada</Text>
                             <TouchableOpacity onPress={() => setModalSearch(false)}>
                                 <Icon name='close-box' size={30} color={'#da1e37'} />
                             </TouchableOpacity>
@@ -150,30 +123,79 @@ export default function FabSearch(
 
                         <View style={{ width: '100%', height: 0.5, backgroundColor: '#DDD', marginVertical: 5 }}></View>
 
-                        <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity style={styles.someDays} onPress={() => {
-                                filterFifteenDays()
-                                setModalSearch(false)
-                                //onLoad()
-                            }}>
-                                <Text style={styles.textDays}>Últimos 15 dias</Text>
-                                <Icon name='calendar-clock' size={25} color={'#000'} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={{ ...styles.someDays, marginLeft: 10, backgroundColor: '#e76f51' }} onPress={() => {
-                                filterOneMonth()
-                                setModalSearch(false)
-                            }}>
-                                <Text style={styles.textDays}>Últimos 30 dias</Text>
-                                <Icon name='calendar-clock' size={25} color={'#000'} />
-                            </TouchableOpacity>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                            <ActionButton
+                                onAction={() => {
+                                    filterFifteenDays()
+                                    setModalSearch(false)
+                                }}
+                                btnColor='#e9c46a'
+                                title='Últimos 15 dias'
+                                nameIcon='calendar-range'
+                                fontSize={16}
+                                iconSize={25}
+                                btnSize='48%'
+                                colorText='#000'
+                                colorIcon='#000'
+                                marginRight={12}
+                            />
+
+                            <ActionButton
+                                onAction={() => {
+                                    filterOneMonth()
+                                    setModalSearch(false)
+                                }}
+                                btnColor='#e76f51'
+                                title='Últimos 30 dias'
+                                nameIcon='calendar-month'
+                                btnSize='48%'
+                                fontSize={16}
+                                iconSize={25}
+                                colorText='#000'
+                                colorIcon='#000'
+                                marginRight={12}
+                            />
                         </View>
 
                         <View style={{ alignItems: 'center' }}>
-                            <Text style={styles.textDays}>Selecione a data inicial da busca:</Text>
-                            <TouchableOpacity style={styles.dateSearch} onPress={() => setShow(true)}>
-                                <Text style={styles.textDays}>{moment(selectedDate).locale('pt-br').format('dddd, D [de] MMMM [de] YYYY')}</Text>
-                                <Icon name='calendar' size={25} color={'#000'} />
-                            </TouchableOpacity>
+                            <Text style={styles.textDays}>Selecione a data inicial da busca</Text>
+                            <ActionButton
+                                onAction={() => setShow(true)}
+                                btnColor='#adb5bd'
+                                title={moment(selectedDate).locale('pt-br').format('dddd, D [de] MMMM [de] YYYY')}
+                                nameIcon='calendar-search'
+                                btnSize='98%'
+                                fontSize={16}
+                                iconSize={25}
+                                colorText='#000'
+                                colorIcon='#000'
+                            />
+                        </View>
+                        <View>
+                            <Text style={styles.textDays}>Buscar pelo valor da solicitação</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 2 }}>
+                                <TextInput style={styles.input}
+                                    placeholder='Digite um valor'
+                                    autoCorrect={false}
+                                    autoCapitalize='none'
+                                    keyboardType='phone-pad'
+                                    value={value}
+                                    onChangeText={(value) => setValue(value)}
+                                />
+                                <View style={{ marginHorizontal: 5 }} />
+                                <ActionButton
+                                    onAction={() => {
+                                        if (value) {
+                                            getValor(value)
+                                            setModalSearch(false)
+                                            setValue('')
+                                        } else { setAlertVisible(true) }
+                                    }}
+                                    btnColor={user.perfil === 1 ? '#2a9d8f' : '#da1e37'}
+                                    nameIcon='magnify'
+                                    btnSize={50}
+                                />
+                            </View>
                         </View>
                     </View>
                 </View>
@@ -189,6 +211,22 @@ export default function FabSearch(
                         display={'spinner'}
                     />)
             }
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={alertVisible}
+            >
+                {alertVisible &&
+                    <AlertErrorSuccess
+                        onClose={() => setAlertVisible(false)}
+                        title='Aviso'
+                        message={'Digite um valor válido!'}
+                        titleButton='Ok'
+                        buttonColor={'#292b2c'}
+                        jsonPath={error}
+                    />
+                }
+            </Modal>
         </>
     );
 }
@@ -205,11 +243,9 @@ const styles = StyleSheet.create({
     },
     containerModal: {
         width: '95%',
-        margin: 10,
         backgroundColor: '#FFF',
         borderRadius: 8,
-        padding: 15,
-        alignItems: 'center',
+        padding: 10,
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 3.85,
@@ -223,20 +259,11 @@ const styles = StyleSheet.create({
         backgroundColor: '#DDD',
         textAlign: 'center',
         fontSize: 17,
-        width: '74%',
+        width: '79%',
         height: 45,
         color: '#000',
-        marginTop: 15,
-        marginBottom: 15,
         padding: 10,
         borderRadius: 5,
-    },
-    button: {
-        borderRadius: 5,
-        padding: 10,
-        elevation: 2,
-        width: '90%',
-        marginTop: 8,
     },
     textInfo: {
         fontWeight: 'bold',
@@ -244,34 +271,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginRight: 25,
     },
-    btnStyle: {
-        color: '#FFF',
-        textAlign: 'center',
-        fontSize: 20,
-    },
-    someDays: {
-        backgroundColor: '#e9c46a',
-        height: 45,
-        padding: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 3,
-        marginVertical: 15,
-        flexDirection: 'row',
-    },
-    dateSearch: {
-        backgroundColor: '#adb5bd',
-        height: 45,
-        padding: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 3,
-        marginVertical: 15,
-        flexDirection: 'row'
-    },
     textDays: {
+        marginTop: 10,
         fontSize: 16,
-        marginRight: 5
+        textAlign: 'center'
     },
     fabActions: {
         width: 50,

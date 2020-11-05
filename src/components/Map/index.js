@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { View, Text, StyleSheet, Image, PermissionsAndroid, TouchableOpacity } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import MapView, { Marker, Callout } from 'react-native-maps'
 import MapViewDirections from 'react-native-maps-directions'
 import Geolocation from 'react-native-geolocation-service'
 import { getDistance, convertDistance } from 'geolib'
+
 import key from '../../../api.key'
+import ActionButton from '../ActionButton'
 
 export default function Map({ dataMap, onClose }) {
 
-    const navigation = useNavigation()
     const mapRef = useRef(null)
 
     let pinCow = require('../../assets/images/pin-cow.png')
@@ -137,9 +137,15 @@ export default function Map({ dataMap, onClose }) {
 
             </MapView>
 
-            <TouchableOpacity style={styles.btnMap} onPress={onClose}>
-                <Text style={styles.btnMapText}>Fechar</Text>
-            </TouchableOpacity>
+            <ActionButton
+                onAction={onClose}
+                btnColor='#292b2c'
+                title='Fechar'
+                nameIcon='close-circle'
+                btnSize='100%'
+                btnAlign='center'
+                marginRight={20}
+            />
         </View>
     );
 }
@@ -180,19 +186,6 @@ const styles = StyleSheet.create({
         fontSize: 17,
         color: '#FFF'
     },
-    btnMap: {
-        width: '100%',
-        height: 45,
-        backgroundColor: '#292b2c',
-        borderBottomLeftRadius: 5,
-        borderBottomRightRadius: 5,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    btnMapText: {
-        fontSize: 18,
-        color: '#FFF'
-    }
 })
 
 

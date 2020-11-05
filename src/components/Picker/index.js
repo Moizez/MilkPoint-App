@@ -2,13 +2,16 @@ import React, { useState } from 'react'
 import RNPickerSelect from 'react-native-picker-select'
 import { View, StyleSheet } from 'react-native'
 
-export default function Picker({ onChange, title, dataItem }) {
+export default function Picker({ onChange, title, dataItem, sizePicker }) {
 
     const [valor, setValor] = useState()
-    let cor = valor > 0 ? '#95d5b2' : '#FFF'
+    const cor = valor ? '#95d5b2' : '#FFF'
 
     return (
-        <View style={{ ...styles.container, backgroundColor: `${cor}` }}>
+        <View style={{
+            ...styles.container,
+            backgroundColor: cor, width: sizePicker ? sizePicker : '45%',
+        }}>
             <RNPickerSelect
                 placeholder={title}
                 style={pickerStyle}
@@ -31,12 +34,9 @@ const pickerStyle = {
 export const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFF',
-        alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8,
         borderWidth: 0.5,
-        width: '45%',
         height: 45,
-        borderRadius: 8
     }
 })

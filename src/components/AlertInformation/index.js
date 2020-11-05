@@ -1,16 +1,15 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
-import LottieView from 'lottie-react-native'
 
 import ActionButton from '../ActionButton'
 
-const AlertInformation = ({ title, message, onClose, onConfirm, dataInfo, qtd }) => {
+const AlertInformation = ({ message, onClose, onConfirm, dataInfo, qtd }) => {
 
     return (
         <View style={styles.centerView}>
-
             <View style={styles.modalView}>
                 <Text style={{ fontWeight: 'bold', textAlign: 'center', fontSize: 18 }}>{message}</Text>
+                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginTop: 10 }}></View>
                 <View style={styles.viewMessage}>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                         <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
@@ -43,8 +42,8 @@ const AlertInformation = ({ title, message, onClose, onConfirm, dataInfo, qtd })
                     <ActionButton
                         onAction={() => onConfirm(qtd)}
                         btnColor='#2a9d8f'
-                        title='Enviar'
-                        nameIcon='send-circle'
+                        title='Confirmar'
+                        nameIcon='check-circle'
                     />
                 </View>
 
