@@ -17,15 +17,18 @@
 
 ## Índice
 - [Apresentação](#Apresentação)
+- [Guia de Uso](#Guia de Uso)
 - [Demonstração](#Demonstração)
 - [Instalação](#Instalação)
-- [Etapas](#Etapas)
 - [Tecnologias](#Tecnologias)
 - [Contato](#Contato)
 
 ## Apresentação
 Este projeto foi realizado para minha prática pessoal e como forma de contribuição para a comunidade de desenvolvedores, não visando nenhum lucro,
 apenas focado em compartilhar conhecimento e crescimento profissional. Para a criação deste clone do **Nubank** utilizei como base o [vídeo](https://youtu.be/DDm0M_rZLJo) da Rocketseat do Diego Fernandes.
+
+## Guia de Uso
+Em caso de dúvidas consulte de como testar a aplicação, acesse este [guia de uso](https://moizez.github.io/milkpoint-app/).
 
 ## Demonstração
 
@@ -53,7 +56,7 @@ apenas focado em compartilhar conhecimento e crescimento profissional. Para a cr
 ## Instalação
 ```bash
   # Tendo em mente que você já tem instalado o NPM e o Yarn, primeiro faça o clone ou faça o download deste repositório:
-  $ git clone https://github.com/Moizez/PicPay-Clone.git
+  $ git clone https://github.com/Moizez/Milk-Point.git
 
   # Em seguida abra o terminal na pasta do projeto e execute o comando abaixo para instalar as dependências.
   $ npm install ou yarn
@@ -99,23 +102,12 @@ public class MainActivity extends ReactActivity {
 }
   
 ```
-
-## Etapas
-- [x] Criação das pages e dos arquivos de estilos
-- [x] Criação do componente header
-- [x] Criação do componente tab
-- [x] Criação do card na home
-- [x] Criação do componente menu
-- [x] Implementação das animações
-
-## Tecnologias
+## Principais Tecnologias
 |Tecnologias | Versão |
 |------------|--------|
 |react        |**16.13.1** |
 |react-native |**0.63.2** |
 |react-native-gesture-handler |**^1.8.0** |
-|react-native-qrcode-svg     |**^6.0.6** |
-|react-native-svg     |**^12.1.0** |
 |reactotron-react-native     |**^5.0.0** |
 |styled-components     |**^5.1.1** |
 
