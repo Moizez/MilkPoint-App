@@ -27,7 +27,7 @@
 
 #### Tela de Login e Logout
 <p>
- <img src="https://i.ibb.co/znmYVJr/1-Tela-de-login.jpg" alt="1 - Tela de login" border="0">
+ <img src="https://i.ibb.co/znmYVJr/1-Tela-de-login.jpg" width=”25px” height=”44px” alt="1 - Tela de login" border="0">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img src="https://i.ibb.co/YNHD291/photo-2020-11-03-16-57-48.jpg" />
 </p>
