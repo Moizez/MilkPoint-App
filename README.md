@@ -29,7 +29,7 @@
 <p>
  <img src="https://i.ibb.co/znmYVJr/1-Tela-de-login.jpg" width="250" height="445" alt="1 - Tela de login" border="0">
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://i.ibb.co/YNHD291/photo-2020-11-03-16-57-48.jpg" />
+  <img src="https://i.ibb.co/YNHD291/2-Tela-de-logout.jpg" width="250" height="445" alt="2 - Tela de logout" border="0">
 </p>
 
 #### Tela de Inicial do Produtor e Laticínio
