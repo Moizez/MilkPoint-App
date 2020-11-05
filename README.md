@@ -16,12 +16,16 @@
 </p>
 
 ## Índice
-- [Demonstração](#Demonstração)
 - [Apresentação](#Apresentação)
+- [Demonstração](#Demonstração)
 - [Instalação](#Instalação)
 - [Etapas](#Etapas)
 - [Tecnologias](#Tecnologias)
 - [Contato](#Contato)
+
+## Apresentação
+Este projeto foi realizado para minha prática pessoal e como forma de contribuição para a comunidade de desenvolvedores, não visando nenhum lucro,
+apenas focado em compartilhar conhecimento e crescimento profissional. Para a criação deste clone do **Nubank** utilizei como base o [vídeo](https://youtu.be/DDm0M_rZLJo) da Rocketseat do Diego Fernandes.
 
 ## Demonstração
 
@@ -45,10 +49,6 @@
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  <img src="https://i.ibb.co/y8wQhnK/6-Tela-inicial-do-t-cnico.jpg" width="250" height="445" alt="6 - Tela inicial do técnico" border="0">
 </p>
-
-## Apresentação
-Este projeto foi realizado para minha prática pessoal e como forma de contribuição para a comunidade de desenvolvedores, não visando nenhum lucro,
-apenas focado em compartilhar conhecimento e crescimento profissional. Para a criação deste clone do **Nubank** utilizei como base o [vídeo](https://youtu.be/DDm0M_rZLJo) da Rocketseat do Diego Fernandes.
 
 ## Instalação
 ```bash
