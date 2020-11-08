@@ -17,7 +17,7 @@
 
 ## Índice
 - [Apresentação](#Apresentação)
-- [Guia de Uso](#GuiadeUso)
+- [Guia de Uso](#Guia)
 - [Demonstração](#Demonstração)
 - [Instalação](#Instalação)
 - [Tecnologias](#Tecnologias)
