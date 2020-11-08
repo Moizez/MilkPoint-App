@@ -17,7 +17,7 @@
 
 ## Índice
 - [Apresentação](#Apresentação)
-- [Guia de Uso](#Guia)
+- [Guia](#Guia)
 - [Demonstração](#Demonstração)
 - [Instalação](#Instalação)
 - [Tecnologias](#Tecnologias)
@@ -26,7 +26,7 @@
 ## Apresentação
 Este projeto foi realizado para obtenção do título de Analista de Sistemas à banca examinadora do Curso de Análise e Desenvolvimento de Sistemas, do Instituto Federal de Educação, Ciência e Tecnologia do Rio Grande do Norte além de se tornar um projeto de extensão no mesmo instituto mencionado.
 
-## Guia de Uso
+## Guia
 Em caso de dúvidas consulte de como testar a aplicação, acesse este [guia de uso](https://moizez.github.io/milkpoint-app/).
 
 ## Demonstração
@@ -101,7 +101,7 @@ public class MainActivity extends ReactActivity {
 }
   
 ```
-## Principais Tecnologias
+## Tecnologias
 |Tecnologias | Versão |
 |------------|--------|
 |react        |**16.13.1** |
