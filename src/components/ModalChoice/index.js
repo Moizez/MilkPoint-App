@@ -6,13 +6,13 @@ import moment from 'moment'
 import ActionButton from '../ActionButton'
 
 const ModalChoice = ({
-    dataInfo, hideModal, handleConfirm,
-    titlePerfil, infoPerfil, doneCancel
+    dataInfo, hideModal, handleConfirm, obs,
+    titlePerfil, infoPerfil, doneCancel, statusTanque
 }) => {
 
     let dayHour = moment(dataInfo.dataNow).locale('pt-br').format('D [de] MMM [às] LT[h]')
     const [isExpand, setExpand] = useState(false)
-    const [observation, setObservation] = useState('')
+    const [observation, setObservation] = useState(obs)
 
     const handleDescription = () => {
         return (
@@ -109,12 +109,14 @@ const ModalChoice = ({
                                 title='Recusar'
                                 nameIcon='delete-circle'
                             />
-                            <ActionButton
-                                onAction={() => handleConfirm(dataInfo.quantidade)}
-                                btnColor='#2a9d8f'
-                                title='Aceitar'
-                                nameIcon='check-circle'
-                            />
+                            {statusTanque &&
+                                <ActionButton
+                                    onAction={() => handleConfirm(dataInfo.quantidade)}
+                                    btnColor='#2a9d8f'
+                                    title='Aceitar'
+                                    nameIcon='check-circle'
+                                />
+                            }
                         </View>
                     }
 
@@ -194,9 +196,9 @@ const styles = StyleSheet.create({
     input: {
         backgroundColor: '#DDD',
         textAlign: 'center',
-        fontSize: 18,
+        fontSize: 17,
         width: 320,
-        height: 78,
+        height: 60,
         color: '#000',
         marginVertical: 10,
         padding: 15,

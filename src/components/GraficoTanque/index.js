@@ -1,9 +1,10 @@
 import React from 'react'
-import { Image, StyleSheet, TouchableOpacity } from 'react-native'
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import Speedometer from 'react-native-speedometer-chart'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useNavigation } from '@react-navigation/native'
 
-export default function GraficoTanque({ dataGrafico, handleOpenModal }) {
+export default function GraficoTanque({ dataGrafico, handleOpenModal, activeTanque }) {
 
     const capacidade = dataGrafico.qtdAtual + dataGrafico.qtdRestante
     const navigation = useNavigation()
@@ -19,11 +20,14 @@ export default function GraficoTanque({ dataGrafico, handleOpenModal }) {
     }
 
     return (
-        <TouchableOpacity style={styles.container} onLongPress={() => navigation.navigate('DetalhesTanque', { data: dataGrafico })} onPress={handleOpenModal}>
-            {dataGrafico.tipo == 'BOVINO' ?
-                <Image style={styles.goatImage} source={require('../../assets/images/cow-circle.png')} /> :
-                <Image style={styles.goatImage} source={require('../../assets/images/goat-circle.png')} />
-            }
+        <TouchableOpacity style={styles.container} disabled={activeTanque ? activeTanque : false} onLongPress={() => navigation.navigate('DetalhesTanque', { data: dataGrafico })} onPress={handleOpenModal}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                {dataGrafico.tipo == 'BOVINO' ?
+                    <Image style={styles.goatImage} source={require('../../assets/images/cow-circle.png')} /> :
+                    <Image style={styles.goatImage} source={require('../../assets/images/goat-circle.png')} />
+                }
+                <Icon name={dataGrafico.status ? 'beaker-check' : 'beaker-remove'} size={35} color={dataGrafico.status ? '#2a9d8f' : '#da1e37'} />
+            </View>
 
             <Speedometer
                 value={dataGrafico.qtdAtual}

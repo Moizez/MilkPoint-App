@@ -3,7 +3,7 @@ import { View, StyleSheet, Text, TouchableOpacity } from 'react-native'
 
 import ActionButton from '../ActionButton'
 
-const AlertSimpleInfo = ({ title, message, onClose, onConfirm }) => {
+const AlertSimpleInfo = ({ message, onClose, onConfirm }) => {
 
     return (
         <View style={styles.container}>

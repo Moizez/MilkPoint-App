@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const ActionButton = ({
     title, btnColor, nameIcon, onAction, btnSize, marginRight,
-    btnAlign, colorText, fontSize, colorIcon, iconSize, active
+    btnAlign, colorText, fontSize, colorIcon, iconSize, active, btnHeight
 }) => {
     return (
         <TouchableOpacity
@@ -14,6 +14,7 @@ const ActionButton = ({
                 ...styles.button,
                 backgroundColor: btnColor,
                 width: btnSize ? btnSize : '45%',
+                height: btnHeight ? btnHeight : 45,
                 justifyContent: btnAlign ? btnAlign : 'space-around',
             }}
         >
@@ -36,7 +37,6 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 2,
         marginVertical: 5,
-        height: 45
     },
 })
 

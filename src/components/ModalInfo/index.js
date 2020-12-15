@@ -27,11 +27,6 @@ const ModalInfo = ({ onClose }) => {
         else return 'Tela de Laticínios'
     }
 
-    const changeTitleThree = () => {
-        if (user.perfil === 2) return 'Tela de Histórico'
-        else if (user.perfil === 4) return 'Tela de Responsáveis'
-    }
-
     const renderDefaultFunctions = () => {
         return (
             <View>
@@ -414,16 +409,28 @@ const ModalInfo = ({ onClose }) => {
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
                     {isExpandThirdScreen && renderThirdScreen()}
 
-                    {user.perfil === 2 | user.perfil === 4 &&
+                    {user.perfil === 2 &&
                         <>
                             <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandFourthScreen(!isExpandFourthScreen)}>
-                                <Text style={styles.btnText}>{changeTitleThree()}</Text>
+                                <Text style={styles.btnText}>Tela de Histórico</Text>
                                 <Icon name={isExpandFourthScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
                             </TouchableOpacity>
 
                             <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
                         </>
                     }
+
+                    {user.perfil === 4 &&
+                        <>
+                            <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandFourthScreen(!isExpandFourthScreen)}>
+                                <Text style={styles.btnText}>Tela de Responsáveis</Text>
+                                <Icon name={isExpandFourthScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
+                            </TouchableOpacity>
+
+                            <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                        </>
+                    }
+
                     {isExpandFourthScreen && renderFourthScreen()}
 
                     <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandObservation(!observation)}>

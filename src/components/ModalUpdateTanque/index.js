@@ -217,7 +217,7 @@ export default function ModalUpdateTanque({
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Editar de Tanque</Text>
+                <Text style={styles.title}>Editar Tanque</Text>
             </View>
             <View style={styles.body}>
                 <Text style={{ ...styles.titleInput, textAlign: 'center', fontWeight: 'bold' }}>Características</Text>
@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
-        height: 80,
+        height: 60,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#292b2c',
