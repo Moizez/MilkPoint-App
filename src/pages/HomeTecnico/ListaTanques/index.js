@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Modal, View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { Modal, View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWithoutFeedback } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 
@@ -9,12 +9,14 @@ import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import Map from '../../../components/Map'
 import { AuthContext } from '../../../contexts/auth'
 import ModalUpdateTanque from '../../../components/ModalUpdateTanque'
+import ActionButton from '../../../components/ActionButton'
 
 export default function ListaTanques({ data, onRefresh, onLoad }) {
 
     const { baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
+    const [modalObservation, setModalObservation] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
     const [idTanque, setIdTanque] = useState(data.id)
     const [modalUpdate, setModalUpdate] = useState(false)
@@ -22,6 +24,7 @@ export default function ListaTanques({ data, onRefresh, onLoad }) {
     const [errorMsg, setErrorMsg] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
     const [status, setStatus] = useState(false)
+    const [observation, setObservation] = useState('')
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
@@ -29,13 +32,12 @@ export default function ListaTanques({ data, onRefresh, onLoad }) {
 
     const changeIconJson = (value) => setJsonIcon(value)
 
-    const onChangeState = async (idTanque, status) => {
-
+    const onChangeState = async (idTanque, status, observation) => {
         const headers = new Headers();
         headers.append("Content-Type", "application/json")
         headers.append("Accept", 'application/json')
 
-        const data = { id: idTanque, status: status }
+        const data = { id: idTanque, status: status, observacao: observation }
 
         await fetch(`${baseUrl}tanque/` + parseInt(idTanque),
             {
@@ -54,12 +56,12 @@ export default function ListaTanques({ data, onRefresh, onLoad }) {
             setStatus(false)
             setJsonIcon('error')
             setErrorMsg('Há depósitos ou retiradas pendentes, '
-                + 'deseja realmente desativa-lo?')
-            setAlertInfo(true)
+                + 'deseja realmente inativa-lo?')
+            setModalObservation(true)
         } else {
             setStatus(false)
-            setErrorMsg('Deseja realmente desativar este tanque?')
-            setAlertInfo(true)
+            setErrorMsg('Deseja realmente inativar este tanque?')
+            setModalObservation(true)
         }
     }
 
@@ -72,8 +74,9 @@ export default function ListaTanques({ data, onRefresh, onLoad }) {
     const handleConfirm = async () => {
         onLoad(true)
         setAlertInfo(false)
+        setModalObservation(false)
         setIdTanque(data.id)
-        await onChangeState(idTanque, status)
+        await onChangeState(idTanque, status, observation)
         await onRefresh()
         onLoad(false)
     }
@@ -83,6 +86,11 @@ export default function ListaTanques({ data, onRefresh, onLoad }) {
     const closeAlertInfo = () => {
         setStatus(!status)
         setAlertInfo(false)
+    }
+    const closeObservationModal = () => {
+        setObservation('')
+        setStatus(!status)
+        setModalObservation(false)
     }
     const closeModal = () => setModalUpdate(false)
     const closeAlertErroSuccess = () => setAlertVisible(false)
@@ -131,6 +139,7 @@ export default function ListaTanques({ data, onRefresh, onLoad }) {
                         <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
                         <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                         <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
+                        {!data.status && <Text style={{ ...styles.textInfo, color: '#da1e37' }}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>}
                     </View>
                     <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
                     <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
@@ -190,6 +199,76 @@ export default function ListaTanques({ data, onRefresh, onLoad }) {
                     />
                 }
             </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={modalObservation}
+            >
+                <>
+                    <TouchableWithoutFeedback onPress={() => setModalObservation(false)}>
+                        <View style={styles.offset} />
+                    </TouchableWithoutFeedback>
+                    <View style={styles.modalObservation}>
+                        <View style={styles.modalView}>
+                            <Text style={{ ...styles.textInfo, fontSize: 17, textAlign: 'center' }}>{errorMsg}</Text>
+                            <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+                                    <Icon name='comment-text-multiple' size={50} color='#adb5bd' />
+                                </View>
+                                <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                                    <TouchableOpacity style={styles.btnSuggestion} onPress={() => setObservation('Em manutenção')}>
+                                        <Text>Em manutenção</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.btnSuggestion} onPress={() => setObservation('Leite em análise')}>
+                                        <Text>Leite em análise</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.btnSuggestion} onPress={() => setObservation('Aguardando liberação')}>
+                                        <Text>Aguardando liberação</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.btnSuggestion} onPress={() => setObservation('Em testes')}>
+                                        <Text>Em testes</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
+                            <TextInput style={styles.input}
+                                placeholder='Por favor, informe o motivo'
+                                autoCorrect={true}
+                                autoCapitalize='sentences'
+                                multiline={true}
+                                defaultValue='Teste'
+                                value={observation}
+                                onChangeText={(text) => setObservation(text)}
+                            />
+
+                            <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                                <ActionButton
+                                    onAction={closeObservationModal}
+                                    btnColor='#da1e37'
+                                    title='Fechar'
+                                    nameIcon='close-circle'
+                                />
+
+                                <View style={{ marginHorizontal: 8 }} />
+
+                                <ActionButton
+                                    onAction={() => handleConfirm(observation)}
+                                    btnColor='#2a9d8f'
+                                    title='Confirmar'
+                                    nameIcon='check-circle'
+                                />
+                            </View>
+                        </View>
+                    </View>
+                    <TouchableWithoutFeedback onPress={() => setModalObservation(false)}>
+                        <View style={styles.offset} />
+                    </TouchableWithoutFeedback>
+                </>
+            </Modal>
         </View >
     );
 }
@@ -219,7 +298,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
         padding: 6,
-
     },
     textInfo: {
         fontWeight: 'bold',
@@ -245,6 +323,49 @@ const styles = StyleSheet.create({
     actionText: {
         fontSize: 16,
         color: '#FFF'
+    },
+    modalObservation: {
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalView: {
+        width: '95%',
+        backgroundColor: '#FFF',
+        borderRadius: 8,
+        padding: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 3.85,
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        elevation: 5
+    },
+    offset: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+    },
+    input: {
+        backgroundColor: '#DDD',
+        textAlign: 'center',
+        fontSize: 17,
+        width: 320,
+        height: 60,
+        color: '#000',
+        marginVertical: 10,
+        padding: 15,
+        borderRadius: 8,
+    },
+    btnSuggestion: {
+        height: 35,
+        backgroundColor: '#adb5bd',
+        padding: 8,
+        borderRadius: 3,
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 3
     }
 })
 

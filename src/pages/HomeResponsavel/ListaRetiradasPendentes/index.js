@@ -139,6 +139,8 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
                     handleConfirm={handleConfirm}
                     titlePerfil={'Laticínio: '}
                     infoPerfil={data.laticinio.nomeFantasia}
+                    statusTanque={data.tanque.status}
+                    obs={data.tanque.observacao}
                 />
             </Modal>
 

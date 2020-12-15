@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import Speedometer from 'react-native-speedometer-chart'
 
@@ -28,24 +29,29 @@ export default function ListaTanques({ data }) {
                         <Image style={styles.goatImage} source={require('../../../assets/images/goat-circle.png')} />
                     }
                     <Text style={styles.title}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
+                    <Icon name={data.status ? 'beaker-check' : 'beaker-remove'} size={35} color={data.status ? '#2a9d8f' : '#da1e37'} />
                 </View>
 
-                <Speedometer
-                    value={data.qtdAtual}
-                    totalValue={capacidade}
-                    size={170}
-                    outerColor="#d3d3d3"
-                    internalColor={corGrafico()}
-                    showText
-                    text={''}
-                    textStyle={{ color: 'black' }}
-                    innerColor={'#faf9f9'}
-                    showLabels
-                    labelStyle={{ color: 'blue' }}
-                    labelFormatter={number => `${number}`}
-                    showPercent
-                    percentStyle={{ color: 'black', fontSize: 22 }}
-                />
+                <View style={{alignItems: 'center'}}>
+
+                    <Speedometer
+                        value={data.qtdAtual}
+                        totalValue={capacidade}
+                        size={170}
+                        outerColor="#d3d3d3"
+                        internalColor={corGrafico()}
+                        showText
+                        text={''}
+                        textStyle={{ color: 'black' }}
+                        innerColor={'#faf9f9'}
+                        showLabels
+                        labelStyle={{ color: 'blue' }}
+                        labelFormatter={number => `${number}`}
+                        showPercent
+                        percentStyle={{ color: 'black', fontSize: 22 }}
+                    />
+
+                </View>
 
                 <View style={{ width: '95%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 10 }}></View>
 
@@ -91,23 +97,21 @@ const styles = StyleSheet.create({
     },
     cardButton: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     iconContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginVertical: 6,
+        justifyContent: 'space-around',
+        marginVertical: 10,
     },
     title: {
-        fontSize: 16, fontWeight: 'bold', marginLeft: 10
+        fontSize: 17, fontWeight: 'bold'
     },
     text: {
         fontWeight: 'normal'
     },
     goatImage: {
-        width: 30,
-        height: 30
+        width: 35,
+        height: 35
     }
 })

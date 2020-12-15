@@ -3,7 +3,6 @@ import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import 'moment/locale/pt-br'
-import api from '../../../services/api'
 
 import ModalDeposito from '../../../components/ModalDeposito'
 import GraficoTanque from '../../../components/GraficoTanque'
@@ -108,7 +107,7 @@ export default function ListaTanques({ data, loadTanques }) {
         } else {
             await loadTanques()
             setJsonIcon('error')
-            setTypeMessage('Este tanque está desativado!')
+            setTypeMessage(`Este tanque está inativo!`)
             setAlertVisible(true)
         }
         Keyboard.dismiss()
@@ -142,11 +141,12 @@ export default function ListaTanques({ data, loadTanques }) {
                     <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
                     <Text style={styles.textInfo}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                     <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
+                    {!data.status && <Text style={{ ...styles.textInfo, color: '#da1e37' }}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>}
                 </View>
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
-                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
+                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} activeTanque={data.status ? false : true} />
             </View>
 
             <Modal
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
         fontSize: 14.5,
     },
     text: {
-        fontWeight: 'normal'
+        fontWeight: 'normal',
     },
     fab: {
         position: 'absolute',

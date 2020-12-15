@@ -19,7 +19,7 @@ export default function HomeLaticinio() {
 
     const loadTanques = async () => {
         setLoading(true)
-        const response = await api.get(`tanque/ativos`)
+        const response = await api.get(`tanque`)
         setTanque(response.data)
         setLoading(false)
     }

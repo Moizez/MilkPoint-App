@@ -112,6 +112,8 @@ export default function DetalhesTanque({ route }) {
                     <Text style={styles.textItem}>Data de criação: <Text style={styles.text}>{nascimento}</Text></Text>
                     <Text style={styles.textItem}>Criado por: <Text style={styles.text}>{data.tecnico.nome}</Text></Text>
                     <Text style={styles.textItem}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
+                    {!data.status ? <Text style={styles.textItem}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>
+                        : <Text style={styles.textItem}>Status: <Text style={styles.text}>Ativo</Text></Text>}
                 </View>
                 <View style={styles.cardItem}>
                     <Text style={styles.tituloItem}>LOCALIZAÇÃO</Text>

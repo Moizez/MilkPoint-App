@@ -9,7 +9,7 @@ import api from '../services/api'
 export const AuthContext = createContext({})
 
 //Url padrão da API 
-//let baseUrl = 'http://192.168.0.100:8080/api/'
+//let baseUrl = 'http://192.168.0.128:8080/api/'
 //let baseUrl = 'https://milkpoint.herokuapp.com/api/'
 let baseUrl = 'https://milkpoint.serviceapp.net.br/api/' //Leandro
 let cepUrl = 'https://viacep.com.br/ws/'

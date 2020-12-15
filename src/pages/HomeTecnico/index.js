@@ -59,16 +59,7 @@ export default function HomeTecnico() {
 
     return (
         <Container>
-            <Header
-                msg={status ? 'Lista de tanques ATIVOS' : 'Lista de tanques INATIVOS'}
-                disabled={true}
-                calendar={
-                    <Icon
-                        name={status ? 'beaker-check' : 'beaker-remove'}
-                        color={status ? '#2a9d8f' : '#da1e37'}
-                        size={25}
-                    />}
-            />
+            <Header msg={status ? 'Lista de tanques ATIVOS' : 'Lista de tanques INATIVOS'} />
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanque}

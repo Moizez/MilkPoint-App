@@ -138,6 +138,8 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
                     handleConfirm={handleConfirm}
                     titlePerfil={'Produtor: '}
                     infoPerfil={data.produtor.nome}
+                    statusTanque={data.tanque.status}
+                    obs={data.tanque.observacao}
                 />
             </Modal>
 
