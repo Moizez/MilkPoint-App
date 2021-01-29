@@ -115,3 +115,4 @@ Moisés Henrique | Analista de Sistemas
 - E-mail: moizezhenrique@gmail.com
 - Twitter: [@moizezhenrique](https://twitter.com/moizezhenrique)
 - Instagram: [@moizezhenrique](https://www.instagram.com/moizezhenrique)
+- LinkedIn: [Moisés Henrique](linkedin.com/in/moizez-henrique-665689a3)
