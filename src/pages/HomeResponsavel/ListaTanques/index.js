@@ -1,13 +1,12 @@
-import React, { useState } from 'react'
-import { View, Modal, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import Speedometer from 'react-native-speedometer-chart'
-import Map from '../../../components/Map'
 
 export default function ListaTanques({ data }) {
 
-    const [modalVisible, setModalVisible] = useState(false)
     const navigation = useNavigation()
     const capacidade = data.qtdAtual + data.qtdRestante
 
@@ -21,52 +20,59 @@ export default function ListaTanques({ data }) {
         }
     }
 
-    const handleCloseModal = () => { setModalVisible(false) }
-
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.cardButton} onLongPress={() => navigation.navigate('DetalhesTanque', { data: data })} onPress={() => { setModalVisible(true) }} activeOpacity={0.5}>
+            <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('DetalhesTanque', { data: data })} activeOpacity={0.9}>
                 <View style={styles.iconContainer}>
                     {data.tipo == 'BOVINO' ?
                         <Image style={styles.goatImage} source={require('../../../assets/images/cow-circle.png')} /> :
                         <Image style={styles.goatImage} source={require('../../../assets/images/goat-circle.png')} />
                     }
                     <Text style={styles.title}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
+                    <Icon name={data.status ? 'beaker-check' : 'beaker-remove'} size={35} color={data.status ? '#2a9d8f' : '#da1e37'} />
                 </View>
 
-                <Speedometer
-                    value={data.qtdAtual}
-                    totalValue={capacidade}
-                    size={170}
-                    outerColor="#d3d3d3"
-                    internalColor={corGrafico()}
-                    showText
-                    text={''}
-                    textStyle={{ color: 'black' }}
-                    innerColor={'#faf9f9'}
-                    showLabels
-                    labelStyle={{ color: 'blue' }}
-                    labelFormatter={number => `${number}`}
-                    showPercent
-                    percentStyle={{ color: 'black', fontSize: 22 }}
-                />
+                <View style={{alignItems: 'center'}}>
 
-                <View style={{ width: '95%', height: 1, backgroundColor: '#adb5bd', marginVertical: 10 }}></View>
+                    <Speedometer
+                        value={data.qtdAtual}
+                        totalValue={capacidade}
+                        size={170}
+                        outerColor="#d3d3d3"
+                        internalColor={corGrafico()}
+                        showText
+                        text={''}
+                        textStyle={{ color: 'black' }}
+                        innerColor={'#faf9f9'}
+                        showLabels
+                        labelStyle={{ color: 'blue' }}
+                        labelFormatter={number => `${number}`}
+                        showPercent
+                        percentStyle={{ color: 'black', fontSize: 22 }}
+                    />
 
-                <View>
-                    <Text>- Volume atual do tanque é de <Text style={{ fontWeight: 'bold' }}>{data.qtdAtual} litros</Text></Text>
-                    <Text>- Faltam <Text style={{ fontWeight: 'bold' }}>{data.qtdRestante} litros</Text> para completar o tanque</Text>
+                </View>
+
+                <View style={{ width: '95%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 10 }}></View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                        <Text style={{ fontWeight: 'bold' }}>Capacidade</Text>
+                        <Text>{capacidade} litros</Text>
+                    </View>
+                    <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                        <Text style={{ fontWeight: 'bold' }}>Volume atual</Text>
+                        <Text>{data.qtdAtual} litros</Text>
+                    </View>
+                    <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                        <Text style={{ fontWeight: 'bold' }}>Cabem</Text>
+                        <Text>{data.qtdRestante} litros</Text>
+                    </View>
                 </View>
 
             </TouchableOpacity>
-
-            <Modal
-                animationType='slide'
-                transparent={false}
-                visible={modalVisible}
-            >
-                <Map dataMap={data} onClose={handleCloseModal} />
-            </Modal>
 
         </View>
     );
@@ -91,23 +97,21 @@ const styles = StyleSheet.create({
     },
     cardButton: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     iconContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginVertical: 6,
+        justifyContent: 'space-around',
+        marginVertical: 10,
     },
     title: {
-        fontSize: 16, fontWeight: 'bold', marginLeft: 10
+        fontSize: 17, fontWeight: 'bold'
     },
     text: {
         fontWeight: 'normal'
     },
     goatImage: {
-        width: 30,
-        height: 30
+        width: 35,
+        height: 35
     }
 })

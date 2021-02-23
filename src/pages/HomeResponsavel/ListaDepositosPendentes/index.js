@@ -11,14 +11,19 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
-    let msgType = jsonIcon == 'error' ? error : success
+    let cancel = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user, loadListDepositos, loadListTanquesResponsavel, baseUrl } = useContext(AuthContext)
+    const errorChange = () => {
+        if (jsonIcon === 'error') return error
+        if (jsonIcon === 'success') return success
+        else return cancel
+    }
+
+    const { user, loadListDepositosResolvidos, loadListTanquesResponsavel, baseUrl } = useContext(AuthContext)
 
     const [confirmacao, setConfirmacao] = useState(false)
     const [idDeposito, setIdDeposito] = useState(data.id)
     const [efetuou, setEfetuou] = useState(user.nome)
-    const [isAction, setAction] = useState(Boolean)
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
@@ -42,7 +47,6 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
     const handleConfirm = () => {
         if (data.quantidade <= data.tanque.qtdRestante) {
             setJsonIcon('success')
-            setAction(true)
             setAlertSimpleInfo(true)
         } else {
             setJsonIcon('error')
@@ -59,54 +63,33 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         setIdDeposito(data.id)
         setEfetuou(user.nome)
         await confirmacaoDeposito(true, idDeposito, efetuou, '')
-        await loadListDepositos()
         await loadListTanquesResponsavel()
         setVisibleCard(false)
     }
 
-    //Função para cancelar a depósito
-    const handleCancel = () => {
-        setAction(false)
-        setAlertSimpleInfo(true)
-    }
-
     const doneCancel = async (observacao) => {
-        setAlertSimpleInfo(false)
+        setJsonIcon('cancel')
         setTypeMessage('Depósito cancelado com sucesso!')
         setAlertErroSuccess(true)
         setConfirmacao(false)
         setIdDeposito(data.id)
         setEfetuou(user.nome)
         await confirmacaoDeposito(false, idDeposito, efetuou, observacao)
-        await loadListDepositos()
-        await loadListTanquesResponsavel()
+        await loadListDepositosResolvidos()
         setVisibleCard(false)
     }
 
     const InfoAlertSimple = () => {
         if (isAlertSimpleInfo) {
-            if (isAction === false) {
-                return (
-                    <AlertSimpleInfo
-                        dataInfo={data}
-                        onConfirm={doneCancel}
-                        onClose={hideModalInfo}
-                        title='Aviso'
-                        message={'Deseja realmente CANCELAR este DEPÓSITO?'}
-                        action
-                    />
-                )
-            } else {
-                return (
-                    <AlertSimpleInfo
-                        dataInfo={data}
-                        onConfirm={doneConfirm}
-                        onClose={hideModalInfo}
-                        title='Aviso'
-                        message={'Deseja realmente CONFIRMAR este DEPÓSITO?'}
-                    />
-                )
-            }
+            return (
+                <AlertSimpleInfo
+                    dataInfo={data}
+                    onConfirm={doneConfirm}
+                    onClose={hideModalInfo}
+                    title='Aviso'
+                    message={'Deseja realmente CONFIRMAR este DEPÓSITO?'}
+                />
+            )
         }
     }
 
@@ -118,7 +101,7 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
                     title='Aviso'
                     message={typeMessage}
                     titleButton='Ok'
-                    jsonPath={msgType}
+                    jsonPath={errorChange()}
                     buttonColor={'#292b2c'}
                 />
             )
@@ -144,17 +127,19 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
             />
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={true}
                 visible={isVisibleCard}
             >
                 <ModalChoice
                     dataInfo={data}
+                    doneCancel={doneCancel}
                     hideModal={hideModal}
-                    handleCancel={handleCancel}
                     handleConfirm={handleConfirm}
                     titlePerfil={'Produtor: '}
                     infoPerfil={data.produtor.nome}
+                    statusTanque={data.tanque.status}
+                    obs={data.tanque.observacao}
                 />
             </Modal>
 

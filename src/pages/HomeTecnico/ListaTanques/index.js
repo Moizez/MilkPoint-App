@@ -1,124 +1,150 @@
-import React, { useState, useContext } from 'react'
-import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
+import React, { useState, useContext, useEffect } from 'react'
+import { Modal, View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWithoutFeedback } from 'react-native'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import Swipeable from 'react-native-gesture-handler/Swipeable'
 
-import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
 import GraficoTanque from '../../../components/GraficoTanque'
+import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
-import AlertInformation from '../../../components/AlertInformation'
 import Map from '../../../components/Map'
 import { AuthContext } from '../../../contexts/auth'
+import ModalUpdateTanque from '../../../components/ModalUpdateTanque'
+import ActionButton from '../../../components/ActionButton'
 
-export default function ListaTanques({ data }) {
+export default function ListaTanques({ data, onRefresh, onLoad }) {
 
-    const { user, loadListDepositosPendentes, baseUrl } = useContext(AuthContext)
+    const { baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
-    const [modalVisibleDois, setModalVisibleDois] = useState(false)
-    const [alertVisible, setAlertVisible] = useState(false)
+    const [modalObservation, setModalObservation] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
-    const [typeMessage, setTypeMessage] = useState('')
-    const [jsonIcon, setJsonIcon] = useState('error')
-
-    const [idProd, setIdProd] = useState(user.id)
     const [idTanque, setIdTanque] = useState(data.id)
-    const [qtdInfo, setQtdInfo] = useState()
+    const [modalUpdate, setModalUpdate] = useState(false)
+    const [alertVisible, setAlertVisible] = useState(false)
+    const [errorMsg, setErrorMsg] = useState('')
+    const [jsonIcon, setJsonIcon] = useState('error')
+    const [status, setStatus] = useState(false)
+    const [observation, setObservation] = useState('')
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
-    //Solicitação de retirada pelo laticinio
-    const requestDeposito = async (quantidade, idProd, idTanque) => {
-        const data = new FormData();
-        data.append("quantidade", quantidade);
-        data.append("idProd", idProd);
-        data.append("idTanque", idTanque);
+    const changeIconJson = (value) => setJsonIcon(value)
 
-        await fetch(`${baseUrl}deposito`, { method: 'POST', body: data })
-    };
+    const onChangeState = async (idTanque, status, observation) => {
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+        headers.append("Accept", 'application/json')
 
-    function handleDeposito(value) {
-        if (isNaN(value) || value <= 0) {
-            setJsonIcon('error')
-            setTypeMessage('Valor inválido, digite a quantidade novamente!')
-            setAlertVisible(true)
-        } else if (value > data.qtdRestante) {
-            setJsonIcon('error')
-            setTypeMessage('Seu depósito excede o valor máximo aceito pelo tanque!')
-            setAlertVisible(true)
-        } else {
-            setQtdInfo(value)
-            setJsonIcon('success')
-            setAlertInfo(true)
-        }
-        Keyboard.dismiss()
+        const data = { id: idTanque, status: status, observacao: observation }
+
+        await fetch(`${baseUrl}tanque/` + parseInt(idTanque),
+            {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(data)
+            })
     }
 
-    const handleConfirm = async (value) => {
+    useEffect(() => {
+        setStatus(data.status)
+    }, [])
+
+    const handleChangeStateInative = async () => {
+        if (data.depPendenteCount > 0 | data.retPendenteCount > 0) {
+            setStatus(false)
+            setJsonIcon('error')
+            setErrorMsg('Há depósitos ou retiradas pendentes, '
+                + 'deseja realmente inativa-lo?')
+            setModalObservation(true)
+        } else {
+            setStatus(false)
+            setErrorMsg('Deseja realmente inativar este tanque?')
+            setModalObservation(true)
+        }
+    }
+
+    const handleChangeStateActive = async () => {
+        setErrorMsg('Deseja realmente ativar este tanque?')
+        setStatus(true)
+        setAlertInfo(true)
+    }
+
+    const handleConfirm = async () => {
+        onLoad(true)
         setAlertInfo(false)
-        setTypeMessage('Depósito realizado com sucesso! Aguarde a confirmação.')
-        setAlertVisible(true)
-        setIdProd(user.id)
+        setModalObservation(false)
         setIdTanque(data.id)
-        await requestDeposito(value, idProd, idTanque)
-        loadListDepositosPendentes()
-        setModalVisibleDois(false)
-        setModalVisible(false)
+        await onChangeState(idTanque, status, observation)
+        await onRefresh()
+        onLoad(false)
     }
 
     const handleCloseModal = () => setModalVisible(false)
     const handleOpenModal = () => setModalVisible(true)
-    const handleOpenModalDois = () => setModalVisibleDois(true)
-    const handleCloseModalDois = () => setModalVisibleDois(false)
-    const closeAlertInfo = () => setAlertInfo(false)
+    const closeAlertInfo = () => {
+        setStatus(!status)
+        setAlertInfo(false)
+    }
+    const closeObservationModal = () => {
+        setObservation('')
+        setStatus(!status)
+        setModalObservation(false)
+    }
+    const closeModal = () => setModalUpdate(false)
     const closeAlertErroSuccess = () => setAlertVisible(false)
-
-    const ErrorSuccesAlert = () => {
-        if (alertVisible) {
-            return (
-                <AlertErrorSuccess
-                    onClose={closeAlertErroSuccess}
-                    title='Aviso'
-                    message={typeMessage}
-                    titleButton='Ok'
-                    jsonPath={msgType}
-                    buttonColor={'#292b2c'}
-                />
-            )
-        }
+    const showAlertErroSuccess = () => {
+        setErrorMsg('Tanque atualizado com sucesso!')
+        setAlertVisible(true)
     }
 
-    const InformationAlert = () => {
-        if (isAlertInfo) {
-            return (
-                <AlertInformation
-                    dataInfo={data}
-                    qtd={qtdInfo}
-                    onConfirm={handleConfirm}
-                    onClose={closeAlertInfo}
-                    title='Aviso'
-                    message={'Confirme os dados'}
-                />
-            )
-        }
+    const leftActions = () => {
+        return (
+            <TouchableOpacity onPress={() => setModalUpdate(true)} style={styles.actions}>
+                <Icon name='pencil' size={25} color={'#FFF'} />
+                <Text style={styles.actionText}>Editar</Text>
+            </TouchableOpacity>
+        )
+    }
+
+    const rightActions = () => {
+        return (
+            <>
+                {status ?
+                    <TouchableOpacity onPress={() => handleChangeStateInative()} style={{ ...styles.actions, backgroundColor: '#da1e37' }}>
+                        <Icon name='beaker-remove' size={25} color={'#FFF'} />
+                        <Text style={styles.actionText}>Inativar</Text>
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity onPress={() => handleChangeStateActive()} style={{ ...styles.actions, backgroundColor: '#2a9d8f' }}>
+                        <Icon name='beaker-check' size={25} color={'#FFF'} />
+                        <Text style={styles.actionText}>Ativar</Text>
+                    </TouchableOpacity>
+                }
+            </>
+        )
     }
 
     return (
         <View style={styles.container}>
-
-            <View style={styles.cardContainer} activeOpacity={0.7}>
-                <View style={styles.infoCard}>
-                    <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
-                    <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                    <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
-                    <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
+            <Swipeable
+                renderLeftActions={leftActions}
+                renderRightActions={rightActions}
+            >
+                <View style={styles.cardContainer} activeOpacity={0.7}>
+                    <View style={styles.infoCard}>
+                        <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
+                        <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
+                        <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
+                        <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
+                        <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
+                        {!data.status && <Text style={{ ...styles.textInfo, color: '#da1e37' }}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>}
+                    </View>
+                    <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
+                    <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
                 </View>
-
-                <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
-
-                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
-            </View>
+            </Swipeable>
 
             <Modal
                 animationType='slide'
@@ -130,22 +156,31 @@ export default function ListaTanques({ data }) {
             </Modal>
 
             <Modal
-                animationType='slide'
-                transparent={true}
-                visible={modalVisibleDois}
-            >
-                <ModalDepositoRetirada
-                    onConfirme={handleDeposito}
-                    onClose={handleCloseModalDois}
-                />
-            </Modal>
-
-            <Modal
                 animationType='fade'
                 transparent={true}
                 visible={isAlertInfo}
             >
-                {InformationAlert()}
+                {isAlertInfo &&
+                    <AlertSimpleInfo
+                        onConfirm={handleConfirm}
+                        onClose={closeAlertInfo}
+                        title='Aviso'
+                        message={errorMsg}
+                    />}
+            </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={false}
+                visible={modalUpdate}
+            >
+                <ModalUpdateTanque
+                    dataTanque={data}
+                    onRefresh={onRefresh}
+                    onCloseModal={closeModal}
+                    showAlertErroSuccess={showAlertErroSuccess}
+                    changeIconJson={changeIconJson}
+                />
             </Modal>
 
             <Modal
@@ -153,9 +188,87 @@ export default function ListaTanques({ data }) {
                 transparent={true}
                 visible={alertVisible}
             >
-                {ErrorSuccesAlert()}
+                {alertVisible &&
+                    <AlertErrorSuccess
+                        onClose={closeAlertErroSuccess}
+                        title='Aviso'
+                        message={errorMsg}
+                        titleButton='Ok'
+                        jsonPath={msgType}
+                        buttonColor={'#292b2c'}
+                    />
+                }
             </Modal>
 
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={modalObservation}
+            >
+                <>
+                    <TouchableWithoutFeedback onPress={() => setModalObservation(false)}>
+                        <View style={styles.offset} />
+                    </TouchableWithoutFeedback>
+                    <View style={styles.modalObservation}>
+                        <View style={styles.modalView}>
+                            <Text style={{ ...styles.textInfo, fontSize: 17, textAlign: 'center' }}>{errorMsg}</Text>
+                            <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
+                            <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                <View style={{ flex: 0.3, alignItems: 'center', justifyContent: 'center' }}>
+                                    <Icon name='comment-text-multiple' size={50} color='#adb5bd' />
+                                </View>
+                                <View style={{ flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-around' }}>
+                                    <TouchableOpacity style={styles.btnSuggestion} onPress={() => setObservation('Em manutenção')}>
+                                        <Text>Em manutenção</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.btnSuggestion} onPress={() => setObservation('Leite em análise')}>
+                                        <Text>Leite em análise</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.btnSuggestion} onPress={() => setObservation('Aguardando liberação')}>
+                                        <Text>Aguardando liberação</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.btnSuggestion} onPress={() => setObservation('Em testes')}>
+                                        <Text>Em testes</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
+                            <TextInput style={styles.input}
+                                placeholder='Por favor, informe o motivo'
+                                autoCorrect={true}
+                                autoCapitalize='sentences'
+                                multiline={true}
+                                defaultValue='Teste'
+                                value={observation}
+                                onChangeText={(text) => setObservation(text)}
+                            />
+
+                            <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around' }}>
+                                <ActionButton
+                                    onAction={closeObservationModal}
+                                    btnColor='#da1e37'
+                                    title='Fechar'
+                                    nameIcon='close-circle'
+                                />
+
+                                <View style={{ marginHorizontal: 8 }} />
+
+                                <ActionButton
+                                    onAction={() => handleConfirm(observation)}
+                                    btnColor='#2a9d8f'
+                                    title='Confirmar'
+                                    nameIcon='check-circle'
+                                />
+                            </View>
+                        </View>
+                    </View>
+                    <TouchableWithoutFeedback onPress={() => setModalObservation(false)}>
+                        <View style={styles.offset} />
+                    </TouchableWithoutFeedback>
+                </>
+            </Modal>
         </View >
     );
 }
@@ -185,7 +298,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
         padding: 6,
-
     },
     textInfo: {
         fontWeight: 'bold',
@@ -193,5 +305,83 @@ const styles = StyleSheet.create({
     },
     text: {
         fontWeight: 'normal'
-    }    
+    },
+    actions: {
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 3.85,
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        elevation: 5,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#0077b6',
+        width: 75
+    },
+    actionText: {
+        fontSize: 16,
+        color: '#FFF'
+    },
+    modalObservation: {
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalView: {
+        width: '95%',
+        backgroundColor: '#FFF',
+        borderRadius: 8,
+        padding: 10,
+        shadowColor: '#000',
+        shadowOpacity: 0.25,
+        shadowRadius: 3.85,
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        elevation: 5
+    },
+    offset: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+    },
+    input: {
+        backgroundColor: '#DDD',
+        textAlign: 'center',
+        fontSize: 17,
+        width: 320,
+        height: 60,
+        color: '#000',
+        marginVertical: 10,
+        padding: 15,
+        borderRadius: 8,
+    },
+    btnSuggestion: {
+        height: 35,
+        backgroundColor: '#adb5bd',
+        padding: 8,
+        borderRadius: 3,
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 3
+    }
 })
+
+/*/Função para deletar um tanque
+   const deleteTanque = async (idTanque) => {
+
+       const headers = new Headers();
+       headers.append("Content-Type", "application/json")
+       headers.append("Accept", 'application/json')
+
+       const data = { id: idTanque }
+
+       await fetch(`${baseUrl}tanque/${idTanque}`,
+           {
+               method: 'DELETE',
+               headers: headers,
+               body: JSON.stringify(data)
+           })
+   }*/

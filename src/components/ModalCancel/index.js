@@ -1,58 +1,87 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 
+import ActionButton from '../ActionButton'
+
 export default function ModalCancel({ dataTanque, onClose, onCancel }) {
 
-    let dayHour = moment(dataTanque.dataNow).locale('pt-br').format('LLL')
+    let dayHour = moment(dataTanque.dataNow).locale('pt-br').format('D [de] MMM [às] LT[h]')
 
     return (
-        <View style={styles.container}>
-            <View style={styles.modalView}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={styles.textInfo}>Informações sobre a solicitação</Text>
-                    <TouchableOpacity onPress={onClose}>
-                        <Icon name='close-circle' size={30} color={'#da1e37'} />
-                    </TouchableOpacity>
+        <>
+            <TouchableWithoutFeedback onPress={onClose}>
+                <View style={styles.offset} />
+            </TouchableWithoutFeedback>
+            <View style={styles.container}>
+                <View style={styles.modalView}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={styles.textInfo}>Informações sobre a solicitação</Text>
+                        <TouchableOpacity onPress={onClose}>
+                            <Icon name='close-box' size={30} color={'#da1e37'} />
+                        </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.viewMessage}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textMsgInfo}>Nome do tanque</Text>
+                                <Text style={styles.text}>{dataTanque.tanque.nome}</Text>
+                            </View>
+                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textMsgInfo}>Tipo do leite</Text>
+                                <Text style={styles.text}>{dataTanque.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text>
+                            </View>
+                        </View>
+                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textMsgInfo}>Valor solicitado</Text>
+                                <Text style={styles.text}>{dataTanque.quantidade} litros</Text>
+                            </View>
+                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
+                                <Text style={styles.textMsgInfo}>Data</Text>
+                                <Text style={styles.text}>{dayHour}</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 8 }}></View>
+
+                    <ActionButton
+                        onAction={onCancel}
+                        btnColor='#da1e37'
+                        title='Cancelar Solicitação'
+                        nameIcon='delete-circle'
+                        btnSize={'100%'}
+                    />
                 </View>
-                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 6 }}></View>
-
-                <View style={styles.viewMessage}>
-                    <Text style={styles.textMsgInfo}>Nome do tanque: <Text style={styles.text}>{dataTanque.tanque.nome}</Text></Text>
-                    <Text style={styles.textMsgInfo}>Tipo do leite: <Text style={styles.text}>{dataTanque.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
-                    <Text style={styles.textMsgInfo}>Valor solicitado: <Text style={styles.text}>{dataTanque.quantidade} litros</Text></Text>
-                    <Text style={styles.textMsgInfo}>Data: <Text style={styles.text}>{dayHour}h</Text></Text>
-                </View>
-
-                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginTop: 20 }}></View>
-
-                <TouchableOpacity
-                    style={{ ...styles.button, backgroundColor: '#da1e37' }}
-                    onPress={onCancel}
-                >
-                    <Text style={styles.btnStyle}>Cancelar Solicitação</Text>
-                </TouchableOpacity>
             </View>
-        </View>
-
+            <TouchableWithoutFeedback onPress={onClose}>
+                <View style={styles.offset} />
+            </TouchableWithoutFeedback>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: 'rgba(0,0,0,0.7)',
         justifyContent: 'center',
         alignItems: 'center',
     },
+    offset: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+    },
     modalView: {
         width: '95%',
-        margin: 10,
         backgroundColor: '#FFF',
-        borderRadius: 10,
-        padding: 15,
-        alignItems: 'center',
+        borderRadius: 8,
+        padding: 10,
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 3.85,
@@ -72,7 +101,7 @@ const styles = StyleSheet.create({
         marginTop: 15,
         width: '100%',
         backgroundColor: '#DDD',
-        borderRadius: 10,
+        borderRadius: 8,
         padding: 10,
     },
     button: {

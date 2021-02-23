@@ -6,7 +6,7 @@ import { Modal, StyleSheet, View, Text, TouchableOpacity, ImageBackground } from
 
 import ModalInfo from '../../components/ModalInfo'
 
-export default function Header({ msg, onOpen, calendar }) {
+export default function Header({ msg, onOpen, calendar, disabled }) {
 
     const perfilCover = () => {
         if (user.perfil == 1) {
@@ -52,7 +52,7 @@ export default function Header({ msg, onOpen, calendar }) {
                     </Text>
                 </View>
                 <View style={styles.containerNome}>
-                    <Text style={styles.nome}>Olá, {user.perfil == 3 ? user.nomeFantasia : user.apelido}</Text>
+                    <Text style={styles.nome}>Olá, {user.perfil == 3 ? user.nomeFantasia : user.nome}</Text>
                     <Text style={{ color: '#FFF', fontStyle: 'normal' }}>{user.email}</Text>
                 </View>
                 <View style={styles.containinerInfo}>
@@ -67,13 +67,13 @@ export default function Header({ msg, onOpen, calendar }) {
                 <View>
                     <Text style={styles.tituloBody}>{msg}</Text>
                 </View>
-                <TouchableOpacity onPress={onOpen}>
+                <TouchableOpacity onPress={onOpen} disabled={disabled}>
                     {calendar}
                 </TouchableOpacity>
             </View>
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={true}
                 visible={isVisible}
             >
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     },
     nome: {
         fontFamily: 'Lato',
-        fontSize: 25,
+        fontSize: 24,
         color: '#FFF'
     },
     editPhoto: {

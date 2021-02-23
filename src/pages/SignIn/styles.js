@@ -15,20 +15,22 @@ justify-content: center;
 export const Input = styled.TextInput.attrs({
     placeholderTextColor: '#343a40',
 })`
-background: #d3d3d3;
+background: #DDD;
 font-size: 18px;
-width: 90%;
+width: 85%;
+height: 50px;
 color: #000;
 margin-bottom: 15px;
 padding: 10px;
-border-radius: 8px;
+border-top-left-radius: 8px;
+border-bottom-left-radius: 8px;
 `;
 
 export const SubmitButton = styled.TouchableOpacity`
 align-items: center;
 justify-content: center;
 background-color: #292b2c;
-width: 90%;
+width: 103%;
 height: 45px;
 border-radius: 8px;
 margin-top: 10px;

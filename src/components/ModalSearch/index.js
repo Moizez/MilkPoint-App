@@ -1,112 +1,159 @@
 import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, TextInput, StyleSheet, TouchableWithoutFeedback } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
 import DatePicker from '../DatePicker'
+import ActionButton from '../ActionButton'
 
 export default function ModalSearch({
-    type, hideModal, changeCheck, checkDateDeposito, filterFifteenDaysDeposito,
-    filterOneMonthDeposito, checkDateRetirada, filterFifteenDaysRetirada,
-    filterOneMonthRetirada, filterCustomDays
+    type, hideModal, filterFifteenDays, findByName, onLoad,
+    filterOneMonth, filterCustomDays, closeSelectionModal
 }) {
 
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
+    const [value, setValue] = useState('')
 
     const onChange = (value) => {
+        closeSelectionModal()
+        hideModal()
+        onLoad(true)
         setShow(Platform.OS === 'ios')
         setSelectedDate(value)
         filterCustomDays(value)
-        hideModal()
+        onLoad(false)
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.containerModal}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={{ ...styles.textInfo, marginRight: 15 }}>Busca personalizada: {type ? 'DEPÓSITOS' : 'RETIRADAS'}</Text>
-                    <TouchableOpacity onPress={hideModal}>
-                        <Icon name='close-circle' size={30} color={'#da1e37'} />
-                    </TouchableOpacity>
+        <>
+            <TouchableWithoutFeedback onPress={hideModal}>
+                <View style={styles.offset} />
+            </TouchableWithoutFeedback>
+            <View style={styles.container}>
+                <View style={styles.containerModal}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ ...styles.textInfo, marginRight: 15 }}>Busca personalizada: {type ? 'DEPÓSITOS' : 'RETIRADAS'}</Text>
+                        <TouchableOpacity onPress={hideModal}>
+                            <Icon name='close-box' size={28} color={'#da1e37'} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#DDD', marginVertical: 5 }}></View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                        <ActionButton
+                            onAction={() => {
+                                closeSelectionModal()
+                                hideModal()
+                                onLoad(true)
+                                filterFifteenDays()
+                                onLoad(false)
+                            }}
+                            btnColor='#e9c46a'
+                            title='Últimos 15 dias'
+                            nameIcon='calendar-range'
+                            fontSize={16}
+                            iconSize={25}
+                            btnSize='48%'
+                            colorText='#000'
+                            colorIcon='#000'
+                            marginRight={12}
+                        />
+
+                        <ActionButton
+                            onAction={() => {
+                                closeSelectionModal()
+                                hideModal()
+                                onLoad(true)
+                                filterOneMonth()
+                                onLoad(false)
+                            }}
+                            btnColor='#e76f51'
+                            title='Últimos 30 dias'
+                            nameIcon='calendar-month'
+                            btnSize='48%'
+                            fontSize={16}
+                            iconSize={25}
+                            colorText='#000'
+                            colorIcon='#000'
+                            marginRight={12}
+                        />
+                    </View>
+                    <View style={{ alignItems: 'center' }}>
+                        <Text style={styles.textDays}>Selecione a data inicial da busca</Text>
+                        <ActionButton
+                            onAction={() => setShow(true)}
+                            btnColor='#adb5bd'
+                            title={moment(selectedDate).locale('pt-br').format('dddd, D [de] MMMM [de] YYYY')}
+                            nameIcon='calendar-search'
+                            btnSize='98%'
+                            fontSize={16}
+                            iconSize={25}
+                            colorText='#000'
+                            colorIcon='#000'
+                        />
+
+                    </View>
+                    <View>
+                        <Text style={styles.textDays}>Busca por nome do {type ? 'produtor' : 'laticínio'}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', marginVertical: 2 }}>
+                            <TextInput style={styles.input}
+                                placeholder='Digite um nome'
+                                autoCorrect={false}
+                                autoCapitalize='sentences'
+                                keyboardType='default'
+                                value={value}
+                                onChangeText={setValue}
+                            />
+                            <View style={{ marginHorizontal: 5 }} />
+                            <ActionButton
+                                onAction={() => {
+                                    if (value) {
+                                        closeSelectionModal()
+                                        hideModal()
+                                        findByName(value)
+                                        setValue('')
+                                    } else { setAlertVisible(true) }
+                                }}
+                                btnColor={type ? '#2a9d8f' : '#da1e37'}
+                                nameIcon='magnify'
+                                btnSize={50}
+                            />
+                        </View>
+                    </View>
                 </View>
 
-                <View style={{ width: '100%', height: 0.5, backgroundColor: '#DDD', marginVertical: 5 }}></View>
-
-                {type ?
-                    <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity style={styles.someDays} onPress={() => {
-                            filterFifteenDaysDeposito()
-                            hideModal()
-                        }}>
-                            <Text style={styles.textDays}>Últimos 15 dias</Text>
-                            <Icon name='calendar-clock' size={25} color={'#000'} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ ...styles.someDays, marginLeft: 10, backgroundColor: '#e76f51' }} onPress={() => {
-                            filterOneMonthDeposito()
-                            hideModal()
-                        }}>
-                            <Text style={styles.textDays}>Últimos 30 dias</Text>
-                            <Icon name='calendar-clock' size={25} color={'#000'} />
-                        </TouchableOpacity>
-                    </View>
-
-                    : <View style={{ flexDirection: 'row' }}>
-                        <TouchableOpacity style={styles.someDays} onPress={() => {
-                            filterFifteenDaysRetirada()
-                            hideModal()
-                        }}>
-                            <Text style={styles.textDays}>Últimos 15 dias</Text>
-                            <Icon name='calendar-clock' size={25} color={'#000'} />
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{ ...styles.someDays, marginLeft: 10, backgroundColor: '#e76f51' }} onPress={() => {
-                            filterOneMonthRetirada()
-                            hideModal()
-                        }}>
-                            <Text style={styles.textDays}>Últimos 30 dias</Text>
-                            <Icon name='calendar-clock' size={25} color={'#000'} />
-                        </TouchableOpacity>
-                    </View>
+                {
+                    show && (
+                        <DatePicker
+                            date={selectedDate}
+                            onChange={onChange}
+                            display='spinner'
+                        />)
                 }
-
-                <View style={{ alignItems: 'center' }}>
-                    <Text style={styles.textDays}>Selecione a data inicial da busca:</Text>
-                    <TouchableOpacity style={styles.dateSearch} onPress={() => setShow(true)}>
-                        <Text style={styles.textDays}>{moment(selectedDate).locale('pt-br').format('dddd, D [de] MMMM [de] YYYY')}</Text>
-                        <Icon name='calendar' size={25} color={'#000'} />
-                    </TouchableOpacity>
-                </View>
-
             </View>
-
-            {
-                show && (
-                    <DatePicker
-                        date={selectedDate}
-                        onChange={onChange}
-                        display='spinner'
-                    />)
-            }
-
-        </View>
+            <TouchableWithoutFeedback onPress={hideModal}>
+                <View style={styles.offset} />
+            </TouchableWithoutFeedback>
+        </>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: 'rgba(0,0,0,0.7)',
         justifyContent: 'center',
         alignItems: 'center',
     },
+    offset: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+    },
     containerModal: {
         width: '95%',
-        margin: 10,
         backgroundColor: '#FFF',
-        borderRadius: 10,
-        padding: 15,
-        alignItems: 'center',
+        borderRadius: 8,
+        padding: 10,
         shadowColor: '#000',
         shadowOpacity: 0.25,
         shadowRadius: 3.85,
@@ -119,20 +166,12 @@ const styles = StyleSheet.create({
     input: {
         backgroundColor: '#DDD',
         textAlign: 'center',
-        fontSize: 18,
-        width: '90%',
+        fontSize: 17,
+        width: '79%',
+        height: 45,
         color: '#000',
-        marginTop: 15,
-        marginBottom: 15,
         padding: 10,
-        borderRadius: 8,
-    },
-    button: {
         borderRadius: 5,
-        padding: 10,
-        elevation: 2,
-        width: '90%',
-        marginTop: 8,
     },
     textInfo: {
         fontWeight: 'bold',
@@ -140,33 +179,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginRight: 25,
     },
-    btnStyle: {
-        color: '#FFF',
-        textAlign: 'center',
-        fontSize: 20,
-    },
-    someDays: {
-        backgroundColor: '#e9c46a',
-        height: 35,
-        padding: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 3,
-        marginVertical: 15,
-        flexDirection: 'row',
-    },
-    dateSearch: {
-        backgroundColor: '#adb5bd',
-        height: 35,
-        padding: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 3,
-        marginVertical: 15,
-        flexDirection: 'row'
-    },
     textDays: {
+        marginTop: 10,
         fontSize: 16,
-        marginRight: 5
+        textAlign: 'center'
     }
 })

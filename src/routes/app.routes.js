@@ -4,19 +4,21 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import { AuthContext } from '../contexts/auth'
 
+//Páginas comuns a todos
+import DetalhesTanque from '../pages/DetalhesTanque'
+import TelaConfiguracao from '../pages/TelaConfiguracao'
+
 //Páginas TAB do Produtor
 import HomeProdutor from '../pages/HomeProdutor'
 import TelaHistoricoProdutor from '../pages/HomeProdutor/TelaHistoricoProdutor'
 import TelaDepositosPendentesProdutor from '../pages/HomeProdutor/TelaDepositosPendentesProdutor'
-import TelaConfiguracaoProdutor from '../pages/HomeProdutor/TelaConfiguracaoProdutor'
 import TelaPerfilProdutor from '../pages/HomeProdutor/TelaPerfilProdutor'
-import DetalhesTanque from '../pages/DetalhesTanque'
+
 
 //Páginas TAB do Laticínio
 import HomeLaticinio from '../pages/HomeLaticinio'
 import TelaHistoricoLaticinio from '../pages/HomeLaticinio/TelaHistoricoLaticinio'
 import TelaRetiradasPendentesLaticinio from '../pages/HomeLaticinio/TelaRetiradasPendentesLaticinio'
-import TelaConfiguracaoLaticinio from '../pages/HomeLaticinio/TelaConfiguracaoLaticinio'
 import TelaPerfilLaticinio from '../pages/HomeLaticinio/TelaPerfilLaticinio'
 
 //Páginas TAB do Responsável
@@ -24,12 +26,10 @@ import HomeResponsavel from '../pages/HomeResponsavel'
 import TelaDepositosPendentesResponsavel from '../pages/HomeResponsavel/TelaDepositosPendentesResponsavel'
 import TelaRetiradasPendentesResponsavel from '../pages/HomeResponsavel/TelaRetiradasPendentesResponsavel'
 import TelaHistoricoResponsavel from '../pages/HomeResponsavel/TelaHistoricoResponsavel'
-import TelaConfiguracaoResponsavel from '../pages/HomeResponsavel/TelaConfiguracaoResponsavel'
 import TelaPerfilResponsavel from '../pages/HomeResponsavel/TelaPerfilResponsavel'
 
 //Páginas TAB do Técnico
 import HomeTecnico from '../pages/HomeTecnico'
-import TelaConfiguracaoTecnico from '../pages/HomeTecnico/TelaConfiguracaoTecnico'
 import TelaProdutores from '../pages/HomeTecnico/TelaProdutores'
 import TelaLaticinios from '../pages/HomeTecnico/TelaLaticinios'
 import TelaResponsaveis from '../pages/HomeTecnico/TelaResponsaveis'
@@ -85,7 +85,7 @@ function ResponsavelTab() {
                 }}
 
             />
-            <AppTab.Screen name='Mais' component={TelaConfiguracaoResponsavel}
+            <AppTab.Screen name='Mais' component={TelaConfiguracao}
                 options={{
                     tabBarLabel: 'Mais',
                     tabBarIcon: ({ }) => (
@@ -147,7 +147,7 @@ function ProdutorTab() {
                     ),
                 }}
             />
-            <AppTab.Screen name='Mais' component={TelaConfiguracaoProdutor}
+            <AppTab.Screen name='Mais' component={TelaConfiguracao}
                 options={{
                     tabBarLabel: 'Mais',
                     tabBarIcon: ({ }) => (
@@ -211,7 +211,7 @@ function LaticinioTab() {
                     ),
                 }}
             />
-            <AppTab.Screen name='Mais' component={TelaConfiguracaoLaticinio}
+            <AppTab.Screen name='Mais' component={TelaConfiguracao}
                 options={{
                     tabBarLabel: 'Mais',
                     tabBarIcon: ({ }) => (
@@ -276,12 +276,12 @@ function TecnicoTab() {
                 options={{
                     tabBarLabel: 'Responsáveis',
                     tabBarIcon: ({ }) => (
-                        <Icon name="account-cog" color={'#fca311'} size={33} />
+                        <Icon name="account-hard-hat" color={'#fca311'} size={33} />
                     ),
                 }}
 
             />
-            <AppTab.Screen name='Mais' component={TelaConfiguracaoTecnico}
+            <AppTab.Screen name='Mais' component={TelaConfiguracao}
                 options={{
                     tabBarLabel: 'Mais',
                     tabBarIcon: ({ }) => (

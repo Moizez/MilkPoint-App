@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import ListaRetiradasPendentes from '../ListaRetiradasPendentes'
 import Header from '../../../components/Header'
+import Loader from '../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -13,20 +14,16 @@ import {
 
 export default function TelaRetiradasPendentesLaticinio() {
 
-    const { user, loadListRetiradasPendentes, retiradaPendente } = useContext(AuthContext)
+    const { loadListPendentesLaticinio, retiradaPendenteLaticinio, loadingPages } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
 
-    const retiradasPendentes = retiradaPendente.filter(function (retirada) {
-        return retirada.laticinio.id == user.id
-    })
-
     useEffect(() => {
-        loadListRetiradasPendentes()
+        loadListPendentesLaticinio()
     }, [])
 
-    async function onRefreshList() {
+    const onRefreshList = async () => {
         setIsRefreshing(true)
-        await loadListRetiradasPendentes()
+        await loadListPendentesLaticinio()
         setIsRefreshing(false)
     }
 
@@ -35,13 +32,13 @@ export default function TelaRetiradasPendentesLaticinio() {
             <Header msg={'Lista de retiradas pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={retiradasPendentes}
+                data={retiradaPendenteLaticinio}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <ListaRetiradasPendentes data={item} onRefresh={onRefreshList} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registro de transações!</NomeAviso>
+                        <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
                         <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
                         <BoxIconAviso>
                             <BoxIconUpdate>
@@ -50,11 +47,12 @@ export default function TelaRetiradasPendentesLaticinio() {
                             </BoxIconUpdate>
                             <BoxIconDelete>
                                 <Icon name='gesture-tap-hold' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e segure para cancelar uma retirada</NomeAviso>
+                                <NomeAviso>Clique para cancelar uma retirada</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
+            {loadingPages && !isRefreshing && <Loader />}
         </Container>
     );
 }

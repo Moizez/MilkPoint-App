@@ -1,21 +1,18 @@
-import React, { useState, useContext } from 'react'
-import { FAB } from 'react-native-paper'
+import React, { useState, useContext, useEffect } from 'react'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 
-import Map from '../../../components/Map'
-import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
+import ModalRetirada from '../../../components/ModalRetirada'
 import GraficoTanque from '../../../components/GraficoTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
 
 import { AuthContext } from '../../../contexts/auth'
 
-export default function ListaTanques({ data }) {
+export default function ListaTanques({ data, loadTanques }) {
 
-    const { user, loadListRetiradasPendentes, baseUrl } = useContext(AuthContext)
+    const { user, loadListPendentesLaticinio, baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
-    const [modalVisibleDois, setModalVisibleDois] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
@@ -25,14 +22,13 @@ export default function ListaTanques({ data }) {
     const [idTanque, setIdTanque] = useState(data.id)
     const [qtdInfo, setQtdInfo] = useState()
 
-    //Fab button
-    const [state, setState] = useState({ open: false })
-    const onStateChange = ({ open }) => setState({ open })
-    const { open } = state
-
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
+
+    useEffect(() => {
+        loadTanques()
+    }, [])
 
     //Solicitação de retirada pelo laticinio
     const requestRetirada = async (quantidade, idLat, idTanque) => {
@@ -44,19 +40,34 @@ export default function ListaTanques({ data }) {
         await fetch(`${baseUrl}retirada`, { method: 'POST', body: data })
     };
 
-    function handleRetirada(value) {
-        if (isNaN(value) || value <= 0) {
-            setJsonIcon('error')
-            setTypeMessage('Valor inválido, digite a quantidade novamente!')
-            setAlertVisible(true)
-        } else if (value > data.qtdAtual) {
-            setJsonIcon('error')
-            setTypeMessage('Sua retirada excede o valor máximo aceito pelo tanque!')
-            setAlertVisible(true)
+    const handleRetirada = async (value) => {
+        if (data.status) {
+            if (data.qtdAtual == 0) {
+                setJsonIcon('error')
+                setTypeMessage('O tanque está vazio!')
+                setAlertVisible(true)
+            } else if (isNaN(value) || value <= 0) {
+                setJsonIcon('error')
+                setTypeMessage('Valor inválido, digite a quantidade novamente!')
+                setAlertVisible(true)
+            } else if (data.qtdAtual == 0) {
+                setJsonIcon('error')
+                setTypeMessage('O tanque está vazio!')
+                setAlertVisible(true)
+            } else if (value > data.qtdAtual) {
+                setJsonIcon('error')
+                setTypeMessage('Sua retirada excede o valor máximo aceito pelo tanque!')
+                setAlertVisible(true)
+            } else {
+                setQtdInfo(value)
+                setJsonIcon('success')
+                setAlertInfo(true)
+            }
         } else {
-            setQtdInfo(value)
-            setJsonIcon('success')
-            setAlertInfo(true)
+            await loadTanques()
+            setJsonIcon('error')
+            setTypeMessage('Este tanque está inativo!')
+            setAlertVisible(true)
         }
         Keyboard.dismiss()
     }
@@ -68,14 +79,12 @@ export default function ListaTanques({ data }) {
         setIdLat(user.id)
         setIdTanque(data.id)
         await requestRetirada(value, idLat, idTanque)
-        loadListRetiradasPendentes()
-        setModalVisibleDois(false)
+        loadListPendentesLaticinio()
         setModalVisible(false)
     }
 
     const handleCloseModal = () => setModalVisible(false)
     const handleOpenModal = () => setModalVisible(true)
-    const handleCloseModalDois = () => setModalVisibleDois(false)
     const closeAlertInfo = () => { setAlertInfo(false) }
     const closeAlertErroSuccess = () => setAlertVisible(false)
     const changeRetirada = () => setRetiradaTotal(true)
@@ -119,62 +128,24 @@ export default function ListaTanques({ data }) {
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
                     <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
                     <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                    <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
+                    <Text style={styles.textInfo}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                     <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
+                    {!data.status && <Text style={{ ...styles.textInfo, color: '#da1e37' }}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>}
                 </View>
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
-                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
+                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} activeTanque={data.status ? false : true} />
             </View>
 
             <Modal
-                animationType='slide'
-                transparent={false}
+                animationType='fade'
+                transparent={true}
                 visible={modalVisible}
             >
-                <Map dataMap={data} onClose={handleCloseModal} />
-
-                <FAB.Group
-                    fabStyle={{ backgroundColor: '#da1e37', borderWidth: 2, borderColor: '#FFF' }}
-                    color={'#292b2c'}
-                    open={open}
-                    icon={open ? 'close' : 'basket-unfill'}
-                    actions={[
-                        {
-                            icon: 'gauge-full',
-                            label: 'Retirada total',
-                            color: '#da1e37',
-                            onPress: () => {
-                                let valor = data.qtdAtual
-                                handleRetirada(valor)
-                            },
-                        },
-                        {
-                            icon: 'numeric',
-                            label: 'Retirada parcial',
-                            color: '#da1e37',
-                            onPress: () => setModalVisibleDois(true),
-                        },
-                    ]}
-                    onStateChange={onStateChange}
-                    onPress={() => {
-                        if (open) {
-                            // do something if the speed dial is open
-                        }
-                    }}
-                />
-
-            </Modal>
-
-            <Modal
-                animationType='slide'
-                transparent={true}
-                visible={modalVisibleDois}
-            >
-                <ModalDepositoRetirada
+                <ModalRetirada
                     onConfirme={handleRetirada}
-                    onClose={handleCloseModalDois}
+                    onClose={handleCloseModal}
                     onChange={changeRetirada}
                     data={data}
                 />

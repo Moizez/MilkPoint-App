@@ -6,8 +6,7 @@ import LottieView from 'lottie-react-native'
 import { AuthContext } from '../../contexts/auth'
 import AlertSimpleInfo from '../../components/AlertSimpleInfo'
 
-export default function OptionsScreen() {
-
+export default function TelaConfiguracao() {
     const { logOut } = useContext(AuthContext)
     const [isAlertInfo, setAlertInfo] = useState(false)
 
@@ -92,7 +91,7 @@ export default function OptionsScreen() {
 
             <View style={styles.versionContainer}>
                 <Text>Milk Point</Text>
-                <Text style={{ color: '#adb5bd' }}>Versão 1.1</Text>
+                <Text style={{ color: '#adb5bd' }}>Versão 2020.11.15</Text>
             </View>
             <LottieView style={{ height: 48, marginTop: 2 }} source={require('../../assets/lottie/farm-icon.json')} autoPlay loop />
         </View >

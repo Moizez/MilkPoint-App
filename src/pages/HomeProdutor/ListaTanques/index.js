@@ -1,20 +1,20 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
-import { FAB } from 'react-native-paper'
+import AsyncStorage from '@react-native-community/async-storage'
+import moment from 'moment'
+import 'moment/locale/pt-br'
 
-import ModalDepositoRetirada from '../../../components/ModalDepositoRetirada'
+import ModalDeposito from '../../../components/ModalDeposito'
 import GraficoTanque from '../../../components/GraficoTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
-import Map from '../../../components/Map'
 import { AuthContext } from '../../../contexts/auth'
 
-export default function ListaTanques({ data }) {
+export default function ListaTanques({ data, loadTanques }) {
 
-    const { user, loadListDepositosPendentes, baseUrl } = useContext(AuthContext)
+    const { user, loadListPendentesProdutor, baseUrl } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
-    const [modalVisibleDois, setModalVisibleDois] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
@@ -28,8 +28,35 @@ export default function ListaTanques({ data }) {
     let success = require('../../../assets/lottie/success-icon.json')
     let msgType = jsonIcon == 'error' ? error : success
 
-    //Solicitação de retirada pelo laticinio
+    useEffect(() => {
+        loadTanques()
+    }, [])
+
+    //Enviar SMS
+    const sendSms = async (value) => {
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+        headers.append("Accept", 'application/json')
+
+        const data = {
+            phoneNumber: user.phoneNumber,
+            message: `\n
+            Solicitação de DEPÓSITO do produtor ${user.nome}:
+            - Quantidade: ${value} litros;
+            - Data: ${moment(new Date()).locale('pt-br').format('L')}.`
+        }
+
+        await fetch('https://milkpoint.herokuapp.com/api/sms',
+            {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(data)
+            })
+    }
+
+    //Solicitação de depósito pelo produtor
     const requestDeposito = async (quantidade, idProd, idTanque) => {
+
         const data = new FormData();
         data.append("quantidade", quantidade);
         data.append("idProd", idProd);
@@ -38,19 +65,50 @@ export default function ListaTanques({ data }) {
         await fetch(`${baseUrl}deposito`, { method: 'POST', body: data })
     };
 
-    function handleDeposito(value) {
-        if (isNaN(value) || value <= 0) {
-            setJsonIcon('error')
-            setTypeMessage('Valor inválido, digite a quantidade novamente!')
-            setAlertVisible(true)
-        } else if (value > data.qtdRestante) {
-            setJsonIcon('error')
-            setTypeMessage('Seu depósito excede o valor máximo aceito pelo tanque!')
-            setAlertVisible(true)
+    const saveDepositoAsync = async (quantidade, idProd, idTanque) => {
+        const deposito = {
+            quantidade: quantidade,
+            idProd: idProd,
+            idTanque: idTanque
+        }
+
+        const existeDeposito = await AsyncStorage.getItem('@Deposito')
+
+        let novoDeposito = JSON.parse(existeDeposito);
+        if (!novoDeposito) {
+            novoDeposito = []
+            novoDeposito.push(deposito)
+        }
+
+        //let id = String(Math.floor(Math.random() * 10000))
+        await AsyncStorage.setItem('@deposito', JSON.stringify(novoDeposito)).then(() => {
+            console.log('Salvo com sucesso!')
+        })
+            .catch(() => {
+                console.log('Erro ao salvar!')
+            })
+    }
+
+    const handleDeposito = async (value) => {
+        if (data.status) {
+            if (isNaN(value) || value <= 0) {
+                setJsonIcon('error')
+                setTypeMessage('Valor inválido, digite a quantidade novamente!')
+                setAlertVisible(true)
+            } else if (value > data.qtdRestante) {
+                setJsonIcon('error')
+                setTypeMessage('Seu depósito excede o valor máximo aceito pelo tanque!')
+                setAlertVisible(true)
+            } else {
+                setQtdInfo(value)
+                setJsonIcon('success')
+                setAlertInfo(true)
+            }
         } else {
-            setQtdInfo(value)
-            setJsonIcon('success')
-            setAlertInfo(true)
+            await loadTanques()
+            setJsonIcon('error')
+            setTypeMessage(`Este tanque está inativo!`)
+            setAlertVisible(true)
         }
         Keyboard.dismiss()
     }
@@ -61,48 +119,17 @@ export default function ListaTanques({ data }) {
         setAlertVisible(true)
         setIdProd(user.id)
         setIdTanque(data.id)
+        //await saveDepositoAsync(value, idProd, idTanque)
         await requestDeposito(value, idProd, idTanque)
-        loadListDepositosPendentes()
-        setModalVisibleDois(false)
+        //sendSms(value)
+        loadListPendentesProdutor()
         setModalVisible(false)
     }
 
     const handleCloseModal = () => setModalVisible(false)
     const handleOpenModal = () => setModalVisible(true)
-    const handleOpenModalDois = () => setModalVisibleDois(true)
-    const handleCloseModalDois = () => setModalVisibleDois(false)
     const closeAlertInfo = () => setAlertInfo(false)
     const closeAlertErroSuccess = () => setAlertVisible(false)
-
-    const ErrorSuccesAlert = () => {
-        if (alertVisible) {
-            return (
-                <AlertErrorSuccess
-                    onClose={closeAlertErroSuccess}
-                    title='Aviso'
-                    message={typeMessage}
-                    titleButton='Ok'
-                    jsonPath={msgType}
-                    buttonColor={'#292b2c'}
-                />
-            )
-        }
-    }
-
-    const InformationAlert = () => {
-        if (isAlertInfo) {
-            return (
-                <AlertInformation
-                    dataInfo={data}
-                    qtd={qtdInfo}
-                    onConfirm={handleConfirm}
-                    onClose={closeAlertInfo}
-                    title='Aviso'
-                    message={'Confirme os dados'}
-                />
-            )
-        }
-    }
 
     return (
         <View style={styles.container}>
@@ -112,40 +139,24 @@ export default function ListaTanques({ data }) {
                     <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
                     <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
                     <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                    <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
+                    <Text style={styles.textInfo}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
                     <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
+                    {!data.status && <Text style={{ ...styles.textInfo, color: '#da1e37' }}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>}
                 </View>
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
-                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
+                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} activeTanque={data.status ? false : true} />
             </View>
 
             <Modal
-                animationType='slide'
-                transparent={false}
+                animationType='fade'
+                transparent={true}
                 visible={modalVisible}
             >
-                <Map dataMap={data} onClose={handleCloseModal} />
-
-                <FAB
-                    style={styles.fab}
-                    small={false}
-                    icon="basket-fill"
-                    color='#292b2c'
-                    onPress={() => setModalVisibleDois(true)}
-                />
-
-            </Modal>
-
-            <Modal
-                animationType='slide'
-                transparent={true}
-                visible={modalVisibleDois}
-            >
-                <ModalDepositoRetirada
+                <ModalDeposito
                     onConfirme={handleDeposito}
-                    onClose={handleCloseModalDois}
+                    onClose={handleCloseModal}
                 />
             </Modal>
 
@@ -154,7 +165,16 @@ export default function ListaTanques({ data }) {
                 transparent={true}
                 visible={isAlertInfo}
             >
-                {InformationAlert()}
+                {isAlertInfo &&
+                    <AlertInformation
+                        dataInfo={data}
+                        qtd={qtdInfo}
+                        onConfirm={handleConfirm}
+                        onClose={closeAlertInfo}
+                        title='Aviso'
+                        message={'Confirme os dados'}
+                    />
+                }
             </Modal>
 
             <Modal
@@ -162,7 +182,16 @@ export default function ListaTanques({ data }) {
                 transparent={true}
                 visible={alertVisible}
             >
-                {ErrorSuccesAlert()}
+                {alertVisible &&
+                    <AlertErrorSuccess
+                        onClose={closeAlertErroSuccess}
+                        title='Aviso'
+                        message={typeMessage}
+                        titleButton='Ok'
+                        jsonPath={msgType}
+                        buttonColor={'#292b2c'}
+                    />
+                }
             </Modal>
 
         </View >
@@ -201,7 +230,7 @@ const styles = StyleSheet.create({
         fontSize: 14.5,
     },
     text: {
-        fontWeight: 'normal'
+        fontWeight: 'normal',
     },
     fab: {
         position: 'absolute',
