@@ -10,7 +10,7 @@ export default function ForgotPassword() {
     return (
         <Container>
             <BoxInput>
-                <Titulo>Recuperar senha:</Titulo>
+                <Titulo>Recuperar senha</Titulo>
                 <AreaInput>
                     <Input
                         placeholder="E-mail"

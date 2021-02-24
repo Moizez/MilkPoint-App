@@ -93,10 +93,6 @@ export default function SignIn() {
                     }}
                         source={require('../../assets/images/mkLogo.png')} />
                 </BoxImage>
-<<<<<<< HEAD
-=======
-                <Text style={styles.text}>Realize sua autenticação</Text>
->>>>>>> e7f9fa68f2d5af43da7219c751df41d9ac350a74
                 <Animated.View
                     style={[
                         styles.boxInput,
@@ -107,10 +103,7 @@ export default function SignIn() {
                             ]
                         }
                     ]}>
-<<<<<<< HEAD
                     <Text style={styles.text}>Realize sua autenticação</Text>
-=======
->>>>>>> e7f9fa68f2d5af43da7219c751df41d9ac350a74
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Input style={styles.input}
                             placeholder='E-mail'
@@ -187,5 +180,6 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 18,
+        marginBottom: 12
     }
 })
