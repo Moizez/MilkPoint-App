@@ -8,6 +8,7 @@ import api from '../../services/api'
 
 import { AuthContext } from '../../contexts/auth'
 import Map from '../../components/Map'
+import { numberToReal } from '../../components/Helpers'
 
 export default function DetalhesTanque({ route }) {
 
@@ -54,8 +55,8 @@ export default function DetalhesTanque({ route }) {
     //Soma de todos os depositos confirmados desde a criação do tanque
     const somar = (acumulado, x) => acumulado + x
     const totalDepositos = dataDeposito.map(s => s.quantidade).reduce(somar, 0)
-    const valorTotalDepositos = dataDeposito.map(s => s.valor).reduce(somar, 0)
-
+    const valorTotalDepositos = numberToReal(dataDeposito.map(s => s.valor).reduce(somar, 0))
+    
     //Soma dos depositos dos últimos 15 dias
     const depDays = moment().locale('en').subtract(15, 'days').format('L')
     const depFifteenDays = dataDeposito.filter(function (q) {
@@ -63,7 +64,7 @@ export default function DetalhesTanque({ route }) {
         return moment(regDay).isSameOrAfter(depDays, 'days')
     })
     const totalQuinzenal = depFifteenDays.map(qtd => qtd.quantidade).reduce(somar, 0)
-    const valorDepositosQuinzenal = depFifteenDays.map(s => s.valor).reduce(somar, 0)
+    const valorDepositosQuinzenal = numberToReal(depFifteenDays.map(s => s.valor).reduce(somar, 0))
 
     //Soma dos depositos dos últimos 30 dias
     const oneMonth = moment().locale('en').subtract(1, 'month').format('L')
@@ -72,11 +73,11 @@ export default function DetalhesTanque({ route }) {
         return moment(regDay).isSameOrAfter(oneMonth, 'days')
     })
     const totalMensal = depOneMonth.map(qtd => qtd.quantidade).reduce(somar, 0)
-    const valorDepositosMensal = depOneMonth.map(s => s.valor).reduce(somar, 0)
+    const valorDepositosMensal = numberToReal(depOneMonth.map(s => s.valor).reduce(somar, 0))
 
     //Soma de todas as retiradas confirmadas desde a criação do tanque
     const totalRetitadas = dataRetirada.map(s => s.quantidade).reduce(somar, 0)
-    const valorTotalRetiradas = dataRetirada.map(s => s.valor).reduce(somar, 0)
+    const valorTotalRetiradas = numberToReal(dataRetirada.map(s => s.valor).reduce(somar, 0))
 
     //Soma das retiradas dos últimos 15 dias
     const retDays = moment().locale('en').subtract(15, 'days').format('L')
@@ -85,7 +86,7 @@ export default function DetalhesTanque({ route }) {
         return moment(regDay).isSameOrAfter(retDays, 'days')
     })
     const totalRetQuinzenal = retFifteenDays.map((qtd) => qtd.quantidade).reduce(somar, 0)
-    const valorRetiradasQuinzenal = retFifteenDays.map(s => s.valor).reduce(somar, 0)
+    const valorRetiradasQuinzenal = numberToReal(retFifteenDays.map(s => s.valor).reduce(somar, 0))
 
     //Soma das retiradas dos últimos 30 dias
     const oneMonthRet = moment().locale('en').subtract(1, 'month').format('L')
@@ -94,14 +95,14 @@ export default function DetalhesTanque({ route }) {
         return moment(regDay).isSameOrAfter(oneMonthRet, 'days')
     })
     const totalRetMensal = retOneMonth.map((qtd) => qtd.quantidade).reduce(somar, 0)
-    const valorRetiradasMensal = retOneMonth.map(s => s.valor).reduce(somar, 0)
+    const valorRetiradasMensal = numberToReal(retOneMonth.map(s => s.valor).reduce(somar, 0))
 
     return (
         <View style={styles.container}>
             <View style={styles.containerTitulo}>
                 <Text style={styles.titulo}>Detalhes do Tanque: <Text style={{ color: 'red' }}>{data.nome}</Text></Text>
             </View>
-            <ScrollView style={styles.containerCard}>
+            <ScrollView style={styles.containerCard} showsVerticalScrollIndicator={false}>
                 <View style={styles.cardItem}>
                     <Text style={styles.tituloItem}>CARACTERISTICAS</Text>
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
@@ -165,17 +166,17 @@ export default function DetalhesTanque({ route }) {
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>R$ {valorDepositosQuinzenal}</Text>
+                                <Text style={styles.text}>{valorDepositosQuinzenal}</Text>
                             </View>
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>R$ {valorDepositosMensal}</Text>
+                                <Text style={styles.text}>{valorDepositosMensal}</Text>
                             </View>
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>R$ {valorTotalDepositos}</Text>
+                                <Text style={styles.text}>{valorTotalDepositos}</Text>
                             </View>
                         </View>
                         <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
@@ -221,17 +222,17 @@ export default function DetalhesTanque({ route }) {
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>R$ {valorDepositosQuinzenal}</Text>
+                                <Text style={styles.text}>{valorDepositosQuinzenal}</Text>
                             </View>
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>R$ {valorDepositosMensal}</Text>
+                                <Text style={styles.text}>{valorDepositosMensal}</Text>
                             </View>
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>R$ {valorTotalDepositos}</Text>
+                                <Text style={styles.text}>{valorTotalDepositos}</Text>
                             </View>
                         </View>
 
@@ -269,17 +270,17 @@ export default function DetalhesTanque({ route }) {
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>R$ {valorRetiradasQuinzenal}</Text>
+                                <Text style={styles.text}>{valorRetiradasQuinzenal}</Text>
                             </View>
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>R$ {valorRetiradasMensal}</Text>
+                                <Text style={styles.text}>{valorRetiradasMensal}</Text>
                             </View>
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>R$ {valorTotalRetiradas}</Text>
+                                <Text style={styles.text}>{valorTotalRetiradas}</Text>
                             </View>
                         </View>
                         <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
@@ -320,17 +321,17 @@ export default function DetalhesTanque({ route }) {
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>R$ {valorRetiradasQuinzenal}</Text>
+                                <Text style={styles.text}>{valorRetiradasQuinzenal}</Text>
                             </View>
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>R$ {valorRetiradasMensal}</Text>
+                                <Text style={styles.text}>{valorRetiradasMensal}</Text>
                             </View>
                             <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
                             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
                                 <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>R$ {valorTotalRetiradas}</Text>
+                                <Text style={styles.text}>{valorTotalRetiradas}</Text>
                             </View>
                         </View>
                         <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
