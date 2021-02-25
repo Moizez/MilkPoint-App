@@ -6,7 +6,7 @@ import MapViewDirections from 'react-native-maps-directions'
 import Geolocation from 'react-native-geolocation-service'
 import { getDistance, convertDistance } from 'geolib'
 
-import key from '../../../api.key'
+import key from '../../keys/api.key'
 import ActionButton from '../ActionButton'
 
 export default function Map({ dataMap, onClose }) {

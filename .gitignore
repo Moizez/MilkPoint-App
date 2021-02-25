@@ -58,4 +58,5 @@ buck-out/
 # CocoaPods
 /ios/Pods/
 
-.api.key.js
+# Keys
+/src/keys/
