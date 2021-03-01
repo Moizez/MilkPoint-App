@@ -7,7 +7,7 @@ import ForgotPassword from '../pages/ForgotPassword'
 
 const AuthStack = createStackNavigator()
 
-export default function AuthRoutes() {
+const AuthRoutes = () => {
 
     return (
         <AuthStack.Navigator>
@@ -35,4 +35,6 @@ export default function AuthRoutes() {
 
     )
 }
+
+export default AuthRoutes
 

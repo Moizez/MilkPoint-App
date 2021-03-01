@@ -1,11 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { AuthContext } from '../contexts/auth'
 
-import AuthRoutes from './auth.routes'
-import AppRoutes from './app.routes'
+import AuthRoutes from './AuthRoutes'
+import AppRoutes from './AppRoutes'
 import LoadScreen from '../components/LoadScreen'
 
-export default function Routes() {
+const Routes = () => {
 
     const { signed, loading } = useContext(AuthContext)
     const [time, setTime] = useState(true)
@@ -22,3 +22,6 @@ export default function Routes() {
         signed ? <AppRoutes /> : <AuthRoutes />
     )
 }
+
+
+export default Routes
