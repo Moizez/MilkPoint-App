@@ -1,86 +1,114 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import HomeTecnico from '../pages/HomeTecnico'
-import TelaProdutores from '../pages/HomeTecnico/TelaProdutores'
-import TelaLaticinios from '../pages/HomeTecnico/TelaLaticinios'
-import TelaResponsaveis from '../pages/HomeTecnico/TelaResponsaveis'
-import TelaPerfilTecnico from '../pages/HomeTecnico/TelaPerfilTecnico'
+import TechnicianHome from '../pages/HomeTecnico'
+import ProducerPage from '../pages/HomeTecnico/TelaProdutores'
+import DairyPage from '../pages/HomeTecnico/TelaLaticinios'
+import ResponsiblePage from '../pages/HomeTecnico/TelaResponsaveis'
+import TechnicianSettings from '../pages/TelaConfiguracao'
 
-//Páginas comuns a todos
-import DetalhesTanque from '../pages/DetalhesTanque'
-import TelaConfiguracao from '../pages/TelaConfiguracao'
+import TechnicianProfile from '../pages/HomeTecnico/TelaPerfilTecnico'
 
-const AppTab = createBottomTabNavigator()
+const TechnicianTab = createBottomTabNavigator()
+
+const icons = {
+    TechnicianHome: {
+        lib: MaterialCommunityIcons,
+        name: 'home'
+    },
+    ProducerPage: {
+        lib: MaterialCommunityIcons,
+        name: 'account-cowboy-hat'
+    },
+    DairyPage: {
+        lib: MaterialCommunityIcons,
+        name: 'account-tie'
+    },
+    ResponsiblePage: {
+        lib: MaterialCommunityIcons,
+        name: 'account-hard-hat'
+    },
+    TechnicianSettings: {
+        lib: MaterialCommunityIcons,
+        name: 'dots-vertical'
+    },
+}
 
 const Technician = () => {
     return (
-        <AppTab.Navigator
+        <TechnicianTab.Navigator
+            initialRouteName='TechnicianHome'
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ color }) => {
+                    const { lib: Icon, name } = icons[route.name]
+                    return <Icon name={name} color={color} size={28} />
+                }
+            })}
             tabBarOptions={{
-                activeTintColor: '#FFF',
-                inactiveTintColor: '#000',
-                tabBarPosition: 'bottom',
-                animationEnabled: true,
-                swipeEnabled: true,
-                activeBackgroundColor: '#292b2c',
-                inactiveBackgroundColor: '#FFF'
-            }}>
+                style: {
+                    backgroundColor: '#292b2c',
+                    borderTopColor: 'rgba(0,0,0,0.5)',
+                    height: 60,
+                },
+                activeTintColor: '#00abe7',
+                inactiveTintColor: '#adb5bd',
+                labelStyle: {
+                    fontSize: 11,
+                    marginBottom: 5
+                }
+            }}
 
-            <AppTab.Screen name='Home' component={HomeTecnico}
-                options={{
-                    tabBarLabel: 'Início',
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="home" color={color} size={30} />
-                    ),
-                }}
-            />
-            <AppTab.Screen name='Produtores' component={TelaProdutores}
-                options={{
-                    tabBarLabel: 'Produtores',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="account-cowboy-hat" color={'#2a9d8f'} size={30} />
-                    ),
-                }}
-            />
-            <AppTab.Screen name='Laticínios' component={TelaLaticinios}
-                options={{
-                    tabBarLabel: 'Laticínios',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="account-tie" color={'#da1e37'} size={33} />
-                    ),
-                }}
+        >
 
-            />
-            <AppTab.Screen name='Responsáveis' component={TelaResponsaveis}
+            <TechnicianTab.Screen
+                name='TechnicianHome'
+                component={TechnicianHome}
                 options={{
-                    tabBarLabel: 'Responsáveis',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="account-hard-hat" color={'#fca311'} size={33} />
-                    ),
+                    title: 'Início'
                 }}
-
             />
-            <AppTab.Screen name='Mais' component={TelaConfiguracao}
+
+            <TechnicianTab.Screen
+                name='ProducerPage'
+                component={ProducerPage}
                 options={{
-                    tabBarLabel: 'Mais',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="dots-vertical" color={'#0077b6'} size={30} />
-                    ),
+                    title: 'Produtores'
                 }}
-
             />
-            <AppTab.Screen name='DetalhesTanque' component={DetalhesTanque}
+
+            <TechnicianTab.Screen
+
+                name='DairyPage'
+                component={DairyPage}
+                options={{
+                    title: 'Laticínios'
+                }}
+            />
+
+            <TechnicianTab.Screen
+                name='ResponsiblePage'
+                component={ResponsiblePage}
+                options={{
+                    title: 'Responsáveis'
+                }}
+            />
+
+            <TechnicianTab.Screen
+                name='TechnicianSettings'
+                component={TechnicianSettings}
+                options={{
+                    title: 'Mais'
+                }}
+            />
+
+            <TechnicianTab.Screen name='Perfil' component={TechnicianProfile}
                 options={{
                     tabBarButton: () => null,
                 }}
             />
-            <AppTab.Screen name='Perfil' component={TelaPerfilTecnico}
-                options={{
-                    tabBarButton: () => null,
-                }}
-            />
-        </AppTab.Navigator>
+
+        </TechnicianTab.Navigator>
     )
 }
 

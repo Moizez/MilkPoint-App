@@ -1,78 +1,98 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import HomeProdutor from '../pages/HomeProdutor'
-import TelaHistoricoProdutor from '../pages/HomeProdutor/TelaHistoricoProdutor'
-import TelaDepositosPendentesProdutor from '../pages/HomeProdutor/TelaDepositosPendentesProdutor'
-import TelaPerfilProdutor from '../pages/HomeProdutor/TelaPerfilProdutor'
+import ProducerHome from '../pages/HomeProdutor'
+import ProducerHistoric from '../pages/HomeProdutor/TelaHistoricoProdutor'
+import ProducerDeposit from '../pages/HomeProdutor/TelaDepositosPendentesProdutor'
+import ProducerProfile from '../pages/HomeProdutor/TelaPerfilProdutor'
+import ProducerSettings from '../pages/TelaConfiguracao'
 
-//Páginas comuns a todos
-import DetalhesTanque from '../pages/DetalhesTanque'
-import TelaConfiguracao from '../pages/TelaConfiguracao'
+const ProducerTab = createBottomTabNavigator()
 
-const AppTab = createBottomTabNavigator()
+const icons = {
+    ProducerHome: {
+        lib: MaterialCommunityIcons,
+        name: 'home'
+    },
+    ProducerDeposit: {
+        lib: MaterialCommunityIcons,
+        name: 'basket-fill'
+    },
+    ProducerHistoric: {
+        lib: MaterialCommunityIcons,
+        name: 'archive'
+    },
+    ProducerSettings: {
+        lib: MaterialCommunityIcons,
+        name: 'dots-vertical'
+    },
+}
 
 const Producer = () => {
     return (
-        <AppTab.Navigator
+        <ProducerTab.Navigator
+            initialRouteName='Home'
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ color }) => {
+                    const { lib: Icon, name } = icons[route.name]
+                    return <Icon name={name} color={color} size={28} />
+                }
+            })}
             tabBarOptions={{
-                activeTintColor: '#FFF',
-                inactiveTintColor: '#000',
-                tabBarPosition: 'bottom',
-                animationEnabled: true,
-                swipeEnabled: true,
-                activeBackgroundColor: '#292b2c',
-                inactiveBackgroundColor: '#FFF'
-            }}>
+                style: {
+                    backgroundColor: '#292b2c',
+                    borderTopColor: 'rgba(0,0,0,0.5)',
+                    height: 60,
+                },
+                activeTintColor: '#2a9d8f',
+                inactiveTintColor: '#adb5bd',
+                labelStyle: {
+                    fontSize: 11,
+                    marginBottom: 5
+                }
+            }}
 
-            <AppTab.Screen name='Home' component={HomeProdutor}
+        >
+            <ProducerTab.Screen
+                name='ProducerHome'
+                component={ProducerHome}
                 options={{
-                    tabBarLabel: 'Início',
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="home" color={color} size={30} />
-                    ),
+                    title: 'Início'
                 }}
-            />
-            <AppTab.Screen name='Depositos' component={TelaDepositosPendentesProdutor}
-                options={{
-                    tabBarLabel: 'Depósitos',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="basket-fill" color={'#2a9d8f'} size={30} />
-                    ),
-                }}
-            />
-            <AppTab.Screen name='Histórico' component={TelaHistoricoProdutor}
-                options={{
-                    tabBarLabel: 'Histórico',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="archive" color={'#fca311'} size={30} />
-                    ),
-                }}
-            />
-            <AppTab.Screen name='Mais' component={TelaConfiguracao}
-                options={{
-                    tabBarLabel: 'Mais',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="dots-vertical" color={'#0077b6'} size={30} />
-                    ),
-                }}
-
             />
 
-            <AppTab.Screen name='DetalhesTanque' component={DetalhesTanque}
+            <ProducerTab.Screen
+                name='ProducerDeposit'
+                component={ProducerDeposit}
+                options={{
+                    title: 'Depósitos'
+                }}
+            />
+
+            <ProducerTab.Screen
+                name='ProducerHistoric'
+                component={ProducerHistoric}
+                options={{
+                    title: 'Histórico'
+                }}
+            />
+
+            <ProducerTab.Screen
+                name='ProducerSettings'
+                component={ProducerSettings}
+                options={{
+                    title: 'Mais'
+                }}
+            />
+
+            <ProducerTab.Screen name='Perfil' component={ProducerProfile}
                 options={{
                     tabBarButton: () => null,
                 }}
             />
 
-            <AppTab.Screen name='Perfil' component={TelaPerfilProdutor}
-                options={{
-                    tabBarButton: () => null,
-                }}
-            />
-
-        </AppTab.Navigator>
+        </ProducerTab.Navigator>
     )
 }
 

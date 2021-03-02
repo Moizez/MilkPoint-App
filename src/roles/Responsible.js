@@ -1,88 +1,114 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import HomeResponsavel from '../pages/HomeResponsavel'
-import TelaDepositosPendentesResponsavel from '../pages/HomeResponsavel/TelaDepositosPendentesResponsavel'
-import TelaRetiradasPendentesResponsavel from '../pages/HomeResponsavel/TelaRetiradasPendentesResponsavel'
-import TelaHistoricoResponsavel from '../pages/HomeResponsavel/TelaHistoricoResponsavel'
-import TelaPerfilResponsavel from '../pages/HomeResponsavel/TelaPerfilResponsavel'
+import ResponsibleHome from '../pages/HomeResponsavel'
+import ResponsibleDeposit from '../pages/HomeResponsavel/TelaDepositosPendentesResponsavel'
+import ResponsibleWithdrawal from '../pages/HomeResponsavel/TelaRetiradasPendentesResponsavel'
+import ResponsibleHistoric from '../pages/HomeResponsavel/TelaHistoricoResponsavel'
+import ResponsibleSettings from '../pages/TelaConfiguracao'
 
-//Páginas comuns a todos
-import DetalhesTanque from '../pages/DetalhesTanque'
-import TelaConfiguracao from '../pages/TelaConfiguracao'
+import ResponsibleProfile from '../pages/HomeResponsavel/TelaPerfilResponsavel'
 
-const AppTab = createBottomTabNavigator()
+const ResponsibleTab = createBottomTabNavigator()
+
+const icons = {
+    ResponsibleHome: {
+        lib: MaterialCommunityIcons,
+        name: 'home'
+    },
+    ResponsibleDeposit: {
+        lib: MaterialCommunityIcons,
+        name: 'basket-fill'
+    },
+    ResponsibleWithdrawal: {
+        lib: MaterialCommunityIcons,
+        name: 'basket-unfill'
+    },
+    ResponsibleHistoric: {
+        lib: MaterialCommunityIcons,
+        name: 'archive'
+    },
+    ResponsibleSettings: {
+        lib: MaterialCommunityIcons,
+        name: 'dots-vertical'
+    },
+}
 
 const Responsible = () => {
     return (
-        <AppTab.Navigator
+        <ResponsibleTab.Navigator
+            initialRouteName='ResponsibleHome'
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ color }) => {
+                    const { lib: Icon, name } = icons[route.name]
+                    return <Icon name={name} color={color} size={28} />
+                }
+            })}
             tabBarOptions={{
-                activeTintColor: '#FFF',
-                inactiveTintColor: '#000',
-                tabBarPosition: 'bottom',
-                animationEnabled: true,
-                swipeEnabled: true,
-                activeBackgroundColor: '#292b2c',
-                inactiveBackgroundColor: '#FFF'
-            }}>
+                style: {
+                    backgroundColor: '#292b2c',
+                    borderTopColor: 'rgba(0,0,0,0.5)',
+                    height: 60,
+                },
+                activeTintColor: '#e7b705',
+                inactiveTintColor: '#adb5bd',
+                labelStyle: {
+                    fontSize: 11,
+                    marginBottom: 5
+                }
+            }}
 
-            <AppTab.Screen name='Home' component={HomeResponsavel}
-                options={{
-                    tabBarLabel: 'Início',
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="home" color={color} size={30} />
-                    ),
-                }} />
+        >
 
-            <AppTab.Screen name='Depositos' component={TelaDepositosPendentesResponsavel}
+            <ResponsibleTab.Screen
+                name='ResponsibleHome'
+                component={ResponsibleHome}
                 options={{
-                    tabBarLabel: 'Depósitos',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="basket-fill" color={'#2a9d8f'} size={30} />
-                    ),
+                    title: 'Início'
                 }}
             />
-            <AppTab.Screen name='Retiradas' component={TelaRetiradasPendentesResponsavel}
-                options={{
-                    tabBarLabel: 'Retiradas',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="basket-unfill" color={'#da1e37'} size={30} />
-                    ),
-                }}
 
-            />
-            <AppTab.Screen name='Histórico' component={TelaHistoricoResponsavel}
+            <ResponsibleTab.Screen
+                name='ResponsibleDeposit'
+                component={ResponsibleDeposit}
                 options={{
-                    tabBarLabel: 'Histórico',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="archive" color={'#fca311'} size={30} />
-                    ),
+                    title: 'Depósitos'
                 }}
-
-            />
-            <AppTab.Screen name='Mais' component={TelaConfiguracao}
-                options={{
-                    tabBarLabel: 'Mais',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="dots-vertical" color={'#0077b6'} size={30} />
-                    ),
-                }}
-
             />
 
-            <AppTab.Screen name='DetalhesTanque' component={DetalhesTanque}
+            <ResponsibleTab.Screen
+
+                name='ResponsibleWithdrawal'
+                component={ResponsibleWithdrawal}
+                options={{
+                    title: 'Retiradas'
+                }}
+            />
+
+            <ResponsibleTab.Screen
+                name='ResponsibleHistoric'
+                component={ResponsibleHistoric}
+                options={{
+                    title: 'Histórico'
+                }}
+            />
+
+            <ResponsibleTab.Screen
+                name='ResponsibleSettings'
+                component={ResponsibleSettings}
+                options={{
+                    title: 'Mais'
+                }}
+            />
+
+            <ResponsibleTab.Screen name='Perfil' component={ResponsibleProfile}
                 options={{
                     tabBarButton: () => null,
                 }}
             />
 
-            <AppTab.Screen name='Perfil' component={TelaPerfilResponsavel}
-                options={{
-                    tabBarButton: () => null,
-                }}
-            />
-        </AppTab.Navigator>
+        </ResponsibleTab.Navigator>
     )
 }
 

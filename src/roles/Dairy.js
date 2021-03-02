@@ -1,78 +1,99 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import HomeLaticinio from '../pages/HomeLaticinio'
-import TelaHistoricoLaticinio from '../pages/HomeLaticinio/TelaHistoricoLaticinio'
-import TelaRetiradasPendentesLaticinio from '../pages/HomeLaticinio/TelaRetiradasPendentesLaticinio'
-import TelaPerfilLaticinio from '../pages/HomeLaticinio/TelaPerfilLaticinio'
+import DairyHome from '../pages/HomeLaticinio'
+import DairyWithdrawal  from '../pages/HomeLaticinio/TelaRetiradasPendentesLaticinio'
+import DairyHistoric from '../pages/HomeLaticinio/TelaHistoricoLaticinio'
+import DairySettings from '../pages/TelaConfiguracao'
 
-//Páginas comuns a todos
-import DetalhesTanque from '../pages/DetalhesTanque'
-import TelaConfiguracao from '../pages/TelaConfiguracao'
+import DairyProfile from '../pages/HomeLaticinio/TelaPerfilLaticinio'
 
-const AppTab = createBottomTabNavigator()
+const DairyTab = createBottomTabNavigator()
+
+const icons = {
+    DairyHome: {
+        lib: MaterialCommunityIcons,
+        name: 'home'
+    },
+    DairyWithdrawal: {
+        lib: MaterialCommunityIcons,
+        name: 'basket-unfill'
+    },
+    DairyHistoric: {
+        lib: MaterialCommunityIcons,
+        name: 'archive'
+    },
+    DairySettings: {
+        lib: MaterialCommunityIcons,
+        name: 'dots-vertical'
+    },
+}
 
 const Dairy = () => {
     return (
-        <AppTab.Navigator
+        <DairyTab.Navigator
+            initialRouteName='Home'
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ color }) => {
+                    const { lib: Icon, name } = icons[route.name]
+                    return <Icon name={name} color={color} size={28} />
+                }
+            })}
             tabBarOptions={{
-                activeTintColor: '#FFF',
-                inactiveTintColor: '#000',
-                tabBarPosition: 'bottom',
-                animationEnabled: true,
-                swipeEnabled: true,
-                activeBackgroundColor: '#292b2c',
-                inactiveBackgroundColor: '#FFF'
-            }}>
+                style: {
+                    backgroundColor: '#292b2c',
+                    borderTopColor: 'rgba(0,0,0,0.5)',
+                    height: 60,
+                },
+                activeTintColor: '#d00000',
+                inactiveTintColor: '#adb5bd',
+                labelStyle: {
+                    fontSize: 11,
+                    marginBottom: 5
+                }
+            }}
 
-            <AppTab.Screen name='Home' component={HomeLaticinio}
+        >
+            <DairyTab.Screen
+                name='DairyHome'
+                component={DairyHome}
                 options={{
-                    tabBarLabel: 'Início',
-                    tabBarIcon: ({ color }) => (
-                        <Icon name="home" color={color} size={30} />
-                    ),
+                    title: 'Início'
                 }}
-            />
-            <AppTab.Screen name='Depositos' component={TelaRetiradasPendentesLaticinio}
-                options={{
-                    tabBarLabel: 'Depósitos',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="basket-fill" color={'#2a9d8f'} size={30} />
-                    ),
-                }}
-            />
-            <AppTab.Screen name='Histórico' component={TelaHistoricoLaticinio}
-                options={{
-                    tabBarLabel: 'Histórico',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="archive" color={'#fca311'} size={30} />
-                    ),
-                }}
-            />
-            <AppTab.Screen name='Mais' component={TelaConfiguracao}
-                options={{
-                    tabBarLabel: 'Mais',
-                    tabBarIcon: ({ }) => (
-                        <Icon name="dots-vertical" color={'#0077b6'} size={30} />
-                    ),
-                }}
-
             />
 
-            <AppTab.Screen name='DetalhesTanque' component={DetalhesTanque}
+            <DairyTab.Screen
+                name='DairyWithdrawal'
+                component={DairyWithdrawal}
+                options={{
+                    title: 'Retiradas'
+                }}
+            />
+
+            <DairyTab.Screen
+                name='DairyHistoric'
+                component={DairyHistoric}
+                options={{
+                    title: 'Histórico'
+                }}
+            />
+
+            <DairyTab.Screen
+                name='DairySettings'
+                component={DairySettings}
+                options={{
+                    title: 'Mais'
+                }}
+            />
+
+            <DairyTab.Screen name='Perfil' component={DairyProfile}
                 options={{
                     tabBarButton: () => null,
                 }}
             />
 
-            <AppTab.Screen name='Perfil' component={TelaPerfilLaticinio}
-                options={{
-                    tabBarButton: () => null,
-                }}
-            />
-
-        </AppTab.Navigator>
+        </DairyTab.Navigator>
     )
 }
 

@@ -1,25 +1,51 @@
 import React, { useContext } from 'react';
+import { createStackNavigator } from '@react-navigation/stack'
 
 import { AuthContext } from '../contexts/auth'
 
 //Roles import
 import Producer from '../roles/Producer'
-import Dairy from '../roles/Dairy'
 import Responsible from '../roles/Responsible'
+import Dairy from '../roles/Dairy'
 import Technician from '../roles/Technician'
+
+// Stacks import
+import DetalhesTanque from '../pages/DetalhesTanque'
+
+const Stack = createStackNavigator()
 
 const AppRoutes = () => {
 
     const { user } = useContext(AuthContext)
 
     if (user.perfil === 1) {
-        return (<Producer />)
+        return (
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name='Producer' component={Producer} />
+                <Stack.Screen name='DetalhesTanque' component={DetalhesTanque} />
+            </Stack.Navigator>
+        )
     } else if (user.perfil === 2) {
-        return (<Responsible />)
+        return (
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name='Responsible' component={Responsible} />
+                <Stack.Screen name='DetalhesTanque' component={DetalhesTanque} />
+            </Stack.Navigator>
+        )
     } else if (user.perfil === 3) {
-        return (<Dairy />)
+        return (
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name='Dairy' component={Dairy} />
+                <Stack.Screen name='DetalhesTanque' component={DetalhesTanque} />
+            </Stack.Navigator>
+        )
     } else {
-        return (<Technician />)
+        return (
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                <Stack.Screen name='Technician' component={Technician} />
+                <Stack.Screen name='DetalhesTanque' component={DetalhesTanque} />
+            </Stack.Navigator>
+        )
     }
 }
 
