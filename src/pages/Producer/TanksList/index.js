@@ -10,7 +10,7 @@ import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
 import { AuthContext } from '../../../contexts/auth'
 
-export default function ListaTanques({ data, loadTanques }) {
+const TanksList = ({ data, loadTanques }) => {
 
     const { user, loadListPendentesProdutor, baseUrl } = useContext(AuthContext)
 
@@ -242,3 +242,5 @@ const styles = StyleSheet.create({
         borderColor: '#FFF'
     },
 })
+
+export default TanksList

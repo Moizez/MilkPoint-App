@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { AuthContext } from '../../contexts/auth'
-import ActionButton from '../../components/ActionButton'
 
 import { BoxImage, Input, SubmitButton, SubmitText, Link, LinkText } from './styles'
 

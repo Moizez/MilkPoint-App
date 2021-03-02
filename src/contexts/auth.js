@@ -4,13 +4,10 @@ import { Modal } from 'react-native'
 
 import AlertErrorSuccess from '../components/AlertErrorSuccess'
 import LoadScreen from '../components/LoadScreen'
-import api from '../services/api'
+import Api from '../services/api'
 
 export const AuthContext = createContext({})
 
-//Url padrão da API 
-//let baseUrl = 'http://192.168.0.128:8080/api/'
-//let baseUrl = 'https://milkpoint.herokuapp.com/api/'
 let baseUrl = 'https://milkpoint.serviceapp.net.br/api/' //Leandro
 let cepUrl = 'https://viacep.com.br/ws/'
 
@@ -20,152 +17,15 @@ export default function AuthProvider({ children }) {
     const [errorMsg, setErrorMsg] = useState('')
 
     const [loading, setLoading] = useState(true)
-    const [loadingPages, setLoadingPages] = useState(true)
     const [isVisible, setVisible] = useState(false)
     const [loadingAuth, setLoadingAuth] = useState(false)
-    const [depositoPendente, setDepositoPendente] = useState([])
-    const [depositoPendenteProdutor, setDepositoPendenteProdutor] = useState([])
-    const [retiradaPendenteLaticinio, setDepositoPendenteLaticinio] = useState([])
-    const [depositoResolvido, setDepositoResolvido] = useState([])
-    const [deposito, setDeposito] = useState([])
-    const [retiradaPendente, setRetiradaPendente] = useState([])
-    const [retiradaResolvida, setRetiradaResolvida] = useState([])
-    const [retirada, setRetirada] = useState([])
     const [user, setUser] = useState(null)
-    const [tanque, setTanque] = useState([])
-    const [tanqueResponsavel, setTanqueResponsavel] = useState([])
     const [time, setTime] = useState(false)
-
-    //Perfis
-    const [produtor, setProdutor] = useState([])
-    const [laticinio, setLaticinio] = useState([])
-    const [responsavel, setResponsavel] = useState([])
-    const [tecnico, setTecnico] = useState([])
-
-    const loadListPendentesProdutor = async () => {
-        setLoadingPages(true)
-        const response = await api.get(`deposito/pendentes/${user.id}`)
-        setDepositoPendenteProdutor(response.data)
-        setLoadingPages(false)
-        return depositoPendenteProdutor
-    }
-
-    const loadListPendentesLaticinio = async () => {
-        setLoadingPages(true)
-        const response = await api.get(`retirada/pendentes/${user.id}`)
-        setDepositoPendenteLaticinio(response.data)
-        setLoadingPages(false)
-        return retiradaPendenteLaticinio
-    }
-
-    //Carregar lista de tecnicos
-    const loadListTecnicos = async () => {
-        const response = await api.get('tecnico')
-        setTecnico(response.data)
-
-        return tecnico
-    }
-
-    //Carregar lista de produtores
-    const loadListProdutores = async () => {
-        const response = await api.get('produtor')
-        setProdutor(response.data)
-
-        return produtor
-    }
-
-    //Carregar lista de laticinios
-    const loadListLaticinios = async () => {
-        const response = await api.get('laticinio')
-        setLaticinio(response.data)
-
-        return laticinio
-    }
-
-    //Carregar lista de responsaveis
-    const loadListResponsaveis = async () => {
-        const response = await api.get('responsavel')
-        setResponsavel(response.data)
-
-        return responsavel
-    }
-
-    //Carregar lista de tanques 
-    const loadListTanques = async () => {
-        const response = await api.get('tanque')
-        setTanque(response.data)
-
-        return tanque
-    }
-
-    //Retona uma lista apenas com os tanques do responsável logado
-    const loadListTanquesResponsavel = async () => {
-        setLoadingPages(true)
-        const response = await api.get(`responsavel/${user.id}/tanque`)
-        setTanqueResponsavel(response.data)
-        setLoadingPages(false)
-
-        return tanqueResponsavel
-    }
-
-    //Lista de depositos pendentes
-    const loadListDepositosPendentes = async () => {
-        setLoadingPages(true)
-        const response = await api.get('deposito/listapendentes')
-        setDepositoPendente(response.data)
-        setLoadingPages(false)
-
-        return depositoPendente
-    }
-
-    //Lista de todos os depositos
-    const loadListDepositos = async () => {
-        const response = await api.get('deposito/listatodos')
-        setDeposito(response.data)
-
-        return deposito
-    }
-
-    //Lista de todos os depositos excluidos ou confirmados
-    const loadListDepositosResolvidos = async () => {
-        setLoadingPages(true)
-        const response = await api.get('deposito/resolvidos')
-        setDepositoResolvido(response.data)
-        setLoadingPages(false)
-
-        return depositoResolvido
-    }
-
-    //Lista de retiradas pendentes
-    const loadListRetiradasPendentes = async () => {
-        setLoadingPages(true)
-        const response = await api.get('retirada/listapendentes')
-        setRetiradaPendente(response.data)
-        setLoadingPages(false)
-
-        return retiradaPendente
-    }
-
-    //Lista de todos os retiradas
-    const loadListRetiradas = async () => {
-        const response = await api.get('retirada/listatodos')
-        setRetirada(response.data)
-
-        return retirada
-    }
-
-    //Lista de todos os depositos excluidos ou confirmados
-    const loadListRetiradasResolvidas = async () => {
-        const response = await api.get('retirada/resolvidos')
-        setRetiradaResolvida(response.data)
-
-        return retiradaResolvida
-    }
 
     //Carregar usuário do AsyncStorage
     useEffect(() => {
         const loadStorage = async () => {
-            const storageUser = await AsyncStorage.getItem('Auth_user')
+            const storageUser = await AsyncStorage.getItem('@milkpoint:user')
             if (storageUser) {
                 setUser(JSON.parse(storageUser))
                 setLoading(false)
@@ -205,22 +65,7 @@ export default function AuthProvider({ children }) {
             return
         } else {
 
-            const dado = {
-                method: 'POST',
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                }),
-                credentials: 'same-origin',
-                mode: 'same-origin',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': 'csrftoken'
-                }
-            }
-
-            const response = await fetch(`${baseUrl}login`, dado)
+            let response = await Api.onSignIn(email, password)
 
             try {
                 if (response.status == 200) {
@@ -247,7 +92,7 @@ export default function AuthProvider({ children }) {
     //Função para deslogar o usuário
     const logOut = async () => {
         setTime(true)
-        await AsyncStorage.removeItem('Auth_user')
+        await AsyncStorage.removeItem('@milkpoint:user')
             .then(() => {
                 setTimeout(() => {
                     setUser(null)
@@ -258,7 +103,7 @@ export default function AuthProvider({ children }) {
 
     //Função para adicionar o usuário no Async Storage
     const storageUser = async (data) => {
-        await AsyncStorage.setItem('Auth_user', JSON.stringify(data))
+        await AsyncStorage.setItem('@milkpoint:user', JSON.stringify(data))
     }
 
     return (
@@ -282,14 +127,7 @@ export default function AuthProvider({ children }) {
             </Modal>
 
             <AuthContext.Provider value={{
-                signed: !!user, user, loading, loadingPages, loadingAuth, depositoPendente, deposito, retiradaPendente,
-                retirada, tanque, tanqueResponsavel, baseUrl, cepUrl, produtor, laticinio, responsavel,
-                depositoResolvido, retiradaResolvida, depositoPendenteProdutor, retiradaPendenteLaticinio,
-                tecnico,
-                signIn, logOut, loadListDepositosPendentes, loadListDepositos, loadListRetiradasPendentes,
-                loadListRetiradas, loadListTanques, loadListTanquesResponsavel, loadListProdutores,
-                loadListLaticinios, loadListResponsaveis, loadListDepositosResolvidos, loadListRetiradasResolvidas,
-                loadListPendentesProdutor, loadListPendentesLaticinio, loadListTecnicos
+                signed: !!user, user, loading, loadingAuth, baseUrl, cepUrl, signIn, logOut
             }}>
                 {children}
             </AuthContext.Provider>

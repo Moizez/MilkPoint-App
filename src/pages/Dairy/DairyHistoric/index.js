@@ -4,7 +4,8 @@ import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
-import api from '../../../services/api'
+import axios from '../../../services/api.axios'
+import Api from '../../../services/api'
 
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
@@ -16,7 +17,7 @@ import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from './styles'
 
-export default function TelaHistoricoProdutor() {
+const DairyHistoric = () => {
 
     const { user } = useContext(AuthContext)
 
@@ -26,22 +27,21 @@ export default function TelaHistoricoProdutor() {
     const [msg, setMsg] = useState('')
     const [color, setColor] = useState('#FFF')
     const [loading, setLoading] = useState(false)
-    const [depositoResolvido, setDepositoResolvido] = useState([])
+    const [retiradaResolvida, setRetiradaResolvida] = useState([])
     const [mainData, setMainData] = useState([])
 
     let msgDefault = `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`
-    let msgForValue = 'Lista de transações pelo valor do depósito'
+    let msgForValue = 'Lista de transações pelo valor da retirada'
     let msg15Days = 'Lista de transações dos últimos 15 dias'
     let msg30Days = 'Lista de transações dos últimos 30 dias'
-    let msgCustomDays = 'Lista de DEPÓSITOS personalizada'
-    let msgConfirmados = 'Lista de DEPÓSITOS confirmados'
-    let msgCancelados = 'Lista de DEPÓSITOS cancelados'
-
-    const onLoad = () => setLoading(true)
+    let msgCustomDays = 'Lista de RETIRADAS personalizada'
+    let msgConfirmados = 'Lista de RETIRADAS confirmadas'
+    let msgCancelados = 'Lista de RETIRADAS canceladas'
 
     //Filtrar por valor do pedido
-    const getValor = (value) => {
-        const filterByValue = depositoResolvido.filter(d => d.quantidade == value)
+    function getValor(value) {
+        setLoading(true)
+        const filterByValue = retiradaResolvida.filter(r => r.quantidade == value)
         setColor('#FFF')
         setMsg(msgForValue)
         setMainData(filterByValue)
@@ -50,10 +50,11 @@ export default function TelaHistoricoProdutor() {
 
     //Filtrar pelos últimos 15 dias
     const filterFifteenDays = () => {
+        setLoading(true)
         let fifteenDays = moment().locale('en').subtract(15, 'days').format('L')
-        const fifteenDaysAgo = depositoResolvido.filter(function (d) {
-            let dayDep = moment(d.dataNow).locale('en').format('L')
-            return moment(dayDep).isSameOrAfter(fifteenDays, 'days')
+        const fifteenDaysAgo = retiradaResolvida.filter(function (d) {
+            let dayRet = moment(d.dataNow).locale('en').format('L')
+            return moment(dayRet).isSameOrAfter(fifteenDays, 'days')
         })
         setColor('#e9c46a')
         setMsg(msg15Days)
@@ -63,10 +64,11 @@ export default function TelaHistoricoProdutor() {
 
     //Filtrar pelos últimos 30 dias
     const filterOneMonth = () => {
+        setLoading(true)
         let oneMonth = moment().locale('en').subtract(1, 'month').format('L')
-        const oneMonthAgo = depositoResolvido.filter(function (d) {
-            let dayDep = moment(d.dataNow).locale('en').format('L')
-            return moment(dayDep).isSameOrAfter(oneMonth, 'days')
+        const oneMonthAgo = retiradaResolvida.filter(function (d) {
+            let dayRet = moment(d.dataNow).locale('en').format('L')
+            return moment(dayRet).isSameOrAfter(oneMonth, 'days')
         })
         setColor('#e76f51')
         setMsg(msg30Days)
@@ -76,10 +78,11 @@ export default function TelaHistoricoProdutor() {
 
     //Filtrar por data personalizada
     const filterCustomDays = (value) => {
+        setLoading(true)
         let customDay = moment(value).locale('en').format('L')
-        const customDayAgo = depositoResolvido.filter(function (d) {
-            let dayDep = moment(d.dataNow).locale('en').format('L')
-            return moment(dayDep).isSameOrAfter(customDay, 'days')
+        const customDayAgo = retiradaResolvida.filter(function (d) {
+            let dayRet = moment(d.dataNow).locale('en').format('L')
+            return moment(dayRet).isSameOrAfter(customDay, 'days')
         })
         setColor('#DDD')
         setMsg(msgCustomDays)
@@ -90,27 +93,27 @@ export default function TelaHistoricoProdutor() {
     const loadResolved = async (type) => {
         setLoading(true)
         const tipo = type ? 'confirmados' : 'cancelados'
-        const response = await api.get(`deposito/${tipo}/${user.id}`)
+        const response = await axios.get(`retirada/${tipo}/${user.id}`)
         setMsg(type ? msgConfirmados : msgCancelados)
         setColor(type ? '#2a9d8f' : '#da1e37')
         setMainData(response.data)
         setLoading(false)
     }
 
-    //Lista de todos os depósitos pela data selecionada
+
+    //Lista de todas as retiradas pela data
     const loadPage = async () => {
         setLoading(true)
-        const produtor = d => d.produtor.id == user.id
-        const response = await api.get('deposito/resolvidos')
-        setDepositoResolvido(response.data)
+        const laticinio = r => r.laticinio.id == user.id
+        const response = await axios.get('retirada/resolvidos')
+        setRetiradaResolvida(response.data)
 
-        const filterData = response.data.filter(produtor)
+        const filterData = response.data.filter(laticinio)
         let day = moment(selectedDate).format('L')
         const data = filterData.filter(function (r) {
             let regDay = moment(r.dataNow).format('L')
             return regDay === day
         })
-        setColor('#FFF')
         setMsg(msgDefault)
         setMainData(data)
         setLoading(false)
@@ -143,6 +146,7 @@ export default function TelaHistoricoProdutor() {
                 onOpen={showCalendar}
                 calendar={<Icon name='calendar-month' color={color} size={22} />}
             />
+
             <List
                 showsVerticalScrollIndicator={false}
                 data={mainData}
@@ -156,10 +160,10 @@ export default function TelaHistoricoProdutor() {
                         <BoxIconAviso>
                             <BoxIconUpdate>
                                 <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e arraste para atualizar as transações</NomeAviso>
+                                <NomeAviso>Clique e arraste para atualizar a lista</NomeAviso>
                             </BoxIconUpdate>
                             <BoxIconDelete>
-                                <Icon name='calendar-search' color='#adb5bd' size={60} />
+                                <Icon name='calendar' color='#adb5bd' size={60} />
                                 <NomeAviso>Clique no ícone do calendário para filtrar por data</NomeAviso>
                             </BoxIconDelete>
                         </BoxIconAviso>
@@ -178,15 +182,22 @@ export default function TelaHistoricoProdutor() {
                 styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
                 getValor={getValor}
                 loadResolved={loadResolved}
-                onLoad={onLoad}
                 filterFifteenDays={filterFifteenDays}
                 filterOneMonth={filterOneMonth}
                 filterCustomDays={filterCustomDays}
                 onOpen={showCalendar}
                 mainIcon={'magnify'}
                 mainIconColor={'#FFF'}
+                icon1={'calendar-search'}
+                label1={'Listar por data'}
+                color1={'#fca311'}
+                icon2={'numeric'}
+                label2={'Listar por valor'}
+                color2={'#0077b6'}
             />
             {loading && !isRefreshing && <Loader />}
         </Container>
     );
 }
+
+export default DairyHistoric

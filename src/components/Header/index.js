@@ -35,7 +35,7 @@ export default function Header({ msg, onOpen, calendar, disabled }) {
                 resizeMode='cover'
             >
                 <View style={styles.containerImage}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Perfil')}>
+                    <TouchableOpacity onPress={() => navigation.navigate('ProducerProfile')}>
                         <ImageBackground
                             imageStyle={{ borderRadius: 20 }}
                             style={styles.image}

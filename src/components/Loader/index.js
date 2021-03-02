@@ -3,7 +3,7 @@ import { View, ActivityIndicator, StyleSheet, Text } from 'react-native'
 
 import { AuthContext } from '../../contexts/auth'
 
-export default function Loader() {
+const Loader = () => {
 
     const { user } = useContext(AuthContext)
 
@@ -52,4 +52,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
     }
 })
+
+export default Loader
 

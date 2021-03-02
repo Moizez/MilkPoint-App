@@ -20,7 +20,7 @@ export default function GraficoTanque({ dataGrafico, handleOpenModal, activeTanq
     }
 
     return (
-        <TouchableOpacity style={styles.container} disabled={activeTanque ? activeTanque : false} onLongPress={() => navigation.navigate('DetalhesTanque', { data: dataGrafico })} onPress={handleOpenModal}>
+        <TouchableOpacity style={styles.container} disabled={activeTanque ? activeTanque : false} onLongPress={() => navigation.navigate('TankDetails', { data: dataGrafico })} onPress={handleOpenModal}>
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                 {dataGrafico.tipo == 'BOVINO' ?
                     <Image style={styles.goatImage} source={require('../../assets/images/cow-circle.png')} /> :

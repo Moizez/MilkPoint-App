@@ -3,10 +3,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native'
 import LottieView from 'lottie-react-native'
 
-import { AuthContext } from '../../contexts/auth'
-import AlertSimpleInfo from '../../components/AlertSimpleInfo'
+import { AuthContext } from '../../../contexts/auth'
+import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 
-export default function TelaConfiguracao() {
+ const ProducerSettings = () => {
     const { logOut } = useContext(AuthContext)
     const [isAlertInfo, setAlertInfo] = useState(false)
 
@@ -93,7 +93,7 @@ export default function TelaConfiguracao() {
                 <Text>Milk Point</Text>
                 <Text style={{ color: '#adb5bd' }}>Versão 2020.11.15</Text>
             </View>
-            <LottieView style={{ height: 48, marginTop: 2 }} source={require('../../assets/lottie/farm-icon.json')} autoPlay loop />
+            <LottieView style={{ height: 48, marginTop: 2 }} source={require('../../../assets/lottie/farm-icon.json')} autoPlay loop />
         </View >
     )
 }
@@ -131,3 +131,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
 })
+
+export default ProducerSettings

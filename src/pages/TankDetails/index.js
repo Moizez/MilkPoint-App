@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { FAB } from 'react-native-paper'
 import moment from 'moment'
 import 'moment/locale/pt-br'
-import api from '../../services/api'
+import axios from '../../services/api.axios'
 
 import { AuthContext } from '../../contexts/auth'
 import Map from '../../components/Map'
 import { numberToReal } from '../../components/Helpers'
 
-export default function DetalhesTanque({ route }) {
+const TankDetails = ({ route }) => {
 
     const { data } = route.params
     const { user } = useContext(AuthContext)
@@ -20,12 +19,12 @@ export default function DetalhesTanque({ route }) {
     const [mainDataRetirada, setMainDataRetirada] = useState([])
 
     const loadResolvedDeposito = async () => {
-        const response = await api.get(`deposito/confirmados${user.perfil === 1 ? `/${user.id}` : '/'}`)
+        const response = await axios.get(`deposito/confirmados${user.perfil === 1 ? `/${user.id}` : '/'}`)
         setMainDataDeposito(response.data)
     }
 
     const loadResolvedRetirada = async () => {
-        const response = await api.get(`retirada/confirmados${user.perfil === 3 ? `/${user.id}` : '/'}`)
+        const response = await axios.get(`retirada/confirmados${user.perfil === 3 ? `/${user.id}` : '/'}`)
         setMainDataRetirada(response.data)
     }
 
@@ -453,12 +452,4 @@ const styles = StyleSheet.create({
     }
 })
 
-/*
-<FAB
-                style={styles.fab}
-                small={false}
-                icon="file-pdf-outline"
-                color='#FFF'
-                onPress={() => { }}
-            />
- */
+export default TankDetails

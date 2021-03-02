@@ -2,11 +2,10 @@ import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import ProducerHome from '../pages/HomeProdutor'
-import ProducerHistoric from '../pages/HomeProdutor/TelaHistoricoProdutor'
-import ProducerDeposit from '../pages/HomeProdutor/TelaDepositosPendentesProdutor'
-import ProducerProfile from '../pages/HomeProdutor/TelaPerfilProdutor'
-import ProducerSettings from '../pages/TelaConfiguracao'
+import ProducerHome from '../pages/Producer/ProducerHome'
+import ProducerHistoric from '../pages/Producer/ProducerHistoric'
+import ProducerDeposit from '../pages/Producer/ProducerDeposit'
+import ProducerSettings from '../pages/ProducerSettings'
 
 const ProducerTab = createBottomTabNavigator()
 
@@ -46,7 +45,6 @@ const Producer = () => {
                     height: 60,
                 },
                 activeTintColor: '#2a9d8f',
-                inactiveTintColor: '#adb5bd',
                 labelStyle: {
                     fontSize: 11,
                     marginBottom: 5
@@ -85,13 +83,6 @@ const Producer = () => {
                     title: 'Mais'
                 }}
             />
-
-            <ProducerTab.Screen name='Perfil' component={ProducerProfile}
-                options={{
-                    tabBarButton: () => null,
-                }}
-            />
-
         </ProducerTab.Navigator>
     )
 }

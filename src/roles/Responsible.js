@@ -6,9 +6,7 @@ import ResponsibleHome from '../pages/HomeResponsavel'
 import ResponsibleDeposit from '../pages/HomeResponsavel/TelaDepositosPendentesResponsavel'
 import ResponsibleWithdrawal from '../pages/HomeResponsavel/TelaRetiradasPendentesResponsavel'
 import ResponsibleHistoric from '../pages/HomeResponsavel/TelaHistoricoResponsavel'
-import ResponsibleSettings from '../pages/TelaConfiguracao'
-
-import ResponsibleProfile from '../pages/HomeResponsavel/TelaPerfilResponsavel'
+import ResponsibleSettings from '../pages/HomeResponsavel/ResponsibleSettings'
 
 const ResponsibleTab = createBottomTabNavigator()
 
@@ -52,7 +50,6 @@ const Responsible = () => {
                     height: 60,
                 },
                 activeTintColor: '#e7b705',
-                inactiveTintColor: '#adb5bd',
                 labelStyle: {
                     fontSize: 11,
                     marginBottom: 5
@@ -60,7 +57,6 @@ const Responsible = () => {
             }}
 
         >
-
             <ResponsibleTab.Screen
                 name='ResponsibleHome'
                 component={ResponsibleHome}
@@ -101,13 +97,6 @@ const Responsible = () => {
                     title: 'Mais'
                 }}
             />
-
-            <ResponsibleTab.Screen name='Perfil' component={ResponsibleProfile}
-                options={{
-                    tabBarButton: () => null,
-                }}
-            />
-
         </ResponsibleTab.Navigator>
     )
 }

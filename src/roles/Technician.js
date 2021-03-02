@@ -6,9 +6,7 @@ import TechnicianHome from '../pages/HomeTecnico'
 import ProducerPage from '../pages/HomeTecnico/TelaProdutores'
 import DairyPage from '../pages/HomeTecnico/TelaLaticinios'
 import ResponsiblePage from '../pages/HomeTecnico/TelaResponsaveis'
-import TechnicianSettings from '../pages/TelaConfiguracao'
-
-import TechnicianProfile from '../pages/HomeTecnico/TelaPerfilTecnico'
+import TechnicianSettings from '../pages/HomeTecnico/TechnicianSettings'
 
 const TechnicianTab = createBottomTabNavigator()
 
@@ -52,7 +50,6 @@ const Technician = () => {
                     height: 60,
                 },
                 activeTintColor: '#00abe7',
-                inactiveTintColor: '#adb5bd',
                 labelStyle: {
                     fontSize: 11,
                     marginBottom: 5
@@ -101,13 +98,6 @@ const Technician = () => {
                     title: 'Mais'
                 }}
             />
-
-            <TechnicianTab.Screen name='Perfil' component={TechnicianProfile}
-                options={{
-                    tabBarButton: () => null,
-                }}
-            />
-
         </TechnicianTab.Navigator>
     )
 }

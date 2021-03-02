@@ -2,12 +2,10 @@ import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import DairyHome from '../pages/HomeLaticinio'
-import DairyWithdrawal  from '../pages/HomeLaticinio/TelaRetiradasPendentesLaticinio'
-import DairyHistoric from '../pages/HomeLaticinio/TelaHistoricoLaticinio'
-import DairySettings from '../pages/TelaConfiguracao'
-
-import DairyProfile from '../pages/HomeLaticinio/TelaPerfilLaticinio'
+import DairyHome from '../pages/Dairy/DairyHome'
+import DairyWithdrawal  from '../pages/Dairy/DairyWithdrawals'
+import DairyHistoric from '../pages/Dairy/DairyHistoric'
+import DairySettings from '../pages/Dairy/DairySettings'
 
 const DairyTab = createBottomTabNavigator()
 
@@ -46,8 +44,7 @@ const Dairy = () => {
                     borderTopColor: 'rgba(0,0,0,0.5)',
                     height: 60,
                 },
-                activeTintColor: '#d00000',
-                inactiveTintColor: '#adb5bd',
+                activeTintColor: '#dd2c2f',
                 labelStyle: {
                     fontSize: 11,
                     marginBottom: 5
@@ -86,13 +83,6 @@ const Dairy = () => {
                     title: 'Mais'
                 }}
             />
-
-            <DairyTab.Screen name='Perfil' component={DairyProfile}
-                options={{
-                    tabBarButton: () => null,
-                }}
-            />
-
         </DairyTab.Navigator>
     )
 }

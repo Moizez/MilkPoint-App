@@ -7,7 +7,7 @@ import ModalCancel from '../../../components/ModalCancel'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 
-export default function ListaDepositosPendentes({ data, onRefresh }) {
+const PendingDepositsList = ({ data, onRefresh }) => {
 
     let success = require('../../../assets/lottie/delete-confirm.json')
 
@@ -126,3 +126,5 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
         </View>
     );
 }
+
+export default PendingDepositsList

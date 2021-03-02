@@ -4,14 +4,14 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
-import api from '../../../services/api'
+import Api from '../../../services/producer.api'
 
 import ActionButton from '../../../components/ActionButton'
 import { AuthContext } from '../../../contexts/auth'
 import Loader from '../../../components/Loader'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 
-export default function TelaPerfilProdutor() {
+const ProducerProfile = () => {
 
     const { user, cepUrl, baseUrl } = useContext(AuthContext)
 
@@ -41,8 +41,8 @@ export default function TelaPerfilProdutor() {
     let msgType = jsonIcon == 'error' ? error : success
 
     const loadUser = async () => {
-        const response = await api.get(`produtor/${user.id}`)
-        const data = response.data
+        const response = await Api.getProducer()
+        const data = response
         setNome(data.nome)
         setEmail(data.email)
         setApelido(data.apelido)
@@ -454,3 +454,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
 })
+
+export default ProducerProfile

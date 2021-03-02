@@ -7,7 +7,7 @@ import ModalCancel from '../../../components/ModalCancel'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 
-export default function ListaRetiradasPendentes({ data, onRefresh }) {
+const PendingWithdrawalsList = ({ data, onRefresh }) => {
 
     let success = require('../../../assets/lottie/delete-confirm.json')
 
@@ -126,3 +126,5 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
 
     );
 }
+
+export default PendingWithdrawalsList
