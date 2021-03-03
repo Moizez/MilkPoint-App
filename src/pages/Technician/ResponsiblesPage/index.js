@@ -1,37 +1,38 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import api from '../../../services/api'
+
+import Api from '../../../services/technician.api'
 
 import Header from '../../../components/Header'
-import ListaResponsaveis from '../ListaResponsaveis'
+import ResponsiblesList from '../ResponsiblesList'
 import Loader from '../../../components/Loader'
 
 import {
 	Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
 	BoxIconUpdate, BoxIconDelete
-} from '../styles'
+} from '../TechnicianHome/styles'
 
-export default function TelaResponsaveis() {
+const ResponsiblesPage = () => {
 
 	const [isRefreshing, setIsRefreshing] = useState(false)
-	const [responsavel, setResponsavel] = useState([])
+	const [responsibles, setResponsibles] = useState([])
 	const [loading, setLoading] = useState(false)
 
-	const loadResponsaveis = async () => {
+	const loadResponsibles = async () => {
 		setLoading(true)
-		const response = await api.get('responsavel')
-		setResponsavel(response.data)
+		const response = await Api.getResponsibles()
+		setResponsibles(response)
 		setLoading(false)
 	}
 
 	useEffect(() => {
-		loadResponsaveis()
+		loadResponsibles()
 	}, [])
 
-	async function onRefreshList() {
+	const onRefreshList = () => {
 		setIsRefreshing(true)
-		await loadResponsaveis()
+		loadResponsibles()
 		setIsRefreshing(false)
 	}
 
@@ -40,10 +41,10 @@ export default function TelaResponsaveis() {
 			<Header msg={'Lista de responsáveis'} />
 			<List
 				showsVerticalScrollIndicator={false}
-				data={responsavel}
+				data={responsibles}
 				keyExtractor={(item) => item.id}
 				refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-				renderItem={({ item }) => <ListaResponsaveis data={item} />}
+				renderItem={({ item }) => <ResponsiblesList data={item} />}
 				ListEmptyComponent={
 					<BoxNomeAviso>
 						<NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
@@ -64,3 +65,5 @@ export default function TelaResponsaveis() {
 		</Container>
 	);
 }
+
+export default ResponsiblesPage

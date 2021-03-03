@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Switch } from 'react-n
 
 import { AuthContext } from '../../../contexts/auth'
 
-export default function ListaLaticinios({ data }) {
+const DairiesList = ({ data }) => {
 
     const { baseUrl } = useContext(AuthContext)
     const [isExpand, setExpand] = useState(false)
@@ -182,3 +182,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
     }
 })
+
+export default DairiesList

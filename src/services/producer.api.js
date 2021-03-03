@@ -1,15 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage'
-
-const BASE_API = 'https://milkpoint.serviceapp.net.br/api'
-//const BASE_API  = 'http://192.168.0.128:8080/api/'
-//const BASE_API  = 'https://milkpoint.herokuapp.com/api/'
+import BASE from './base'
 
 export default {
     //REQUISIÇÕES DO PRODUTOR
 
     //Carregar lista de produtores
     getProducers: async () => {
-        const request = await fetch(`${BASE_API}/produtor`)
+        const request = await fetch(`${BASE.API}/produtor`)
         const response = await request.json()
         return response
     },
@@ -18,7 +15,7 @@ export default {
     getProducer: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
-        const request = await fetch(`${BASE_API}/produtor/${user.id}`)
+        const request = await fetch(`${BASE.API}/produtor/${user.id}`)
         const response = await request.json()
         return response
     },
@@ -27,14 +24,14 @@ export default {
     getPendingDepositsProducer: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
-        const request = await fetch(`${BASE_API}/deposito/pendentes/${user.id}`)
+        const request = await fetch(`${BASE.API}/deposito/pendentes/${user.id}`)
         const response = await request.json()
         return response
     },
 
     //Lista de depositos pendentes
     getPendingDeposits: async () => {
-        const request = await fetch(`${BASE_API}/deposito/listapendentes`)
+        const request = await fetch(`${BASE.API}/deposito/listapendentes`)
 
         const response = await request.json()
         console.log(response)
@@ -43,7 +40,7 @@ export default {
 
     //Lista de todos os depositos excluidos ou confirmados
     getResolvedDeposits: async () => {
-        const request = await fetch(`${BASE_API}/deposito/resolvidos`)
+        const request = await fetch(`${BASE.API}/deposito/resolvidos`)
 
         const response = await request.json()
         return response

@@ -3,53 +3,51 @@ import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { FAB } from 'react-native-paper'
 import { StyleSheet, Modal } from 'react-native'
-import api from '../../services/api'
 
-import { AuthContext } from '../../contexts/auth'
-import ListaTanques from '../HomeTecnico/ListaTanques'
-import Header from '../../components/Header'
-import ModalCreateTanque from '../../components/ModalCreateTanque'
-import AlertErrorSuccess from '../../components/AlertErrorSuccess'
-import Loader from '../../components/Loader'
+import Api from '../../../services/technician.api'
+
+import TanksList from '../TanksList'
+import Header from '../../../components/Header'
+import ModalCreateTanque from '../../../components/ModalCreateTanque'
+import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
+import Loader from '../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
-export default function HomeTecnico() {
-
-    const { user } = useContext(AuthContext)
+const TechnicianHome = () => {
 
     //Fab button
     const [state, setState] = useState({ open: false })
     const onStateChange = ({ open }) => setState({ open })
     const { open } = state
 
-    const [tanque, setTanque] = useState([])
+    const [tanks, setTanks] = useState([])
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [loading, setLoading] = useState(false)
     const [isVisible, setVisible] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
     const [status, setStatus] = useState(true)
 
-    const loadTanques = async () => {
+    const loadTanks = async () => {
         setLoading(true)
         const state = status ? 'ativos' : 'inativos'
-        const response = await api.get(`tanque/${state}`)
-        setTanque(response.data)
+        const response = await Api.getTanks(state)
+        setTanks(response)
         setLoading(false)
     }
 
     const onLoad = (value) => setLoading(value)
 
     useEffect(() => {
-        loadTanques()
+        loadTanks()
     }, [status])
 
-    const onRefreshList = async () => {
+    const onRefreshList = () => {
         setIsRefreshing(true)
-        await loadTanques()
+        loadTanks()
         setIsRefreshing(false)
     }
 
@@ -62,10 +60,10 @@ export default function HomeTecnico() {
             <Header msg={status ? 'Lista de tanques ATIVOS' : 'Lista de tanques INATIVOS'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={tanque}
+                data={tanks}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <ListaTanques data={item} onLoad={onLoad} onRefresh={loadTanques} />}
+                renderItem={({ item }) => <TanksList data={item} onLoad={onLoad} onRefresh={loadTanks} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
@@ -124,10 +122,10 @@ export default function HomeTecnico() {
                 transparent={false}
             >
                 <ModalCreateTanque
-                    dataMap={tanque}
+                    dataMap={tanks}
                     onCloseModal={closeModal}
                     showAlertErroSuccess={showAlertErroSuccess}
-                    onRefresh={loadTanques}
+                    onRefresh={loadTanks}
                     onLoad={onLoad}
                 />
             </Modal>
@@ -143,7 +141,7 @@ export default function HomeTecnico() {
                         title='Aviso'
                         message='Tanque criado com sucesso!'
                         titleButton='Ok'
-                        jsonPath={require('../../assets/lottie/success-icon.json')}
+                        jsonPath={require('../../../assets/lottie/success-icon.json')}
                         buttonColor={'#292b2c'}
                     />
                 }
@@ -166,3 +164,5 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
 })
+
+export default TechnicianHome

@@ -11,7 +11,7 @@ import { AuthContext } from '../../../contexts/auth'
 import ModalUpdateTanque from '../../../components/ModalUpdateTanque'
 import ActionButton from '../../../components/ActionButton'
 
-export default function ListaTanques({ data, onRefresh, onLoad }) {
+const TanksList = ({ data, onRefresh, onLoad }) => {
 
     const { baseUrl } = useContext(AuthContext)
 
@@ -369,19 +369,4 @@ const styles = StyleSheet.create({
     }
 })
 
-/*/Função para deletar um tanque
-   const deleteTanque = async (idTanque) => {
-
-       const headers = new Headers();
-       headers.append("Content-Type", "application/json")
-       headers.append("Accept", 'application/json')
-
-       const data = { id: idTanque }
-
-       await fetch(`${baseUrl}tanque/${idTanque}`,
-           {
-               method: 'DELETE',
-               headers: headers,
-               body: JSON.stringify(data)
-           })
-   }*/
+export default TanksList

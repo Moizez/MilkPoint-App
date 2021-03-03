@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import ProducerHome from '../pages/Producer/ProducerHome'
 import ProducerHistoric from '../pages/Producer/ProducerHistoric'
 import ProducerDeposit from '../pages/Producer/ProducerDeposit'
-import ProducerSettings from '../pages/ProducerSettings'
+import ProducerSettings from '../pages/Producer/ProducerSettings'
 
 const ProducerTab = createBottomTabNavigator()
 

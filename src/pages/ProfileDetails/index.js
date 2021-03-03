@@ -4,6 +4,7 @@ import {
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
+
 import Api from '../../services/api'
 
 import ActionButton from '../../components/ActionButton'
@@ -22,7 +23,7 @@ const ProfileDetails = () => {
     const [alertVisible, setAlertVisible] = useState(false)
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
-    const [nomeFantasia, setNomeFantasia] = useState('')
+    const [apelido, setApelido] = useState('')
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
@@ -47,12 +48,12 @@ const ProfileDetails = () => {
         else return require('../../assets/images/cover4.png')
     }
 
-    const loadUser = async () => {
+    const loadUserInfo = async () => {
         setLoading(true)
         const data = await Api.getUser()
         setNome(data.nome)
         setEmail(data.email)
-        setNomeFantasia(data.nomeFantasia)
+        setApelido(data.apelido)
         setCep(data.cep)
         setBairro(data.bairro)
         setLocalidade(data.localidade)
@@ -64,7 +65,7 @@ const ProfileDetails = () => {
     }
 
     useEffect(() => {
-        loadUser()
+        loadUserInfo()
     }, [])
 
     const buscaCep = async () => {
@@ -95,33 +96,6 @@ const ProfileDetails = () => {
         setLoading(false)
     }
 
-    const updateUser = async (idUser, nome, nomeFantasia, email, cep, localidade, uf, bairro, logradouro, complemento) => {
-
-        const headers = new Headers();
-        headers.append("Content-Type", "application/json")
-        headers.append("Accept", 'application/json')
-
-        const data = {
-            id: idUser,
-            nome: nome,
-            nomeFantasia: nomeFantasia,
-            email: email,
-            cep: cep,
-            localidade: localidade,
-            uf: uf,
-            bairro: bairro,
-            logradouro: logradouro,
-            complemento: complemento
-        }
-
-        await fetch(`${baseUrl}laticinio/` + parseInt(idUser),
-            {
-                method: 'PUT',
-                headers: headers,
-                body: JSON.stringify(data)
-            })
-    }
-
     const handleUpdate = async () => {
         if (nome == '') {
             setJsonIcon('error')
@@ -129,10 +103,10 @@ const ProfileDetails = () => {
             setAlertVisible(true)
         } else {
             setLoading(true)
-            await updateUser(
-                idUser, nome, nomeFantasia, email, cep, localidade, uf, bairro, logradouro, complemento
+            await Api.updateUser(
+                nome, apelido, email, cep, localidade, uf, bairro, logradouro, complemento
             )
-            loadUser()
+            loadUserInfo()
             setModalVisible(false)
             setLoading(false)
         }
@@ -167,7 +141,7 @@ const ProfileDetails = () => {
                     <Text style={styles.tituloItem}>DADOS CADASTRAIS</Text>
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
                     <Text style={styles.textItem}>Nome completo: <Text style={styles.text}>{userNow.nome}</Text></Text>
-                    <Text style={styles.textItem}>{user.perfil == 3 ? 'Nome da empresa: ' : 'Apelido: '}<Text style={styles.text}>{userNow?.nomeFantasia}</Text></Text>
+                    <Text style={styles.textItem}>{user.perfil == 3 ? 'Nome da empresa: ' : 'Apelido: '}<Text style={styles.text}>{userNow.apelido}</Text></Text>
                     <Text style={styles.textItem}>E-mail: <Text style={styles.text}>{userNow.email}</Text></Text>
                     <Text style={styles.textItem}>{user.perfil == 3 ? 'CNPJ: ' : 'CPF: '}<Text style={styles.text}>{user.perfil == 3 ? userNow.cnpj : userNow.cpf}</Text></Text>
                     <Text style={styles.textItem}>Data da fundação: <Text style={styles.text}>{nascimento}</Text></Text>
@@ -227,8 +201,8 @@ const ProfileDetails = () => {
                                 placeholder="Nome da empresa ou cooperativa?"
                                 autoCorrect={false}
                                 autoCapitalize="sentences"
-                                value={nomeFantasia}
-                                onChangeText={(text) => setNomeFantasia(text)}
+                                value={apelido}
+                                onChangeText={(text) => setApelido(text)}
                             />
                         </View>
 

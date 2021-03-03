@@ -1,37 +1,38 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import api from '../../../services/api'
+
+import Api from '../../../services/technician.api'
 
 import Header from '../../../components/Header'
-import ListaProdutores from '../ListaProdutores'
+import ProducersList from '../ProducersList'
 import Loader from '../../../components/Loader'
 
 import {
 	Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
 	BoxIconUpdate, BoxIconDelete
-} from '../styles'
+} from '../TechnicianHome/styles'
 
-export default function TelaProdutores() {
+const ProducersPage = () => {
 
 	const [isRefreshing, setIsRefreshing] = useState(false)
-	const [produtor, setProdutor] = useState([])
+	const [producers, setProducers] = useState([])
 	const [loading, setLoading] = useState(false)
 
-	const loadProdutores = async () => {
+	const loadProducers = async () => {
 		setLoading(true)
-		const response = await api.get('produtor')
-		setProdutor(response.data)
+		const response = await Api.getProducers()
+		setProducers(response)
 		setLoading(false)
 	}
 
 	useEffect(() => {
-		loadProdutores()
+		loadProducers()
 	}, [])
 
-	async function onRefreshList() {
+	const onRefreshList = () => {
 		setIsRefreshing(true)
-		await loadProdutores()
+		loadProducers()
 		setIsRefreshing(false)
 	}
 
@@ -40,10 +41,10 @@ export default function TelaProdutores() {
 			<Header msg={'Lista de produtores'} />
 			<List
 				showsVerticalScrollIndicator={false}
-				data={produtor}
+				data={producers}
 				keyExtractor={(item) => item.id}
 				refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-				renderItem={({ item }) => <ListaProdutores data={item} />}
+				renderItem={({ item }) => <ProducersList data={item} />}
 				ListEmptyComponent={
 					<BoxNomeAviso>
 						<NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
@@ -64,3 +65,4 @@ export default function TelaProdutores() {
 		</Container>
 	);
 }
+export default ProducersPage

@@ -2,11 +2,11 @@ import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import TechnicianHome from '../pages/HomeTecnico'
-import ProducerPage from '../pages/HomeTecnico/TelaProdutores'
-import DairyPage from '../pages/HomeTecnico/TelaLaticinios'
-import ResponsiblePage from '../pages/HomeTecnico/TelaResponsaveis'
-import TechnicianSettings from '../pages/HomeTecnico/TechnicianSettings'
+import TechnicianHome from '../pages/Technician/TechnicianHome'
+import ProducersPage from '../pages/Technician/ProducersPage'
+import DairiesPage from '../pages/Technician/DairiesPage'
+import ResponsiblesPage from '../pages/Technician/ResponsiblesPage'
+import TechnicianSettings from '../pages/Technician/TechnicianSettings'
 
 const TechnicianTab = createBottomTabNavigator()
 
@@ -15,15 +15,15 @@ const icons = {
         lib: MaterialCommunityIcons,
         name: 'home'
     },
-    ProducerPage: {
+    ProducersPage: {
         lib: MaterialCommunityIcons,
         name: 'account-cowboy-hat'
     },
-    DairyPage: {
+    DairiesPage: {
         lib: MaterialCommunityIcons,
         name: 'account-tie'
     },
-    ResponsiblePage: {
+    ResponsiblesPage: {
         lib: MaterialCommunityIcons,
         name: 'account-hard-hat'
     },
@@ -67,8 +67,8 @@ const Technician = () => {
             />
 
             <TechnicianTab.Screen
-                name='ProducerPage'
-                component={ProducerPage}
+                name='ProducersPage'
+                component={ProducersPage}
                 options={{
                     title: 'Produtores'
                 }}
@@ -76,16 +76,16 @@ const Technician = () => {
 
             <TechnicianTab.Screen
 
-                name='DairyPage'
-                component={DairyPage}
+                name='DairiesPage'
+                component={DairiesPage}
                 options={{
                     title: 'Laticínios'
                 }}
             />
 
             <TechnicianTab.Screen
-                name='ResponsiblePage'
-                component={ResponsiblePage}
+                name='ResponsiblesPage'
+                component={ResponsiblesPage}
                 options={{
                     title: 'Responsáveis'
                 }}

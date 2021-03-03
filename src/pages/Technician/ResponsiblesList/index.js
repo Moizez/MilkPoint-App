@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Switch } from 'react-n
 
 import { AuthContext } from '../../../contexts/auth'
 
-export default function ListaResponsaveis({ data }) {
+const ResponsiblesList = ({ data }) => {
 
     const { baseUrl } = useContext(AuthContext)
     const [isExpand, setExpand] = useState(false)
@@ -181,3 +181,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
     }
 })
+
+export default ResponsiblesList

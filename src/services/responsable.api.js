@@ -1,15 +1,12 @@
 import AsyncStorage from '@react-native-community/async-storage'
-
-const BASE_API = 'https://milkpoint.serviceapp.net.br/api'
-//const BASE_API  = 'http://192.168.0.128:8080/api/'
-//const BASE_API  = 'https://milkpoint.herokuapp.com/api/'
+import BASE from './base'
 
 export default {
     //REQUISIÇÕES DO RESPONSÁVEL
 
     //Carregar lista de responsáveis
     getResponsibles: async () => {
-        const request = await fetch(`${BASE_API}/responsavel`)
+        const request = await fetch(`${BASE.API}/responsavel`)
         const response = await request.json()
         return response
     },
@@ -18,7 +15,7 @@ export default {
     getResponsible: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
-        const request = await fetch(`${BASE_API}/responsavel/${user.id}`)
+        const request = await fetch(`${BASE.API}/responsavel/${user.id}`)
         const response = await request.json()
         return response
     },
@@ -27,7 +24,7 @@ export default {
     getResponsibleTanks: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
-        const request = await fetch(`${BASE_API}/responsavel/${user.id}/tanque`)
+        const request = await fetch(`${BASE.API}/responsavel/${user.id}/tanque`)
         const response = await request.json()
         return response
     },
@@ -36,7 +33,7 @@ export default {
     getResponsiblePendingDeposits: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
-        const request = await fetch(`${BASE_API}/deposito/listapendentes`)
+        const request = await fetch(`${BASE.API}/deposito/listapendentes`)
         const response = await request.json()
         const result = response.filter(d => d.tanque.responsavel.id === user.id)
 
@@ -47,7 +44,7 @@ export default {
      getResponsiblePendingWithdrawals: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
-        const request = await fetch(`${BASE_API}/retirada/listapendentes`)
+        const request = await fetch(`${BASE.API}/retirada/listapendentes`)
         const response = await request.json()
         const result = response.filter(d => d.tanque.responsavel.id === user.id)
 

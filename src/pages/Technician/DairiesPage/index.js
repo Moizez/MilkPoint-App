@@ -1,37 +1,38 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import api from '../../../services/api'
+
+import Api from '../../../services/technician.api'
 
 import Header from '../../../components/Header'
-import ListaLaticinios from '../ListaLaticinios'
+import DairiesList from '../DairiesList'
 import Loader from '../../../components/Loader'
 
 import {
 	Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
 	BoxIconUpdate, BoxIconDelete
-} from '../styles'
+} from '../TechnicianHome/styles'
 
-export default function TelaLaticinios() {
+const DairiesPage = () => {
 
-	const [laticinio, setLaticinio] = useState([])
+	const [dairies, setDairies] = useState([])
 	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [loading, setLoading] = useState(false)
 
-	const loadLaticinios = async () => {
+	const loadDairies = async () => {
 		setLoading(true)
-		const response = await api.get('laticinio')
-		setLaticinio(response.data)
+		const response = await Api.getDairies()
+		setDairies(response)
 		setLoading(false)
 	}
 
 	useEffect(() => {
-		loadLaticinios()
+		loadDairies()
 	}, [])
 
-	async function onRefreshList() {
+	const onRefreshList = () => {
 		setIsRefreshing(true)
-		await loadLaticinios()
+		loadDairies()
 		setIsRefreshing(false)
 	}
 
@@ -40,10 +41,10 @@ export default function TelaLaticinios() {
 			<Header msg={'Lista de laticínios'} />
 			<List
 				showsVerticalScrollIndicator={false}
-				data={laticinio}
+				data={dairies}
 				keyExtractor={(item) => item.id}
 				refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-				renderItem={({ item }) => <ListaLaticinios data={item} />}
+				renderItem={({ item }) => <DairiesList data={item} />}
 				ListEmptyComponent={
 					<BoxNomeAviso>
 						<NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
@@ -64,3 +65,5 @@ export default function TelaLaticinios() {
 		</Container>
 	);
 }
+
+export default DairiesPage
