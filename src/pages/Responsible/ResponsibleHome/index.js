@@ -2,33 +2,41 @@ import React, { useContext, useState, useEffect } from 'react';
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import Header from '../../components/Header'
-import ListaTanques from '../HomeResponsavel/ListaTanques'
-import { AuthContext } from '../../contexts/auth'
-import Loader from '../../components/Loader'
+import Header from '../../../components/Header'
+import TanksList from '../TanksList'
+import Loader from '../../../components/Loader'
+
+import Api from '../../../services/responsable.api'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
-export default function HomeResponsavel() {
+const ResponsibleHome = () => {
 
-    const { tanqueResponsavel, loadListTanquesResponsavel, loadingPages } = useContext(AuthContext)
-    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [tanks, setTanks] = useState([])
     const [loading, setLoading] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false)
+
+    const loadResponsibleTanks = async () => {
+        setLoading(true)
+        const response = await Api.getResponsibleTanks()
+        setTanks(response)
+        setLoading(false)
+    }
 
     const onLoader = (value) => {
         setLoading(value)
     }
 
     useEffect(() => {
-        loadListTanquesResponsavel()
+        loadResponsibleTanks()
     }, [])
 
-    const onRefreshList = async () => {
+    const onRefreshList = () => {
         setIsRefreshing(true)
-        await loadListTanquesResponsavel()
+        loadResponsibleTanks()
         setIsRefreshing(false)
     }
 
@@ -37,10 +45,10 @@ export default function HomeResponsavel() {
             <Header msg={'Lista de tanques'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={tanqueResponsavel}
+                data={tanks}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <ListaTanques data={item} onLoader={onLoader} />}
+                renderItem={({ item }) => <TanksList data={item} onLoader={onLoader} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
@@ -57,8 +65,9 @@ export default function HomeResponsavel() {
                         </BoxIconAviso>
                     </BoxNomeAviso>}
             />
-            {loading && <Loader />}
-            {loadingPages && !isRefreshing && <Loader />}
+            {loading && !isRefreshing && <Loader />}
         </Container>
     );
 }
+
+export default ResponsibleHome

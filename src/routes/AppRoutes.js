@@ -11,7 +11,6 @@ import Technician from '../roles/Technician'
 
 // Stacks import
 import ProfileDetails from '../pages/ProfileDetails'
-import ProducerProfile from '../pages/Producer/ProducerProfile'
 import TankDetails from '../pages/TankDetails'
 
 const Stack = createStackNavigator()
@@ -26,7 +25,6 @@ const AppRoutes = () => {
                 <Stack.Screen name='Producer' component={Producer} />
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
-                <Stack.Screen name='ProducerProfile' component={ProducerProfile} />
             </Stack.Navigator>
         )
     } else if (user.perfil === 2) {
@@ -35,7 +33,6 @@ const AppRoutes = () => {
                 <Stack.Screen name='Responsible' component={Responsible} />
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
-                <Stack.Screen name='ProducerProfile' component={ProducerProfile} />
             </Stack.Navigator>
         )
     } else if (user.perfil === 3) {
@@ -44,7 +41,6 @@ const AppRoutes = () => {
                 <Stack.Screen name='Dairy' component={Dairy} />
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
-                <Stack.Screen name='ProducerProfile' component={ProducerProfile} />
             </Stack.Navigator>
         )
     } else {
@@ -53,7 +49,6 @@ const AppRoutes = () => {
                 <Stack.Screen name='Technician' component={Technician} />
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
-                <Stack.Screen name='ProducerProfile' component={ProducerProfile} />
             </Stack.Navigator>
         )
     }

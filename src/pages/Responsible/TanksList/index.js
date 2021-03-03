@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import Speedometer from 'react-native-speedometer-chart'
 
-export default function ListaTanques({ data }) {
+const TanksList = ({ data }) => {
 
     const navigation = useNavigation()
     const capacidade = data.qtdAtual + data.qtdRestante
@@ -22,7 +22,7 @@ export default function ListaTanques({ data }) {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('DetalhesTanque', { data: data })} activeOpacity={0.9}>
+            <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('TankDetails', { data: data })} activeOpacity={0.9}>
                 <View style={styles.iconContainer}>
                     {data.tipo == 'BOVINO' ?
                         <Image style={styles.goatImage} source={require('../../../assets/images/cow-circle.png')} /> :
@@ -32,7 +32,7 @@ export default function ListaTanques({ data }) {
                     <Icon name={data.status ? 'beaker-check' : 'beaker-remove'} size={35} color={data.status ? '#2a9d8f' : '#da1e37'} />
                 </View>
 
-                <View style={{alignItems: 'center'}}>
+                <View style={{ alignItems: 'center' }}>
 
                     <Speedometer
                         value={data.qtdAtual}
@@ -115,3 +115,5 @@ const styles = StyleSheet.create({
         height: 35
     }
 })
+
+export default TanksList

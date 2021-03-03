@@ -7,7 +7,7 @@ import ModalChoice from '../../../components/ModalChoice'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 
-export default function ListaRetiradasPendentes({ data, onRefresh }) {
+const PendingWithdrawalsList = ({ data, onRefresh }) => {
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
@@ -163,3 +163,5 @@ export default function ListaRetiradasPendentes({ data, onRefresh }) {
         </View>
     )
 }
+
+export default PendingWithdrawalsList

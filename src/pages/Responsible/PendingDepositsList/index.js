@@ -7,7 +7,7 @@ import ModalChoice from '../../../components/ModalChoice'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 
-export default function ListaDepositosPendentes({ data, onRefresh }) {
+const PendingDepositsList = ({ data, onRefresh }) => {
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
@@ -163,3 +163,5 @@ export default function ListaDepositosPendentes({ data, onRefresh }) {
 
     );
 }
+
+export default PendingDepositsList

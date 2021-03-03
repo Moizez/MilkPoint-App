@@ -17,7 +17,7 @@ export default {
     //Carregar lista de produtores
     getProducer: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
-        
+
         const request = await fetch(`${BASE_API}/produtor/${user.id}`)
         const response = await request.json()
         return response
@@ -35,13 +35,16 @@ export default {
     //Lista de depositos pendentes
     getPendingDeposits: async () => {
         const request = await fetch(`${BASE_API}/deposito/listapendentes`)
+
         const response = await request.json()
+        console.log(response)
         return response
     },
 
     //Lista de todos os depositos excluidos ou confirmados
     getResolvedDeposits: async () => {
         const request = await fetch(`${BASE_API}/deposito/resolvidos`)
+
         const response = await request.json()
         return response
     }

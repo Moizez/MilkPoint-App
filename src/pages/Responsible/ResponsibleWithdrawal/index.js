@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { AuthContext } from '../../../contexts/auth'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import api from '../../../services/api'
+
+import Api from '../../../services/responsable.api'
 
 import Header from '../../../components/Header'
-import ListaRetiradasPendentes from '../ListaRetiradasPendentes'
+import PendingWithdrawalsList from '../PendingWithdrawalsList'
 import Loader from '../../../components/Loader'
 
 import {
@@ -13,40 +13,37 @@ import {
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
-export default function TelaRetiradasPendentesResponsavel() {
+const ResponsibleWithdrawal = () => {
 
-    const { user } = useContext(AuthContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [retiradaPendente, setRetiradaPendente] = useState([])
+    const [pendingWithdrawals, setPendingWithdrawals] = useState([])
     const [loading, setLoading] = useState(false)
 
-    const loadRetiradasPendentes = async () => {
+    const loadPendingWithdrawals = async () => {
         setLoading(true)
-        const response = await api.get('retirada/listapendentes')
-        const result = response.data.filter(r => r.tanque.responsavel.id === user.id)
-        setRetiradaPendente(result)
+        const response = await Api.getResponsiblePendingWithdrawals()
+        setPendingWithdrawals(response)
         setLoading(false)
     }
 
     useEffect(() => {
-        loadRetiradasPendentes()
+        loadPendingWithdrawals()
     }, [])
 
-    async function onRefreshList() {
+    const onRefreshList = () => {
         setIsRefreshing(true)
-        await loadRetiradasPendentes()
+        loadPendingWithdrawals()
         setIsRefreshing(false)
     }
-
     return (
         <Container>
             <Header msg={'Lista de retiradas pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={retiradaPendente}
+                data={pendingWithdrawals}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <ListaRetiradasPendentes data={item} onRefresh={onRefreshList} />}
+                renderItem={({ item }) => <PendingWithdrawalsList data={item} onRefresh={onRefreshList} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há retiradas pendentes!</NomeAviso>
@@ -67,3 +64,5 @@ export default function TelaRetiradasPendentesResponsavel() {
         </Container>
     );
 }
+
+export default ResponsibleWithdrawal

@@ -3,7 +3,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
 import DairyHome from '../pages/Dairy/DairyHome'
-import DairyWithdrawal  from '../pages/Dairy/DairyWithdrawals'
+import DairyWithdrawal  from '../pages/Dairy/DairyWithdrawal'
 import DairyHistoric from '../pages/Dairy/DairyHistoric'
 import DairySettings from '../pages/Dairy/DairySettings'
 

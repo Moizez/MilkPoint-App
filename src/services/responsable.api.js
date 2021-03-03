@@ -26,8 +26,31 @@ export default {
     //Retona uma lista apenas com os tanques do responsável logado
     getResponsibleTanks: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
         const request = await fetch(`${BASE_API}/responsavel/${user.id}/tanque`)
         const response = await request.json()
         return response
-    }
+    },
+
+    //Lista de depositos pendentes
+    getResponsiblePendingDeposits: async () => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const request = await fetch(`${BASE_API}/deposito/listapendentes`)
+        const response = await request.json()
+        const result = response.filter(d => d.tanque.responsavel.id === user.id)
+
+        return result
+    },
+
+     //Lista de depositos pendentes
+     getResponsiblePendingWithdrawals: async () => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const request = await fetch(`${BASE_API}/retirada/listapendentes`)
+        const response = await request.json()
+        const result = response.filter(d => d.tanque.responsavel.id === user.id)
+
+        return result
+    },
 }

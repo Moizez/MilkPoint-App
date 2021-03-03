@@ -2,11 +2,11 @@ import React from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 
-import ResponsibleHome from '../pages/HomeResponsavel'
-import ResponsibleDeposit from '../pages/HomeResponsavel/TelaDepositosPendentesResponsavel'
-import ResponsibleWithdrawal from '../pages/HomeResponsavel/TelaRetiradasPendentesResponsavel'
-import ResponsibleHistoric from '../pages/HomeResponsavel/TelaHistoricoResponsavel'
-import ResponsibleSettings from '../pages/HomeResponsavel/ResponsibleSettings'
+import ResponsibleHome from '../pages/Responsible/ResponsibleHome'
+import ResponsibleDeposit from '../pages/Responsible/ResponsibleDeposit'
+import ResponsibleWithdrawal from '../pages/Responsible/ResponsibleWithdrawal'
+import ResponsibleHistoric from '../pages/Responsible/TelaHistoricoResponsavel'
+import ResponsibleSettings from '../pages/Responsible/ResponsibleSettings'
 
 const ResponsibleTab = createBottomTabNavigator()
 

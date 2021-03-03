@@ -13,7 +13,7 @@ import {
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
-const DairyWithdrawals = () => {
+const DairyWithdrawal = () => {
 
     const [withdrawalsList, setWithdrawalsList] = useState([])
     const [loading, setLoading] = useState(false)
@@ -66,4 +66,4 @@ const DairyWithdrawals = () => {
     );
 }
 
-export default DairyWithdrawals
+export default DairyWithdrawal
