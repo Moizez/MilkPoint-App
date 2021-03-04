@@ -1,28 +1,16 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image, Switch } from 'react-native'
 
-import { AuthContext } from '../../../contexts/auth'
+import Api from '../../../services/technician.api'
 
 const ProducersList = ({ data }) => {
 
-    const { baseUrl } = useContext(AuthContext)
     const [isExpand, setExpand] = useState(false)
     const [status, setStatus] = useState(null)
     const [idProd] = useState(data.id)
 
     const requestStatus = async (status, idProd) => {
-        const headers = new Headers();
-        headers.append("Content-Type", "application/json")
-        headers.append("Accept", 'application/json')
-
-        const data = { id: idProd, status: status }
-
-        await fetch(`${baseUrl}produtor/` + parseInt(idProd),
-            {
-                method: 'PUT',
-                headers: headers,
-                body: JSON.stringify(data)
-            })
+        await Api.setStateRoles('produtor', status, idProd)
     }
 
     useEffect(() => {

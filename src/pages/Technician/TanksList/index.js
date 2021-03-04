@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Modal, View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWithoutFeedback } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
@@ -7,13 +7,11 @@ import GraficoTanque from '../../../components/GraficoTanque'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import Map from '../../../components/Map'
-import { AuthContext } from '../../../contexts/auth'
 import ModalUpdateTanque from '../../../components/ModalUpdateTanque'
 import ActionButton from '../../../components/ActionButton'
+import Api from '../../../services/technician.api'
 
-const TanksList = ({ data, onRefresh, onLoad }) => {
-
-    const { baseUrl } = useContext(AuthContext)
+const TanksList = ({ data, onRefresh }) => {
 
     const [modalVisible, setModalVisible] = useState(false)
     const [modalObservation, setModalObservation] = useState(false)
@@ -33,18 +31,7 @@ const TanksList = ({ data, onRefresh, onLoad }) => {
     const changeIconJson = (value) => setJsonIcon(value)
 
     const onChangeState = async (idTanque, status, observation) => {
-        const headers = new Headers();
-        headers.append("Content-Type", "application/json")
-        headers.append("Accept", 'application/json')
-
-        const data = { id: idTanque, status: status, observacao: observation }
-
-        await fetch(`${baseUrl}tanque/` + parseInt(idTanque),
-            {
-                method: 'PUT',
-                headers: headers,
-                body: JSON.stringify(data)
-            })
+        await Api.setTankState(idTanque, status, observation)
     }
 
     useEffect(() => {
@@ -72,13 +59,11 @@ const TanksList = ({ data, onRefresh, onLoad }) => {
     }
 
     const handleConfirm = async () => {
-        onLoad(true)
         setAlertInfo(false)
         setModalObservation(false)
         setIdTanque(data.id)
         await onChangeState(idTanque, status, observation)
-        await onRefresh()
-        onLoad(false)
+       await onRefresh()
     }
 
     const handleCloseModal = () => setModalVisible(false)

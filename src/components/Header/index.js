@@ -13,9 +13,9 @@ export default function Header({ msg, onOpen, calendar, disabled }) {
             return require('../../assets/images/cover.png')
         } else if (user.perfil == 2) {
             return require('../../assets/images/cover2.png')
-        } else if(user.perfil == 3) {
+        } else if (user.perfil == 3) {
             return require('../../assets/images/cover3.png')
-        }else {
+        } else {
             return require('../../assets/images/cover4.png')
         }
     }
@@ -28,9 +28,8 @@ export default function Header({ msg, onOpen, calendar, disabled }) {
     const closeModal = () => { setVisible(false) }
 
     return (
-        <View style={styles.container}>
+        <View style={{ height: user.perfil != 4 ? 180: 147 }}>
             <ImageBackground style={styles.containerPerfil}
-                imageStyle={{ borderBottomLeftRadius: 3, borderBottomRightRadius: 3 }}
                 source={perfilCover()}
                 resizeMode='cover'
             >
@@ -63,14 +62,16 @@ export default function Header({ msg, onOpen, calendar, disabled }) {
 
             </ImageBackground>
 
-            <View style={styles.containerNameList}>
-                <View>
-                    <Text style={styles.tituloBody}>{msg}</Text>
+            {user.perfil != 4 &&
+                <View style={styles.containerNameList}>
+                    <View>
+                        <Text style={styles.tituloBody}>{msg}</Text>
+                    </View>
+                    <TouchableOpacity onPress={onOpen} disabled={disabled}>
+                        {calendar}
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={onOpen} disabled={disabled}>
-                    {calendar}
-                </TouchableOpacity>
-            </View>
+            }
 
             <Modal
                 animationType='fade'
@@ -84,16 +85,13 @@ export default function Header({ msg, onOpen, calendar, disabled }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 0.5,
-    },
     containerPerfil: {
         flex: 1,
         flexDirection: 'row',
         padding: 6,
     },
     containerImage: {
-        flex: 0.4,
+        width: 100,
         alignItems: 'center',
         justifyContent: 'center',
         marginRight: 6,
@@ -107,7 +105,7 @@ const styles = StyleSheet.create({
         flex: 0.1,
     },
     containerNameList: {
-        flex: 0.2,
+        height: 30,
         flexDirection: 'row',
         alignItems: 'flex-end',
         justifyContent: 'space-between',
@@ -131,7 +129,7 @@ const styles = StyleSheet.create({
     },
     nome: {
         fontFamily: 'Lato',
-        fontSize: 24,
+        fontSize: 22,
         color: '#FFF'
     },
     editPhoto: {

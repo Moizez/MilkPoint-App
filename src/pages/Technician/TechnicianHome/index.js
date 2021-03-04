@@ -1,131 +1,112 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { RefreshControl } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import React, { useState, useEffect } from 'react'
 import { FAB } from 'react-native-paper'
-import { StyleSheet, Modal } from 'react-native'
+import { StyleSheet, Modal, Dimensions, Text } from 'react-native'
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 import Api from '../../../services/technician.api'
 
-import TanksList from '../TanksList'
 import Header from '../../../components/Header'
 import ModalCreateTanque from '../../../components/ModalCreateTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import Loader from '../../../components/Loader'
 
-import {
-    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
-    BoxIconUpdate, BoxIconDelete
-} from './styles'
+import ActiveTanks from './ActiveTanks'
+import InactiveTanks from './InactiveTanks'
+
+const initialLayout = { width: Dimensions.get('window').width };
 
 const TechnicianHome = () => {
+
+    //TabView states
+    const [index, setIndex] = useState(0)
+    const [routes] = useState([
+        { key: 'first', title: 'Tanques Ativos' },
+        { key: 'second', title: 'Tanques Inativos' },
+    ])
 
     //Fab button
     const [state, setState] = useState({ open: false })
     const onStateChange = ({ open }) => setState({ open })
     const { open } = state
 
-    const [tanks, setTanks] = useState([])
-    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [activeTanks, setActiveTanks] = useState([])
+    const [inactiveTanks, setInactiveTanks] = useState([])
     const [loading, setLoading] = useState(false)
     const [isVisible, setVisible] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
-    const [status, setStatus] = useState(true)
 
-    const loadTanks = async () => {
+    const loadActiveTanks = async () => {
         setLoading(true)
-        const state = status ? 'ativos' : 'inativos'
-        const response = await Api.getTanks(state)
-        setTanks(response)
+        const response = await Api.getActiveTanks()
+        setActiveTanks(response)
+        setLoading(false)
+    }
+
+    const loadInactiveTanks = async () => {
+        setLoading(true)
+        const response = await Api.getInactiveTanks()
+        setInactiveTanks(response)
         setLoading(false)
     }
 
     const onLoad = (value) => setLoading(value)
 
     useEffect(() => {
-        loadTanks()
-    }, [status])
-
-    const onRefreshList = () => {
-        setIsRefreshing(true)
-        loadTanks()
-        setIsRefreshing(false)
-    }
+        loadActiveTanks()
+        loadInactiveTanks()
+    }, [])
 
     const closeModal = () => setVisible(false)
     const closeAlertErroSuccess = () => setAlertVisible(false)
     const showAlertErroSuccess = () => setAlertVisible(true)
 
+    const renderTabBar = props => (
+        <TabBar {...props}
+            renderLabel={({ route, color }) => (
+                <Text style={{ color, fontSize: 14, height: 30 }}>
+                    {route.title}
+                </Text>
+            )}
+            indicatorStyle={{ backgroundColor: '#FFF' }}
+            style={{ backgroundColor: '#292b2c', height: 35 }}
+        />
+    )
+
+    const renderScene = SceneMap({
+        first: () => <ActiveTanks data={activeTanks} loadActiveTanks={loadActiveTanks} />,
+        second: () => <InactiveTanks data={inactiveTanks} loadInactiveTanks={loadInactiveTanks} />
+    });
+
     return (
-        <Container>
-            <Header msg={status ? 'Lista de tanques ATIVOS' : 'Lista de tanques INATIVOS'} />
-            <List
-                showsVerticalScrollIndicator={false}
-                data={tanks}
-                keyExtractor={(item) => item.id}
-                refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <TanksList data={item} onLoad={onLoad} onRefresh={loadTanks} />}
-                ListEmptyComponent={
-                    <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
-                        <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
-                        <BoxIconAviso>
-                            <BoxIconUpdate>
-                                <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e arraste para atualizar os tanques</NomeAviso>
-                            </BoxIconUpdate>
-                            <BoxIconDelete>
-                                <Icon name='gesture-tap-hold' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e segure no tanque para mais detalhes</NomeAviso>
-                            </BoxIconDelete>
-                        </BoxIconAviso>
-                    </BoxNomeAviso>}
+        <>
+            <Header />
+            <TabView
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={initialLayout}
+                renderTabBar={renderTabBar}
+                style={{ flex: 1 }}
+                onSwipeStart={() => loadActiveTanks()}
+                onSwipeEnd={() => loadInactiveTanks()}
             />
 
-            <FAB.Group
-                fabStyle={styles.fab}
-                color='#FFF'
-                open={open}
-                icon={open ? 'close' : 'menu'}
-                actions={[
-                    {
-                        icon: 'plus',
-                        label: 'Criar Tanque',
-                        color: '#0077b6',
-                        style: styles.fabActions,
-                        onPress: () => setVisible(true)
-                    },
-                    {
-                        icon: 'beaker-check',
-                        label: 'Tanques Ativos',
-                        color: '#2a9d8f',
-                        style: styles.fabActions,
-                        onPress: () => setStatus(true)
-                    },
-                    {
-                        icon: 'beaker-remove',
-                        label: 'Tanques Inativos',
-                        color: '#da1e37',
-                        style: styles.fabActions,
-                        onPress: () => setStatus(false)
-                    },
-                ]}
-                onStateChange={onStateChange}
-                onPress={() => {
-                    if (open) {
-                        // do something if the speed dial is open
-                    }
-                }}
+            <FAB
+                style={styles.fab}
+                small={false}
+                icon="plus"
+                onPress={() => setVisible(true)}
             />
+
             <Modal
                 visible={isVisible}
                 animationType='fade'
                 transparent={false}
             >
                 <ModalCreateTanque
-                    dataMap={tanks}
                     onCloseModal={closeModal}
                     showAlertErroSuccess={showAlertErroSuccess}
-                    onRefresh={loadTanks}
+                    onRefresh={loadActiveTanks}
                     onLoad={onLoad}
                 />
             </Modal>
@@ -146,8 +127,8 @@ const TechnicianHome = () => {
                     />
                 }
             </Modal>
-            {loading && !isRefreshing && <Loader />}
-        </Container>
+            {loading && <Loader />}
+        </>
     );
 }
 
@@ -155,13 +136,11 @@ const styles = StyleSheet.create({
     fab: {
         backgroundColor: '#292b2c',
         borderWidth: 2,
-        borderColor: '#FFF'
-    },
-    fabActions: {
-        width: 50,
-        height: 50,
-        alignItems: 'center',
-        justifyContent: 'center'
+        borderColor: '#FFF',
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
     },
 })
 

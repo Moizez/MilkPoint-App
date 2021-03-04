@@ -4,6 +4,51 @@ import BASE from './base'
 export default {
     //REQUISIÇÕES DO TÉCNICO
 
+    getActiveTanks: async () => {
+        const request = await fetch(`${BASE.API}/tanque/ativos`)
+        const response = await request.json()
+        return response
+    },
+
+    getInactiveTanks: async () => {
+        const request = await fetch(`${BASE.API}/tanque/inativos`)
+        const response = await request.json()
+        return response
+    },
+
+    setTankState: async (idTanque, status, observation) => {
+
+        const request = await fetch(`${BASE.API}/tanque/${idTanque}`, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: idTanque,
+                status: status,
+                observation: observation
+            })
+        })
+        return request
+    },
+
+    setStateRoles: async (role, status, id) => {
+
+        const request = await fetch(`${BASE.API}/${role}/${id}`, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: id,
+                status: status,
+            })
+        })
+        return request
+    },
+
     //Carregar lista de técnicos
     getTechnicians: async () => {
         const request = await fetch(`${BASE.API}/tecnico`)
@@ -31,11 +76,4 @@ export default {
         const response = await request.json()
         return response
     },
-
-    //Pega a lista de tanques
-    getTanks: async (status) => {
-        const request = await fetch(`${BASE.API}/tanque/${status}`)
-        const response = await request.json()
-        return response
-    }
 }

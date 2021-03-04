@@ -1,29 +1,17 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image, Switch } from 'react-native'
 
-import { AuthContext } from '../../../contexts/auth'
+import Api from '../../../services/technician.api'
 
 const DairiesList = ({ data }) => {
 
-    const { baseUrl } = useContext(AuthContext)
     const [isExpand, setExpand] = useState(false)
     const [status, setStatus] = useState(null)
     const [idLat] = useState(data.id)
 
     //Solicitação de retirada pelo laticinio
     const requestStatus = async (status, idLat) => {
-        const headers = new Headers();
-        headers.append("Content-Type", "application/json")
-        headers.append("Accept", 'application/json')
-
-        const data = { id: idLat, status: status }
-
-        await fetch(`${baseUrl}laticinio/` + parseInt(idLat),
-            {
-                method: 'PUT',
-                headers: headers,
-                body: JSON.stringify(data)
-            })
+        await Api.setStateRoles('laticinio', status, idLat)
     }
 
     useEffect(() => {
@@ -104,7 +92,7 @@ const DairiesList = ({ data }) => {
             <View style={styles.cardContainer}>
                 <TouchableOpacity onPress={() => setExpand(!isExpand)} activeOpacity={1} style={styles.infoCard}>
                     <Text style={styles.textInfo}>Nome: <Text style={styles.text}>{data.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Empresa: <Text style={styles.text}>{data.nomeFantasia}</Text></Text>
+                    <Text style={styles.textInfo}>Empresa: <Text style={styles.text}>{data.apelido}</Text></Text>
                     <Text style={styles.textInfo}>E-mail: <Text style={styles.text}>{data.email}</Text></Text>
                 </TouchableOpacity>
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
