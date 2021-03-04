@@ -38,7 +38,7 @@ const ProducersPage = () => {
 
 	return (
 		<Container>
-			<Header msg={'Lista de produtores'} />
+			<Header msg={'Lista de produtores'} showNameList={false} />
 			<List
 				showsVerticalScrollIndicator={false}
 				data={producers}

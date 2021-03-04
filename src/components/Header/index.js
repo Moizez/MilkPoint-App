@@ -1,12 +1,14 @@
-import React, { useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { AuthContext } from '../../contexts/auth'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { Modal, StyleSheet, View, Text, TouchableOpacity, ImageBackground } from 'react-native'
 
-import ModalInfo from '../../components/ModalInfo'
+import {
+    Container, Cover, Avatar, UserRole, AvatarBox, Profile, InfoBox, UserName, UserEmail,
+    InfoButton, TitleBox, TitleListBox, TitleList, TitleButton
+} from './styles'
 
-export default function Header({ msg, onOpen, calendar, disabled }) {
+const Header = ({ msg, onOpen, calendar, disabled, showNameList }) => {
 
     const perfilCover = () => {
         if (user.perfil == 1) {
@@ -21,120 +23,54 @@ export default function Header({ msg, onOpen, calendar, disabled }) {
     }
 
     const navigation = useNavigation()
-
     const { user } = useContext(AuthContext)
-    const [isVisible, setVisible] = useState(false)
-
-    const closeModal = () => { setVisible(false) }
 
     return (
-        <View style={{ height: user.perfil != 4 ? 180: 147 }}>
-            <ImageBackground style={styles.containerPerfil}
+        <>
+            <Container
                 source={perfilCover()}
                 resizeMode='cover'
             >
-                <View style={styles.containerImage}>
-                    <TouchableOpacity onPress={() => navigation.navigate('ProfileDetails')}>
-                        <ImageBackground
-                            imageStyle={{ borderRadius: 20 }}
-                            style={styles.image}
-                            source={require('../../assets/images/avatar.jpg')}
-                        >
-                            <Icon name='information' color='#292b2c' size={18} style={styles.editPhoto} />
-                        </ImageBackground>
-                    </TouchableOpacity>
-                    <Text style={styles.tituloPerfil}>
-                        {user.perfil == 1 && ('Produtor')}
-                        {user.perfil == 2 && ('Responsável')}
-                        {user.perfil == 3 && ('Laticínio')}
-                        {user.perfil == 4 && ('Técnico')}
-                    </Text>
-                </View>
-                <View style={styles.containerNome}>
-                    <Text style={styles.nome}>Olá, {user.perfil == 3 ? user.nomeFantasia : user.nome}</Text>
-                    <Text style={{ color: '#FFF', fontStyle: 'normal' }}>{user.email}</Text>
-                </View>
-                <View style={styles.containinerInfo}>
-                    <TouchableOpacity onPress={() => setVisible(!isVisible)}>
+                <Cover>
+                    <AvatarBox>
+                        <Avatar onPress={() => navigation.navigate('ProfileDetails')}>
+                            <Profile
+                                source={require('../../assets/images/avatar.jpg')}
+                                imageStyle={{ borderRadius: 15 }}>
+                                <Icon name='information' color='#292b2c' size={18} />
+                            </Profile>
+                        </Avatar>
+                        <UserRole>
+                            {user.perfil == 1 && ('Produtor')}
+                            {user.perfil == 2 && ('Responsável')}
+                            {user.perfil == 3 && ('Laticínio')}
+                            {user.perfil == 4 && ('Técnico')}
+                        </UserRole>
+                    </AvatarBox>
+                    <InfoBox>
+                        <UserName>Olá, {user.perfil == 3 ? user.nomeFantasia : user.nome}</UserName>
+                        <UserEmail>{user.email}</UserEmail>
+                    </InfoBox>
+                    <InfoButton onPress={() => navigation.navigate('AppTips')}>
                         <Icon name='information' color='#FFF' size={22} />
-                    </TouchableOpacity>
-                </View>
+                    </InfoButton>
+                </Cover>
+            </Container>
 
-            </ImageBackground>
-
-            {user.perfil != 4 &&
-                <View style={styles.containerNameList}>
-                    <View>
-                        <Text style={styles.tituloBody}>{msg}</Text>
-                    </View>
-                    <TouchableOpacity onPress={onOpen} disabled={disabled}>
+            {!showNameList &&
+                <TitleBox>
+                    <TitleListBox>
+                        <TitleList>{msg}</TitleList>
+                    </TitleListBox>
+                    <TitleButton onPress={onOpen} disabled={disabled}>
                         {calendar}
-                    </TouchableOpacity>
-                </View>
+                    </TitleButton>
+                </TitleBox>
             }
-
-            <Modal
-                animationType='fade'
-                transparent={true}
-                visible={isVisible}
-            >
-                <ModalInfo onClose={closeModal} />
-            </Modal>
-        </View>
+        </>
     );
 }
 
-const styles = StyleSheet.create({
-    containerPerfil: {
-        flex: 1,
-        flexDirection: 'row',
-        padding: 6,
-    },
-    containerImage: {
-        width: 100,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginRight: 6,
-    },
-    containerNome: {
-        flex: 1,
-        justifyContent: 'center',
-        marginBottom: 20,
-    },
-    containinerInfo: {
-        flex: 0.1,
-    },
-    containerNameList: {
-        height: 30,
-        flexDirection: 'row',
-        alignItems: 'flex-end',
-        justifyContent: 'space-between',
-        backgroundColor: '#292b2c',
-        marginHorizontal: 12,
-        marginBottom: 3,
-    },
-    tituloBody: {
-        color: '#FFF',
-        fontSize: 15
-    },
-    image: {
-        width: 80,
-        height: 80,
-        alignItems: 'flex-end',
-    },
-    tituloPerfil: {
-        color: '#FFF',
-        fontStyle: 'italic',
-        fontSize: 13
-    },
-    nome: {
-        fontFamily: 'Lato',
-        fontSize: 22,
-        color: '#FFF'
-    },
-    editPhoto: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 4
-    }
-})
+
+
+export default Header

@@ -1,8 +1,8 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
-import AsyncStorage from '@react-native-community/async-storage'
-import moment from 'moment'
-import 'moment/locale/pt-br'
+import { useNavigation } from '@react-navigation/native'
+
+import Api from '../../../services/producer.api'
 
 import ModalDeposito from '../../../components/ModalDeposito'
 import GraficoTanque from '../../../components/GraficoTanque'
@@ -10,9 +10,10 @@ import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
 import { AuthContext } from '../../../contexts/auth'
 
-const TanksList = ({ data, loadTanques }) => {
+const TanksList = ({ data, loadTanks }) => {
 
-    const { user, loadListPendentesProdutor, baseUrl } = useContext(AuthContext)
+    //const { loadListPendentesProdutor } = useContext(AuthContext)
+    const navigation = useNavigation()
 
     const [modalVisible, setModalVisible] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
@@ -20,7 +21,6 @@ const TanksList = ({ data, loadTanques }) => {
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
-    const [idProd, setIdProd] = useState(user.id)
     const [idTanque, setIdTanque] = useState(data.id)
     const [qtdInfo, setQtdInfo] = useState()
 
@@ -29,65 +29,13 @@ const TanksList = ({ data, loadTanques }) => {
     let msgType = jsonIcon == 'error' ? error : success
 
     useEffect(() => {
-        loadTanques()
+        loadTanks()
     }, [])
 
-    //Enviar SMS
-    const sendSms = async (value) => {
-        const headers = new Headers();
-        headers.append("Content-Type", "application/json")
-        headers.append("Accept", 'application/json')
-
-        const data = {
-            phoneNumber: user.phoneNumber,
-            message: `\n
-            Solicitação de DEPÓSITO do produtor ${user.nome}:
-            - Quantidade: ${value} litros;
-            - Data: ${moment(new Date()).locale('pt-br').format('L')}.`
-        }
-
-        await fetch('https://milkpoint.herokuapp.com/api/sms',
-            {
-                method: 'POST',
-                headers: headers,
-                body: JSON.stringify(data)
-            })
-    }
-
     //Solicitação de depósito pelo produtor
-    const requestDeposito = async (quantidade, idProd, idTanque) => {
-
-        const data = new FormData();
-        data.append("quantidade", quantidade);
-        data.append("idProd", idProd);
-        data.append("idTanque", idTanque);
-
-        await fetch(`${baseUrl}deposito`, { method: 'POST', body: data })
+    const requestDeposito = async (quantidade, idTanque) => {
+        await Api.setDeposit(quantidade, idTanque)
     };
-
-    const saveDepositoAsync = async (quantidade, idProd, idTanque) => {
-        const deposito = {
-            quantidade: quantidade,
-            idProd: idProd,
-            idTanque: idTanque
-        }
-
-        const existeDeposito = await AsyncStorage.getItem('@Deposito')
-
-        let novoDeposito = JSON.parse(existeDeposito);
-        if (!novoDeposito) {
-            novoDeposito = []
-            novoDeposito.push(deposito)
-        }
-
-        //let id = String(Math.floor(Math.random() * 10000))
-        await AsyncStorage.setItem('@deposito', JSON.stringify(novoDeposito)).then(() => {
-            console.log('Salvo com sucesso!')
-        })
-            .catch(() => {
-                console.log('Erro ao salvar!')
-            })
-    }
 
     const handleDeposito = async (value) => {
         if (data.status) {
@@ -105,7 +53,7 @@ const TanksList = ({ data, loadTanques }) => {
                 setAlertInfo(true)
             }
         } else {
-            await loadTanques()
+            await loadTanks()
             setJsonIcon('error')
             setTypeMessage(`Este tanque está inativo!`)
             setAlertVisible(true)
@@ -117,12 +65,8 @@ const TanksList = ({ data, loadTanques }) => {
         setAlertInfo(false)
         setTypeMessage('Depósito realizado com sucesso! Aguarde a confirmação.')
         setAlertVisible(true)
-        setIdProd(user.id)
         setIdTanque(data.id)
-        //await saveDepositoAsync(value, idProd, idTanque)
-        await requestDeposito(value, idProd, idTanque)
-        //sendSms(value)
-        loadListPendentesProdutor()
+        await requestDeposito(value, idTanque)
         setModalVisible(false)
     }
 

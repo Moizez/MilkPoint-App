@@ -43,7 +43,7 @@ const ProducerHome = () => {
                 data={tanks}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <TanksList data={item} loadTanques={loadTanks} />}
+                renderItem={({ item }) => <TanksList data={item} loadTanks={loadTanks} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>

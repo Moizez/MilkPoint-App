@@ -63,7 +63,7 @@ const TanksList = ({ data, onRefresh }) => {
         setModalObservation(false)
         setIdTanque(data.id)
         await onChangeState(idTanque, status, observation)
-       await onRefresh()
+        await onRefresh()
     }
 
     const handleCloseModal = () => setModalVisible(false)

@@ -1,13 +1,16 @@
-import React, { useContext, useState } from 'react'
+import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
+import { useNavigation } from '@react-navigation/native'
 
-import ActionButton from '../ActionButton'
+import ActionButton from '../../components/ActionButton'
 import { AuthContext } from '../../contexts/auth'
 
-const ModalInfo = ({ onClose }) => {
+const AppTips = () => {
 
     const { user } = useContext(AuthContext)
+    const navigation = useNavigation()
+
     const [isExpandFunctions, setExpandFunctions] = useState(false)
     const [isExpandHome, setExpandHome] = useState(false)
     const [isExpandSecondScreen, setExpandSecondScreen] = useState(false)
@@ -370,89 +373,85 @@ const ModalInfo = ({ onClose }) => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.containerModal}>
-                <View style={styles.header}>
-                    <Text style={styles.titulo}>Informações Importantes</Text>
-                </View>
-
-                <ScrollView style={styles.containerInfo}>
-
-                    <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandFunctions(!isExpandFunctions)}>
-                        <Text style={styles.btnText}>Funcionalidades Padrões</Text>
-                        <Icon name={isExpandFunctions ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
-                    </TouchableOpacity>
-
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
-                    {isExpandFunctions && renderDefaultFunctions()}
-
-                    <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandHome(!isExpandHome)}>
-                        <Text style={styles.btnText}>Tela Inicial</Text>
-                        <Icon name={isExpandHome ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
-                    </TouchableOpacity>
-
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
-                    {isExpandHome && renderHome()}
-
-                    <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandSecondScreen(!isExpandSecondScreen)}>
-                        <Text style={styles.btnText}>{changeTitleOne()}</Text>
-                        <Icon name={isExpandSecondScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
-                    </TouchableOpacity>
-
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
-                    {isExpandSecondScreen && renderSecondScreen()}
-
-                    <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandThirdScreen(!isExpandThirdScreen)}>
-                        <Text style={styles.btnText}>{changeTitleTwo()}</Text>
-                        <Icon name={isExpandThirdScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
-                    </TouchableOpacity>
-
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
-                    {isExpandThirdScreen && renderThirdScreen()}
-
-                    {user.perfil === 2 &&
-                        <>
-                            <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandFourthScreen(!isExpandFourthScreen)}>
-                                <Text style={styles.btnText}>Tela de Histórico</Text>
-                                <Icon name={isExpandFourthScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
-                            </TouchableOpacity>
-
-                            <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
-                        </>
-                    }
-
-                    {user.perfil === 4 &&
-                        <>
-                            <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandFourthScreen(!isExpandFourthScreen)}>
-                                <Text style={styles.btnText}>Tela de Responsáveis</Text>
-                                <Icon name={isExpandFourthScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
-                            </TouchableOpacity>
-
-                            <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
-                        </>
-                    }
-
-                    {isExpandFourthScreen && renderFourthScreen()}
-
-                    <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandObservation(!observation)}>
-                        <Text style={styles.btnText}>Observações</Text>
-                        <Icon name={observation ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
-                    </TouchableOpacity>
-
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
-                    {observation && renderObservation()}
-
-                </ScrollView>
-
-                <ActionButton
-                    onAction={onClose}
-                    btnColor='#292b2c'
-                    title='Fechar'
-                    nameIcon='close-circle'
-                    btnSize='100%'
-                    btnAlign='center'
-                    marginRight={35}
-                />
+            <View style={styles.header}>
+                <Text style={styles.titulo}>Informações Importantes</Text>
             </View>
+
+            <ScrollView style={styles.containerInfo} showsVerticalScrollIndicator={false}>
+
+                <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandFunctions(!isExpandFunctions)}>
+                    <Text style={styles.btnText}>Funcionalidades Padrões</Text>
+                    <Icon name={isExpandFunctions ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
+                </TouchableOpacity>
+
+                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                {isExpandFunctions && renderDefaultFunctions()}
+
+                <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandHome(!isExpandHome)}>
+                    <Text style={styles.btnText}>Tela Inicial</Text>
+                    <Icon name={isExpandHome ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
+                </TouchableOpacity>
+
+                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                {isExpandHome && renderHome()}
+
+                <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandSecondScreen(!isExpandSecondScreen)}>
+                    <Text style={styles.btnText}>{changeTitleOne()}</Text>
+                    <Icon name={isExpandSecondScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
+                </TouchableOpacity>
+
+                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                {isExpandSecondScreen && renderSecondScreen()}
+
+                <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandThirdScreen(!isExpandThirdScreen)}>
+                    <Text style={styles.btnText}>{changeTitleTwo()}</Text>
+                    <Icon name={isExpandThirdScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
+                </TouchableOpacity>
+
+                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                {isExpandThirdScreen && renderThirdScreen()}
+
+                {user.perfil === 2 &&
+                    <>
+                        <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandFourthScreen(!isExpandFourthScreen)}>
+                            <Text style={styles.btnText}>Tela de Histórico</Text>
+                            <Icon name={isExpandFourthScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
+                        </TouchableOpacity>
+
+                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                    </>
+                }
+
+                {user.perfil === 4 &&
+                    <>
+                        <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandFourthScreen(!isExpandFourthScreen)}>
+                            <Text style={styles.btnText}>Tela de Responsáveis</Text>
+                            <Icon name={isExpandFourthScreen ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
+                        </TouchableOpacity>
+
+                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                    </>
+                }
+
+                {isExpandFourthScreen && renderFourthScreen()}
+
+                <TouchableOpacity style={styles.btnStyle} activeOpacity={0.7} onPress={() => setExpandObservation(!observation)}>
+                    <Text style={styles.btnText}>Observações</Text>
+                    <Icon name={observation ? 'triangle-down' : 'triangle-right'} size={30} color='#000' />
+                </TouchableOpacity>
+
+                <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
+                {observation && renderObservation()}
+
+            </ScrollView>
+
+            <ActionButton
+                onAction={() => navigation.goBack()}
+                btnColor='#292b2c'
+                title='Fechar'
+                btnSize='100%'
+                btnAlign='center'
+            />
         </View>
     );
 }
@@ -462,11 +461,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgba(0,0,0,0.8)',
         alignItems: 'center',
-        justifyContent: 'center'
-    },
-    containerModal: {
-        height: '90%',
-        width: '90%',
+        justifyContent: 'center',
     },
     header: {
         width: '100%',
@@ -479,6 +474,7 @@ const styles = StyleSheet.create({
     },
     containerInfo: {
         flex: 1,
+        width: 358,
         backgroundColor: '#FFF',
         borderRadius: 3
     },
@@ -523,4 +519,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ModalInfo
+export default AppTips

@@ -38,7 +38,7 @@ const ResponsiblesPage = () => {
 
 	return (
 		<Container>
-			<Header msg={'Lista de responsáveis'} />
+			<Header msg={'Lista de responsáveis'} showNameList={false} />
 			<List
 				showsVerticalScrollIndicator={false}
 				data={responsibles}

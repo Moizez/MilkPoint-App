@@ -40,8 +40,8 @@ export default {
         return result
     },
 
-     //Lista de depositos pendentes
-     getResponsiblePendingWithdrawals: async () => {
+    //Lista de depositos pendentes
+    getResponsiblePendingWithdrawals: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const request = await fetch(`${BASE.API}/retirada/listapendentes`)
@@ -50,4 +50,20 @@ export default {
 
         return result
     },
+
+    getDpositOrWithdrawalResolved: async (type) => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const request = await fetch(`${BASE.API}/${type}/resolvidos/responsavel/${user.id}`)
+        const response = await request.json()
+        return response
+    },
+
+    findByNameProducerOrDairy: async (type, value) => {
+        const request = await fetch(`${BASE.API}/${type}/buscar/${value}`)
+
+        const response = await request.json()
+        return response
+    }
+
 }

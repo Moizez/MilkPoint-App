@@ -12,6 +12,8 @@ import Technician from '../roles/Technician'
 // Stacks import
 import ProfileDetails from '../pages/ProfileDetails'
 import TankDetails from '../pages/TankDetails'
+import CreateTankForm from '../pages/Technician/CreateTankForm'
+import AppTips from '../pages/AppTips'
 
 const Stack = createStackNavigator()
 
@@ -25,6 +27,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='Producer' component={Producer} />
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
+                <Stack.Screen name='AppTips' component={AppTips} />
             </Stack.Navigator>
         )
     } else if (user.perfil === 2) {
@@ -33,6 +36,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='Responsible' component={Responsible} />
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
+                <Stack.Screen name='AppTips' component={AppTips} />
             </Stack.Navigator>
         )
     } else if (user.perfil === 3) {
@@ -41,6 +45,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='Dairy' component={Dairy} />
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
+                <Stack.Screen name='AppTips' component={AppTips} />
             </Stack.Navigator>
         )
     } else {
@@ -49,6 +54,8 @@ const AppRoutes = () => {
                 <Stack.Screen name='Technician' component={Technician} />
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
+                <Stack.Screen name='CreateTankForm' component={CreateTankForm} />
+                <Stack.Screen name='AppTips' component={AppTips} />
             </Stack.Navigator>
         )
     }

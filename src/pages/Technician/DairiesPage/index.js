@@ -38,7 +38,7 @@ const DairiesPage = () => {
 
 	return (
 		<Container>
-			<Header msg={'Lista de laticínios'} />
+			<Header msg={'Lista de laticínios'} showNameList={false} />
 			<List
 				showsVerticalScrollIndicator={false}
 				data={dairies}

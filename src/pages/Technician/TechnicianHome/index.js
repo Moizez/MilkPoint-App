@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { FAB } from 'react-native-paper'
-import { StyleSheet, Modal, Dimensions, Text } from 'react-native'
+import { StyleSheet, Modal, Dimensions, Text, View } from 'react-native'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { useNavigation } from '@react-navigation/native'
 
 import Api from '../../../services/technician.api'
 
@@ -17,17 +18,14 @@ const initialLayout = { width: Dimensions.get('window').width };
 
 const TechnicianHome = () => {
 
+    const navigation = useNavigation()
+
     //TabView states
     const [index, setIndex] = useState(0)
     const [routes] = useState([
         { key: 'first', title: 'Tanques Ativos' },
         { key: 'second', title: 'Tanques Inativos' },
     ])
-
-    //Fab button
-    const [state, setState] = useState({ open: false })
-    const onStateChange = ({ open }) => setState({ open })
-    const { open } = state
 
     const [activeTanks, setActiveTanks] = useState([])
     const [inactiveTanks, setInactiveTanks] = useState([])
@@ -79,23 +77,25 @@ const TechnicianHome = () => {
 
     return (
         <>
-            <Header />
+            <Header showNameList={true} sizeNameList={147} />
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
                 onIndexChange={setIndex}
                 initialLayout={initialLayout}
                 renderTabBar={renderTabBar}
-                style={{ flex: 1 }}
-                onSwipeStart={() => loadActiveTanks()}
-                onSwipeEnd={() => loadInactiveTanks()}
+                onSwipeEnd={() => (
+                    loadActiveTanks(),
+                    loadInactiveTanks()
+                )}
+                sceneContainerStyle={styles.container}
             />
 
             <FAB
                 style={styles.fab}
                 small={false}
                 icon="plus"
-                onPress={() => setVisible(true)}
+                onPress={() => navigation.navigate('CreateTankForm')}
             />
 
             <Modal
@@ -142,6 +142,9 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
     },
+    container: {
+        flex: 1
+    }
 })
 
 export default TechnicianHome

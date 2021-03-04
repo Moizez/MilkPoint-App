@@ -64,6 +64,23 @@ export default {
         return response
     },
 
+    setTank: async () => {
+        const request = await fetch(`${BASE.API}/login`, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+        })
+        const response = await request.json()
+        return response
+    },
+
+    updateTank: async () => {
+
+    },
+
     getCep: async (cep) => {
         const request = await fetch(`${BASE.CEP_API}/${cep}/json`)
         return request

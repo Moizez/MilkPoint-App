@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import ResponsibleHome from '../pages/Responsible/ResponsibleHome'
 import ResponsibleDeposit from '../pages/Responsible/ResponsibleDeposit'
 import ResponsibleWithdrawal from '../pages/Responsible/ResponsibleWithdrawal'
-import ResponsibleHistoric from '../pages/Responsible/TelaHistoricoResponsavel'
+import ResponsibleHistoric from '../pages/Responsible/ResponsibleHistoric'
 import ResponsibleSettings from '../pages/Responsible/ResponsibleSettings'
 
 const ResponsibleTab = createBottomTabNavigator()

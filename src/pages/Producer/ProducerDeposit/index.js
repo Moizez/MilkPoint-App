@@ -30,9 +30,9 @@ const ProducerDeposit = () => {
         loadProducerDeposits()
     }, [])
 
-    const onRefreshList = async () => {
+    const onRefreshList = () => {
         setIsRefreshing(true)
-        await loadProducerDeposits()
+        loadProducerDeposits()
         setIsRefreshing(false)
     }
 
@@ -44,7 +44,7 @@ const ProducerDeposit = () => {
                 data={depositsList}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => (<PendingDepositsList data={item} onRefresh={onRefreshList} />)}
+                renderItem={({ item }) => (<PendingDepositsList data={item} loadProducerDeposits={loadProducerDeposits} />)}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há depósitos pendentes!</NomeAviso>

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { AuthContext } from '../../../contexts/auth'
 import { RefreshControl, StyleSheet } from 'react-native'
 import moment from 'moment'
 import 'moment/locale/pt-br'
-import api from '../../../services/api'
+
+import Api from '../../../services/responsable.api'
 
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
@@ -17,9 +17,7 @@ import {
     BoxIconUpdate, BoxIconDelete
 } from './styles'
 
-export default function TelaHistoricoResponsavel() {
-
-    const { user } = useContext(AuthContext)
+const ResponsibleHistoric = () => {
 
     const [show, setShow] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
@@ -41,9 +39,9 @@ export default function TelaHistoricoResponsavel() {
     const findByName = async (value) => {
         setLoading(true)
         setMsg(status ? `Busca de depósitos pelo nome: ${value}` : `Busca de retiradas pelo nome: ${value}`)
-        let tipo = status ? 'deposito' : 'retirada'
-        const response = await api.get(`${tipo}/buscar/${value}`)
-        setMainData(response.data)
+        let type = status ? 'deposito' : 'retirada'
+        const response = await Api.findByNameProducerOrDairy(type, value)
+        setMainData(response)
         setLoading(false)
     }
 
@@ -89,12 +87,12 @@ export default function TelaHistoricoResponsavel() {
 
     const loadList = async () => {
         setLoading(true)
-        const state = status ? 'deposito' : 'retirada'
-        const response = await api.get(`${state}/resolvidos/responsavel/${user.id}`)
-        setSecondaryData(response.data)
+        const type = status ? 'deposito' : 'retirada'
+        const response = await Api.getDpositOrWithdrawalResolved(type)
+        setSecondaryData(response)
 
         let day = moment(selectedDate).format('L')
-        const result = response.data.filter(function (r) {
+        const result = response.filter(function (r) {
             let regDay = moment(r.dataNow).format('L')
             return regDay === day
         })
@@ -261,4 +259,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0
     }
 })
+
+export default ResponsibleHistoric
 

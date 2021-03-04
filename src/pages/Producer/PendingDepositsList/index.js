@@ -1,5 +1,7 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Modal, View } from 'react-native'
+
+import Api from '../../../services/producer.api'
 
 import { AuthContext } from '../../../contexts/auth'
 import CardInfo from '../../../components/CardInfo'
@@ -7,30 +9,24 @@ import ModalCancel from '../../../components/ModalCancel'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 
-const PendingDepositsList = ({ data, onRefresh }) => {
+const PendingDepositsList = ({ data, loadProducerDeposits }) => {
 
     let success = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user, loadListDepositosResolvidos, baseUrl } = useContext(AuthContext)
+    //const { loadListDepositosResolvidos } = useContext(AuthContext)
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
-
     const [modalCancelVisible, setModalCancelVisible] = useState(false)
-    const [confirmacao, setConfirmacao] = useState(false)
-    const [idDeposito, setIdDeposito] = useState(data.id)
-    const [efetuou, setEfetuou] = useState(user.apelido)
 
-    //Confirmação da depósitos pelo responsável
-    const confirmacaoDeposito = async (confirmacao, idDeposito, efetuou, observacao) => {
-        const data = new FormData();
-        data.append("confirmacao", confirmacao)
-        data.append("idDeposito", idDeposito)
-        data.append("efetuou", efetuou)
-        data.append("observacao", observacao)
-
-        await fetch(`${baseUrl}deposito/confirmacao`, { method: 'POST', body: data })
+    //Cancelamento de depósitos pelo produtor
+    const confirmacaoDeposito = async (confirmacao, idDeposito) => {
+        await Api.setCancelDeposit(confirmacao, idDeposito)
     }
+
+    useEffect(() => {
+        loadProducerDeposits()
+    }, [])
 
     //Função para cancelar o depósito
     function handleCancel() {
@@ -40,11 +36,7 @@ const PendingDepositsList = ({ data, onRefresh }) => {
     const handleConfirm = async () => {
         setAlertInfo(false)
         setAlertVisible(true)
-        setConfirmacao(false)
-        setIdDeposito(data.id)
-        setEfetuou(user.apelido)
-        await confirmacaoDeposito(false, idDeposito, efetuou, '')
-        await loadListDepositosResolvidos()
+        await confirmacaoDeposito(false, data.id)
         setModalCancelVisible(false)
     }
 
@@ -82,7 +74,7 @@ const PendingDepositsList = ({ data, onRefresh }) => {
     const handleCloseCancelModal = () => setModalCancelVisible(false)
     const closeAlertErroSuccess = () => {
         setAlertVisible(false)
-        onRefresh()
+        loadProducerDeposits()
     }
 
     return (

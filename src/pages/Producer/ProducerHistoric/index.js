@@ -6,7 +6,7 @@ import 'moment/locale/pt-br'
 
 import { AuthContext } from '../../../contexts/auth'
 import axios from '../../../services/api.axios'
-import Api from '../../../services/api'
+import Api from '../../../services/producer.api'
 
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
@@ -91,11 +91,11 @@ const ProducerHistoric = () => {
 
     const loadResolved = async (type) => {
         setLoading(true)
-        const tipo = type ? 'confirmados' : 'cancelados'
-        const response = await axios.get(`deposito/${tipo}/${user.id}`)
+        const status = type ? 'confirmados' : 'cancelados'
+        const response = await Api.getResolvedDepositsUser(status)
         setMsg(type ? msgConfirmados : msgCancelados)
         setColor(type ? '#2a9d8f' : '#da1e37')
-        setMainData(response.data)
+        setMainData(response)
         setLoading(false)
     }
 
@@ -103,10 +103,10 @@ const ProducerHistoric = () => {
     const loadPage = async () => {
         setLoading(true)
         const produtor = d => d.produtor.id == user.id
-        const response = await axios.get('deposito/resolvidos')
-        setDepositoResolvido(response.data)
+        const response = await Api.getResolvedDeposits()
+        setDepositoResolvido(response)
 
-        const filterData = response.data.filter(produtor)
+        const filterData = response.filter(produtor)
         let day = moment(selectedDate).format('L')
         const data = filterData.filter(function (r) {
             let regDay = moment(r.dataNow).format('L')

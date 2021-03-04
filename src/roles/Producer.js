@@ -32,6 +32,7 @@ const Producer = () => {
     return (
         <ProducerTab.Navigator
             initialRouteName='Home'
+            backBehavior='initialRoute'
             screenOptions={({ route }) => ({
                 tabBarIcon: ({ color }) => {
                     const { lib: Icon, name } = icons[route.name]
