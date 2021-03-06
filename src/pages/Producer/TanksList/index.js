@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
 
 import Api from '../../../services/producer.api'
 
@@ -12,8 +11,7 @@ import { AuthContext } from '../../../contexts/auth'
 
 const TanksList = ({ data, loadTanks }) => {
 
-    //const { loadListPendentesProdutor } = useContext(AuthContext)
-    const navigation = useNavigation()
+    // const { loadPendingDepositsProducer } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)

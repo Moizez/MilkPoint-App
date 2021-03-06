@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { AuthContext } from '../../../contexts/auth'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
-import axios from '../../../services/api.axios'
-import Api from '../../../services/api'
+
+import Api from '../../../services/dairy.api'
+import { AuthContext } from '../../../contexts/auth'
 
 import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
@@ -92,11 +92,11 @@ const DairyHistoric = () => {
 
     const loadResolved = async (type) => {
         setLoading(true)
-        const tipo = type ? 'confirmados' : 'cancelados'
-        const response = await axios.get(`retirada/${tipo}/${user.id}`)
+        const status = type ? 'confirmados' : 'cancelados'
+        const response = await Api.getResolvedWithdrawalsUser(status) 
         setMsg(type ? msgConfirmados : msgCancelados)
         setColor(type ? '#2a9d8f' : '#da1e37')
-        setMainData(response.data)
+        setMainData(response)
         setLoading(false)
     }
 
@@ -105,8 +105,8 @@ const DairyHistoric = () => {
     const loadPage = async () => {
         setLoading(true)
         const laticinio = r => r.laticinio.id == user.id
-        const response = await axios.get('retirada/resolvidos')
-        setRetiradaResolvida(response.data)
+        const response = await Api.getResolvedWithdrawals()
+        setRetiradaResolvida(response)
 
         const filterData = response.data.filter(laticinio)
         let day = moment(selectedDate).format('L')

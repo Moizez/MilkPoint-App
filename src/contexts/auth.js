@@ -4,14 +4,16 @@ import { Modal } from 'react-native'
 
 import AlertErrorSuccess from '../components/AlertErrorSuccess'
 import LoadScreen from '../components/LoadScreen'
+
 import Api from '../services/api'
+import ProducerApi from '../services/producer.api'
 
 export const AuthContext = createContext({})
 
 let baseUrl = 'https://milkpoint.serviceapp.net.br/api/' //Leandro
 let cepUrl = 'https://viacep.com.br/ws/'
 
-export default function AuthProvider({ children }) {
+const AuthProvider = ({ children }) => {
 
     let error = require('../assets/lottie/error-icon.json')
     const [errorMsg, setErrorMsg] = useState('')
@@ -21,6 +23,12 @@ export default function AuthProvider({ children }) {
     const [loadingAuth, setLoadingAuth] = useState(false)
     const [user, setUser] = useState(null)
     const [time, setTime] = useState(false)
+    const [pendingDepositsList, setPendingDepositsList] = useState([])
+
+    const loadPendingDepositsProducer = async () => {
+        const response = await ProducerApi.getPendingDepositsProducer()
+        setPendingDepositsList(response)
+    }
 
     //Carregar usuário do AsyncStorage
     useEffect(() => {
@@ -32,7 +40,6 @@ export default function AuthProvider({ children }) {
             }
             setLoading(false)
         }
-
         loadStorage()
     }, [])
 
@@ -127,11 +134,14 @@ export default function AuthProvider({ children }) {
             </Modal>
 
             <AuthContext.Provider value={{
-                signed: !!user, user, loading, loadingAuth, baseUrl, cepUrl, signIn, logOut
+                signed: !!user, user, loading, loadingAuth, pendingDepositsList,
+                signIn, logOut, loadPendingDepositsProducer
             }}>
                 {children}
             </AuthContext.Provider>
         </>
     )
 }
+
+export default AuthProvider
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -7,6 +7,7 @@ import Header from '../../../components/Header'
 import Loader from '../../../components/Loader'
 
 import Api from '../../../services/producer.api'
+import { AuthContext } from '../../../contexts/auth'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -14,6 +15,8 @@ import {
 } from './styles'
 
 const ProducerDeposit = () => {
+
+    //const { pendingDepositsList, loadPendingDepositsProducer } = useContext(AuthContext)
 
     const [depositsList, setDepositsList] = useState([])
     const [loading, setLoading] = useState(false)

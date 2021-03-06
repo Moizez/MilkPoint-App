@@ -1,24 +1,20 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     View, Text, StyleSheet, ScrollView, ImageBackground, TouchableOpacity, Modal, TextInput
 } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 
-import Api from '../../services/api'
+import Api from '../../../services/api'
 
-import ActionButton from '../../components/ActionButton'
-import { AuthContext } from '../../contexts/auth'
-import Loader from '../../components/Loader'
-import AlertErrorSuccess from '../../components/AlertErrorSuccess'
+import ActionButton from '../../../components/ActionButton'
+import Loader from '../../../components/Loader'
+import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 
 const ProfileDetails = () => {
 
-    const { user, baseUrl } = useContext(AuthContext)
-
     const [loading, setLoading] = useState(false)
     const [userNow, setUserNow] = useState([])
-    const [idUser] = useState(user.id)
     const [modalVisible, setModalVisible] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
     const [nome, setNome] = useState('')
@@ -35,18 +31,6 @@ const ProfileDetails = () => {
     const [uf, setUf] = useState('')
     const [complemento, setComplemento] = useState('')
     const [dataLocal, setDataLocal] = useState([])
-
-    let nascimento = moment(user.dataNascimento).locale('pt-br').format('L')
-    let error = require('../../assets/lottie/error-icon.json')
-    let success = require('../../assets/lottie/success-icon.json')
-    let msgType = jsonIcon == 'error' ? error : success
-
-    const setBackground = (role) => {
-        if (role == 1) return require('../../assets/images/cover.png')
-        else if (role == 2) return require('../../assets/images/cover2.png')
-        else if (role == 3) return require('../../assets/images/cover3.png')
-        else return require('../../assets/images/cover4.png')
-    }
 
     const loadUserInfo = async () => {
         setLoading(true)
@@ -67,6 +51,23 @@ const ProfileDetails = () => {
     useEffect(() => {
         loadUserInfo()
     }, [])
+
+    let nascimento = moment(userNow.dataNascimento).locale('pt-br').format('L')
+    let error = require('../../../assets/lottie/error-icon.json')
+    let success = require('../../../assets/lottie/success-icon.json')
+    let msgType = jsonIcon == 'error' ? error : success
+
+    const perfilCover = () => {
+        if (userNow.perfil == 1) {
+            return require('../../../assets/images/cover.png')
+        } else if (userNow.perfil == 2) {
+            return require('../../../assets/images/cover2.png')
+        } else if (userNow.perfil == 3) {
+            return require('../../../assets/images/cover3.png')
+        } else if (userNow.perfil == 4) {
+            return require('../../../assets/images/cover4.png')
+        } else return
+    }
 
     const buscaCep = async () => {
         setLoading(true)
@@ -116,23 +117,25 @@ const ProfileDetails = () => {
 
     return (
         <View style={styles.container}>
-            <ImageBackground
-                style={styles.containerPerfil}
-                source={setBackground(user.perfil)}
-                resizeMode='cover'
-            >
-                <View style={styles.containerImage}>
-                    <ImageBackground
-                        style={styles.image}
-                        imageStyle={{ borderRadius: 20 }}
-                        source={require('../../assets/images/avatar.jpg')}
-                    >
-                        <TouchableOpacity style={styles.editPhoto}>
-                            <Icon name='camera' color='#FFF' size={18} />
-                        </TouchableOpacity>
-                    </ImageBackground>
-                </View>
-            </ImageBackground>
+            <View style={{ backgroundColor: '#292b2c', }}>
+                <ImageBackground
+                    style={styles.containerPerfil}
+                    source={perfilCover()}
+                    resizeMode='cover'
+                >
+                    <View style={styles.containerImage}>
+                        <ImageBackground
+                            style={styles.image}
+                            imageStyle={{ borderRadius: 20 }}
+                            source={require('../../../assets/images/avatar.jpg')}
+                        >
+                            <TouchableOpacity style={styles.editPhoto}>
+                                <Icon name='camera' color='#FFF' size={18} />
+                            </TouchableOpacity>
+                        </ImageBackground>
+                    </View>
+                </ImageBackground>
+            </View>
             <View style={styles.containerTitulo}>
                 <Text style={styles.titulo}>Minha Conta</Text>
             </View>
@@ -141,9 +144,9 @@ const ProfileDetails = () => {
                     <Text style={styles.tituloItem}>DADOS CADASTRAIS</Text>
                     <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
                     <Text style={styles.textItem}>Nome completo: <Text style={styles.text}>{userNow.nome}</Text></Text>
-                    <Text style={styles.textItem}>{user.perfil == 3 ? 'Nome da empresa: ' : 'Apelido: '}<Text style={styles.text}>{userNow.apelido}</Text></Text>
+                    <Text style={styles.textItem}>{userNow.perfil == 3 ? 'Nome da empresa: ' : 'Apelido: '}<Text style={styles.text}>{userNow.apelido}</Text></Text>
                     <Text style={styles.textItem}>E-mail: <Text style={styles.text}>{userNow.email}</Text></Text>
-                    <Text style={styles.textItem}>{user.perfil == 3 ? 'CNPJ: ' : 'CPF: '}<Text style={styles.text}>{user.perfil == 3 ? userNow.cnpj : userNow.cpf}</Text></Text>
+                    <Text style={styles.textItem}>{userNow.perfil == 3 ? 'CNPJ: ' : 'CPF: '}<Text style={styles.text}>{userNow.perfil == 3 ? userNow.cnpj : userNow.cpf}</Text></Text>
                     <Text style={styles.textItem}>Data da fundação: <Text style={styles.text}>{nascimento}</Text></Text>
                 </View>
                 <View style={styles.cardItem}>
@@ -177,7 +180,7 @@ const ProfileDetails = () => {
             >
                 <ScrollView style={styles.modal}>
                     <View style={styles.header}>
-                        <Text style={styles.title}>Editar Laticínio</Text>
+                        <Text style={styles.title}>Editar Dados</Text>
                     </View>
                     <View style={styles.body}>
 
@@ -323,7 +326,7 @@ const ProfileDetails = () => {
                             <AlertErrorSuccess
                                 onClose={closeAlertErroSuccess}
                                 message={typeMessage}
-                                jsonPath={require('../../assets/lottie/error-icon.json')}
+                                jsonPath={require('../../../assets/lottie/error-icon.json')}
                                 buttonColor={'#292b2c'}
                             />
                         }
@@ -338,10 +341,10 @@ const ProfileDetails = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingBottom: 10
+        paddingBottom: 10,
     },
     containerPerfil: {
-        flex: 0.3,
+        height: 150,
         alignItems: 'center',
         justifyContent: 'center',
     },

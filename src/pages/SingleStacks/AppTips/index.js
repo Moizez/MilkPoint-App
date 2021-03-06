@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import Icon from 'react-native-vector-icons/Entypo'
 import { useNavigation } from '@react-navigation/native'
 
-import ActionButton from '../../components/ActionButton'
-import { AuthContext } from '../../contexts/auth'
+import ActionButton from '../../../components/ActionButton'
+import { AuthContext } from '../../../contexts/auth'
 
 const AppTips = () => {
 

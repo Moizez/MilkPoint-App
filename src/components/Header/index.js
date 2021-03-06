@@ -1,7 +1,8 @@
-import React, { useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { AuthContext } from '../../contexts/auth'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+
+import Api from '../../services/api'
 
 import {
     Container, Cover, Avatar, UserRole, AvatarBox, Profile, InfoBox, UserName, UserEmail,
@@ -10,6 +11,18 @@ import {
 
 const Header = ({ msg, onOpen, calendar, disabled, showNameList }) => {
 
+    const navigation = useNavigation()
+    const [user, setUser] = useState([])
+
+    useEffect(() => {
+        const loadUser = async () => {
+            const response = await Api.getUser()
+            setUser(response)
+        }
+
+        loadUser()
+    }, [user])
+
     const perfilCover = () => {
         if (user.perfil == 1) {
             return require('../../assets/images/cover.png')
@@ -17,13 +30,10 @@ const Header = ({ msg, onOpen, calendar, disabled, showNameList }) => {
             return require('../../assets/images/cover2.png')
         } else if (user.perfil == 3) {
             return require('../../assets/images/cover3.png')
-        } else {
+        } else if (user.perfil == 4) {
             return require('../../assets/images/cover4.png')
-        }
+        } else return
     }
-
-    const navigation = useNavigation()
-    const { user } = useContext(AuthContext)
 
     return (
         <>
@@ -48,7 +58,7 @@ const Header = ({ msg, onOpen, calendar, disabled, showNameList }) => {
                         </UserRole>
                     </AvatarBox>
                     <InfoBox>
-                        <UserName>Olá, {user.perfil == 3 ? user.nomeFantasia : user.nome}</UserName>
+                        <UserName>Olá, {user.perfil == 3 ? user.apelido : user.nome}</UserName>
                         <UserEmail>{user.email}</UserEmail>
                     </InfoBox>
                     <InfoButton onPress={() => navigation.navigate('AppTips')}>
@@ -70,7 +80,5 @@ const Header = ({ msg, onOpen, calendar, disabled, showNameList }) => {
         </>
     );
 }
-
-
 
 export default Header

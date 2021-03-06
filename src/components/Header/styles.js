@@ -70,17 +70,13 @@ export const TitleBox = styled.View`
     padding-bottom: 2px;
 `;
 
-export const TitleListBox = styled.View`
-
-`;
+export const TitleListBox = styled.View``;
 
 export const TitleList = styled.Text`
     color: #FFF;
     font-size: 15px;
 `;
 
-export const TitleButton = styled.TouchableOpacity`
-
-`;
+export const TitleButton = styled.TouchableOpacity``;
 
 

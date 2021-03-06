@@ -36,6 +36,15 @@ export default {
         return response
     },
 
+    getResolvedWithdrawalsUser: async (status) => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const request = await fetch(`${BASE.API}/retirada/${status}/${user.id}`)
+
+        const response = await request.json()
+        return response
+    },
+
     //Lista de todos os retiradas excluidos ou confirmados
     getResolvedWithdrawals: async () => {
         const request = await fetch(`${BASE.API}/retirada/resolvidos`)

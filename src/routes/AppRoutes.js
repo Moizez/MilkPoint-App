@@ -10,10 +10,11 @@ import Dairy from '../roles/Dairy'
 import Technician from '../roles/Technician'
 
 // Stacks import
-import ProfileDetails from '../pages/ProfileDetails'
+import ProfileDetails from '../pages/SingleStacks/ProfileDetails'
 import TankDetails from '../pages/TankDetails'
 import CreateTankForm from '../pages/Technician/CreateTankForm'
-import AppTips from '../pages/AppTips'
+import AppTips from '../pages/SingleStacks/AppTips'
+import RouteMap from '../pages/SingleStacks/RouteMap'
 
 const Stack = createStackNavigator()
 
@@ -28,6 +29,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                 <Stack.Screen name='AppTips' component={AppTips} />
+                <Stack.Screen name='RouteMap' component={RouteMap} />
             </Stack.Navigator>
         )
     } else if (user.perfil === 2) {
@@ -37,6 +39,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                 <Stack.Screen name='AppTips' component={AppTips} />
+                <Stack.Screen name='RouteMap' component={RouteMap} />
             </Stack.Navigator>
         )
     } else if (user.perfil === 3) {
@@ -46,6 +49,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                 <Stack.Screen name='AppTips' component={AppTips} />
+                <Stack.Screen name='RouteMap' component={RouteMap} />
             </Stack.Navigator>
         )
     } else {
@@ -56,6 +60,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                 <Stack.Screen name='CreateTankForm' component={CreateTankForm} />
                 <Stack.Screen name='AppTips' component={AppTips} />
+                <Stack.Screen name='RouteMap' component={RouteMap} />
             </Stack.Navigator>
         )
     }

@@ -5,7 +5,6 @@ import moment from 'moment'
 import 'moment/locale/pt-br'
 
 import { AuthContext } from '../../../contexts/auth'
-import axios from '../../../services/api.axios'
 import Api from '../../../services/producer.api'
 
 import CardHistorico from '../../../components/CardHistorico'

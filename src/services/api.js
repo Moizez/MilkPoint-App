@@ -24,6 +24,12 @@ export default {
         return request
     },
 
+    getGeneric: async (link) => {
+        const request = await fetch(`${BASE.API}/${link}`)
+        const response = await request.json()
+        return response
+    },
+
     getUser: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 

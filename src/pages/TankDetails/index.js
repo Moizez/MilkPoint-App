@@ -1,31 +1,49 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Modal, Dimensions } from 'react-native'
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { Divider } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
-import axios from '../../services/api.axios'
+
+import Api from '../../services/api'
 
 import { AuthContext } from '../../contexts/auth'
 import Map from '../../components/Map'
 import { numberToReal } from '../../components/Helpers'
+
+import Movements from './Movements'
+import Specifications from './Specifications'
+
+const initialLayout = { width: Dimensions.get('window').width };
 
 const TankDetails = ({ route }) => {
 
     const { data } = route.params
     const { user } = useContext(AuthContext)
 
+    const [index, setIndex] = useState(0)
+    const [routes] = useState([
+        { key: 'first', title: 'Características' },
+        { key: 'second', title: 'Movimentações' },
+    ])
+
     const [modalVisible, setModalVisible] = useState(false)
     const [mainDataDeposito, setMainDataDeposito] = useState([])
     const [mainDataRetirada, setMainDataRetirada] = useState([])
 
     const loadResolvedDeposito = async () => {
-        const response = await axios.get(`deposito/confirmados${user.perfil === 1 ? `/${user.id}` : '/'}`)
-        setMainDataDeposito(response.data)
+        const response = await Api.getGeneric(
+            `deposito/confirmados${user.perfil === 1 ? `/${user.id}` : '/'}`
+        )
+        setMainDataDeposito(response)
     }
 
     const loadResolvedRetirada = async () => {
-        const response = await axios.get(`retirada/confirmados${user.perfil === 3 ? `/${user.id}` : '/'}`)
-        setMainDataRetirada(response.data)
+        const response = await Api.getGeneric(
+            `retirada/confirmados${user.perfil === 3 ? `/${user.id}` : '/'}`
+        )
+        setMainDataRetirada(response)
     }
 
     useEffect(() => {
@@ -55,7 +73,7 @@ const TankDetails = ({ route }) => {
     const somar = (acumulado, x) => acumulado + x
     const totalDepositos = dataDeposito.map(s => s.quantidade).reduce(somar, 0)
     const valorTotalDepositos = numberToReal(dataDeposito.map(s => s.valor).reduce(somar, 0))
-    
+
     //Soma dos depositos dos últimos 15 dias
     const depDays = moment().locale('en').subtract(15, 'days').format('L')
     const depFifteenDays = dataDeposito.filter(function (q) {
@@ -96,258 +114,36 @@ const TankDetails = ({ route }) => {
     const totalRetMensal = retOneMonth.map((qtd) => qtd.quantidade).reduce(somar, 0)
     const valorRetiradasMensal = numberToReal(retOneMonth.map(s => s.valor).reduce(somar, 0))
 
+    const renderTabBar = props => (
+        <TabBar {...props}
+            renderLabel={({ route, color }) => (
+                <Text style={{ color, fontSize: 15, height: 30 }}>
+                    {route.title}
+                </Text>
+            )}
+            indicatorStyle={{ backgroundColor: '#FFF' }}
+            style={{ backgroundColor: '#292b2c', height: 35 }}
+        />
+    );
+
+    const renderScene = SceneMap({
+        first: () => <Specifications data={data} />,
+        second: () => <Movements data={data} />,
+    });
+
     return (
         <View style={styles.container}>
             <View style={styles.containerTitulo}>
-                <Text style={styles.titulo}>Detalhes do Tanque: <Text style={{ color: 'red' }}>{data.nome}</Text></Text>
+                <Text style={styles.titulo}>Tanque: <Text style={{ color: 'red' }}>{data.nome}</Text></Text>
             </View>
-            <ScrollView style={styles.containerCard} showsVerticalScrollIndicator={false}>
-                <View style={styles.cardItem}>
-                    <Text style={styles.tituloItem}>CARACTERISTICAS</Text>
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
-                    <Text style={styles.textItem}>Capacidade: <Text style={styles.text}>{capacidade} litros</Text></Text>
-                    <Text style={styles.textItem}>Volume atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                    <Text style={styles.textItem}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
-                    <Text style={styles.textItem}>Tipo do leite: <Text style={styles.text}>{tipo}</Text></Text>
-                    <Text style={styles.textItem}>Data de criação: <Text style={styles.text}>{nascimento}</Text></Text>
-                    <Text style={styles.textItem}>Criado por: <Text style={styles.text}>{data.tecnico.nome}</Text></Text>
-                    <Text style={styles.textItem}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
-                    {!data.status ? <Text style={styles.textItem}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>
-                        : <Text style={styles.textItem}>Status: <Text style={styles.text}>Ativo</Text></Text>}
-                </View>
-                <View style={styles.cardItem}>
-                    <Text style={styles.tituloItem}>LOCALIZAÇÃO</Text>
-                    <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }}></View>
-                    <Text style={styles.textItem}>Estado: <Text style={styles.text}>{data.uf}</Text></Text>
-                    <Text style={styles.textItem}>Cidade: <Text style={styles.text}>{data.localidade}</Text></Text>
-                    <Text style={styles.textItem}>CEP: <Text style={styles.text}>{data.cep}</Text></Text>
-                    <Text style={styles.textItem}>Bairro: <Text style={styles.text}>{data.bairro}</Text></Text>
-                    <Text style={styles.textItem}>Rua/Comunidade: <Text style={styles.text}>{data.logradouro}</Text></Text>
-                    {data.complemento && <Text style={styles.textItem}>Complemento: <Text style={styles.text}>{data.complemento}</Text></Text>}
-
-                    <TouchableOpacity onPress={() => setModalVisible(true)} style={{ ...styles.ContainerButtons, marginBottom: 0 }}>
-                        <Text style={styles.textButton}>Como Chegar?</Text>
-                        <Icon name='google-maps' color='#FFF' size={30} />
-                    </TouchableOpacity>
-                </View>
-                {user.perfil === 1 &&
-                    <View style={styles.cardItem}>
-                        <Text style={styles.tituloItem}>MOVIMENTAÇÕES</Text>
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                            <View style={styles.icon}>
-                                <Icon name='basket-fill' size={20} color='#FFF' />
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>{totalQuinzenal} litros</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>{totalMensal} litros</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>{totalDepositos} litros</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }} />
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                            <View style={{ ...styles.icon, backgroundColor: '#fca311' }}>
-                                <Icon name='currency-usd' size={20} color='#FFF' />
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>{valorDepositosQuinzenal}</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>{valorDepositosMensal}</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>{valorTotalDepositos}</Text>
-                            </View>
-                        </View>
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
-
-                    </View>
-                }
-                {user.perfil === 2 &&
-                    <View style={styles.cardItem}>
-                        <Text style={styles.tituloItem}>MOVIMENTAÇÕES</Text>
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#000', marginTop: 5 }}></View>
-                        <View style={{ backgroundColor: '#DDD', height: 25, justifyContent: 'center' }}>
-                            <Text style={{ ...styles.textItem, textAlign: 'center' }}>Total de Depósitos</Text>
-                        </View>
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#000', marginBottom: 5 }} />
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                            <View style={styles.icon}>
-                                <Icon name='basket-fill' size={20} color='#FFF' />
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>{totalQuinzenal} litros</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>{totalMensal} litros</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>{totalDepositos} litros</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }} />
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                            <View style={{ ...styles.icon, backgroundColor: '#fca311' }}>
-                                <Icon name='currency-usd' size={20} color='#FFF' />
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>{valorDepositosQuinzenal}</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>{valorDepositosMensal}</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>{valorTotalDepositos}</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#000', marginTop: 5 }} />
-                        <View style={{ backgroundColor: '#DDD', height: 25, justifyContent: 'center' }}>
-                            <Text style={{ ...styles.textItem, textAlign: 'center' }}>Total de retiradas</Text>
-                        </View>
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#000', marginBottom: 5 }} />
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                            <View style={{ ...styles.icon, backgroundColor: '#da1e37' }}>
-                                <Icon name='basket-unfill' size={20} color='#FFF' />
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>{totalRetQuinzenal} litros</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>{totalRetMensal} litros</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>{totalRetitadas} litros</Text>
-                            </View>
-                        </View>
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }} />
-                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                            <View style={{ ...styles.icon, backgroundColor: '#fca311' }}>
-                                <Icon name='currency-usd' size={20} color='#FFF' />
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>{valorRetiradasQuinzenal}</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>{valorRetiradasMensal}</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>{valorTotalRetiradas}</Text>
-                            </View>
-                        </View>
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
-                    </View>
-                }
-                {user.perfil === 3 &&
-                    <View style={styles.cardItem}>
-                        <Text style={styles.tituloItem}>MOVIMENTAÇÕES</Text>
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }}></View>
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                            <View style={{ ...styles.icon, backgroundColor: '#da1e37' }}>
-                                <Icon name='basket-unfill' size={20} color='#FFF' />
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>{totalRetQuinzenal} litros</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>{totalRetMensal} litros</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>{totalRetitadas} litros</Text>
-                            </View>
-                        </View>
-
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 5 }} />
-
-                        <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                            <View style={{ ...styles.icon, backgroundColor: '#fca311' }}>
-                                <Icon name='currency-usd' size={20} color='#FFF' />
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>15 dias</Text>
-                                <Text style={styles.text}>{valorRetiradasQuinzenal}</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>30 dias</Text>
-                                <Text style={styles.text}>{valorRetiradasMensal}</Text>
-                            </View>
-                            <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }} />
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                                <Text style={styles.titleMov}>Total</Text>
-                                <Text style={styles.text}>{valorTotalRetiradas}</Text>
-                            </View>
-                        </View>
-                        <View style={{ width: '100%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 3 }} />
-
-                    </View>
-                }
-
-                <Modal
-                    animationType='slide'
-                    transparent={false}
-                    visible={modalVisible}
-                >
-                    <Map dataMap={data} onClose={handleCloseModal} />
-                </Modal>
-
-            </ScrollView>
-
+            <Divider />
+            <TabView
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={initialLayout}
+                renderTabBar={renderTabBar}
+            />
         </View>
     );
 }
@@ -355,10 +151,9 @@ const TankDetails = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingBottom: 10
     },
     containerTitulo: {
-        flex: 0.2,
+        height: 80,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#292b2c',
