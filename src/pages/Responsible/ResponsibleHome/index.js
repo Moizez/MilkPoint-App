@@ -43,6 +43,7 @@ const ResponsibleHome = () => {
     return (
         <Container>
             <Header msg={'Lista de tanques'} />
+
             <List
                 showsVerticalScrollIndicator={false}
                 data={tanks}

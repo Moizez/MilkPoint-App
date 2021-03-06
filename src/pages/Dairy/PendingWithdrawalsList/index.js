@@ -1,7 +1,9 @@
 import React, { useState, useContext } from 'react'
 import { Modal, View } from 'react-native'
 
+import Api from '../../../services/dairy.api'
 import { AuthContext } from '../../../contexts/auth'
+
 import CardInfo from '../../../components/CardInfo'
 import ModalCancel from '../../../components/ModalCancel'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
@@ -11,25 +13,16 @@ const PendingWithdrawalsList = ({ data, onRefresh }) => {
 
     let success = require('../../../assets/lottie/delete-confirm.json')
 
-    const { user, loadListRetiradasResolvidas, baseUrl } = useContext(AuthContext)
+    //const { user, loadListRetiradasResolvidas, baseUrl } = useContext(AuthContext)
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
 
     const [modalCancelVisible, setModalCancelVisible] = useState(false)
-    const [confirmacao, setConfirmacao] = useState(false)
-    const [idRetirada, setIdRetirada] = useState(data.id)
-    const [efetuou, setEfetuou] = useState(user.nomeFantasia)
 
     //Confirmação da retiradas pelo responsável
-    const confirmacaoRetirada = async (confirmacao, idRetirada, efetuou, observacao) => {
-        const data = new FormData()
-        data.append("confirmacao", confirmacao)
-        data.append("idRetirada", idRetirada)
-        data.append("efetuou", efetuou)
-        data.append("observacao", observacao)
-
-        await fetch(`${baseUrl}retirada/confirmacao`, { method: 'POST', body: data })
+    const confirmacaoRetirada = async (confirmacao, idRetirada) => {
+        await Api.setCancelWithdrawal(confirmacao, idRetirada)
     };
 
     //Função para cancelar a retirada
@@ -40,11 +33,7 @@ const PendingWithdrawalsList = ({ data, onRefresh }) => {
     const handleConfirm = async () => {
         setAlertInfo(false)
         setAlertVisible(true)
-        setConfirmacao(false)
-        setIdRetirada(data.id)
-        setEfetuou(user.apelido)
-        await confirmacaoRetirada(false, idRetirada, efetuou, '')
-        await loadListRetiradasResolvidas()
+        await confirmacaoRetirada(false, data.id)
         setModalCancelVisible(false)
     }
 

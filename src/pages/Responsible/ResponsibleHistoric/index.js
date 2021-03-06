@@ -88,7 +88,7 @@ const ResponsibleHistoric = () => {
     const loadList = async () => {
         setLoading(true)
         const type = status ? 'deposito' : 'retirada'
-        const response = await Api.getDpositOrWithdrawalResolved(type)
+        const response = await Api.getDepositOrWithdrawalResolved(type)
         setSecondaryData(response)
 
         let day = moment(selectedDate).format('L')

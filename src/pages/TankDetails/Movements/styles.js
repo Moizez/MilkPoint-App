@@ -6,7 +6,7 @@ export const MainContainer = styled.ScrollView`
 
 export const Container = styled.View`
     flex: 1;
-    padding: 15px;
+    padding: 10px;
 `;
 
 export const Title = styled.Text`
@@ -61,8 +61,6 @@ export const PeriodItem = styled.View`
     flex: 1;
     align-items: center;
     justify-content: center;
-    margin-top: 5px;
-    margin-bottom: 5px;
 `;
 
 export const PeriodText = styled.Text`
@@ -71,12 +69,14 @@ export const PeriodText = styled.Text`
 
 export const MilkMovementsBottom = styled.View`
     flex: 1;
+    height: 20px;
     background-color: #2a9d8f;
     border-bottom-left-radius: 8px;
 `;
 
 export const CashMovementsBottom = styled.View`
     flex: 1;
+    height: 20px;
     background-color: #fca311;
     border-bottom-right-radius: 8px;
 `;

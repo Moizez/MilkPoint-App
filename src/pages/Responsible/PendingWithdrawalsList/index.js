@@ -1,7 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Modal, View } from 'react-native';
 
+import Api from '../../../services/responsable.api'
 import { AuthContext } from '../../../contexts/auth'
+
 import CardInfo from '../../../components/CardInfo'
 import ModalChoice from '../../../components/ModalChoice'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
@@ -19,11 +21,8 @@ const PendingWithdrawalsList = ({ data, onRefresh }) => {
         else return cancel
     }
 
-    const { user, loadListRetiradasResolvidas, loadListTanquesResponsavel, baseUrl } = useContext(AuthContext)
+    const { } = useContext(AuthContext)
 
-    const [confirmacao, setConfirmacao] = useState(false)
-    const [idRetirada, setIdRetirada] = useState(data.id)
-    const [efetuou, setEfetuou] = useState(user.nome)
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
@@ -33,14 +32,8 @@ const PendingWithdrawalsList = ({ data, onRefresh }) => {
     const [isAlertErroSuccess, setAlertErroSuccess] = useState(false)
 
     //Confirmação da retiradas pelo responsável
-    const confirmacaoRetirada = async (confirmacao, idRetirada, efetuou, observacao) => {
-        const data = new FormData()
-        data.append("confirmacao", confirmacao)
-        data.append("idRetirada", idRetirada)
-        data.append("efetuou", efetuou)
-        data.append('observacao', observacao)
-
-        await fetch(`${baseUrl}retirada/confirmacao`, { method: 'POST', body: data })
+    const confirmacaoRetirada = async (confirmacao, idRetirada, observacao) => {
+        await Api.setWithdrawalConfirmation(confirmacao, idRetirada, observacao)
     };
 
     //Função para confirmar a retirada
@@ -59,12 +52,7 @@ const PendingWithdrawalsList = ({ data, onRefresh }) => {
         setAlertSimpleInfo(false)
         setTypeMessage('Retirada confirmada com sucesso!')
         setAlertErroSuccess(true)
-        setConfirmacao(true)
-        setIdRetirada(data.id)
-        setEfetuou(user.nome)
-        await confirmacaoRetirada(true, idRetirada, efetuou, '')
-        loadListRetiradasResolvidas()
-        loadListTanquesResponsavel()
+        await confirmacaoRetirada(true, data.id, '')
         setVisibleCard(false)
     }
 
@@ -72,12 +60,7 @@ const PendingWithdrawalsList = ({ data, onRefresh }) => {
         setJsonIcon('cancel')
         setTypeMessage('Retirada cancelada com sucesso!')
         setAlertErroSuccess(true)
-        setConfirmacao(false)
-        setIdRetirada(data.id)
-        setEfetuou(user.nome)
-        await confirmacaoRetirada(false, idRetirada, efetuou, observacao)
-        loadListRetiradasResolvidas()
-        loadListTanquesResponsavel()
+        await confirmacaoRetirada(false, data.id, observacao)
         setVisibleCard(false)
     }
 

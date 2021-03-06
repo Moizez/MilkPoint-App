@@ -38,14 +38,20 @@ export default {
     },
 
     //Lista de todos os depositos excluidos ou confirmados
-    getResolvedDeposits: async () => {
+    getAllDepositsResolved: async () => {
         const request = await fetch(`${BASE.API}/deposito/resolvidos`)
 
         const response = await request.json()
         return response
     },
 
-    getResolvedDepositsUser: async (status) => {
+    getAllDepositsConfirmedOrCanceled: async (status) => {
+        const request = await fetch(`${BASE.API}/deposito/${status}`)
+        const response = await request.json()
+        return response
+    },
+
+    getAllDepositsConfirmedOrCanceledUser: async (status) => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const request = await fetch(`${BASE.API}/deposito/${status}/${user.id}`)

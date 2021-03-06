@@ -51,12 +51,36 @@ export default {
         return result
     },
 
-    getDpositOrWithdrawalResolved: async (type) => {
+    getDepositOrWithdrawalResolved: async (type) => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const request = await fetch(`${BASE.API}/${type}/resolvidos/responsavel/${user.id}`)
         const response = await request.json()
         return response
+    },
+
+    setDepositConfirmation: async (confirmacao, idDeposito, observacao) => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const data = new FormData();
+        data.append("confirmacao", confirmacao)
+        data.append("idDeposito", idDeposito)
+        data.append("efetuou", user.nome)
+        data.append('observacao', observacao)
+
+        await fetch(`${BASE.API}/deposito/confirmacao`, { method: 'POST', body: data })
+    },
+
+    setWithdrawalConfirmation: async (confirmacao, idRetirada, observacao) => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const data = new FormData();
+        data.append("confirmacao", confirmacao)
+        data.append("idRetirada", idRetirada)
+        data.append("efetuou", user.nome)
+        data.append('observacao', observacao)
+
+        await fetch(`${BASE.API}/retirada/confirmacao`, { method: 'POST', body: data })
     },
 
     findByNameProducerOrDairy: async (type, value) => {

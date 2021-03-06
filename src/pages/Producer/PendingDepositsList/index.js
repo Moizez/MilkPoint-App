@@ -2,8 +2,8 @@ import React, { useState, useEffect, useContext } from 'react'
 import { Modal, View } from 'react-native'
 
 import Api from '../../../services/producer.api'
-
 import { AuthContext } from '../../../contexts/auth'
+
 import CardInfo from '../../../components/CardInfo'
 import ModalCancel from '../../../components/ModalCancel'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'

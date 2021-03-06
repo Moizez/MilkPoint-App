@@ -6,11 +6,12 @@ import GraficoTanque from '../../../components/GraficoTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
 
+import Api from '../../../services/dairy.api'
 import { AuthContext } from '../../../contexts/auth'
 
-export default function ListaTanques({ data, loadTanques }) {
+export default function ListaTanques({ data, loadTanks }) {
 
-    const { user, loadListPendentesLaticinio, baseUrl } = useContext(AuthContext)
+    const { } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
     const [alertVisible, setAlertVisible] = useState(false)
@@ -18,8 +19,6 @@ export default function ListaTanques({ data, loadTanques }) {
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
-    const [idLat, setIdLat] = useState(user.id)
-    const [idTanque, setIdTanque] = useState(data.id)
     const [qtdInfo, setQtdInfo] = useState()
 
     let error = require('../../../assets/lottie/error-icon.json')
@@ -27,17 +26,12 @@ export default function ListaTanques({ data, loadTanques }) {
     let msgType = jsonIcon == 'error' ? error : success
 
     useEffect(() => {
-        loadTanques()
+        loadTanks()
     }, [])
 
     //Solicitação de retirada pelo laticinio
-    const requestRetirada = async (quantidade, idLat, idTanque) => {
-        const data = new FormData()
-        data.append("quantidade", quantidade)
-        data.append("idLat", idLat)
-        data.append("idTanque", idTanque)
-
-        await fetch(`${baseUrl}retirada`, { method: 'POST', body: data })
+    const requestRetirada = async (quantidade, idTanque) => {
+        await Api.setWithdrawal(quantidade, idTanque)
     };
 
     const handleRetirada = async (value) => {
@@ -64,7 +58,7 @@ export default function ListaTanques({ data, loadTanques }) {
                 setAlertInfo(true)
             }
         } else {
-            await loadTanques()
+            await loadTanks()
             setJsonIcon('error')
             setTypeMessage('Este tanque está inativo!')
             setAlertVisible(true)
@@ -76,10 +70,7 @@ export default function ListaTanques({ data, loadTanques }) {
         setAlertInfo(false)
         setTypeMessage('Retirada realizada com sucesso! Aguarde a confirmação.')
         setAlertVisible(true)
-        setIdLat(user.id)
-        setIdTanque(data.id)
-        await requestRetirada(value, idLat, idTanque)
-        loadListPendentesLaticinio()
+        await requestRetirada(value, data.id)
         setModalVisible(false)
     }
 

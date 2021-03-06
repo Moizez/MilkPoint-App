@@ -100,7 +100,6 @@ const DairyHistoric = () => {
         setLoading(false)
     }
 
-
     //Lista de todas as retiradas pela data
     const loadPage = async () => {
         setLoading(true)
@@ -108,7 +107,7 @@ const DairyHistoric = () => {
         const response = await Api.getResolvedWithdrawals()
         setRetiradaResolvida(response)
 
-        const filterData = response.data.filter(laticinio)
+        const filterData = response.filter(laticinio)
         let day = moment(selectedDate).format('L')
         const data = filterData.filter(function (r) {
             let regDay = moment(r.dataNow).format('L')

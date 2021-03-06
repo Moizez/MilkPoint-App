@@ -14,7 +14,7 @@ export default {
     //Carregar lista de laticínios
     getDairy: async () => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
-        
+
         const request = await fetch(`${BASE.API}/laticinio/${user.id}`)
         const response = await request.json()
         return response
@@ -32,11 +32,26 @@ export default {
     //Lista de retiradas pendentes
     getPendingWithdrawals: async () => {
         const request = await fetch(`${BASE.API}/retirada/listapendentes`)
+
         const response = await request.json()
         return response
     },
 
-    getResolvedWithdrawalsUser: async (status) => {
+    //Lista de todos os retiradas excluidos ou confirmados
+    getAllWithdrawalsResolved: async () => {
+        const request = await fetch(`${BASE.API}/retirada/resolvidos`)
+        const response = await request.json()
+        return response
+    },
+
+    //Lista de todos os retiradas excluidos ou confirmados
+    getAllWithdrawalsConfirmedOrCanceled: async (status) => {
+        const request = await fetch(`${BASE.API}/retirada/${status}`)
+        const response = await request.json()
+        return response
+    },
+
+    getAllWithdrawalsConfirmedOrCanceledUser: async (status) => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const request = await fetch(`${BASE.API}/retirada/${status}/${user.id}`)
@@ -45,10 +60,26 @@ export default {
         return response
     },
 
-    //Lista de todos os retiradas excluidos ou confirmados
-    getResolvedWithdrawals: async () => {
-        const request = await fetch(`${BASE.API}/retirada/resolvidos`)
-        const response = await request.json()
-        return response
+    setWithdrawal: async (quantidade, idTanque) => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const data = new FormData()
+        data.append("quantidade", quantidade)
+        data.append("idLat", user.id)
+        data.append("idTanque", idTanque)
+
+        await fetch(`${BASE.API}/retirada`, { method: 'POST', body: data })
+    },
+
+    setCancelWithdrawal: async (confirmacao, idRetirada) => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const data = new FormData();
+        data.append("confirmacao", confirmacao)
+        data.append("idRetirada", idRetirada)
+        data.append("efetuou", user.apelido)
+        data.append("observacao", "")
+
+        await fetch(`${BASE.API}/retirada/confirmacao`, { method: 'POST', body: data })
     }
 }

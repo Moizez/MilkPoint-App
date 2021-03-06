@@ -1,7 +1,9 @@
 import React, { useState, useContext } from 'react';
 import { Modal, View } from 'react-native';
 
+import Api from '../../../services/responsable.api'
 import { AuthContext } from '../../../contexts/auth'
+
 import CardInfo from '../../../components/CardInfo'
 import ModalChoice from '../../../components/ModalChoice'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
@@ -19,11 +21,8 @@ const PendingDepositsList = ({ data, onRefresh }) => {
         else return cancel
     }
 
-    const { user, loadListDepositosResolvidos, loadListTanquesResponsavel, baseUrl } = useContext(AuthContext)
+    const {  } = useContext(AuthContext)
 
-    const [confirmacao, setConfirmacao] = useState(false)
-    const [idDeposito, setIdDeposito] = useState(data.id)
-    const [efetuou, setEfetuou] = useState(user.nome)
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
@@ -33,14 +32,8 @@ const PendingDepositsList = ({ data, onRefresh }) => {
     const [isAlertErroSuccess, setAlertErroSuccess] = useState(false)
 
     //Confirmação da depositos pelo responsável
-    const confirmacaoDeposito = async (confirmacao, idDeposito, efetuou, observacao) => {
-        const data = new FormData();
-        data.append("confirmacao", confirmacao)
-        data.append("idDeposito", idDeposito)
-        data.append("efetuou", efetuou)
-        data.append('observacao', observacao)
-
-        await fetch(`${baseUrl}deposito/confirmacao`, { method: 'POST', body: data })
+    const confirmacaoDeposito = async (confirmacao, idDeposito, observacao) => {
+        await Api.setDepositConfirmation(confirmacao, idDeposito, observacao)
     };
 
     //Função para confirmar a depósito
@@ -59,11 +52,7 @@ const PendingDepositsList = ({ data, onRefresh }) => {
         setAlertSimpleInfo(false)
         setTypeMessage('Depósito confirmado com sucesso!')
         setAlertErroSuccess(true)
-        setConfirmacao(true)
-        setIdDeposito(data.id)
-        setEfetuou(user.nome)
-        await confirmacaoDeposito(true, idDeposito, efetuou, '')
-        await loadListTanquesResponsavel()
+        await confirmacaoDeposito(true, data.id, '')
         setVisibleCard(false)
     }
 
@@ -71,11 +60,7 @@ const PendingDepositsList = ({ data, onRefresh }) => {
         setJsonIcon('cancel')
         setTypeMessage('Depósito cancelado com sucesso!')
         setAlertErroSuccess(true)
-        setConfirmacao(false)
-        setIdDeposito(data.id)
-        setEfetuou(user.nome)
-        await confirmacaoDeposito(false, idDeposito, efetuou, observacao)
-        await loadListDepositosResolvidos()
+        await confirmacaoDeposito(false, data.id, observacao)
         setVisibleCard(false)
     }
 
