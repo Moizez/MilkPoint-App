@@ -93,7 +93,7 @@ const DairyHistoric = () => {
     const loadResolved = async (type) => {
         setLoading(true)
         const status = type ? 'confirmados' : 'cancelados'
-        const response = await Api.getResolvedWithdrawalsUser(status) 
+        const response = await Api.getAllWithdrawalsConfirmedOrCanceledUser(status) 
         setMsg(type ? msgConfirmados : msgCancelados)
         setColor(type ? '#2a9d8f' : '#da1e37')
         setMainData(response)
@@ -104,7 +104,7 @@ const DairyHistoric = () => {
     const loadPage = async () => {
         setLoading(true)
         const laticinio = r => r.laticinio.id == user.id
-        const response = await Api.getResolvedWithdrawals()
+        const response = await Api.getAllWithdrawalsResolved()
         setRetiradaResolvida(response)
 
         const filterData = response.filter(laticinio)

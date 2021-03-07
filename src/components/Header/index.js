@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-
-import Api from '../../services/api'
 
 import {
     Container, Cover, Avatar, UserRole, AvatarBox, Profile, InfoBox, UserName, UserEmail,
@@ -16,8 +15,8 @@ const Header = ({ msg, onOpen, calendar, disabled, showNameList }) => {
 
     useEffect(() => {
         const loadUser = async () => {
-            const response = await Api.getUser()
-            setUser(response)
+            const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+            setUser(user)
         }
 
         loadUser()

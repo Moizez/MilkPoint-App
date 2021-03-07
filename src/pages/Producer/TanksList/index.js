@@ -4,6 +4,7 @@ import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 import Api from '../../../services/producer.api'
 
 import ModalDeposito from '../../../components/ModalDeposito'
+import DepositModal from '../../../components/Modals/DepositModal'
 import GraficoTanque from '../../../components/GraficoTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
@@ -14,6 +15,8 @@ const TanksList = ({ data, loadTanks }) => {
     // const { loadPendingDepositsProducer } = useContext(AuthContext)
 
     const [modalVisible, setModalVisible] = useState(false)
+    const [depositModal, setDepositModal] = useState(false)
+
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
@@ -73,6 +76,8 @@ const TanksList = ({ data, loadTanks }) => {
     const closeAlertInfo = () => setAlertInfo(false)
     const closeAlertErroSuccess = () => setAlertVisible(false)
 
+    const openModalDate = () => setDepositModal(true)
+
     return (
         <View style={styles.container}>
 
@@ -88,7 +93,7 @@ const TanksList = ({ data, loadTanks }) => {
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
-                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} activeTanque={data.status ? false : true} />
+                <GraficoTanque dataGrafico={data} handleOpenModal={openModalDate} activeTanque={data.status ? false : true} />
             </View>
 
             <Modal
@@ -135,6 +140,11 @@ const TanksList = ({ data, loadTanks }) => {
                     />
                 }
             </Modal>
+
+            <DepositModal
+                show={depositModal}
+                setShow={setDepositModal}
+            />
 
         </View >
     );

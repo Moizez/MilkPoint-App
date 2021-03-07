@@ -1,195 +1,61 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { RefreshControl } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import moment from 'moment'
-import 'moment/locale/pt-br'
+import React, { useState, useContext } from 'react';
+import { Text, Dimensions, RefreshControl } from 'react-native'
+import styled from 'styled-components/native'
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
 import { AuthContext } from '../../../contexts/auth'
 import Api from '../../../services/producer.api'
 
-import CardHistorico from '../../../components/CardHistorico'
 import Header from '../../../components/Header'
-import DatePicker from '../../../components/DatePicker'
-import FabSearch from '../../../components/FabSearch'
-import Loader from '../../../components/Loader'
+import ConfirmedDeposits from './ConfirmedDeposits'
+import CanceledDeposits from './CanceledDeposits'
 
-import {
-    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
-} from './styles'
+const initialLayout = { width: Dimensions.get('window').width };
 
 const ProducerHistoric = () => {
 
     const { user } = useContext(AuthContext)
 
-    const [show, setShow] = useState(false)
-    const [selectedDate, setSelectedDate] = useState(new Date())
-    const [isRefreshing, setIsRefreshing] = useState(false)
-    const [msg, setMsg] = useState('')
-    const [color, setColor] = useState('#FFF')
-    const [loading, setLoading] = useState(false)
-    const [depositoResolvido, setDepositoResolvido] = useState([])
-    const [mainData, setMainData] = useState([])
+    const [index, setIndex] = useState(0)
+    const [routes] = useState([
+        { key: 'first', title: 'Confirmados' },
+        { key: 'second', title: 'Cancelados' },
+    ])
 
-    let msgDefault = `Lista de transações do dia ${selectedDate && moment(selectedDate).format('L')}`
-    let msgForValue = 'Lista de transações pelo valor do depósito'
-    let msg15Days = 'Lista de transações dos últimos 15 dias'
-    let msg30Days = 'Lista de transações dos últimos 30 dias'
-    let msgCustomDays = 'Lista de DEPÓSITOS personalizada'
-    let msgConfirmados = 'Lista de DEPÓSITOS confirmados'
-    let msgCancelados = 'Lista de DEPÓSITOS cancelados'
+    const renderTabBar = props => (
+        <TabBar {...props}
+            renderLabel={({ route, color }) => (
+                <Text style={{ color, fontSize: 15, height: 30 }}>
+                    {route.title}
+                </Text>
+            )}
+            indicatorStyle={{ backgroundColor: '#FFF' }}
+            style={{ backgroundColor: '#292b2c', height: 35 }}
+        />
+    );
 
-    const onLoad = () => setLoading(true)
+    const renderScene = SceneMap({
+        first: () => <ConfirmedDeposits />,
+        second: () => <CanceledDeposits />,
+    });
 
-    //Filtrar por valor do pedido
-    const getValor = (value) => {
-        const filterByValue = depositoResolvido.filter(d => d.quantidade == value)
-        setColor('#FFF')
-        setMsg(msgForValue)
-        setMainData(filterByValue)
-        setLoading(false)
-    }
-
-    //Filtrar pelos últimos 15 dias
-    const filterFifteenDays = () => {
-        let fifteenDays = moment().locale('en').subtract(15, 'days').format('L')
-        const fifteenDaysAgo = depositoResolvido.filter(function (d) {
-            let dayDep = moment(d.dataNow).locale('en').format('L')
-            return moment(dayDep).isSameOrAfter(fifteenDays, 'days')
-        })
-        setColor('#e9c46a')
-        setMsg(msg15Days)
-        setMainData(fifteenDaysAgo)
-        setLoading(false)
-    }
-
-    //Filtrar pelos últimos 30 dias
-    const filterOneMonth = () => {
-        let oneMonth = moment().locale('en').subtract(1, 'month').format('L')
-        const oneMonthAgo = depositoResolvido.filter(function (d) {
-            let dayDep = moment(d.dataNow).locale('en').format('L')
-            return moment(dayDep).isSameOrAfter(oneMonth, 'days')
-        })
-        setColor('#e76f51')
-        setMsg(msg30Days)
-        setMainData(oneMonthAgo)
-        setLoading(false)
-    }
-
-    //Filtrar por data personalizada
-    const filterCustomDays = (value) => {
-        let customDay = moment(value).locale('en').format('L')
-        const customDayAgo = depositoResolvido.filter(function (d) {
-            let dayDep = moment(d.dataNow).locale('en').format('L')
-            return moment(dayDep).isSameOrAfter(customDay, 'days')
-        })
-        setColor('#DDD')
-        setMsg(msgCustomDays)
-        setMainData(customDayAgo)
-        setLoading(false)
-    }
-
-    const loadResolved = async (type) => {
-        setLoading(true)
-        const status = type ? 'confirmados' : 'cancelados'
-        const response = await Api.getResolvedDepositsUser(status)
-        setMsg(type ? msgConfirmados : msgCancelados)
-        setColor(type ? '#2a9d8f' : '#da1e37')
-        setMainData(response)
-        setLoading(false)
-    }
-
-    //Lista de todos os depósitos pela data selecionada
-    const loadPage = async () => {
-        setLoading(true)
-        const produtor = d => d.produtor.id == user.id
-        const response = await Api.getResolvedDeposits()
-        setDepositoResolvido(response)
-
-        const filterData = response.filter(produtor)
-        let day = moment(selectedDate).format('L')
-        const data = filterData.filter(function (r) {
-            let regDay = moment(r.dataNow).format('L')
-            return regDay === day
-        })
-        setColor('#FFF')
-        setMsg(msgDefault)
-        setMainData(data)
-        setLoading(false)
-    }
-
-    useEffect(() => {
-        loadPage()
-    }, [selectedDate])
-
-    function onChange(value) {
-        setShow(Platform.OS === 'ios')
-        setColor('#FFF')
-        setSelectedDate(value)
-    }
-
-    async function onRefreshList() {
-        setColor('#FFF')
-        setIsRefreshing(true)
-        setSelectedDate(new Date())
-        await loadPage()
-        setIsRefreshing(false)
-    }
-
-    const showCalendar = () => setShow(true)
 
     return (
         <Container>
-            <Header
-                msg={msg}
-                onOpen={showCalendar}
-                calendar={<Icon name='calendar-month' color={color} size={22} />}
-            />
-            <List
-                showsVerticalScrollIndicator={false}
-                data={mainData}
-                keyExtractor={(item) => item.id}
-                refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <CardHistorico data={item} />}
-                ListEmptyComponent={
-                    <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
-                        <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
-                        <BoxIconAviso>
-                            <BoxIconUpdate>
-                                <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e arraste para atualizar as transações</NomeAviso>
-                            </BoxIconUpdate>
-                            <BoxIconDelete>
-                                <Icon name='calendar-search' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique no ícone do calendário para filtrar por data</NomeAviso>
-                            </BoxIconDelete>
-                        </BoxIconAviso>
-                    </BoxNomeAviso>}
+            <Header showNameList={true} sizeNameList={147} />
+
+            <TabView
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                onIndexChange={setIndex}
+                initialLayout={initialLayout}
+                renderTabBar={renderTabBar}
             />
 
-            {
-                show && (
-                    <DatePicker
-                        date={selectedDate}
-                        onChange={onChange}
-                    />)
-            }
-
-            <FabSearch
-                styleFab={{ backgroundColor: '#292b2c', borderWidth: 2, borderColor: '#FFF' }}
-                getValor={getValor}
-                loadResolved={loadResolved}
-                onLoad={onLoad}
-                filterFifteenDays={filterFifteenDays}
-                filterOneMonth={filterOneMonth}
-                filterCustomDays={filterCustomDays}
-                onOpen={showCalendar}
-                mainIcon={'magnify'}
-                mainIconColor={'#FFF'}
-            />
-            {loading && !isRefreshing && <Loader />}
         </Container>
     );
 }
 
 export default ProducerHistoric
+
+const Container = styled.View`flex: 1`;
