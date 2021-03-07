@@ -77,6 +77,8 @@ const TanksList = ({ data, loadTanks }) => {
     const closeAlertErroSuccess = () => setAlertVisible(false)
 
     const openModalDate = () => setDepositModal(true)
+    const closeDepositModal = () => setDepositModal(false)
+
 
     return (
         <View style={styles.container}>
@@ -97,13 +99,13 @@ const TanksList = ({ data, loadTanks }) => {
             </View>
 
             <Modal
-                animationType='fade'
-                transparent={true}
-                visible={modalVisible}
+                 transparent={true}
+                 visible={depositModal}
+                 animationType='slide'
             >
-                <ModalDeposito
-                    onConfirme={handleDeposito}
-                    onClose={handleCloseModal}
+                <DepositModal
+                    handleDeposito={handleDeposito}
+                    closeDepositModal={closeDepositModal}
                 />
             </Modal>
 
@@ -140,11 +142,6 @@ const TanksList = ({ data, loadTanks }) => {
                     />
                 }
             </Modal>
-
-            <DepositModal
-                show={depositModal}
-                setShow={setDepositModal}
-            />
 
         </View >
     );

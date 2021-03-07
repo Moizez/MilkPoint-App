@@ -2,35 +2,42 @@ import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import {
-    Container, Modal, ModalBox, CloseButton, ModalHeader, Title, ChosenDateBox, Button15Days,
-    Button30Days, ButtonInitialDate, ButtonFinalDate, SearchBox, SearchInput, SearchButton,
-    TextButton
+    Container, CloseContainer, ModalBox, CloseButton, ModalHeader, Title, DepositBox,
+    DepositInput, DepositButton
 } from './styles'
 
-const DepositModal = ({ show, setShow }) => {
+const DepositModal = ({ closeDepositModal, onConfirme }) => {
 
-    const closeDepositModal = () => setShow(false)
+    const [text, setText] = useState('')
 
     return (
-        <Modal
-            transparent={true}
-            visible={show}
-            animationType='slide'
-        >
-            <Container>
-                <ModalBox>
-                    <ModalHeader>
-                        <CloseButton onPress={closeDepositModal} >
-                            <Icon name='chevron-down' color='#FFF' size={40} />
-                        </CloseButton>
-                        <Title>Busca avançada</Title>
-                    </ModalHeader>
+        <Container>
+            <CloseContainer onPress={closeDepositModal} activeOpacity={1} />
+            <ModalBox>
+                <ModalHeader>
+                    <CloseButton onPress={closeDepositModal}>
+                        <Icon name='chevron-down' color='#FFF' size={40} />
+                    </CloseButton>
+                    <Title>Digite o valor do depósito</Title>
+                </ModalHeader>
 
-                </ModalBox>
+                <DepositBox>
+                    <DepositInput
+                        placeholder='Valor em litros de leite'
+                        autoCorrect={false}
+                        autoCapitalize='sentences'
+                        keyboardType='phone-pad'
+                        value={text}
+                        onChangeText={setText}
+                    />
+                    <DepositButton onPress={() => onConfirme(text)}>
+                        <Icon name='basket-fill' color='#FFF' size={35} />
+                    </DepositButton>
+                </DepositBox>
 
-            </Container>
+            </ModalBox>
 
-        </Modal>
+        </Container>
     );
 }
 

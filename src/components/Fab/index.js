@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { FAB } from 'react-native-paper'
 
-const Fab = ({ bgColor, setShow, setShowDatePicker }) => {
+const Fab = ({ bgColor, openDateModal, setShowDatePicker }) => {
 
     const [state, setState] = useState({ open: false })
     const onStateChange = ({ open }) => setState({ open })
     const { open } = state
 
-    const openModalDate = () => setShow(true)
     const openCalendar = () => setShowDatePicker(true)
 
     return (
@@ -25,7 +24,7 @@ const Fab = ({ bgColor, setShow, setShowDatePicker }) => {
                 {
                     icon: 'magnify',
                     label: 'Busca avançada',
-                    onPress: () => openModalDate(),
+                    onPress: () => openDateModal(),
                     small: false,
                 },
             ]}

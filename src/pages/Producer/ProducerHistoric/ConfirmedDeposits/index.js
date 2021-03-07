@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import { RefreshControl, Platform } from 'react-native'
+import { RefreshControl, Platform, Modal } from 'react-native'
 
 import Api from '../../../../services/producer.api'
 
@@ -45,6 +45,9 @@ const ConfirmedDeposits = () => {
         setIsRefreshing(false)
     }
 
+    const closeDateModal = () => setDateModal(false)
+    const openDateModal = () => setDateModal(true)
+
     return (
         <>
             <List
@@ -81,14 +84,21 @@ const ConfirmedDeposits = () => {
 
             <Fab
                 bgColor={{ backgroundColor: '#2a9d8f' }}
-                setShow={setDateModal}
+                openDateModal={openDateModal}
                 setShowDatePicker={setDatePicker}
             />
 
-            <DateModal
-                show={dateModal}
-                setShow={setDateModal}
-            />
+            <Modal
+                transparent={true}
+                visible={dateModal}
+                animationType='slide'
+            >
+                <DateModal
+                    show={dateModal}
+                    closeDateModal={closeDateModal}
+                />
+            </Modal>
+
         </>
     );
 }

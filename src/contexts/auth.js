@@ -113,6 +113,8 @@ const AuthProvider = ({ children }) => {
         await AsyncStorage.setItem('@milkpoint:user', JSON.stringify(data))
     }
 
+    console.log(user)
+
     return (
 
         <>

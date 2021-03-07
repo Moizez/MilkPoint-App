@@ -2,6 +2,10 @@ import styled from 'styled-components/native';
 
 export const Modal = styled.Modal``;
 
+export const CloseContainer = styled.TouchableOpacity`
+    flex: 1;
+`;
+
 export const Container = styled.View`
     flex: 1;
     background-color: rgba(0,0,0,0.5);
@@ -88,7 +92,7 @@ export const TextButton = styled.Text`
 `;
 
 export const SearchBox = styled.View`
-    background-color: #adb5bd;
+    background-color: #d9d9d9;
     height: 45px;
     flex-direction: row;
     align-items: center;
@@ -101,7 +105,8 @@ export const SearchBox = styled.View`
 export const SearchInput = styled.TextInput`
     flex: 1;
     font-size: 16px;
-    color: #FFF;
+    font-weight: bold;
+    color: #292b2c;
     margin-left: 10px;
     margin-right: 10px;
 
@@ -115,6 +120,8 @@ export const SearchButton = styled.TouchableOpacity`
     background-color: #219ebc;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+    border-left-width: 1;
+    border-color: #6c757d;
 `;
 
 

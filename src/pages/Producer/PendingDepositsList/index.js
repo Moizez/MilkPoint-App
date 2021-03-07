@@ -6,6 +6,7 @@ import { AuthContext } from '../../../contexts/auth'
 
 import CardInfo from '../../../components/CardInfo'
 import ModalCancel from '../../../components/ModalCancel'
+import CancelModal from '../../../components/Modals/CancelModal'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 
@@ -13,11 +14,16 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
 
     let success = require('../../../assets/lottie/delete-confirm.json')
 
-    //const { loadListDepositosResolvidos } = useContext(AuthContext)
+    const { user, loadListDepositosResolvidos } = useContext(AuthContext)
 
     const [alertVisible, setAlertVisible] = useState(false)
     const [isAlertInfo, setAlertInfo] = useState(false)
     const [modalCancelVisible, setModalCancelVisible] = useState(false)
+
+    const [cancelModal, setCancelModal] = useState(false)
+
+    const openCancelModal = () => setCancelModal(true)
+    const closeCancelModal = () => setCancelModal(false)
 
     //Cancelamento de depósitos pelo produtor
     const confirmacaoDeposito = async (confirmacao, idDeposito) => {
@@ -81,20 +87,20 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
         <View>
 
             <CardInfo
-                showModal={handleOpenCancelModal}
+                showModal={openCancelModal}
                 dataInfo={data}
                 titlePerfil={'Produtor: '}
                 infoPerfil={data.produtor.nome}
             />
 
             <Modal
-                animationType='fade'
                 transparent={true}
-                visible={modalCancelVisible}
+                visible={cancelModal}
+                animationType='slide'
             >
-                <ModalCancel
-                    dataTanque={data}
-                    onClose={handleCloseCancelModal}
+                <CancelModal
+                    data={data}
+                    closeCancelModal={closeCancelModal}
                     onCancel={handleCancel}
                 />
             </Modal>
