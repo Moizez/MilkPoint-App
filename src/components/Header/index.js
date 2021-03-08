@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import AsyncStorage from '@react-native-community/async-storage'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import Api from '../../services/api'
+import { AuthContext } from '../../contexts/auth'
 
 import {
     Container, Cover, Avatar, UserRole, AvatarBox, Profile, InfoBox, UserName, UserEmail,
@@ -13,16 +14,7 @@ import {
 const Header = ({ msg, onOpen, calendar, disabled, showNameList }) => {
 
     const navigation = useNavigation()
-    const [user, setUser] = useState([])
-
-    useEffect(() => {
-        const loadUser = async () => {
-            const user = await Api.getUser()
-            setUser(user)
-        }
-
-        loadUser()
-    }, [user])
+    const { user } = useContext(AuthContext)
 
     const perfilCover = () => {
         if (user.perfil == 1) {

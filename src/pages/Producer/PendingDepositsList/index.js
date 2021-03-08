@@ -4,26 +4,26 @@ import { Modal, View } from 'react-native'
 import Api from '../../../services/producer.api'
 import { AuthContext } from '../../../contexts/auth'
 
-import CardInfo from '../../../components/CardInfo'
-import ModalCancel from '../../../components/ModalCancel'
 import CancelModal from '../../../components/Modals/CancelModal'
-import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
-import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
+import WarningModal from '../../../components/Modals/WarningModal'
+import ActionModal from '../../../components/Modals/ActionModal'
+
+import CardInfo from '../../../components/CardInfo'
 
 const PendingDepositsList = ({ data, loadProducerDeposits }) => {
 
-    let success = require('../../../assets/lottie/delete-confirm.json')
-
     const { user, loadListDepositosResolvidos } = useContext(AuthContext)
 
-    const [alertVisible, setAlertVisible] = useState(false)
-    const [isAlertInfo, setAlertInfo] = useState(false)
-    const [modalCancelVisible, setModalCancelVisible] = useState(false)
-
     const [cancelModal, setCancelModal] = useState(false)
+    const [actionModal, setActionModal] = useState(false)
+    const [warningModal, setWarningModal] = useState(false)
 
     const openCancelModal = () => setCancelModal(true)
     const closeCancelModal = () => setCancelModal(false)
+    const openActioModal = () => setActionModal(true)
+    const closeActionModal = () => setActionModal(false)
+    const openWarningModal = () => setWarningModal(true)
+    const closeWarningModal = () => setWarningModal(false)
 
     //Cancelamento de depósitos pelo produtor
     const confirmacaoDeposito = async (confirmacao, idDeposito) => {
@@ -36,51 +36,17 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
 
     //Função para cancelar o depósito
     function handleCancel() {
-        setAlertInfo(true)
+        openActioModal()
     }
 
     const handleConfirm = async () => {
-        setAlertInfo(false)
-        setAlertVisible(true)
         await confirmacaoDeposito(false, data.id)
-        setModalCancelVisible(false)
-    }
-
-    const ErrorSuccesAlert = () => {
-        if (alertVisible) {
-            return (
-                <AlertErrorSuccess
-                    onClose={closeAlertErroSuccess}
-                    title='Aviso'
-                    message={'Depósito cancelado com sucesso!'}
-                    titleButton='Ok'
-                    jsonPath={success}
-                    buttonColor={'#292b2c'}
-                />
-            )
-        }
-    }
-
-    const InformationAlert = () => {
-        if (isAlertInfo) {
-            return (
-                <AlertSimpleInfo
-                    dataInfo={data}
-                    onConfirm={handleConfirm}
-                    onClose={closeAlertInfo}
-                    title='Aviso'
-                    message={'Deseja realmente CANCELAR este DEPÓSITO?'}
-                />
-            )
-        }
-    }
-
-    const closeAlertInfo = () => setAlertInfo(false)
-    const handleOpenCancelModal = () => setModalCancelVisible(true)
-    const handleCloseCancelModal = () => setModalCancelVisible(false)
-    const closeAlertErroSuccess = () => {
-        setAlertVisible(false)
-        loadProducerDeposits()
+        closeActionModal()
+        closeCancelModal()
+        openWarningModal()
+        setTimeout(() => {
+            closeWarningModal()
+        }, 3500);
     }
 
     return (
@@ -100,25 +66,32 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
             >
                 <CancelModal
                     data={data}
-                    closeCancelModal={closeCancelModal}
-                    onCancel={handleCancel}
+                    closeModal={closeCancelModal}
+                    confirmModal={handleCancel}
                 />
             </Modal>
 
             <Modal
                 animationType='fade'
                 transparent={true}
-                visible={alertVisible}
+                visible={warningModal}
             >
-                {ErrorSuccesAlert()}
+                <WarningModal
+                    closeModal={closeWarningModal}
+                    message={'Depósito cancelado com sucesso!'}
+                    lottie={require('../../../assets/lottie/delete-confirm.json')}
+                />
             </Modal>
 
             <Modal
-                animationType='fade'
+                animationType='slide'
                 transparent={true}
-                visible={isAlertInfo}
+                visible={actionModal}
             >
-                {InformationAlert()}
+                <ActionModal
+                    closeModal={closeActionModal}
+                    confirmModal={handleConfirm}
+                />
             </Modal>
 
         </View>

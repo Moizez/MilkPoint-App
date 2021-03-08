@@ -8,6 +8,7 @@ const ActionButton = ({
 }) => {
     return (
         <TouchableOpacity
+        
             disabled={active}
             onPress={onAction}
             style={{

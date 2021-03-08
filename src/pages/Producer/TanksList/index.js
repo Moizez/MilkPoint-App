@@ -104,8 +104,8 @@ const TanksList = ({ data, loadTanks }) => {
                  animationType='slide'
             >
                 <DepositModal
-                    handleDeposito={handleDeposito}
-                    closeDepositModal={closeDepositModal}
+                    confirmModal={handleDeposito}
+                    closeModal={closeDepositModal}
                 />
             </Modal>
 

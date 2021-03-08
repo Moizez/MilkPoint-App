@@ -6,16 +6,16 @@ import {
     DepositInput, DepositButton
 } from './styles'
 
-const DepositModal = ({ closeDepositModal, onConfirme }) => {
+const DepositModal = ({ closeModal, confirmModal }) => {
 
     const [text, setText] = useState('')
 
     return (
         <Container>
-            <CloseContainer onPress={closeDepositModal} activeOpacity={1} />
+            <CloseContainer onPress={closeModal} activeOpacity={1} />
             <ModalBox>
                 <ModalHeader>
-                    <CloseButton onPress={closeDepositModal}>
+                    <CloseButton onPress={closeModal}>
                         <Icon name='chevron-down' color='#FFF' size={40} />
                     </CloseButton>
                     <Title>Digite o valor do depósito</Title>
@@ -30,7 +30,7 @@ const DepositModal = ({ closeDepositModal, onConfirme }) => {
                         value={text}
                         onChangeText={setText}
                     />
-                    <DepositButton onPress={() => onConfirme(text)}>
+                    <DepositButton onPress={() => confirmModal(text)}>
                         <Icon name='basket-fill' color='#FFF' size={35} />
                     </DepositButton>
                 </DepositBox>

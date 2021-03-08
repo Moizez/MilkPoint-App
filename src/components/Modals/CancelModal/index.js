@@ -8,19 +8,19 @@ import {
     InfoBox, ItemBox, InfoTitle, InfoText, CancelButton, DividerH, DividerV
 } from './styles'
 
-const CancelModal = ({ closeCancelModal, data, onCancel }) => {
+const CancelModal = ({ closeModal, data, confirmModal }) => {
 
     let date = moment(data.dataNow).locale('pt-br').format('D [de] MMM [às] LT[h]')
 
     return (
         <Container>
-            <CloseContainer onPress={closeCancelModal} activeOpacity={1} />
+            <CloseContainer onPress={closeModal} activeOpacity={1} />
             <ModalBox>
                 <ModalHeader>
-                    <CloseButton onPress={closeCancelModal}>
+                    <CloseButton onPress={closeModal}>
                         <Icon name='chevron-down' color='#FFF' size={40} />
                     </CloseButton>
-                    <Title>Deseja realmente cancelar?</Title>
+                    <Title>Cancelar esta solicitação?</Title>
                 </ModalHeader>
 
                 <ModalInfo>
@@ -53,7 +53,7 @@ const CancelModal = ({ closeCancelModal, data, onCancel }) => {
 
                 </ModalInfo>
 
-                <CancelButton onPress={() => { }}>
+                <CancelButton onPress={confirmModal}>
                     <Icon name='delete-outline' color='#FFF' size={35} />
                 </CancelButton>
 
