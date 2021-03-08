@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { RefreshControl, Platform, Modal } from 'react-native'
 
@@ -9,9 +9,10 @@ import Loader from '../../../../components/Loader'
 import Fab from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
 import DateModal from '../../../../components/Modals/DateModal'
+import { filterToday, filterByDateInterval, filterByBetweenDates } from '../../../../components/Helpers'
 
 import {
-    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
+    BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from '../styles'
 
 const ConfirmedDeposits = () => {
@@ -19,16 +20,41 @@ const ConfirmedDeposits = () => {
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [loading, setLoading] = useState(false)
     const [dateModal, setDateModal] = useState(false)
-    const [depositResolved, setdepositResolved] = useState([])
-
     const [datePicker, setDatePicker] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date())
+
+    const [depositResolved, setdepositResolved] = useState([])
+    const [mainData, setMainData] = useState([])
 
     const getDepositsResolvedByUser = async () => {
         setLoading(true)
         const response = await Api.getAllDepositsConfirmedOrCanceledUser('confirmados')
+        const result = filterToday(selectedDate, response)
+        setMainData(result)
         setdepositResolved(response)
         setLoading(false)
+    }
+
+    const filterByQuantityLiters = (value) => {
+        setLoading(true)
+        const result = depositResolved.filter(i => i.quantidade == value)
+        setMainData(result)
+        setLoading(false)
+    }
+
+    const filterByLast15Days = () => {
+        const result = filterByDateInterval(15, 'days', depositResolved)
+        setMainData(result)
+    }
+
+    const filterByLast30Days = () => {
+        const result = filterByDateInterval(1, 'month', depositResolved)
+        setMainData(result)
+    }
+
+    const filterByTwoDates = (initialDate, finalDate) => {
+        const result = filterByBetweenDates(depositResolved, initialDate, finalDate)
+        setMainData(result)
     }
 
     useEffect(() => {
@@ -42,6 +68,7 @@ const ConfirmedDeposits = () => {
 
     const onRefreshList = () => {
         setIsRefreshing(true)
+        getDepositsResolvedByUser()
         setIsRefreshing(false)
     }
 
@@ -49,10 +76,10 @@ const ConfirmedDeposits = () => {
     const openDateModal = () => setDateModal(true)
 
     return (
-        <>
+        <Fragment>
             <List
                 showsVerticalScrollIndicator={false}
-                data={depositResolved}
+                data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <CardHistorico data={item} />}
@@ -84,7 +111,7 @@ const ConfirmedDeposits = () => {
 
             <Fab
                 bgColor={{ backgroundColor: '#2a9d8f' }}
-                openDateModal={openDateModal}
+                openModal={openDateModal}
                 setShowDatePicker={setDatePicker}
             />
 
@@ -94,12 +121,15 @@ const ConfirmedDeposits = () => {
                 animationType='slide'
             >
                 <DateModal
-                    show={dateModal}
-                    closeDateModal={closeDateModal}
+                    closeModal={closeDateModal}
+                    filterByQuantityLiters={filterByQuantityLiters}
+                    filterByLast15Days={filterByLast15Days}
+                    filterByLast30Days={filterByLast30Days}
+                    filterByTwoDates={filterByTwoDates}
                 />
             </Modal>
 
-        </>
+        </Fragment>
     );
 }
 

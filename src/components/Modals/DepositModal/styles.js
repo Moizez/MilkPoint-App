@@ -120,7 +120,7 @@ export const DepositButton = styled.TouchableOpacity`
     background-color: #2a9d8f;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    border-left-width: 1;
+    border-left-width: 1px;
     border-color: #6c757d;
 `;
 

@@ -58,7 +58,7 @@ const ProducerMovements = ({ data }) => {
                 </MilkMovements>
 
                 <CashMovements>
-                    <TextMoviments>Receta</TextMoviments>
+                    <TextMoviments>Receita</TextMoviments>
                     <Icon name='currency-usd' size={25} color='#FFF' />
                 </CashMovements>
 
@@ -120,11 +120,11 @@ const ProducerMovements = ({ data }) => {
             <Divider style={styles.periodDivider} />
             <PeriodBox>
                 <PeriodItem>
-                    <PeriodText>{sumLitersByDate(userData, 0, 'year')} litros</PeriodText>
+                    <PeriodText>{sumLitersByDate(userData, 1, 'year')} litros</PeriodText>
                 </PeriodItem>
                 <Divider style={styles.dividerV} />
                 <PeriodItem>
-                    <PeriodText>{sumValuesByDate(userData, 0, 'year')}</PeriodText>
+                    <PeriodText>{sumValuesByDate(userData, 1, 'year')}</PeriodText>
                 </PeriodItem>
             </PeriodBox>
             <Divider style={styles.periodDivider} />

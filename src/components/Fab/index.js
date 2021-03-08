@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FAB } from 'react-native-paper'
 
-const Fab = ({ bgColor, openDateModal, setShowDatePicker }) => {
+const Fab = ({ bgColor, openModal, setShowDatePicker }) => {
 
     const [state, setState] = useState({ open: false })
     const onStateChange = ({ open }) => setState({ open })
@@ -24,7 +24,7 @@ const Fab = ({ bgColor, openDateModal, setShowDatePicker }) => {
                 {
                     icon: 'magnify',
                     label: 'Busca avançada',
-                    onPress: () => openDateModal(),
+                    onPress: () => openModal(),
                     small: false,
                 },
             ]}

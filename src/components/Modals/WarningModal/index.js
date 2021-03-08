@@ -2,9 +2,14 @@ import React from 'react';
 import styled from 'styled-components/native';
 import LottieView from 'lottie-react-native'
 
-const WarningModal = ({ closeModal, message, lottie }) => {
+const WarningModal = ({ closeModal, message, lottie, bgColor }) => {
+
+    setTimeout(() => {
+        closeModal()
+    }, 3500);
+
     return (
-        <Container>
+        <Container bgColor={bgColor}>
             <CloseContainer onPress={closeModal} activeOpacity={1} />
 
             <ModalBox>
@@ -31,10 +36,10 @@ const CloseContainer = styled.TouchableOpacity`
     flex: 1;
 `;
 
-const Container = styled.View`
-    flex: 1;
-    background-color: rgba(0,0,0,0.5);
-`;
+const Container = styled.View(({ bgColor }) => ({
+    flex: 1,
+    backgroundColor: bgColor ? 'rgba(0,0,0,0.5)' : null
+}));
 
 const ModalBox = styled.View`
     align-items: center;

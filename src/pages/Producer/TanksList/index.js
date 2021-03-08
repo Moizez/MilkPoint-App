@@ -3,8 +3,10 @@ import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
 
 import Api from '../../../services/producer.api'
 
-import ModalDeposito from '../../../components/ModalDeposito'
 import DepositModal from '../../../components/Modals/DepositModal'
+import ConfirmationModal from '../../../components/Modals/ConfirmationModal'
+import WarningModal from '../../../components/Modals/WarningModal'
+
 import GraficoTanque from '../../../components/GraficoTanque'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import AlertInformation from '../../../components/AlertInformation'
@@ -13,21 +15,23 @@ import { AuthContext } from '../../../contexts/auth'
 const TanksList = ({ data, loadTanks }) => {
 
     // const { loadPendingDepositsProducer } = useContext(AuthContext)
-
-    const [modalVisible, setModalVisible] = useState(false)
-    const [depositModal, setDepositModal] = useState(false)
-
-    const [alertVisible, setAlertVisible] = useState(false)
-    const [isAlertInfo, setAlertInfo] = useState(false)
-    const [typeMessage, setTypeMessage] = useState('')
-    const [jsonIcon, setJsonIcon] = useState('error')
-
-    const [idTanque, setIdTanque] = useState(data.id)
-    const [qtdInfo, setQtdInfo] = useState()
-
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
-    let msgType = jsonIcon == 'error' ? error : success
+
+    const [depositModal, setDepositModal] = useState(false)
+    const [confirmationModal, setConfirmationModal] = useState(false)
+    const [warningModal, setWarningModal] = useState(false)
+    const [typeMessage, setTypeMessage] = useState('')
+    const [lottie, setLottie] = useState('')
+
+    const [qtdInfo, setQtdInfo] = useState()
+
+    const openDepositModal = () => setDepositModal(true)
+    const closeDepositModal = () => setDepositModal(false)
+    const openConfirmationModal = () => setConfirmationModal(true)
+    const closeConfirmationModal = () => setConfirmationModal(false)
+    const openWarningModal = () => setWarningModal(true)
+    const closeWarningModal = () => setWarningModal(false)
 
     useEffect(() => {
         loadTanks()
@@ -39,46 +43,36 @@ const TanksList = ({ data, loadTanks }) => {
     };
 
     const handleDeposito = async (value) => {
+        setQtdInfo(value)
+
         if (data.status) {
             if (isNaN(value) || value <= 0) {
-                setJsonIcon('error')
+                setLottie(error)
                 setTypeMessage('Valor inválido, digite a quantidade novamente!')
-                setAlertVisible(true)
+                openWarningModal()
             } else if (value > data.qtdRestante) {
-                setJsonIcon('error')
-                setTypeMessage('Seu depósito excede o valor máximo aceito pelo tanque!')
-                setAlertVisible(true)
+                setLottie(error)
+                setTypeMessage('O valor excede o limite do tanque!')
+                openWarningModal()
             } else {
-                setQtdInfo(value)
-                setJsonIcon('success')
-                setAlertInfo(true)
+                setLottie(success)
+                openConfirmationModal()
             }
         } else {
-            await loadTanks()
-            setJsonIcon('error')
-            setTypeMessage(`Este tanque está inativo!`)
-            setAlertVisible(true)
+            setLottie(error)
+            setTypeMessage('Este tanque está inativo!')
+            openWarningModal()
         }
         Keyboard.dismiss()
     }
 
-    const handleConfirm = async (value) => {
-        setAlertInfo(false)
-        setTypeMessage('Depósito realizado com sucesso! Aguarde a confirmação.')
-        setAlertVisible(true)
-        setIdTanque(data.id)
-        await requestDeposito(value, idTanque)
-        setModalVisible(false)
+    const handleConfirm = async () => {
+        await requestDeposito(qtdInfo, data.id)
+        closeConfirmationModal()
+        closeDepositModal()
+        setTypeMessage('Depósito realizado com sucesso!')
+        openWarningModal()
     }
-
-    const handleCloseModal = () => setModalVisible(false)
-    const handleOpenModal = () => setModalVisible(true)
-    const closeAlertInfo = () => setAlertInfo(false)
-    const closeAlertErroSuccess = () => setAlertVisible(false)
-
-    const openModalDate = () => setDepositModal(true)
-    const closeDepositModal = () => setDepositModal(false)
-
 
     return (
         <View style={styles.container}>
@@ -95,13 +89,13 @@ const TanksList = ({ data, loadTanks }) => {
 
                 <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
 
-                <GraficoTanque dataGrafico={data} handleOpenModal={openModalDate} activeTanque={data.status ? false : true} />
+                <GraficoTanque dataGrafico={data} handleOpenModal={openDepositModal} activeTanque={data.status ? false : true} />
             </View>
 
             <Modal
-                 transparent={true}
-                 visible={depositModal}
-                 animationType='slide'
+                transparent={true}
+                visible={depositModal}
+                animationType='slide'
             >
                 <DepositModal
                     confirmModal={handleDeposito}
@@ -110,37 +104,29 @@ const TanksList = ({ data, loadTanks }) => {
             </Modal>
 
             <Modal
-                animationType='fade'
+                animationType='slide'
                 transparent={true}
-                visible={isAlertInfo}
+                visible={confirmationModal}
             >
-                {isAlertInfo &&
-                    <AlertInformation
-                        dataInfo={data}
-                        qtd={qtdInfo}
-                        onConfirm={handleConfirm}
-                        onClose={closeAlertInfo}
-                        title='Aviso'
-                        message={'Confirme os dados'}
-                    />
-                }
+                <ConfirmationModal
+                    closeModal={closeConfirmationModal}
+                    confirmModal={handleConfirm}
+                    data={data}
+                    quantidade={qtdInfo}
+                />
             </Modal>
 
             <Modal
                 animationType='fade'
                 transparent={true}
-                visible={alertVisible}
+                visible={warningModal}
             >
-                {alertVisible &&
-                    <AlertErrorSuccess
-                        onClose={closeAlertErroSuccess}
-                        title='Aviso'
-                        message={typeMessage}
-                        titleButton='Ok'
-                        jsonPath={msgType}
-                        buttonColor={'#292b2c'}
-                    />
-                }
+                <WarningModal
+                    closeModal={closeWarningModal}
+                    message={typeMessage}
+                    lottie={lottie}
+                    bgColor={false}
+                />
             </Modal>
 
         </View >

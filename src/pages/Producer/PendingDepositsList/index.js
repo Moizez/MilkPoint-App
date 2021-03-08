@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, Fragment } from 'react'
 import { Modal, View } from 'react-native'
 
 import Api from '../../../services/producer.api'
@@ -44,14 +44,10 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
         closeActionModal()
         closeCancelModal()
         openWarningModal()
-        setTimeout(() => {
-            closeWarningModal()
-        }, 3500);
     }
 
     return (
-        <View>
-
+        <Fragment>
             <CardInfo
                 showModal={openCancelModal}
                 dataInfo={data}
@@ -80,11 +76,12 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
                     closeModal={closeWarningModal}
                     message={'Depósito cancelado com sucesso!'}
                     lottie={require('../../../assets/lottie/delete-confirm.json')}
+                    bgColor={true}
                 />
             </Modal>
 
             <Modal
-                animationType='slide'
+                animationType='fade'
                 transparent={true}
                 visible={actionModal}
             >
@@ -93,8 +90,7 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
                     confirmModal={handleConfirm}
                 />
             </Modal>
-
-        </View>
+        </Fragment>
     );
 }
 

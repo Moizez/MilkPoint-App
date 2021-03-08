@@ -1,12 +1,13 @@
 import styled from 'styled-components/native';
 
+export const Modal = styled.Modal``;
+
 export const CloseContainer = styled.TouchableOpacity`
     flex: 1;
 `;
 
 export const Container = styled.View`
     flex: 1;
-    background-color: rgba(0,0,0,0.5);
     justify-content: flex-end;
 `;
 
@@ -35,40 +36,57 @@ export const Title = styled.Text`
 `;
 
 export const ModalInfo = styled.View`
-    flex-direction: row;
-    align-items: center;
+    background-color: #d9d9d9;
     border-radius: 8px;
     margin-top: 10px;
     margin-bottom: 10px;
     padding: 8px;
 `;
 
-export const NoButton = styled.TouchableOpacity`
-    flex: 1;
+export const InfoBox = styled.View`
     flex-direction: row;
-    background-color: #c1121f;
-    height: 45px;
-    padding: 5px;
-    border-radius: 5px;
+    align-items: center;
+    height: 40px;
+`;
+
+export const ItemBox = styled.View`
+    flex: 1;
     align-items: center;
     justify-content: center;
 `;
 
-export const YesButton = styled.TouchableOpacity`
-    flex: 1;
-    flex-direction: row;
-    background-color: #2a9d8f;
-    height: 45px;
-    padding: 5px;
-    border-radius: 5px;
-    align-items: center;
-    justify-content: center;
-    margin-left: 10px;
-`;
-
-export const TextButton = styled.Text`
-    color: #292b2c;
+export const InfoTitle = styled.Text`
     font-weight: bold;
-    font-size: 18px;
 `;
+
+export const InfoText = styled.Text`
+    font-size: 15px;
+    color: #000;
+`;
+
+export const ConfirmButton = styled.TouchableOpacity`
+    height: 45px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    background-color: #2a9d8f;
+    border-radius: 5px;
+`;
+
+export const DividerH = styled.View`
+    width: 100%;    
+    height: 0.5px;
+    background-color: #333533;
+    margin: 5px 0 5px 0;
+`;
+
+export const DividerV = styled.View`
+    height: 100%;    
+    width: 0.5px;
+    background-color: #333533;
+    margin: 0 5px 0 5px;
+`;
+
+
+
 
