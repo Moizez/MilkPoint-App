@@ -6,7 +6,7 @@ import { Divider } from 'react-native-paper';
 import Api from '../../services/producer.api'
 import { AuthContext } from '../../contexts/auth'
 
-import { sumLitersByDate, sumValuesByDate } from '../../components/Helpers'
+import { filterToday, filterTodayByValue, sumLitersByDate, sumValuesByDate } from '../../components/Helpers'
 import Loader from '../../components/Loader'
 
 import {
@@ -68,11 +68,17 @@ const ProducerMovements = ({ data }) => {
             <Divider style={styles.periodDivider} />
             <PeriodBox>
                 <PeriodItem>
-                    <PeriodText>{sumLitersByDate(userData, 1, 'days')} litros</PeriodText>
+                    <PeriodText>
+                        {
+                            filterToday(userData) === 1 ?
+                                filterToday(userData) + ' litro' :
+                                filterToday(userData) + 'litros'
+                        }
+                    </PeriodText>
                 </PeriodItem>
                 <Divider style={styles.dividerV} />
                 <PeriodItem>
-                    <PeriodText>{sumValuesByDate(userData, 1, 'days')}</PeriodText>
+                    <PeriodText>{filterTodayByValue(userData)}</PeriodText>
                 </PeriodItem>
             </PeriodBox>
             <Divider style={styles.periodDivider} />
@@ -135,7 +141,7 @@ const ProducerMovements = ({ data }) => {
                 <CashMovementsBottom>
                 </CashMovementsBottom>
             </HeaderMovements>
-            <Divider style={{marginTop: 12}}/>
+            <Divider style={{ marginTop: 12 }} />
             {loading && <Loader />}
         </Container>
     );

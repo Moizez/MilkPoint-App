@@ -54,6 +54,7 @@ const ModalInfo = styled.View`
     align-items: center;
     justify-content: center;
     padding: 20px;
+    margin-bottom: 30px;
 `;
 
 const LottieBox = styled.View`

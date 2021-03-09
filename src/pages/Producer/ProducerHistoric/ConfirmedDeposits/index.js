@@ -1,18 +1,20 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { RefreshControl, Platform, Modal } from 'react-native'
+import moment from 'moment'
 
 import Api from '../../../../services/producer.api'
 
-import CardHistorico from '../../../../components/CardHistorico'
+import ConfirmedHistoryCard from '../../../../components/ConfirmedHistoryCard'
 import Loader from '../../../../components/Loader'
+import WarningModal from '../../../../components/Modals/WarningModal'
 import Fab from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
 import DateModal from '../../../../components/Modals/DateModal'
-import { filterToday, filterByDateInterval, filterByBetweenDates } from '../../../../components/Helpers'
+import { filterSpecificDay, filterByDateInterval, filterByBetweenDates } from '../../../../components/Helpers'
 
 import {
-    BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
+    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from '../styles'
 
 const ConfirmedDeposits = () => {
@@ -21,55 +23,70 @@ const ConfirmedDeposits = () => {
     const [loading, setLoading] = useState(false)
     const [dateModal, setDateModal] = useState(false)
     const [datePicker, setDatePicker] = useState(false)
+    const [warningModal, setWarningModal] = useState(false)
+    const [typeMessage, setTypeMessage] = useState('')
     const [selectedDate, setSelectedDate] = useState(new Date())
 
-    const [depositResolved, setdepositResolved] = useState([])
+    const [dataResolved, setDataResolved] = useState([])
     const [mainData, setMainData] = useState([])
+
+    const openWarningModal = (message) => {
+        setTypeMessage(message)
+        setWarningModal(true)
+    }
+    const closeWarningModal = () => setWarningModal(false)
 
     const getDepositsResolvedByUser = async () => {
         setLoading(true)
         const response = await Api.getAllDepositsConfirmedOrCanceledUser('confirmados')
-        const result = filterToday(selectedDate, response)
-        setMainData(result)
-        setdepositResolved(response)
+        setDataResolved(response)
         setLoading(false)
-    }
-
-    const filterByQuantityLiters = (value) => {
-        setLoading(true)
-        const result = depositResolved.filter(i => i.quantidade == value)
-        setMainData(result)
-        setLoading(false)
-    }
-
-    const filterByLast15Days = () => {
-        const result = filterByDateInterval(15, 'days', depositResolved)
-        setMainData(result)
-    }
-
-    const filterByLast30Days = () => {
-        const result = filterByDateInterval(1, 'month', depositResolved)
-        setMainData(result)
-    }
-
-    const filterByTwoDates = (initialDate, finalDate) => {
-        const date = finalDate ? finalDate : new Date()
-        const result = filterByBetweenDates(depositResolved, initialDate, date)
-        setMainData(result)
     }
 
     useEffect(() => {
         getDepositsResolvedByUser()
     }, [])
 
+    const loadPage = async () => {
+        const response = await Api.getAllDepositsConfirmedOrCanceledUser('confirmados')
+        const result = await filterSpecificDay(selectedDate, response)
+        setMainData(result)
+    }
+
+    useEffect(() => {
+        loadPage()
+    }, [selectedDate])
+
+    const filterByQuantityLiters = (value) => {
+        const result = dataResolved.filter(i => i.quantidade == value)
+        setMainData(result)
+    }
+
+    const filterByLast15Days = () => {
+        const result = filterByDateInterval(15, 'days', dataResolved)
+        setMainData(result)
+    }
+
+    const filterByLast30Days = () => {
+        const result = filterByDateInterval(1, 'month', dataResolved)
+        setMainData(result)
+    }
+
+    const filterByTwoDates = (initialDate, finalDate) => {
+        const date = finalDate ? finalDate : moment()
+        const result = filterByBetweenDates(dataResolved, initialDate, date)
+        setMainData(result)
+    }
+
     const onChange = (currentDate) => {
         setDatePicker(Platform.OS === 'ios')
-        setSelectedDate(currentDate)
+        let date = currentDate ? currentDate : moment()
+        setSelectedDate(date)
     }
 
     const onRefreshList = () => {
         setIsRefreshing(true)
-        getDepositsResolvedByUser()
+        setSelectedDate(moment())
         setIsRefreshing(false)
     }
 
@@ -77,13 +94,13 @@ const ConfirmedDeposits = () => {
     const openDateModal = () => setDateModal(true)
 
     return (
-        <Fragment>
+        <Container>
             <List
                 showsVerticalScrollIndicator={false}
                 data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <CardHistorico data={item} />}
+                renderItem={({ item }) => <ConfirmedHistoryCard data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
@@ -127,10 +144,25 @@ const ConfirmedDeposits = () => {
                     filterByLast15Days={filterByLast15Days}
                     filterByLast30Days={filterByLast30Days}
                     filterByTwoDates={filterByTwoDates}
+                    isLoading={setLoading}
+                    openWarning={openWarningModal}
                 />
             </Modal>
 
-        </Fragment>
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={warningModal}
+            >
+                <WarningModal
+                    closeModal={closeWarningModal}
+                    message={typeMessage}
+                    lottie={require('../../../../assets/lottie/error-icon.json')}
+                    bgColor={false}
+                />
+            </Modal>
+
+        </Container>
     );
 }
 

@@ -6,7 +6,7 @@ import 'moment/locale/pt-br'
 
 import Api from '../../../services/responsable.api'
 
-import CardHistorico from '../../../components/CardHistorico'
+import HistoricCard from '../../../components/HistoricCard'
 import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
 import FabGroup from '../../../components/FabGroup'
@@ -131,7 +131,7 @@ const ResponsibleHistoric = () => {
                 data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <CardHistorico data={item} />}
+                renderItem={({ item }) => <HistoricCard data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>

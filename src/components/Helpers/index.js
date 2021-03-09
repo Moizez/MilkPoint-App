@@ -1,5 +1,4 @@
 import moment from 'moment'
-import 'moment/locale/pt-br'
 
 const somar = (acumulado, x) => acumulado + x
 
@@ -42,17 +41,34 @@ export const sumValuesByDate = (data, day, period) => {
     return sumAllValuesByDate(result)
 }
 
-//Filtar dados pelo valor da quantidade de leite recebida
-
-
 //Filtrar dados pela data do dia
-export const filterToday = (selectedDate, data) => {
-    let day = moment(selectedDate).format('L')
+export const filterSpecificDay = (selectedDate, data) => {
+    let day = moment(selectedDate).startOf('date').locale('en').format('L')
     let result = data.filter(i => {
-        let dateDatabase = moment(i.dataNow).format('L')
+        let dateDatabase = moment(i.dataNow).startOf('date').locale('en').format('L')
         return dateDatabase === day
     })
     return result
+}
+
+//Filtrar dados pela data do dia
+export const filterToday = (data) => {
+    let day = moment().startOf('date').locale('en').format('L')
+    let result = data.filter(i => {
+        let dateDatabase = moment(i.dataNow).startOf('date').locale('en').format('L')
+        return dateDatabase === day
+    })
+    return sumAllLiters(result)
+}
+
+//Filtrar dados pelo valor da transação do dia
+export const filterTodayByValue = (data) => {
+    let day = moment().startOf('date').locale('en').format('L')
+    let result = data.filter(i => {
+        let dateDatabase = moment(i.dataNow).startOf('date').locale('en').format('L')
+        return dateDatabase === day
+    })
+    return sumAllValuesByDate(result)
 }
 
 //Filtrar pelo intervalo de data especifico
@@ -67,10 +83,10 @@ export const filterByDateInterval = (value, period, data) => {
 
 //Filtrar entre duas datas especificas
 export const filterByBetweenDates = (data, initialDate, finalDate) => {
-    let initial = moment(initialDate).locale('en').format('L')
-    let final = moment(finalDate).locale('en').format('L')
+    let initial = moment(initialDate).format('MM/DD/YYYY')
+    let final = moment(finalDate).format('MM/DD/YYYY')
     let result = data.filter(i => {
-        let dateDatabase = moment(i.dataNow).locale('en').format('L')
+        let dateDatabase = moment(i.dataNow).format('MM/DD/YYYY')       
         return moment(dateDatabase).isBetween(initial, final, undefined, '[]')
     })
     return result

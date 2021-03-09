@@ -1,7 +1,5 @@
 import styled from 'styled-components/native';
 
-export const Modal = styled.Modal``;
-
 export const CloseContainer = styled.TouchableOpacity`
     flex: 1;
 `;

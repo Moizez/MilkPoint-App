@@ -157,6 +157,7 @@ export const InfoInitialButton = styled.TouchableOpacity`
     align-items: center;
     justify-content: center;
     margin-left: 3px;
+    margin-right: 3px;
 `;
 
 export const InfoFinalButton = styled.TouchableOpacity`

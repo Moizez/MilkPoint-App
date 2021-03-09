@@ -13,7 +13,8 @@ import {
 } from './styles'
 
 const DateModal = ({
-    closeModal, filterByQuantityLiters, filterByLast15Days, filterByLast30Days, filterByTwoDates
+    closeModal, filterByQuantityLiters, filterByLast15Days, filterByLast30Days,
+    filterByTwoDates, openWarning
 }) => {
 
     const [text, setText] = useState('')
@@ -21,8 +22,6 @@ const DateModal = ({
     const [showFinalPicker, setShowFinalPicker] = useState(false)
     const [selectedInitialDate, setSelectedInitialDate] = useState(null)
     const [selectedFinalDate, setSelectedFinalDate] = useState(null)
-
-    const [inputToDate, setInputToDate] = useState(false)
 
     let initialDate = moment(selectedInitialDate).locale('pt').format('L')
     let finalDate = moment(selectedFinalDate).locale('pt').format('L')
@@ -45,6 +44,24 @@ const DateModal = ({
     const openFinalDate = () => {
         setSelectedFinalDate(new Date())
         setShowFinalPicker(true)
+    }
+
+    const handleSearchTwoDates = () => {
+        if (!selectedInitialDate) {
+            openWarning('A data inicial é obrigatória')
+        } else {
+            filterByTwoDates(selectedInitialDate, selectedFinalDate)
+            closeModal()
+        }
+    }
+
+    const handleSearchValue = () => {
+        if (isNaN(text) || text <= 0) {
+            openWarning('Digite um valor válido!')
+        } else {
+            filterByQuantityLiters(text)
+            closeModal()
+        }
     }
 
     return (
@@ -92,7 +109,7 @@ const DateModal = ({
                             value={text}
                             onChangeText={setText}
                         />
-                        <SearchButton onPress={() => { filterByQuantityLiters(text), closeModal() }}>
+                        <SearchButton onPress={handleSearchValue}>
                             <Icon name='magnify' color='#FFF' size={35} />
                         </SearchButton>
                     </SearchBox>
@@ -113,7 +130,7 @@ const DateModal = ({
                             </InfoFinalButton>
                         }
 
-                        <SearchDateButton onPress={() => filterByTwoDates(selectedInitialDate, selectedFinalDate)}>
+                        <SearchDateButton onPress={handleSearchTwoDates}>
                             <Icon name='calendar-search' color='#FFF' size={35} />
                         </SearchDateButton>
                     </SearchDateBox>
