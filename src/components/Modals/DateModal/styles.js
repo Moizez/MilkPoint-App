@@ -114,7 +114,7 @@ export const SearchInput = styled.TextInput`
 
 export const SearchButton = styled.TouchableOpacity`
     height: 45px;
-    width: 45px;
+    width: 60px;
     align-items: center;
     justify-content: center;
     background-color: #219ebc;
@@ -122,6 +122,61 @@ export const SearchButton = styled.TouchableOpacity`
     border-bottom-right-radius: 5px;
     border-left-width: 1px;
     border-color: #6c757d;
+`;
+
+export const SearchDateBox = styled.View`
+    background-color: #d9d9d9;
+    height: 45px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+`;
+
+export const SearchDateButton = styled.TouchableOpacity`
+    height: 45px;
+    width: 60px;
+    align-items: center;
+    justify-content: center;
+    background-color: #219ebc;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left-width: 1px;
+    border-color: #6c757d;
+`;
+
+export const InfoInitialButton = styled.TouchableOpacity`
+    flex: 1;
+    flex-direction: row;
+    background-color: #76c893;
+    height: 40px;
+    padding: 5px;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 3px;
+`;
+
+export const InfoFinalButton = styled.TouchableOpacity`
+    flex: 1;
+    flex-direction: row;
+    background-color: #c1121f;
+    height: 40px;
+    padding: 5px;
+    border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 3px;
+    margin-right: 3px;
+`;
+
+export const TextDateButton = styled.Text`
+    color: #FFF;
+    font-weight: bold;
+    font-size: 15px;
+    margin-right: 8px;
 `;
 
 

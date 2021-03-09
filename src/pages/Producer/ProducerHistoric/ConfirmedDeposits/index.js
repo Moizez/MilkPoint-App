@@ -53,7 +53,8 @@ const ConfirmedDeposits = () => {
     }
 
     const filterByTwoDates = (initialDate, finalDate) => {
-        const result = filterByBetweenDates(depositResolved, initialDate, finalDate)
+        const date = finalDate ? finalDate : new Date()
+        const result = filterByBetweenDates(depositResolved, initialDate, date)
         setMainData(result)
     }
 
@@ -105,7 +106,7 @@ const ConfirmedDeposits = () => {
             {datePicker &&
                 <DatePicker
                     chosenDate={selectedDate}
-                    onChange={onChange}
+                    onSet={onChange}
                 />
             }
 

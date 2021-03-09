@@ -71,7 +71,7 @@ export const filterByBetweenDates = (data, initialDate, finalDate) => {
     let final = moment(finalDate).locale('en').format('L')
     let result = data.filter(i => {
         let dateDatabase = moment(i.dataNow).locale('en').format('L')
-        return moment(dateDatabase).isBetween(initial, final)
+        return moment(dateDatabase).isBetween(initial, final, undefined, '[]')
     })
     return result
 }

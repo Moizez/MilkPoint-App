@@ -8,7 +8,8 @@ import DatePicker from '../../DatePicker'
 import {
     Container, CloseContainer, ModalBox, CloseButton, ModalHeader, Title, ChosenDateBox,
     Button15Days, Button30Days, ButtonInitialDate, ButtonFinalDate, SearchBox, SearchInput,
-    SearchButton, TextButton,
+    SearchButton, TextButton, SearchDateBox, SearchDateButton, InfoInitialButton,
+    InfoFinalButton, TextDateButton
 } from './styles'
 
 const DateModal = ({
@@ -18,24 +19,32 @@ const DateModal = ({
     const [text, setText] = useState('')
     const [showInitialPicker, setShowInitialPicker] = useState(false)
     const [showFinalPicker, setShowFinalPicker] = useState(false)
-    const [selectedInitialDate, setSelectedInitialDate] = useState(new Date())
-    const [selectedFinalDate, setSelectedFinalDate] = useState(new Date())
+    const [selectedInitialDate, setSelectedInitialDate] = useState(null)
+    const [selectedFinalDate, setSelectedFinalDate] = useState(null)
 
-    let today = moment(selectedInitialDate).startOf('date').locale('pt').format('L')
-    let today2 = moment(selectedFinalDate).startOf('date').locale('pt').format('L')
+    const [inputToDate, setInputToDate] = useState(false)
 
+    let initialDate = moment(selectedInitialDate).locale('pt').format('L')
+    let finalDate = moment(selectedFinalDate).locale('pt').format('L')
 
     const onInitialChange = (currentDate) => {
         setShowInitialPicker(Platform.OS === 'ios')
-        let initialDate = moment(currentDate).startOf('date').locale('en').format('L')
-        setSelectedInitialDate(initialDate)
+        setSelectedInitialDate(currentDate)
     }
 
     const onFinalChange = (currentDate) => {
         setShowFinalPicker(Platform.OS === 'ios')
-        let finalDate = moment(currentDate).startOf('date').locale('en').format('L')
-        setSelectedFinalDate(finalDate)
-        filterByTwoDates(selectedInitialDate, selectedFinalDate)
+        setSelectedFinalDate(currentDate)
+    }
+
+    const openInitialDate = () => {
+        setSelectedInitialDate(new Date())
+        setShowInitialPicker(true)
+    }
+
+    const openFinalDate = () => {
+        setSelectedFinalDate(new Date())
+        setShowFinalPicker(true)
     }
 
     return (
@@ -62,37 +71,61 @@ const DateModal = ({
                 </ChosenDateBox>
 
                 <ChosenDateBox>
-                    <ButtonInitialDate onPress={() => setShowInitialPicker(true)}>
+                    <ButtonInitialDate onPress={() => openInitialDate()}>
                         <Icon name='calendar-arrow-right' color='#FFF' size={35} />
-                        <TextButton>{selectedInitialDate ? today : 'Data inicial'}</TextButton>
+                        <TextButton>Data inicial</TextButton>
                     </ButtonInitialDate>
 
-                    <ButtonFinalDate onPress={() => setShowFinalPicker(true)}>
+                    <ButtonFinalDate onPress={() => openFinalDate()}>
                         <Icon name='calendar-arrow-left' color='#FFF' size={35} />
-                        <TextButton>{selectedFinalDate ? today2 : 'Data final'}</TextButton>
+                        <TextButton>Data final</TextButton>
                     </ButtonFinalDate>
                 </ChosenDateBox>
 
-                <SearchBox>
-                    <SearchInput
-                        placeholder='Digite um valor de depósito'
-                        autoCorrect={false}
-                        autoCapitalize='sentences'
-                        keyboardType='phone-pad'
-                        value={text}
-                        onChangeText={setText}
-                    />
-                    <SearchButton onPress={() => { filterByQuantityLiters(text), closeModal() }}>
-                        <Icon name='magnify' color='#FFF' size={35} />
-                    </SearchButton>
-                </SearchBox>
+                {selectedInitialDate == null && selectedFinalDate == null &&
+                    <SearchBox>
+                        <SearchInput
+                            placeholder='Digite um valor de depósito'
+                            autoCorrect={false}
+                            autoCapitalize='sentences'
+                            keyboardType='phone-pad'
+                            value={text}
+                            onChangeText={setText}
+                        />
+                        <SearchButton onPress={() => { filterByQuantityLiters(text), closeModal() }}>
+                            <Icon name='magnify' color='#FFF' size={35} />
+                        </SearchButton>
+                    </SearchBox>
+                }
+
+                {(selectedInitialDate || selectedFinalDate) &&
+                    <SearchDateBox>
+                        {selectedInitialDate &&
+                            <InfoInitialButton onPress={() => setSelectedInitialDate(null)}>
+                                <TextDateButton>{initialDate}</TextDateButton>
+                                <Icon name='close-box' color='#FFF' size={20} />
+                            </InfoInitialButton>
+                        }
+                        {selectedFinalDate &&
+                            <InfoFinalButton onPress={() => setSelectedFinalDate(null)}>
+                                <TextDateButton>{finalDate}</TextDateButton>
+                                <Icon name='close-box' color='#FFF' size={20} />
+                            </InfoFinalButton>
+                        }
+
+                        <SearchDateButton onPress={() => filterByTwoDates(selectedInitialDate, selectedFinalDate)}>
+                            <Icon name='calendar-search' color='#FFF' size={35} />
+                        </SearchDateButton>
+                    </SearchDateBox>
+                }
 
             </ModalBox>
 
             {showInitialPicker &&
                 <DatePicker
                     chosenDate={selectedInitialDate}
-                    onChange={onInitialChange}
+                    onSet={onInitialChange}
+                    onCancel={setSelectedInitialDate}
                     display='spinner'
                 />
             }
@@ -100,7 +133,7 @@ const DateModal = ({
             {showFinalPicker &&
                 <DatePicker
                     chosenDate={selectedFinalDate}
-                    onChange={onFinalChange}
+                    onSet={onFinalChange}
                     display='spinner'
                 />
             }

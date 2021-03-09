@@ -1,7 +1,5 @@
 import styled from 'styled-components/native';
 
-export const Modal = styled.Modal``;
-
 export const CloseContainer = styled.TouchableOpacity`
     flex: 1;
 `;
@@ -33,62 +31,6 @@ export const Title = styled.Text`
     font-size: 18px;
     color: #FFF;
     margin-left: 15px;
-`;
-
-export const ChosenDateBox = styled.View`
-    flex-direction: row;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    justify-content: space-between;
-`;
-
-export const Button15Days = styled.TouchableOpacity`
-    flex: 1;
-    flex-direction: row;
-    background-color: #e9c46a;
-    height: 45px;
-    padding: 5px;
-    border-radius: 5px;
-    align-items: center;
-`;
-
-export const Button30Days = styled.TouchableOpacity`
-    flex: 1;
-    flex-direction: row;
-    background-color: #e76f51;
-    height: 45px;
-    padding: 5px;
-    border-radius: 5px;
-    align-items: center;
-    margin-left: 10px;
-`;
-
-export const ButtonInitialDate = styled.TouchableOpacity`
-    flex: 1;
-    flex-direction: row;
-    background-color: #76c893;
-    height: 45px;
-    padding: 5px;
-    border-radius: 5px;
-    align-items: center;
-`;
-
-export const ButtonFinalDate = styled.TouchableOpacity`
-    flex: 1;
-    flex-direction: row;
-    background-color: #c1121f;
-    height: 45px;
-    padding: 5px;
-    border-radius: 5px;
-    align-items: center;
-    margin-left: 10px;
-`;
-
-export const TextButton = styled.Text`
-    color: #FFF;
-    font-weight: bold;
-    font-size: 15px;
-    margin-left: 3px;
 `;
 
 export const DepositBox = styled.View`
