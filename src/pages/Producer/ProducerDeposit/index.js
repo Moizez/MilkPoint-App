@@ -4,10 +4,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import PendingDepositsList from '../PendingDepositsList'
 import Header from '../../../components/Header'
+import { RequestContext } from '../../../contexts/request'
 import Loader from '../../../components/Loader'
-
-import Api from '../../../services/producer.api'
-import { AuthContext } from '../../../contexts/auth'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
@@ -16,26 +14,18 @@ import {
 
 const ProducerDeposit = () => {
 
-    //const { pendingDepositsList, loadPendingDepositsProducer } = useContext(AuthContext)
-
-    const [depositsList, setDepositsList] = useState([])
-    const [loading, setLoading] = useState(false)
+    const {
+        pendingDepositsList, loadPendingDepositsProducer, loading
+    } = useContext(RequestContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
 
-    const loadProducerDeposits = async () => {
-        setLoading(true)
-        const response = await Api.getPendingDepositsProducer()
-        setDepositsList(response)
-        setLoading(false)
-    }
-
     useEffect(() => {
-        loadProducerDeposits()
+        loadPendingDepositsProducer()
     }, [])
 
     const onRefreshList = () => {
         setIsRefreshing(true)
-        loadProducerDeposits()
+        loadPendingDepositsProducer()
         setIsRefreshing(false)
     }
 
@@ -44,10 +34,10 @@ const ProducerDeposit = () => {
             <Header msg={'Lista de depósitos pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={depositsList}
+                data={pendingDepositsList}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => (<PendingDepositsList data={item} loadProducerDeposits={loadProducerDeposits} />)}
+                renderItem={({ item }) => <PendingDepositsList data={item} loadPage={loadPendingDepositsProducer} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há depósitos pendentes!</NomeAviso>

@@ -42,7 +42,10 @@ const TankCard = ({ data, openModal, tankStatus }) => {
 
                 <DividerV />
 
-                <TankChartBox onPress={openModal}>
+                <TankChartBox
+                    onPress={openModal}
+                    onLongPress={() => navigation.navigate('TankDetails', { data: data })}
+                >
                     <TankIconBox>
                         {data.tipo == 'BOVINO' ?
                             <PetImage source={images.cow} /> :

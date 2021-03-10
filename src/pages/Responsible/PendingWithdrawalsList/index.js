@@ -4,7 +4,7 @@ import { Modal, View } from 'react-native';
 import Api from '../../../services/responsable.api'
 import { AuthContext } from '../../../contexts/auth'
 
-import CardInfo from '../../../components/CardInfo'
+import RequestCard from '../../../components/Cards/RequestCard'
 import ModalChoice from '../../../components/ModalChoice'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
@@ -103,11 +103,11 @@ const PendingWithdrawalsList = ({ data, onRefresh }) => {
 
     return (
         <View>
-            <CardInfo
+            <RequestCard
                 showModal={showModal}
                 dataInfo={data}
                 titlePerfil={'Laticínio: '}
-                infoPerfil={data.laticinio.nomeFantasia}
+                infoPerfil={data.laticinio.apelido}
             />
 
             <Modal

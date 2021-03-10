@@ -1,118 +1,97 @@
-import React, { useState, useContext } from 'react'
-import { Modal, View } from 'react-native'
+import React, { useState, useEffect, Fragment } from 'react'
+import { Modal } from 'react-native'
 
 import Api from '../../../services/dairy.api'
-import { AuthContext } from '../../../contexts/auth'
 
-import CardInfo from '../../../components/CardInfo'
-import ModalCancel from '../../../components/ModalCancel'
-import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
-import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
+import CancelModal from '../../../components/Modals/CancelModal'
+import WarningModal from '../../../components/Modals/WarningModal'
+import ActionModal from '../../../components/Modals/ActionModal'
+import RequestCard from '../../../components/Cards/RequestCard'
 
-const PendingWithdrawalsList = ({ data, onRefresh }) => {
+const PendingWithdrawalsList = ({ data, loadPage }) => {
 
-    let success = require('../../../assets/lottie/delete-confirm.json')
+    const [cancelModal, setCancelModal] = useState(false)
+    const [actionModal, setActionModal] = useState(false)
+    const [warningModal, setWarningModal] = useState(false)
 
-    //const { user, loadListRetiradasResolvidas, baseUrl } = useContext(AuthContext)
+    const openCancelModal = () => setCancelModal(true)
+    const closeCancelModal = () => setCancelModal(false)
+    const openActioModal = () => setActionModal(true)
+    const closeActionModal = () => setActionModal(false)
+    const openWarningModal = () => setWarningModal(true)
+    const closeWarningModal = () => setWarningModal(false)
 
-    const [alertVisible, setAlertVisible] = useState(false)
-    const [isAlertInfo, setAlertInfo] = useState(false)
-
-    const [modalCancelVisible, setModalCancelVisible] = useState(false)
-
-    //Confirmação da retiradas pelo responsável
-    const confirmacaoRetirada = async (confirmacao, idRetirada) => {
+    //Cancelamento de depósitos pelo produtor
+    const withdrawalConfirmation = async (confirmacao, idRetirada) => {
         await Api.setCancelWithdrawal(confirmacao, idRetirada)
-    };
+    }
 
-    //Função para cancelar a retirada
+    useEffect(() => {
+        loadPage()
+    }, [])
+
+    //Função para cancelar o depósito
     function handleCancel() {
-        setAlertInfo(true)
+        openActioModal()
     }
 
     const handleConfirm = async () => {
-        setAlertInfo(false)
-        setAlertVisible(true)
-        await confirmacaoRetirada(false, data.id)
-        setModalCancelVisible(false)
-    }
-
-    const ErrorSuccesAlert = () => {
-        if (alertVisible) {
-            return (
-                <AlertErrorSuccess
-                    onClose={closeAlertErroSuccess}
-                    title='Aviso'
-                    message={'Retirada cancelada com sucesso!'}
-                    titleButton='Ok'
-                    jsonPath={success}
-                    buttonColor={'#292b2c'}
-                />
-            )
-        }
-    }
-
-    const InformationAlert = () => {
-        if (isAlertInfo) {
-            return (
-                <AlertSimpleInfo
-                    dataInfo={data}
-                    onConfirm={handleConfirm}
-                    onClose={closeAlertInfo}
-                    title='Aviso'
-                    message={'Deseja realmente CANCELAR esta RETIRADA?'}
-                />
-            )
-        }
-    }
-
-    const closeAlertInfo = () => setAlertInfo(false)
-    const handleOpenCancelModal = () => setModalCancelVisible(true)
-    const handleCloseCancelModal = () => setModalCancelVisible(false)
-    const closeAlertErroSuccess = () => {
-        setAlertVisible(false)
-        onRefresh()
+        await withdrawalConfirmation(false, data.id)
+        closeActionModal()
+        closeCancelModal()
+        openWarningModal()
+        setTimeout(() => {
+            closeWarningModal()
+            loadPage()
+        }, 2500);
     }
 
     return (
-        <View>
-            <CardInfo
-                showModal={handleOpenCancelModal}
-                dataInfo={data}
-                titlePerfil={'Laticínio: '}
-                infoPerfil={data.laticinio.nome}
+        <Fragment>
+
+            <RequestCard
+                showModal={openCancelModal}
+                data={data}
+                role={'Laticínio: '}
+                roleName={data.laticinio.nome}
             />
 
             <Modal
-                animationType='fade'
                 transparent={true}
-                visible={modalCancelVisible}
+                visible={cancelModal}
+                animationType='slide'
             >
-                <ModalCancel
-                    dataTanque={data}
-                    onClose={handleCloseCancelModal}
-                    onCancel={handleCancel}
+                <CancelModal
+                    data={data}
+                    closeModal={closeCancelModal}
+                    confirmModal={handleCancel}
                 />
             </Modal>
 
             <Modal
                 animationType='fade'
                 transparent={true}
-                visible={alertVisible}
+                visible={warningModal}
             >
-                {ErrorSuccesAlert()}
+                <WarningModal
+                    closeModal={closeWarningModal}
+                    message={'Retirada cancelada com sucesso!'}
+                    lottie={require('../../../assets/lottie/delete-confirm.json')}
+                    bgColor={true}
+                />
             </Modal>
 
             <Modal
                 animationType='fade'
                 transparent={true}
-                visible={isAlertInfo}
+                visible={actionModal}
             >
-                {InformationAlert()}
+                <ActionModal
+                    closeModal={closeActionModal}
+                    confirmModal={handleConfirm}
+                />
             </Modal>
-
-        </View>
-
+        </Fragment>
     );
 }
 

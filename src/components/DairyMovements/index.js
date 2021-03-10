@@ -66,13 +66,15 @@ const DairyMovements = ({ data }) => {
             <PeriodTitle>Hoje</PeriodTitle>
             <Divider style={styles.periodDivider} />
             <PeriodBox>
-                <PeriodText>
-                    {
-                        filterToday(userData) === 1 ?
-                            filterToday(userData) + ' litro' :
-                            filterToday(userData) + 'litros'
-                    }
-                </PeriodText>
+                <PeriodItem>
+                    <PeriodText>
+                        {
+                            filterToday(userData) === 1 ?
+                                filterToday(userData) + ' litro' :
+                                filterToday(userData) + ' litros'
+                        }
+                    </PeriodText>
+                </PeriodItem>
                 <Divider style={styles.dividerV} />
                 <PeriodItem>
                     <PeriodText>{filterTodayByValue(userData)}</PeriodText>

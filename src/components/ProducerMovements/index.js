@@ -72,7 +72,7 @@ const ProducerMovements = ({ data }) => {
                         {
                             filterToday(userData) === 1 ?
                                 filterToday(userData) + ' litro' :
-                                filterToday(userData) + 'litros'
+                                filterToday(userData) + ' litros'
                         }
                     </PeriodText>
                 </PeriodItem>

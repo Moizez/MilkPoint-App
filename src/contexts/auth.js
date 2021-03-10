@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext } from 'react';
+import React, { useState, useEffect, createContext, Fragment } from 'react';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Modal } from 'react-native'
 
@@ -6,7 +6,6 @@ import AlertErrorSuccess from '../components/AlertErrorSuccess'
 import LoadScreen from '../components/LoadScreen'
 
 import Api from '../services/api'
-import ProducerApi from '../services/producer.api'
 
 export const AuthContext = createContext({})
 
@@ -20,12 +19,6 @@ const AuthProvider = ({ children }) => {
     const [loadingAuth, setLoadingAuth] = useState(false)
     const [user, setUser] = useState(null)
     const [time, setTime] = useState(false)
-    const [pendingDepositsList, setPendingDepositsList] = useState([])
-
-    const loadPendingDepositsProducer = async () => {
-        const response = await ProducerApi.getPendingDepositsProducer()
-        setPendingDepositsList(response)
-    }
 
     //Carregar usuário do AsyncStorage
     useEffect(() => {
@@ -112,7 +105,7 @@ const AuthProvider = ({ children }) => {
 
     return (
 
-        <>
+        <Fragment>
             <Modal
                 animationType='fade'
                 transparent={false}
@@ -131,12 +124,13 @@ const AuthProvider = ({ children }) => {
             </Modal>
 
             <AuthContext.Provider value={{
-                signed: !!user, user, loading, loadingAuth, pendingDepositsList,
-                signIn, logOut, loadPendingDepositsProducer
+                signed: !!user, user,
+                loading, loadingAuth,
+                signIn, logOut
             }}>
                 {children}
             </AuthContext.Provider>
-        </>
+        </Fragment>
     )
 }
 

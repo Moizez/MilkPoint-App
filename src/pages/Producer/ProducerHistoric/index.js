@@ -1,10 +1,7 @@
-import React, { useState, useContext } from 'react';
-import { Text, Dimensions, RefreshControl } from 'react-native'
+import React, { useState } from 'react';
+import { Text, Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-
-import { AuthContext } from '../../../contexts/auth'
-import Api from '../../../services/producer.api'
 
 import Header from '../../../components/Header'
 import ConfirmedDeposits from './ConfirmedDeposits'
@@ -13,8 +10,6 @@ import CanceledDeposits from './CanceledDeposits'
 const initialLayout = { width: Dimensions.get('window').width };
 
 const ProducerHistoric = () => {
-
-    const { user } = useContext(AuthContext)
 
     const [index, setIndex] = useState(0)
     const [routes] = useState([
@@ -38,7 +33,6 @@ const ProducerHistoric = () => {
         first: () => <ConfirmedDeposits />,
         second: () => <CanceledDeposits />,
     });
-
 
     return (
         <Container>

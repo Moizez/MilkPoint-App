@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { View, ActivityIndicator, StyleSheet, Text } from 'react-native'
+import styled from 'styled-components/native';
 
 import { AuthContext } from '../../contexts/auth'
 
@@ -15,43 +15,47 @@ const Loader = () => {
     }
 
     return (
-        <View style={styles.container}>
-            <View style={styles.indicator}>
-                <ActivityIndicator
-                    style={{ marginVertical: 5 }}
-                    color={changeColor()}
-                    size="large"
-                />
-                <Text style={styles.text}>Carregando...</Text>
-            </View>
-        </View>
+        <Container>
+            <Load>
+                <Indicator color={changeColor()} size="large" />
+                <Text>Carregando...</Text>
+            </Load>
+        </Container>
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    indicator: {
-        padding: 15,
-        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-        width: 200,
-        height: 90,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 8,
-    },
-    text: {
-        fontSize: 16,
-    }
-})
-
 export default Loader
+
+const Container = styled.View`
+    background-color: rgba(0,0,0,0.5);
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+`;
+
+const Load = styled.View`
+    width: 200px;
+    height: 100px;
+    background-color: #292b2c;
+    border-radius: 15px;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    margin-bottom: 30px;
+`;
+
+const Indicator = styled.ActivityIndicator`
+    margin-top: 5px;
+    margin-bottom: 10px;
+`;
+
+const Text = styled.Text`
+    color: #FFF;
+    text-align: center;
+`;
+
 

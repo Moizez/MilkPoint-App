@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components/native';
 import LottieView from 'lottie-react-native'
 
-const WarningModal = ({ closeModal, message, lottie, bgColor }) => {
+const WarningModal = ({ closeModal, message, lottie, bgColor, duration }) => {
 
     setTimeout(() => {
         closeModal()
-    }, 3500);
+    }, duration ? duration : 2500);
 
     return (
         <Container bgColor={bgColor}>

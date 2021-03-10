@@ -1,200 +1,133 @@
-import React, { useState, useContext, useEffect } from 'react'
-import { Modal, Keyboard, View, Text, StyleSheet } from 'react-native'
-
-import ModalRetirada from '../../../components/ModalRetirada'
-import GraficoTanque from '../../../components/GraficoTanque'
-import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
-import AlertInformation from '../../../components/AlertInformation'
+import React, { useState, useContext, useEffect, Fragment } from 'react'
+import { Modal, Keyboard } from 'react-native'
 
 import Api from '../../../services/dairy.api'
-import { AuthContext } from '../../../contexts/auth'
+import { RequestContext } from '../../../contexts/request'
 
-export default function ListaTanques({ data, loadTanks }) {
+import WithdrawalModal from '../../../components/Modals/WithdrawalModal'
+import ConfirmationModal from '../../../components/Modals/ConfirmationModal'
+import WarningModal from '../../../components/Modals/WarningModal'
+import TankCard from '../../../components/Cards/TankCard'
 
-    const { } = useContext(AuthContext)
+const TanksList = ({ data, loadTanks }) => {
 
-    const [modalVisible, setModalVisible] = useState(false)
-    const [alertVisible, setAlertVisible] = useState(false)
-    const [isAlertInfo, setAlertInfo] = useState(false)
-    const [typeMessage, setTypeMessage] = useState('')
-    const [jsonIcon, setJsonIcon] = useState('error')
-
-    const [qtdInfo, setQtdInfo] = useState()
-
+    const { loadPendingWithdrawalsDairy } = useContext(RequestContext)
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
-    let msgType = jsonIcon == 'error' ? error : success
+
+    const [withdrawalModal, setWithdrawalModal] = useState(false)
+    const [confirmationModal, setConfirmationModal] = useState(false)
+    const [warningModal, setWarningModal] = useState(false)
+    const [typeMessage, setTypeMessage] = useState('')
+    const [lottie, setLottie] = useState('')
+    const [qtdInfo, setQtdInfo] = useState()
+
+    const openWithdrawalModal = () => setWithdrawalModal(true)
+    const closeWithdrawalModal = () => setWithdrawalModal(false)
+    const openConfirmationModal = () => setConfirmationModal(true)
+    const closeConfirmationModal = () => setConfirmationModal(false)
+    const openWarningModal = () => setWarningModal(true)
+    const closeWarningModal = () => setWarningModal(false)
 
     useEffect(() => {
         loadTanks()
     }, [])
 
-    //Solicitação de retirada pelo laticinio
-    const requestRetirada = async (quantidade, idTanque) => {
+    //Solicitação de depósito pelo produtor
+    const requestWithdrawal = async (quantidade, idTanque) => {
         await Api.setWithdrawal(quantidade, idTanque)
     };
 
-    const handleRetirada = async (value) => {
+    const handleWithdrawal = async (value) => {
+        setQtdInfo(value)
+
         if (data.status) {
-            if (data.qtdAtual == 0) {
-                setJsonIcon('error')
+            if (isNaN(value) || value <= 0) {
+                setLottie(error)
+                setTypeMessage('Valor inválido!\nDigite novamente.')
+                openWarningModal()
+                return
+            } if (data.qtdAtual === 0) {
+                setLottie(error)
                 setTypeMessage('O tanque está vazio!')
-                setAlertVisible(true)
-            } else if (isNaN(value) || value <= 0) {
-                setJsonIcon('error')
-                setTypeMessage('Valor inválido, digite a quantidade novamente!')
-                setAlertVisible(true)
-            } else if (data.qtdAtual == 0) {
-                setJsonIcon('error')
-                setTypeMessage('O tanque está vazio!')
-                setAlertVisible(true)
+                openWarningModal()
+                return
             } else if (value > data.qtdAtual) {
-                setJsonIcon('error')
-                setTypeMessage('Sua retirada excede o valor máximo aceito pelo tanque!')
-                setAlertVisible(true)
+                setLottie(error)
+                setTypeMessage('O valor excede o limite do tanque!')
+                openWarningModal()
+                return
             } else {
-                setQtdInfo(value)
-                setJsonIcon('success')
-                setAlertInfo(true)
+                setLottie(success)
+                openConfirmationModal()
             }
         } else {
-            await loadTanks()
-            setJsonIcon('error')
+            setLottie(error)
             setTypeMessage('Este tanque está inativo!')
-            setAlertVisible(true)
+            openWarningModal()
+            return
         }
         Keyboard.dismiss()
     }
 
-    const handleConfirm = async (value) => {
-        setAlertInfo(false)
-        setTypeMessage('Retirada realizada com sucesso! Aguarde a confirmação.')
-        setAlertVisible(true)
-        await requestRetirada(value, data.id)
-        setModalVisible(false)
-    }
-
-    const handleCloseModal = () => setModalVisible(false)
-    const handleOpenModal = () => setModalVisible(true)
-    const closeAlertInfo = () => { setAlertInfo(false) }
-    const closeAlertErroSuccess = () => setAlertVisible(false)
-    const changeRetirada = () => setRetiradaTotal(true)
-
-
-    const ErrorSuccesAlert = () => {
-        if (alertVisible) {
-            return (
-                <AlertErrorSuccess
-                    onClose={closeAlertErroSuccess}
-                    title='Aviso'
-                    message={typeMessage}
-                    titleButton='Ok'
-                    jsonPath={msgType}
-                    buttonColor={'#292b2c'}
-                />
-            )
-        }
-    }
-
-    const InformationAlert = () => {
-        if (isAlertInfo) {
-            return (
-                <AlertInformation
-                    dataInfo={data}
-                    qtd={qtdInfo}
-                    onConfirm={handleConfirm}
-                    onClose={closeAlertInfo}
-                    title='Aviso'
-                    message={'Confirme os dados'}
-                />
-            )
-        }
+    const handleConfirm = async () => {
+        await requestWithdrawal(qtdInfo, data.id)
+        closeConfirmationModal()
+        closeWithdrawalModal()
+        setTypeMessage('Depósito realizado com sucesso!')
+        openWarningModal()
+        loadPendingWithdrawalsDairy()
     }
 
     return (
-        <View style={styles.container}>
+        <Fragment>
 
-            <View style={styles.cardContainer}>
-                <View style={styles.infoCard}>
-                    <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
-                    <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
-                    <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                    <Text style={styles.textInfo}>Cabem: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
-                    <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
-                    {!data.status && <Text style={{ ...styles.textInfo, color: '#da1e37' }}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>}
-                </View>
-
-                <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
-
-                <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} activeTanque={data.status ? false : true} />
-            </View>
+            <TankCard
+                data={data}
+                openModal={openWithdrawalModal}
+                tankStatus={data.status ? false : true}
+            />
 
             <Modal
-                animationType='fade'
                 transparent={true}
-                visible={modalVisible}
+                visible={withdrawalModal}
+                animationType='slide'
             >
-                <ModalRetirada
-                    onConfirme={handleRetirada}
-                    onClose={handleCloseModal}
-                    onChange={changeRetirada}
+                <WithdrawalModal
+                    confirmModal={handleWithdrawal}
+                    closeModal={closeWithdrawalModal}
+                    total={data.qtdAtual}
+                />
+            </Modal>
+
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={confirmationModal}
+            >
+                <ConfirmationModal
+                    closeModal={closeConfirmationModal}
+                    confirmModal={handleConfirm}
                     data={data}
+                    quantidade={qtdInfo}
                 />
             </Modal>
 
             <Modal
                 animationType='fade'
                 transparent={true}
-                visible={isAlertInfo}
+                visible={warningModal}
             >
-                {InformationAlert()}
+                <WarningModal
+                    closeModal={closeWarningModal}
+                    message={typeMessage}
+                    lottie={lottie}
+                    bgColor={false}
+                />
             </Modal>
 
-            <Modal
-                animationType='fade'
-                transparent={true}
-                visible={alertVisible}
-            >
-                {ErrorSuccesAlert()}
-            </Modal>
-
-        </View >
+        </Fragment >
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#faf9f9',
-        margin: 12,
-        borderRadius: 5,
-        shadowColor: '#000',
-        shadowOpacity: 0.25,
-        shadowRadius: 3.85,
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        elevation: 5
-    },
-    cardContainer: {
-        flex: 1,
-        flexDirection: 'row',
-    },
-    infoCard: {
-        flex: 1.5,
-        backgroundColor: '#faf9f9',
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        padding: 6,
-
-    },
-    textInfo: {
-        fontWeight: 'bold',
-        fontSize: 14.5,
-    },
-    text: {
-        fontWeight: 'normal'
-    }
-
-})
+export default TanksList

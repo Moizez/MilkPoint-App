@@ -2,10 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import Api from '../../../services/dairy.api'
-
 import PendingWithdrawalsList from '../PendingWithdrawalsList'
 import Header from '../../../components/Header'
+import { RequestContext } from '../../../contexts/request'
 import Loader from '../../../components/Loader'
 
 import {
@@ -15,24 +14,18 @@ import {
 
 const DairyWithdrawal = () => {
 
-    const [withdrawalsList, setWithdrawalsList] = useState([])
-    const [loading, setLoading] = useState(false)
+    const {
+        pendingWithdrawalsList, loadPendingWithdrawalsDairy, loading
+    } = useContext(RequestContext)
     const [isRefreshing, setIsRefreshing] = useState(false)
 
-    const loadDairyWithdrawals = async () => {
-        setLoading(true)
-        const response = await Api.getPendingWithdrawalsDairy()
-        setWithdrawalsList(response)
-        setLoading(false)
-    }
-
     useEffect(() => {
-        loadDairyWithdrawals()
+        loadPendingWithdrawalsDairy()
     }, [])
 
-    const onRefreshList = async () => {
+    const onRefreshList = () => {
         setIsRefreshing(true)
-        await loadDairyWithdrawals()
+        loadPendingWithdrawalsDairy()
         setIsRefreshing(false)
     }
 
@@ -41,10 +34,10 @@ const DairyWithdrawal = () => {
             <Header msg={'Lista de retiradas pendentes'} />
             <List
                 showsVerticalScrollIndicator={false}
-                data={withdrawalsList}
+                data={pendingWithdrawalsList}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <PendingWithdrawalsList data={item} onRefresh={onRefreshList} />}
+                renderItem={({ item }) => <PendingWithdrawalsList data={item} loadPage={loadPendingWithdrawalsDairy} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>

@@ -3,7 +3,7 @@ import { Modal, View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWi
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 
-import GraficoTanque from '../../../components/GraficoTanque'
+import TankCard from '../../../components/Cards/TankCard'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import Map from '../../../components/Map'
@@ -127,7 +127,11 @@ const TanksList = ({ data, onRefresh }) => {
                         {!data.status && <Text style={{ ...styles.textInfo, color: '#da1e37' }}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>}
                     </View>
                     <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
-                    <GraficoTanque dataGrafico={data} handleOpenModal={handleOpenModal} />
+                    <TankCard
+                        data={data}
+                        openModal={openDepositModal}
+                        tankStatus={data.status ? false : true}
+                    />
                 </View>
             </Swipeable>
 

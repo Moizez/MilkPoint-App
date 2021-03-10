@@ -1,20 +1,14 @@
-import React, { useState, useEffect, useContext, Fragment } from 'react'
-import { Modal, View } from 'react-native'
+import React, { useState, useEffect, Fragment } from 'react'
+import { Modal } from 'react-native'
 
 import Api from '../../../services/producer.api'
-import { AuthContext } from '../../../contexts/auth'
 
 import CancelModal from '../../../components/Modals/CancelModal'
 import WarningModal from '../../../components/Modals/WarningModal'
 import ActionModal from '../../../components/Modals/ActionModal'
-
 import RequestCard from '../../../components/Cards/RequestCard'
 
-import CardInfo from '../../../components/CardInfo'
-
-const PendingDepositsList = ({ data, loadProducerDeposits }) => {
-
-    const { user, loadListDepositosResolvidos } = useContext(AuthContext)
+const PendingDepositsList = ({ data, loadPage }) => {
 
     const [cancelModal, setCancelModal] = useState(false)
     const [actionModal, setActionModal] = useState(false)
@@ -28,25 +22,28 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
     const closeWarningModal = () => setWarningModal(false)
 
     //Cancelamento de depósitos pelo produtor
-    const confirmacaoDeposito = async (confirmacao, idDeposito) => {
+    const depositConfirmation = async (confirmacao, idDeposito) => {
         await Api.setCancelDeposit(confirmacao, idDeposito)
     }
 
     useEffect(() => {
-        loadProducerDeposits()
+        loadPage()
     }, [])
 
     //Função para cancelar o depósito
-    function handleCancel() {
+    const handleCancel = () => {
         openActioModal()
     }
 
     const handleConfirm = async () => {
-        await confirmacaoDeposito(false, data.id)
-        loadProducerDeposits()
+        await depositConfirmation(false, data.id)
         closeActionModal()
         closeCancelModal()
         openWarningModal()
+        setTimeout(() => {
+            closeWarningModal()
+            loadPage()
+        }, 2500);
     }
 
     return (
