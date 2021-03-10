@@ -5,7 +5,7 @@ import moment from 'moment'
 
 import Api from '../../../../services/producer.api'
 
-import ConfirmedHistoryCard from '../../../../components/ConfirmedHistoryCard'
+import ConfirmedHistoryCard from '../../../../components/Cards/ConfirmedHistoryCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
 import Fab from '../../../../components/Fab'

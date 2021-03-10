@@ -7,7 +7,7 @@ import 'moment/locale/pt-br'
 import Api from '../../../services/dairy.api'
 import { AuthContext } from '../../../contexts/auth'
 
-import HistoricCard from '../../../components/HistoricCard'
+import ConfirmedHistoryCard from '../../../components/Cards/ConfirmedHistoryCard'
 import Header from '../../../components/Header'
 import DatePicker from '../../../components/DatePicker'
 import FabSearch from '../../../components/FabSearch'
@@ -151,7 +151,7 @@ const DairyHistoric = () => {
                 data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <HistoricCard data={item} />}
+                renderItem={({ item }) => <ConfirmedHistoryCard data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>

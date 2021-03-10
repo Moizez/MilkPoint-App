@@ -8,6 +8,8 @@ import CancelModal from '../../../components/Modals/CancelModal'
 import WarningModal from '../../../components/Modals/WarningModal'
 import ActionModal from '../../../components/Modals/ActionModal'
 
+import RequestCard from '../../../components/Cards/RequestCard'
+
 import CardInfo from '../../../components/CardInfo'
 
 const PendingDepositsList = ({ data, loadProducerDeposits }) => {
@@ -41,6 +43,7 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
 
     const handleConfirm = async () => {
         await confirmacaoDeposito(false, data.id)
+        loadProducerDeposits()
         closeActionModal()
         closeCancelModal()
         openWarningModal()
@@ -48,11 +51,12 @@ const PendingDepositsList = ({ data, loadProducerDeposits }) => {
 
     return (
         <Fragment>
-            <CardInfo
+
+            <RequestCard
                 showModal={openCancelModal}
-                dataInfo={data}
-                titlePerfil={'Produtor: '}
-                infoPerfil={data.produtor.nome}
+                data={data}
+                role={'Produtor: '}
+                roleName={data.produtor.nome}
             />
 
             <Modal

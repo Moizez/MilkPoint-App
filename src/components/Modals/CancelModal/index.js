@@ -46,7 +46,7 @@ const CancelModal = ({ closeModal, data, confirmModal }) => {
                         </ItemBox>
                         <DividerV />
                         <ItemBox>
-                            <InfoTitle>Tipo do leite</InfoTitle>
+                            <InfoTitle>Data do pedido</InfoTitle>
                             <InfoText>{date}</InfoText>
                         </ItemBox>
                     </InfoBox>

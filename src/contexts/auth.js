@@ -10,9 +10,6 @@ import ProducerApi from '../services/producer.api'
 
 export const AuthContext = createContext({})
 
-let baseUrl = 'https://milkpoint.serviceapp.net.br/api/' //Leandro
-let cepUrl = 'https://viacep.com.br/ws/'
-
 const AuthProvider = ({ children }) => {
 
     let error = require('../assets/lottie/error-icon.json')
