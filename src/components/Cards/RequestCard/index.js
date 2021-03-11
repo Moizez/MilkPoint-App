@@ -9,7 +9,7 @@ import { numberToReal } from '../../Helpers'
 import {
     Container, CardBox, InfoBox, Text, BoldText, IconBox, MoreInfoButton, DividerV,
     IconButton, ExpandedCardBox, ExpandedHeader, ExpandedInfoBox, ExpandedItemBox,
-    IconText
+    IconText, CardInfoBox
 } from './styles'
 
 const RequestCard = ({ data, showModal, role, roleName }) => {
@@ -24,58 +24,62 @@ const RequestCard = ({ data, showModal, role, roleName }) => {
     return (
         <Container>
 
-            <CardBox>
-                <InfoBox>
-                    {user.perfil === 2 ?
-                        <BoldText>{role}<Text>{roleName}</Text></BoldText> :
-                        <BoldText>Tanque: <Text>{data.tanque.nome}</Text></BoldText>
-                    }
-                    <BoldText>Qtd. Solicitada: <Text>{data.quantidade} {data.quantidade > 1 ? 'litros' : 'litro'}</Text></BoldText>
-                    <BoldText>Pedido em: <Text>{date}</Text></BoldText>
-                </InfoBox>
-                <DividerV />
-                <IconBox>
-                    <IconButton onPress={showModal}>
-                        <Icon name='bucket' size={30} color='#e9ecef' />
-                        <IconText>Cancelar</IconText>
-                    </IconButton>
-                </IconBox>
+            <CardBox style={{ elevation: 5 }}>
+
+                <CardInfoBox>
+                    <InfoBox>
+                        {user.perfil === 2 ?
+                            <BoldText>{role}<Text>{roleName}</Text></BoldText> :
+                            <BoldText>Tanque: <Text>{data.tanque.nome}</Text></BoldText>
+                        }
+                        <BoldText>Qtd. Solicitada: <Text>{data.quantidade} {data.quantidade > 1 ? 'litros' : 'litro'}</Text></BoldText>
+                        <BoldText>Pedido em: <Text>{date}</Text></BoldText>
+                    </InfoBox>
+                    <DividerV />
+                    <IconBox>
+                        <IconButton onPress={showModal}>
+                            <Icon name='bucket' size={30} color='#e9ecef' />
+                            <IconText>Cancelar</IconText>
+                        </IconButton>
+                    </IconBox>
+                </CardInfoBox>
+
+                {show &&
+                    <ExpandedCardBox onPress={() => setShow(false)} activeOpacity={1}>
+
+                        <ExpandedHeader>
+                            <BoldText>Mais informações</BoldText>
+                        </ExpandedHeader>
+
+                        <ExpandedInfoBox>
+                            <ExpandedItemBox>
+                                <BoldText>Tipo do leite</BoldText>
+                                <Text>{data.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text>
+                            </ExpandedItemBox>
+
+                            <DividerV />
+
+                            <ExpandedItemBox>
+                                <BoldText>Valor do pedido</BoldText>
+                                <Text>{valor}</Text>
+                            </ExpandedItemBox>
+
+                            <DividerV />
+
+                            <ExpandedItemBox>
+                                <BoldText>Responsável</BoldText>
+                                <Text>{data.tanque.responsavel.nome}</Text>
+                            </ExpandedItemBox>
+                        </ExpandedInfoBox>
+
+                    </ExpandedCardBox>
+                }
+
+                <MoreInfoButton onPress={() => setShow(!show)} activeOpacity={0.8}>
+                    <Icon name={show ? 'chevron-thin-up' : 'chevron-thin-down'} size={18} color='#2a9d8f' />
+                </MoreInfoButton>
+
             </CardBox>
-
-            {show &&
-                <ExpandedCardBox onPress={() => setShow(false)} activeOpacity={1}>
-
-                    <ExpandedHeader>
-                        <BoldText>Mais informações</BoldText>
-                    </ExpandedHeader>
-
-                    <ExpandedInfoBox>
-                        <ExpandedItemBox>
-                            <BoldText>Tipo do leite</BoldText>
-                            <Text>{data.tanque.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text>
-                        </ExpandedItemBox>
-
-                        <DividerV />
-
-                        <ExpandedItemBox>
-                            <BoldText>Valor do pedido</BoldText>
-                            <Text>{valor}</Text>
-                        </ExpandedItemBox>
-
-                        <DividerV />
-
-                        <ExpandedItemBox>
-                            <BoldText>Responsável</BoldText>
-                            <Text>{data.tanque.responsavel.nome}</Text>
-                        </ExpandedItemBox>
-                    </ExpandedInfoBox>
-
-                </ExpandedCardBox>
-            }
-
-            <MoreInfoButton onPress={() => setShow(!show)} activeOpacity={0.8}>
-                <Icon name={show ? 'chevron-thin-up' : 'chevron-thin-down'} size={18} color='#2a9d8f' />
-            </MoreInfoButton>
 
         </Container>
     );

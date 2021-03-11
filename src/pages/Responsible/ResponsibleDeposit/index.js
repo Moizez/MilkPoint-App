@@ -44,7 +44,7 @@ const ResponsibleDeposit = () => {
                 data={pendingDeposits}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <PendingDepositsList data={item} onRefresh={onRefreshList} />}
+                renderItem={({ item }) => <PendingDepositsList data={item} loadPage={loadPendingDeposits} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há depósitos pendentes!</NomeAviso>

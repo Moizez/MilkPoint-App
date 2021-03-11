@@ -1,21 +1,21 @@
 import styled from 'styled-components/native';
 
 export const Container = styled.View`
+    margin-bottom: 10px;
 `;
 
 export const CardBox = styled.View`
-    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     background-color: #ececec;
-    padding: 10px;
     margin: 10px 10px 0 10px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+`;
 
-    border-width: 1px;
-    border-bottom-width: 0;
-    border-color: rgba(0,0,0,0.25);
+export const CardInfoBox = styled.View`
+    flex-direction: row;
+    padding: 10px;
 `;
 
 export const InfoBox = styled.View`
@@ -37,32 +37,19 @@ export const IconBox = styled.View`
 `;
 
 export const MoreInfoButton = styled.TouchableOpacity`
+    width: 100%;
     align-items: center;
     justify-content: center;
     background-color: #cfd2cd;
-    margin: 0px 10px 0 10px;
     padding: 5px;
     border-bottom-right-radius: 8px;
     border-bottom-left-radius: 8px;
-
-    border-width: 1px;
-    border-top-width: 0;
-    border-color: rgba(0,0,0,0.25);
 `;
 
 export const ExpandedCardBox = styled.TouchableOpacity`
+    width: 100%;
     background-color: #ececec;
-    margin: 0px 10px 0 10px;
 
-    border-width: 1px;
-    border-bottom-width: 0;
-    border-top-width: 0;
-    border-color: #cfd2cd;
-
-    border-width: 1px;
-    border-bottom-width: 0;
-    border-top-width: 0;
-    border-color: rgba(0,0,0,0.25);
 `;
 
 export const ExpandedHeader = styled.View`
@@ -70,7 +57,7 @@ export const ExpandedHeader = styled.View`
     background-color: #cfd2cd;
     align-items: center;
     justify-content: center;
-    padding: 3px;
+    padding: 5px;
 `;
 
 export const ExpandedInfoBox = styled.View`

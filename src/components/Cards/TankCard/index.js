@@ -8,7 +8,7 @@ import {
     TankIconBox, TankChart, PetImage
 } from './styles'
 
-const TankCard = ({ data, openModal, tankStatus }) => {
+const TankCard = ({ data, openModal }) => {
 
     const navigation = useNavigation()
     const capacidade = data.qtdAtual + data.qtdRestante
@@ -17,7 +17,6 @@ const TankCard = ({ data, openModal, tankStatus }) => {
         cow: require('../../../assets/images/cow-circle.png'),
         goat: require('../../../assets/images/goat-circle.png')
     }
-
 
     const chartColor = () => {
         if (data.qtdAtual > (capacidade / 4) & data.qtdAtual < (capacidade / 2)) {
@@ -32,7 +31,7 @@ const TankCard = ({ data, openModal, tankStatus }) => {
     return (
         <Container>
 
-            <CardBox>
+            <CardBox style={{elevation: 5}}>
                 <InfoBox>
                     <BoldText>Tanque: <Text>{data.nome}</Text></BoldText>
                     <BoldText>Volume atual: <Text>{data.qtdAtual} {data.qtdAtual === 1 ? 'litro' : 'litros'}</Text></BoldText>

@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect, Fragment } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { Modal, Keyboard } from 'react-native'
+import styled from 'styled-components/native';
 
 import Api from '../../../services/dairy.api'
 import { RequestContext } from '../../../contexts/request'
@@ -80,7 +81,7 @@ const TanksList = ({ data, loadTanks }) => {
     }
 
     return (
-        <Fragment>
+        <Container>
 
             <TankCard
                 data={data}
@@ -126,8 +127,12 @@ const TanksList = ({ data, loadTanks }) => {
                 />
             </Modal>
 
-        </Fragment >
+        </Container >
     );
 }
 
 export default TanksList
+
+const Container = styled.View`
+    margin-bottom: 10px;
+`;

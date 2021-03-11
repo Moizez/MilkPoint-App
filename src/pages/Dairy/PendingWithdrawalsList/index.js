@@ -1,5 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Modal } from 'react-native'
+import styled from 'styled-components/native';
 
 import Api from '../../../services/dairy.api'
 
@@ -47,7 +48,7 @@ const PendingWithdrawalsList = ({ data, loadPage }) => {
     }
 
     return (
-        <Fragment>
+        <Container>
 
             <RequestCard
                 showModal={openCancelModal}
@@ -91,8 +92,12 @@ const PendingWithdrawalsList = ({ data, loadPage }) => {
                     confirmModal={handleConfirm}
                 />
             </Modal>
-        </Fragment>
+        </Container>
     );
 }
 
 export default PendingWithdrawalsList
+
+export const Container = styled.View`
+    margin-bottom: 10px;
+`;

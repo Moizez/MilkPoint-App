@@ -1,5 +1,5 @@
-import React, { useState, useEffect, Fragment } from 'react'
-import { Modal } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import styled from 'styled-components/native';
 
 import Api from '../../../services/producer.api'
 
@@ -47,7 +47,7 @@ const PendingDepositsList = ({ data, loadPage }) => {
     }
 
     return (
-        <Fragment>
+        <Container>
 
             <RequestCard
                 showModal={openCancelModal}
@@ -91,8 +91,16 @@ const PendingDepositsList = ({ data, loadPage }) => {
                     confirmModal={handleConfirm}
                 />
             </Modal>
-        </Fragment>
+
+        </Container>
     );
 }
 
 export default PendingDepositsList
+
+const Container = styled.View`
+    flex: 1;
+    margin-bottom: 10px;
+`;
+
+const Modal = styled.Modal``;

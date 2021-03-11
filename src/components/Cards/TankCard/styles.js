@@ -11,8 +11,6 @@ export const CardBox = styled.View`
     padding: 10px;
     margin: 10px 10px 0 10px;
     border-radius: 8px;
-    border-width: 1px;
-    border-color: rgba(0,0,0,0.25);
 `;
 
 export const InfoBox = styled.View`

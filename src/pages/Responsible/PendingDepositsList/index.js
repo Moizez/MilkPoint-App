@@ -1,15 +1,14 @@
-import React, { useState, useContext } from 'react';
-import { Modal, View } from 'react-native';
+import React, { useState } from 'react';
+import styled from 'styled-components/native';
 
 import Api from '../../../services/responsable.api'
-import { AuthContext } from '../../../contexts/auth'
 
 import ModalChoice from '../../../components/ModalChoice'
 import AlertSimpleInfo from '../../../components/AlertSimpleInfo'
 import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
 import RequestCard from '../../../components/Cards/RequestCard'
 
-const PendingDepositsList = ({ data, onRefresh }) => {
+const PendingDepositsList = ({ data, loadPage }) => {
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
@@ -21,8 +20,6 @@ const PendingDepositsList = ({ data, onRefresh }) => {
         else return cancel
     }
 
-    const {  } = useContext(AuthContext)
-
     const [typeMessage, setTypeMessage] = useState('')
     const [jsonIcon, setJsonIcon] = useState('error')
 
@@ -30,6 +27,13 @@ const PendingDepositsList = ({ data, onRefresh }) => {
     const [isVisibleCard, setVisibleCard] = useState(false)
     const [isAlertSimpleInfo, setAlertSimpleInfo] = useState(false)
     const [isAlertErroSuccess, setAlertErroSuccess] = useState(false)
+
+    const openCancelModal = () => setCancelModal(true)
+    const closeCancelModal = () => setCancelModal(false)
+    const openActioModal = () => setActionModal(true)
+    const closeActionModal = () => setActionModal(false)
+    const openWarningModal = () => setWarningModal(true)
+    const closeWarningModal = () => setWarningModal(false)
 
     //Confirmação da depositos pelo responsável
     const confirmacaoDeposito = async (confirmacao, idDeposito, observacao) => {
@@ -98,12 +102,12 @@ const PendingDepositsList = ({ data, onRefresh }) => {
     const hideModalInfo = () => { setAlertSimpleInfo(false) }
     const hideAlertErroSuccess = () => {
         setAlertErroSuccess(false)
-        onRefresh()
+        loadPage()
     }
 
     return (
 
-        <View>
+        <Container>
             <RequestCard
                 showModal={showModal}
                 dataInfo={data}
@@ -131,22 +135,37 @@ const PendingDepositsList = ({ data, onRefresh }) => {
             <Modal
                 animationType='fade'
                 transparent={true}
-                visible={isAlertSimpleInfo}
+                visible={warningModal}
             >
-                {InfoAlertSimple()}
+                <WarningModal
+                    closeModal={closeWarningModal}
+                    message={'Depósito cancelado com sucesso!'}
+                    lottie={require('../../../assets/lottie/delete-confirm.json')}
+                    bgColor={true}
+                />
             </Modal>
 
             <Modal
                 animationType='fade'
                 transparent={true}
-                visible={isAlertErroSuccess}
+                visible={actionModal}
             >
-                {ErrorSuccesAlert()}
+                <ActionModal
+                    closeModal={closeActionModal}
+                    confirmModal={handleConfirm}
+                />
             </Modal>
 
-        </View>
+        </Container>
 
     );
 }
 
 export default PendingDepositsList
+
+const Container = styled.View`
+    flex: 1;
+    margin-bottom: 10px;
+`;
+
+const Modal = styled.Modal``;

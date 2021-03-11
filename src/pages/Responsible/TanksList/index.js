@@ -1,19 +1,27 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-
 import Speedometer from 'react-native-speedometer-chart'
+
+import {
+    Container, TankChartBox, TankIconBox, PetImage, Text, BoldText, TankChart,
+    DividerH, DividerV, InfoBox, ItemBox, InfoTitle, InfoText
+} from './styles'
 
 const TanksList = ({ data }) => {
 
     const navigation = useNavigation()
     const capacidade = data.qtdAtual + data.qtdRestante
 
-    function corGrafico() {
+    const images = {
+        cow: require('../../../assets/images/cow-circle.png'),
+        goat: require('../../../assets/images/goat-circle.png')
+    }
+
+    const chartColor = () => {
         if (data.qtdAtual > (capacidade / 4) & data.qtdAtual < (capacidade / 2)) {
             return '#f5cb5c'
-        } if (data.qtdAtual >= (capacidade / 2)) {
+        } else if (data.qtdAtual >= (capacidade / 2)) {
             return '#2a9d8f'
         } else {
             return '#da1e37'
@@ -21,29 +29,32 @@ const TanksList = ({ data }) => {
     }
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('TankDetails', { data: data })} activeOpacity={0.9}>
-                <View style={styles.iconContainer}>
+        <Container style={{ elevation: 5 }}>
+            <TankChartBox
+                onPress={() => navigation.navigate('TankDetails', { data: data })}
+                activeOpacity={0.9}
+            >
+                <TankIconBox>
                     {data.tipo == 'BOVINO' ?
-                        <Image style={styles.goatImage} source={require('../../../assets/images/cow-circle.png')} /> :
-                        <Image style={styles.goatImage} source={require('../../../assets/images/goat-circle.png')} />
+                        <PetImage source={images.cow} /> :
+                        <PetImage source={images.goat} />
                     }
-                    <Text style={styles.title}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
+                    <BoldText>Tanque: <Text>{data.nome}</Text></BoldText>
                     <Icon name={data.status ? 'beaker-check' : 'beaker-remove'} size={35} color={data.status ? '#2a9d8f' : '#da1e37'} />
-                </View>
+                </TankIconBox>
 
-                <View style={{ alignItems: 'center' }}>
+                <TankChart>
 
                     <Speedometer
                         value={data.qtdAtual}
                         totalValue={capacidade}
                         size={170}
                         outerColor="#d3d3d3"
-                        internalColor={corGrafico()}
+                        internalColor={chartColor()}
                         showText
                         text={''}
                         textStyle={{ color: 'black' }}
-                        innerColor={'#faf9f9'}
+                        innerColor={'#ececec'}
                         showLabels
                         labelStyle={{ color: 'blue' }}
                         labelFormatter={number => `${number}`}
@@ -51,69 +62,31 @@ const TanksList = ({ data }) => {
                         percentStyle={{ color: 'black', fontSize: 22 }}
                     />
 
-                </View>
+                </TankChart>
 
-                <View style={{ width: '95%', height: 0.5, backgroundColor: '#adb5bd', marginVertical: 10 }}></View>
+                <DividerH />
 
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                        <Text style={{ fontWeight: 'bold' }}>Capacidade</Text>
-                        <Text>{capacidade} litros</Text>
-                    </View>
-                    <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
-                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                        <Text style={{ fontWeight: 'bold' }}>Volume atual</Text>
-                        <Text>{data.qtdAtual} litros</Text>
-                    </View>
-                    <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd', marginHorizontal: 3 }}></View>
-                    <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center' }}>
-                        <Text style={{ fontWeight: 'bold' }}>Cabem</Text>
-                        <Text>{data.qtdRestante} litros</Text>
-                    </View>
-                </View>
+                <InfoBox>
+                    <ItemBox>
+                        <InfoTitle>Capacidade</InfoTitle>
+                        <InfoText>{capacidade}</InfoText>
+                    </ItemBox>
+                    <DividerV />
+                    <ItemBox>
+                        <InfoTitle>Volume atual</InfoTitle>
+                        <InfoText>{data.qtdAtual}</InfoText>
+                    </ItemBox>
+                    <DividerV />
+                    <ItemBox>
+                        <InfoTitle>Cabem</InfoTitle>
+                        <InfoText>{data.qtdRestante} litros</InfoText>
+                    </ItemBox>
+                </InfoBox>
 
-            </TouchableOpacity>
+            </TankChartBox>
 
-        </View>
+        </Container>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#faf9f9',
-        padding: 10,
-        margin: 12,
-        borderRadius: 2,
-        shadowColor: '#000',
-        shadowOpacity: 0.25,
-        shadowRadius: 3.85,
-        shadowOffset: {
-            width: 0,
-            height: 1
-        },
-        elevation: 5,
-
-    },
-    cardButton: {
-        flex: 1,
-    },
-    iconContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around',
-        marginVertical: 10,
-    },
-    title: {
-        fontSize: 17, fontWeight: 'bold'
-    },
-    text: {
-        fontWeight: 'normal'
-    },
-    goatImage: {
-        width: 35,
-        height: 35
-    }
-})
 
 export default TanksList
