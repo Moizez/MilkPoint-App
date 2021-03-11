@@ -23,7 +23,7 @@ export const TankIconBox = styled.View`
 
 export const BoldText = styled.Text`
     font-weight: bold;
-    font-size: 17;
+    font-size: 18px;
 `;
 
 export const Text = styled.Text`

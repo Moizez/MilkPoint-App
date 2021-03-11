@@ -120,13 +120,13 @@ const DateModal = ({
                         {selectedInitialDate &&
                             <InfoInitialButton onPress={() => setSelectedInitialDate(null)}>
                                 <TextDateButton>{initialDate}</TextDateButton>
-                                <Icon name='close-box' color='#FFF' size={20} />
+                                <Icon name='close-circle' color='#FFF' size={20} />
                             </InfoInitialButton>
                         }
                         {selectedFinalDate &&
                             <InfoFinalButton onPress={() => setSelectedFinalDate(null)}>
                                 <TextDateButton>{finalDate}</TextDateButton>
-                                <Icon name='close-box' color='#FFF' size={20} />
+                                <Icon name='close-circle' color='#FFF' size={20} />
                             </InfoFinalButton>
                         }
 

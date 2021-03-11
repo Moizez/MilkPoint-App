@@ -98,9 +98,5 @@ const PendingDepositsList = ({ data, loadPage }) => {
 
 export default PendingDepositsList
 
-const Container = styled.View`
-    flex: 1;
-    margin-bottom: 10px;
-`;
-
+const Container = styled.View``;
 const Modal = styled.Modal``;

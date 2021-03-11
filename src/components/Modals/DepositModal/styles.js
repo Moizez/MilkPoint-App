@@ -51,7 +51,6 @@ export const DepositInput = styled.TextInput`
     color: #292b2c;
     margin-left: 10px;
     margin-right: 10px;
-
 `;
 
 export const DepositButton = styled.TouchableOpacity`

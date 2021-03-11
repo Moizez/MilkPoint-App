@@ -23,9 +23,9 @@ export const numberToReal = (numero) => {
 
 //Filtrar os dados da quantidade de leite do objeto pela data recebida
 export const sumLitersByDate = (data, day, period) => {
-    let date = moment().locale('en').subtract(day, period).format('L')
+    let date = moment().subtract(day, period).format('MM/DD/YYYY')
     let result = data.filter(i => {
-        let dateDatabase = moment(i.dataNow).locale('en').format('L')
+        let dateDatabase = moment(i.dataNow).format('MM/DD/YYYY')
         return moment(dateDatabase).isSameOrAfter(date, 'days')
     })
     return sumAllLiters(result)
@@ -33,9 +33,9 @@ export const sumLitersByDate = (data, day, period) => {
 
 //Filtrar os valores em reais do objeto pela data recebida  
 export const sumValuesByDate = (data, day, period) => {
-    let date = moment().locale('en').subtract(day, period).format('L')
+    let date = moment().subtract(day, period).format('MM/DD/YYYY')
     let result = data.filter(i => {
-        let dateDatabase = moment(i.dataNow).locale('en').format('L')
+        let dateDatabase = moment(i.dataNow).format('MM/DD/YYYY')
         return moment(dateDatabase).isSameOrAfter(date, 'days')
     })
     return sumAllValuesByDate(result)
@@ -43,9 +43,9 @@ export const sumValuesByDate = (data, day, period) => {
 
 //Filtrar dados pela data do dia
 export const filterSpecificDay = (selectedDate, data) => {
-    let day = moment(selectedDate).startOf('date').locale('en').format('L')
+    let day = moment(selectedDate).startOf('date').format('MM/DD/YYYY')
     let result = data.filter(i => {
-        let dateDatabase = moment(i.dataNow).startOf('date').locale('en').format('L')
+        let dateDatabase = moment(i.dataNow).startOf('date').format('MM/DD/YYYY')
         return dateDatabase === day
     })
     return result
@@ -53,9 +53,9 @@ export const filterSpecificDay = (selectedDate, data) => {
 
 //Filtrar dados pela data do dia
 export const filterToday = (data) => {
-    let day = moment().startOf('date').locale('en').format('L')
+    let day = moment().startOf('date').format('MM/DD/YYYY')
     let result = data.filter(i => {
-        let dateDatabase = moment(i.dataNow).startOf('date').locale('en').format('L')
+        let dateDatabase = moment(i.dataNow).startOf('date').format('MM/DD/YYYY')
         return dateDatabase === day
     })
     return sumAllLiters(result)
@@ -63,9 +63,9 @@ export const filterToday = (data) => {
 
 //Filtrar dados pelo valor da transação do dia
 export const filterTodayByValue = (data) => {
-    let day = moment().startOf('date').locale('en').format('L')
+    let day = moment().startOf('date').format('MM/DD/YYYY')
     let result = data.filter(i => {
-        let dateDatabase = moment(i.dataNow).startOf('date').locale('en').format('L')
+        let dateDatabase = moment(i.dataNow).startOf('date').format('MM/DD/YYYY')
         return dateDatabase === day
     })
     return sumAllValuesByDate(result)
@@ -73,9 +73,9 @@ export const filterTodayByValue = (data) => {
 
 //Filtrar pelo intervalo de data especifico
 export const filterByDateInterval = (value, period, data) => {
-    let date = moment().locale('en').subtract(value, period).format('L')
+    let date = moment().subtract(value, period).format('MM/DD/YYYY')
     let result = data.filter(i => {
-        let dateDatabase = moment(i.dataNow).locale('en').format('L')
+        let dateDatabase = moment(i.dataNow).format('MM/DD/YYYY')
         return moment(dateDatabase).isSameOrAfter(date, 'days')
     })
     return result

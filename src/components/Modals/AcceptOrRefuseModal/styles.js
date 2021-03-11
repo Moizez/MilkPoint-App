@@ -27,55 +27,87 @@ export const ModalHeader = styled.View`
     flex-direction: row;
     align-items: center;
 `;
+
 export const Title = styled.Text`
     font-size: 18px;
     color: #FFF;
     margin-left: 15px;
 `;
 
-export const WithdrawalBox = styled.View`
+export const ModalInfo = styled.View`
     background-color: #d9d9d9;
-    height: 45px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 5px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-`;
-
-export const WithdrawalInput = styled.TextInput`
-    flex: 1;
-    font-size: 16px;
-    font-weight: bold;
-    color: #292b2c;
-    margin-left: 10px;
-    margin-right: 10px;
-
-`;
-
-export const WithdrawalButton = styled.TouchableOpacity`
-    height: 45px;
-    width: 100px;
-    align-items: center;
-    justify-content: center;
-    background-color: #c1121f;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-left-width: 1px;
-    border-color: #6c757d;
-`;
-
-export const ModalButton = styled.View`
-    flex-direction: row;
-    align-items: center;
     border-radius: 8px;
     margin-top: 10px;
     margin-bottom: 10px;
     padding: 8px;
 `;
 
-export const TotalWithdrawal = styled.TouchableOpacity`
+export const InfoBox = styled.View`
+    flex-direction: row;
+    align-items: center;
+    height: 40px;
+`;
+
+export const ItemBox = styled.View`
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+`;
+
+export const InfoTitle = styled.Text`
+    font-weight: bold;
+`;
+
+export const InfoText = styled.Text`
+
+`;
+
+export const MessageBox = styled.View`
+    
+`;
+
+export const MessageItemsBox = styled.View`
+    flex-direction: row;
+`;
+
+export const MessageItemBox = styled.View`
+    margin-top: 10px;
+    width: 100%;
+    align-items: center;
+    background-color: #d9d9d9;
+    border-radius: 5px;
+`;
+
+export const MessageText = styled.Text`
+    margin-left: 3px;
+`;
+
+export const MessageInputBox = styled.View`
+    background-color: #d9d9d9;
+    height: 75px;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+`;
+
+export const MessageInput = styled.TextInput`
+    flex: 1;
+    font-size: 16px;
+    font-weight: bold;
+    color: #292b2c;
+    margin-left: 10px;
+    margin-right: 10px;   
+    text-align: center; 
+`;
+
+export const ModalButton = styled.View`
+    flex-direction: row;
+    align-items: center;
+    border-radius: 8px;
+    padding: 8px;
+`;
+
+export const RefuseButton = styled.TouchableOpacity`
     flex: 1;
     flex-direction: row;
     background-color: #c1121f;
@@ -84,16 +116,16 @@ export const TotalWithdrawal = styled.TouchableOpacity`
     border-radius: 5px;
     align-items: center;
     justify-content: center;
-    margin-left: 10px;
 `;
 
-export const PartialWithdrawal = styled.TouchableOpacity`
+export const AcceptButton = styled.TouchableOpacity`
     flex: 1;
     flex-direction: row;
     background-color: #2a9d8f;
     height: 45px;
     padding: 5px;
     border-radius: 5px;
+    margin-left: 10px;
     align-items: center;
     justify-content: center;
 `;
@@ -105,5 +137,16 @@ export const TextButton = styled.Text`
     margin-right: 12px;
 `;
 
+export const DividerH = styled.View`
+    width: 100%;    
+    height: 0.5px;
+    background-color: #333533;
+    margin: 5px 0 5px 0;
+`;
 
-
+export const DividerV = styled.View`
+    height: 100%;    
+    width: 0.5px;
+    background-color: #333533;
+    margin: 0 5px 0 5px;
+`;

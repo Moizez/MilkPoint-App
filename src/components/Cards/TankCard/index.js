@@ -18,6 +18,12 @@ const TankCard = ({ data, openModal }) => {
         goat: require('../../../assets/images/goat-circle.png')
     }
 
+    const setCurrentVol = (value, type) => {
+        if (value == 0) return type === 0 ? 'Tanque vazio' : 'Tanque cheio'
+        else if (value == 1) return `${value} litro`
+        else return `${value} litros`
+    }
+
     const chartColor = () => {
         if (data.qtdAtual > (capacidade / 4) & data.qtdAtual < (capacidade / 2)) {
             return '#f5cb5c'
@@ -31,11 +37,11 @@ const TankCard = ({ data, openModal }) => {
     return (
         <Container>
 
-            <CardBox style={{elevation: 5}}>
+            <CardBox style={{ elevation: 5 }}>
                 <InfoBox>
                     <BoldText>Tanque: <Text>{data.nome}</Text></BoldText>
-                    <BoldText>Volume atual: <Text>{data.qtdAtual} {data.qtdAtual === 1 ? 'litro' : 'litros'}</Text></BoldText>
-                    <BoldText>Cabem: <Text>{data.qtdRestante} {data.qtdRestante === 1 ? 'litro' : 'litros'}</Text></BoldText>
+                    <BoldText>Volume atual: <Text>{setCurrentVol(data.qtdAtual, 0)}</Text></BoldText>
+                    <BoldText>Cabem: <Text>{setCurrentVol(data.qtdRestante, 1)}</Text></BoldText>
                     <BoldText>Responsável: <Text>{data.responsavel.nome}</Text></BoldText>
                 </InfoBox>
 

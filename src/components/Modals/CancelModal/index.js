@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native'
+import React from 'react';
+import { StyleSheet } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 

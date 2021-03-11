@@ -18,6 +18,12 @@ const TanksList = ({ data }) => {
         goat: require('../../../assets/images/goat-circle.png')
     }
 
+    const setCurrentVol = (value, type) => {
+        if (value == 0) return type === 0 ? 'Tanque vazio' : 'Tanque cheio'
+        else if (value == 1) return `${value} litro`
+        else return `${value} litros`
+    }
+
     const chartColor = () => {
         if (data.qtdAtual > (capacidade / 4) & data.qtdAtual < (capacidade / 2)) {
             return '#f5cb5c'
@@ -69,17 +75,17 @@ const TanksList = ({ data }) => {
                 <InfoBox>
                     <ItemBox>
                         <InfoTitle>Capacidade</InfoTitle>
-                        <InfoText>{capacidade}</InfoText>
+                        <InfoText>{capacidade} litros</InfoText>
                     </ItemBox>
                     <DividerV />
                     <ItemBox>
                         <InfoTitle>Volume atual</InfoTitle>
-                        <InfoText>{data.qtdAtual}</InfoText>
+                        <InfoText>{setCurrentVol(data.qtdAtual, 0)}</InfoText>
                     </ItemBox>
                     <DividerV />
                     <ItemBox>
                         <InfoTitle>Cabem</InfoTitle>
-                        <InfoText>{data.qtdRestante} litros</InfoText>
+                        <InfoText>{setCurrentVol(data.qtdRestante, 1)}</InfoText>
                     </ItemBox>
                 </InfoBox>
 

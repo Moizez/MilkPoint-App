@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import {
-    Container, CloseContainer, ModalBox, CloseButton, ModalHeader, Title, ModalInfo,
+    Container, CloseContainer, ModalBox, CloseButton, ModalHeader, Title, ModalButton,
     WithdrawalBox, WithdrawalInput, WithdrawalButton, TotalWithdrawal, PartialWithdrawal,
     TextButton
 } from './styles'
@@ -24,7 +24,7 @@ const WithdrawalModal = ({ closeModal, confirmModal, total }) => {
                     <Title>Selecione o tipo de retirada</Title>
                 </ModalHeader>
 
-                <ModalInfo>
+                <ModalButton>
                     <PartialWithdrawal onPress={() => setShow(!show)}>
                         <TextButton>Parcial</TextButton>
                         <Icon name='chart-donut' color='#FFF' size={30} />
@@ -34,7 +34,7 @@ const WithdrawalModal = ({ closeModal, confirmModal, total }) => {
                         <TextButton>Total</TextButton>
                         <Icon name='gauge-full' color='#FFF' size={30} />
                     </TotalWithdrawal>
-                </ModalInfo>
+                </ModalButton>
 
                 {show &&
                     <WithdrawalBox>

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Modal } from 'react-native'
 import styled from 'styled-components/native';
 
 import Api from '../../../services/dairy.api'
@@ -98,6 +97,5 @@ const PendingWithdrawalsList = ({ data, loadPage }) => {
 
 export default PendingWithdrawalsList
 
-export const Container = styled.View`
-    margin-bottom: 10px;
-`;
+const Container = styled.View``;
+const Modal = styled.Modal``;

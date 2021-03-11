@@ -12,14 +12,13 @@ import {
     IconText, CardInfoBox
 } from './styles'
 
-const RequestCard = ({ data, showModal, role, roleName }) => {
+const RequestCard = ({ data, showModal, role }) => {
 
     let date = moment(data.dataNow).format('L [às] LT[h]')
+    let valor = numberToReal(data.valor)
 
     const { user } = useContext(AuthContext)
     const [show, setShow] = useState(false)
-
-    let valor = numberToReal(data.valor)
 
     return (
         <Container>
@@ -29,10 +28,10 @@ const RequestCard = ({ data, showModal, role, roleName }) => {
                 <CardInfoBox>
                     <InfoBox>
                         {user.perfil === 2 ?
-                            <BoldText>{role}<Text>{roleName}</Text></BoldText> :
+                            <BoldText>{role}<Text>{data.produtor.nome}</Text></BoldText> :
                             <BoldText>Tanque: <Text>{data.tanque.nome}</Text></BoldText>
                         }
-                        <BoldText>Qtd. Solicitada: <Text>{data.quantidade} {data.quantidade > 1 ? 'litros' : 'litro'}</Text></BoldText>
+                        <BoldText>Qtd. Solicitada: <Text>{data.quantidade} {data.quantidade == 1 ? 'litro' : 'litros'}</Text></BoldText>
                         <BoldText>Pedido em: <Text>{date}</Text></BoldText>
                     </InfoBox>
                     <DividerV />
