@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -43,7 +43,7 @@ const ResponsibleWithdrawal = () => {
                 data={pendingWithdrawals}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <PendingWithdrawalsList data={item} onRefresh={onRefreshList} />}
+                renderItem={({ item }) => <PendingWithdrawalsList data={item} loadPage={onRefreshList} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há retiradas pendentes!</NomeAviso>

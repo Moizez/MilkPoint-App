@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment, useContext } from 'react'
 import Icon from 'react-native-vector-icons/Entypo'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
+import { AuthContext } from '../../../contexts/auth'
 import { numberToReal } from '../../Helpers'
 
 import {
@@ -10,11 +11,12 @@ import {
     DividerH, ExpandedCardBox, ExpandedHeader, ExpandedInfoBox, ExpandedItemBox, CardInfoBox
 } from './styles'
 
-const ConfirmedHistoryCard = ({ data }) => {
+const HistoricCard = ({ data }) => {
 
     let date = moment(data.dataNow).format('L [às] LT[h]')
     let requestDate = moment(data.dataSolicitacao).format('L [às] LT[h]')
 
+    const { user } = useContext(AuthContext)
     const [show, setShow] = useState(false)
 
     let valor = numberToReal(data.valor)
@@ -25,13 +27,22 @@ const ConfirmedHistoryCard = ({ data }) => {
             <CardBox style={{ elevation: 5 }}>
                 <CardInfoBox>
                     <InfoBox>
-                        <BoldText>Tanque: <Text>{data.tanque.nome}</Text></BoldText>
+                        {user.perfil === 2 ?
+                            <BoldText>{data.type ? 'Produtor: ' : 'Laticínio: '}
+                                <Text>{data.type ? data.produtor.nome : data.laticinio.apelido}</Text>
+                            </BoldText> :
+                            <BoldText>Tanque: <Text>{data.tanque.nome}</Text></BoldText>
+                        }
                         <BoldText>Qtd. Solicitada: <Text>{data.quantidade} {data.quantidade > 1 ? 'litros' : 'litro'}</Text></BoldText>
-                        <BoldText>Confirmado em: <Text>{date}</Text></BoldText>
+                        <BoldText>{data.confirmacao ? 'Confirmado' : 'Recusado'} em: <Text>{date}</Text></BoldText>
                     </InfoBox>
                     <DividerV />
                     <IconBox>
-                        <Icon name='bucket' size={30} color='#2a9d8f' />
+                        <Icon
+                            name='bucket'
+                            size={30}
+                            color={data.confirmacao ? '#2a9d8f' : '#cc444b'}
+                        />
                     </IconBox>
                 </CardInfoBox>
 
@@ -74,12 +85,30 @@ const ConfirmedHistoryCard = ({ data }) => {
 
                         </ExpandedInfoBox>
 
+                        {data.observacao &&
+                            <Fragment>
+                                <DividerH />
+                                <ExpandedInfoBox>
+
+                                    <ExpandedItemBox>
+                                        <BoldText>Motivo do cancelamento</BoldText>
+                                        <Text>{data.observacao}</Text>
+                                    </ExpandedItemBox>
+
+                                </ExpandedInfoBox>
+                            </Fragment>
+                        }
+
 
                     </ExpandedCardBox>
                 }
 
                 <MoreInfoButton onPress={() => setShow(!show)} activeOpacity={0.8}>
-                    <Icon name={show ? 'chevron-thin-up' : 'chevron-thin-down'} size={18} color='#2a9d8f' />
+                    <Icon
+                        name={show ? 'chevron-thin-up' : 'chevron-thin-down'}
+                        size={18}
+                        color={data.confirmacao ? '#2a9d8f' : '#cc444b'}
+                    />
                 </MoreInfoButton>
 
             </CardBox>
@@ -88,4 +117,4 @@ const ConfirmedHistoryCard = ({ data }) => {
     );
 }
 
-export default ConfirmedHistoryCard
+export default HistoricCard

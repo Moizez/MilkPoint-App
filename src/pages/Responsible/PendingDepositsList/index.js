@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components/native';
 
 import Api from '../../../services/responsable.api'
+import { RequestContext } from '../../../contexts/request'
 
 import AcceptOrRefuseModal from '../../../components/Modals/AcceptOrRefuseModal'
 import WarningModal from '../../../components/Modals/WarningModal'
 import ActionModal from '../../../components/Modals/ActionModal'
+import RefuseModal from '../../../components/Modals/RefuseModal'
 import RequestCard from '../../../components/Cards/RequestCard'
 
 const PendingDepositsList = ({ data, loadPage }) => {
@@ -14,22 +16,27 @@ const PendingDepositsList = ({ data, loadPage }) => {
     let success = require('../../../assets/lottie/success-icon.json')
     let cancel = require('../../../assets/lottie/delete-confirm.json')
 
+    const { loadResponsibleTank } = useContext(RequestContext)
+
     const [acceptOrRefuseModal, setAcceptOrRefuseModal] = useState(false)
     const [actionModal, setActionModal] = useState(false)
+    const [refuseModal, setRefuseModal] = useState(false)
     const [warningModal, setWarningModal] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
     const [lottie, setLottie] = useState(error)
-    const [requestType, setRequestType] = useState('')
+    const [observacao, setObservacao] = useState('')
 
     const openAcceptOrRefuseModal = () => setAcceptOrRefuseModal(true)
     const closeAcceptOrRefuseModal = () => setAcceptOrRefuseModal(false)
-    const openActioModal = () => setActionModal(true)
+    const openActionModal = () => setActionModal(true)
     const closeActionModal = () => setActionModal(false)
+    const openRefuseModal = () => setRefuseModal(true)
+    const closeRefuseModal = () => setRefuseModal(false)
     const openWarningModal = () => setWarningModal(true)
     const closeWarningModal = () => setWarningModal(false)
 
     //Confirmação da depositos pelo responsável
-    const confirmacaoDeposito = async (confirmacao, idDeposito, observacao) => {
+    const depositConfirmation = async (confirmacao, idDeposito, observacao) => {
         await Api.setDepositConfirmation(confirmacao, idDeposito, observacao)
     };
 
@@ -37,8 +44,7 @@ const PendingDepositsList = ({ data, loadPage }) => {
     const handleConfirm = () => {
         if (data.quantidade <= data.tanque.qtdRestante) {
             setLottie(success)
-            setRequestType('Confirmar esta solicitação?')
-            openActioModal()
+            openActionModal()
         } else {
             setLottie(error)
             setTypeMessage('O valor excede o limite do tanque!')
@@ -46,8 +52,14 @@ const PendingDepositsList = ({ data, loadPage }) => {
         }
     }
 
+    const handleCancel = (observacao) => {
+        setObservacao(observacao)
+        setLottie(cancel)
+        openRefuseModal()
+    }
+
     const doneConfirm = async () => {
-        await confirmacaoDeposito(true, data.id, '')
+        await depositConfirmation(true, data.id, '')
         setTypeMessage('Depósito confirmado com sucesso!')
         closeActionModal()
         closeAcceptOrRefuseModal()
@@ -55,19 +67,20 @@ const PendingDepositsList = ({ data, loadPage }) => {
         setTimeout(() => {
             closeWarningModal()
             loadPage()
-        }, 2500);
+        }, 2000);
+        loadResponsibleTank()
     }
 
-    const doneCancel = async (observacao) => {
-        await confirmacaoDeposito(false, data.id, observacao)
-        setLottie(cancel)
+    const doneCancel = async () => {
+        await depositConfirmation(false, data.id, observacao)
         setTypeMessage('Depósito cancelado com sucesso!')
+        closeRefuseModal()
         closeAcceptOrRefuseModal()
         openWarningModal()
         setTimeout(() => {
             closeWarningModal()
             loadPage()
-        }, 2500);
+        }, 2000);
     }
 
     return (
@@ -77,6 +90,7 @@ const PendingDepositsList = ({ data, loadPage }) => {
                 showModal={openAcceptOrRefuseModal}
                 data={data}
                 role={'Produtor: '}
+                roleName={data.produtor.nome}
             />
 
             <Modal
@@ -87,9 +101,9 @@ const PendingDepositsList = ({ data, loadPage }) => {
                 <AcceptOrRefuseModal
                     data={data}
                     closeModal={closeAcceptOrRefuseModal}
-                    cancelModal={doneCancel}
+                    cancelModal={handleCancel}
                     confirmModal={handleConfirm}
-                    openActioModal={openActioModal}
+                    openActionModal={openActionModal}
                     openWarning={openWarningModal}
                     setMessage={setTypeMessage}
                     role={'Produtor'}
@@ -119,7 +133,19 @@ const PendingDepositsList = ({ data, loadPage }) => {
                 <ActionModal
                     closeModal={closeActionModal}
                     confirmModal={doneConfirm}
-                    title={requestType}
+                    title={'Confirmar esta solicitação?'}
+                />
+            </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={refuseModal}
+            >
+                <RefuseModal
+                    closeModal={closeRefuseModal}
+                    confirmModal={doneCancel}
+                    title={'Recusar esta solicitação?'}
                 />
             </Modal>
 

@@ -98,5 +98,4 @@ export const DividerV = styled.View`
     height: 100%;    
     width: 0.5px;
     background-color: #333533;
-    margin-left: 5px;
 `;

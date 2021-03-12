@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
 import DatePicker from '../../DatePicker'
+import { AuthContext } from '../../../contexts/auth'
 
 import {
     Container, CloseContainer, ModalBox, CloseButton, ModalHeader, Title, ChosenDateBox,
@@ -14,8 +15,10 @@ import {
 
 const DateModal = ({
     closeModal, filterByQuantityLiters, filterByLast15Days, filterByLast30Days,
-    filterByTwoDates, openWarning
+    filterByTwoDates, openWarning, filterByName
 }) => {
+
+    const { user } = useContext(AuthContext)
 
     const [text, setText] = useState('')
     const [showInitialPicker, setShowInitialPicker] = useState(false)
@@ -56,11 +59,16 @@ const DateModal = ({
     }
 
     const handleSearchValue = () => {
-        if (isNaN(text) || text <= 0) {
-            openWarning('Digite um valor válido!')
-        } else {
-            filterByQuantityLiters(text)
+        if (user.perfil === 2) {
+            filterByName(text)
             closeModal()
+        } else {
+            if (isNaN(text) || text <= 0) {
+                openWarning('Digite um valor válido!')
+            } else {
+                filterByQuantityLiters(text)
+                closeModal()
+            }
         }
     }
 
@@ -102,10 +110,10 @@ const DateModal = ({
                 {selectedInitialDate == null && selectedFinalDate == null &&
                     <SearchBox>
                         <SearchInput
-                            placeholder='Digite um valor de depósito'
+                            placeholder='Digite um valor a ser buscado'
                             autoCorrect={false}
                             autoCapitalize='sentences'
-                            keyboardType='phone-pad'
+                            keyboardType={user.perfil === 2 ? 'name-phone-pad' : 'phone-pad'}
                             value={text}
                             onChangeText={setText}
                         />

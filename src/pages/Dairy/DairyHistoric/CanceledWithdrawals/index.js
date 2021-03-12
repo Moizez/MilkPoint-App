@@ -5,10 +5,10 @@ import moment from 'moment'
 
 import Api from '../../../../services/dairy.api'
 
-import CanceledHistoryCard from '../../../../components/Cards/CanceledHistoryCard'
+import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
-import Fab from '../../../../components/Fab'
+import { Fab } from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
 import DateModal from '../../../../components/Modals/DateModal'
 import {
@@ -102,7 +102,7 @@ const CanceledWithdrawals = () => {
                 data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <CanceledHistoryCard data={item} />}
+                renderItem={({ item }) => <HistoricCard data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>

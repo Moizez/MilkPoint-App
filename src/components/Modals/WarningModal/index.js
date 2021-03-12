@@ -6,7 +6,7 @@ const WarningModal = ({ closeModal, message, lottie, bgColor }) => {
 
     setTimeout(() => {
         closeModal()
-    }, 2500);
+    }, 2000);
 
     return (
         <Container bgColor={bgColor}>

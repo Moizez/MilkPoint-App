@@ -1,13 +1,12 @@
 import styled from 'styled-components/native';
 
-export const Modal = styled.Modal``;
-
 export const CloseContainer = styled.TouchableOpacity`
     flex: 1;
 `;
 
 export const Container = styled.View`
     flex: 1;
+    background-color: rgba(0,0,0,0.5);
     justify-content: flex-end;
 `;
 
@@ -15,7 +14,7 @@ export const ModalBox = styled.View`
     background-color: #292b2c;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    padding: 15px 20px 40px 20px;
+    padding: 10px 20px 40px 20px;
 `;
 
 export const CloseButton = styled.TouchableOpacity`
@@ -36,57 +35,40 @@ export const Title = styled.Text`
 `;
 
 export const ModalInfo = styled.View`
-    background-color: #d9d9d9;
+    flex-direction: row;
+    align-items: center;
     border-radius: 8px;
     margin-top: 10px;
     margin-bottom: 10px;
     padding: 8px;
 `;
 
-export const InfoBox = styled.View`
-    flex-direction: row;
-    align-items: center;
-    height: 40px;
-`;
-
-export const ItemBox = styled.View`
+export const NoButton = styled.TouchableOpacity`
     flex: 1;
-    align-items: center;
-    justify-content: center;
-`;
-
-export const InfoTitle = styled.Text`
-    font-weight: bold;
-`;
-
-export const InfoText = styled.Text`
-    font-size: 15px;
-    color: #000;
-`;
-
-export const ConfirmButton = styled.TouchableOpacity`
+    flex-direction: row;
+    background-color: #c1121f;
     height: 45px;
-    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
     align-items: center;
     justify-content: center;
+`;
+
+export const YesButton = styled.TouchableOpacity`
+    flex: 1;
+    flex-direction: row;
     background-color: #2a9d8f;
+    height: 45px;
+    padding: 5px;
     border-radius: 5px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
 `;
 
-export const DividerH = styled.View`
-    width: 100%;    
-    height: 0.5px;
-    background-color: #333533;
-    margin: 5px 0 5px 0;
+export const TextButton = styled.Text`
+    color: #FFF;
+    font-weight: bold;
+    font-size: 18px;
 `;
-
-export const DividerV = styled.View`
-    height: 100%;    
-    width: 0.5px;
-    background-color: #333533;
-    margin: 0 5px 0 5px;
-`;
-
-
-
 

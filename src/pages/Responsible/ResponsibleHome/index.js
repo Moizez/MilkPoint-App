@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { RefreshControl } from 'react-native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import Api from '../../../services/responsable.api'
+import { RequestContext } from '../../../contexts/request'
 
 import Header from '../../../components/Header'
 import TanksList from '../TanksList'
@@ -15,24 +16,16 @@ import {
 
 const ResponsibleHome = () => {
 
-    const [tanks, setTanks] = useState([])
-    const [loading, setLoading] = useState(false)
     const [isRefreshing, setIsRefreshing] = useState(false)
-
-    const loadTanks = async () => {
-        setLoading(true)
-        const response = await Api.getResponsibleTanks()
-        setTanks(response)
-        setLoading(false)
-    }
+    const { responsibleTank, loadResponsibleTank, loading } = useContext(RequestContext)
 
     useEffect(() => {
-        loadTanks()
+        loadResponsibleTank()
     }, [])
 
     const onRefreshList = () => {
         setIsRefreshing(true)
-        loadTanks()
+        loadResponsibleTank()
         setIsRefreshing(false)
     }
 
@@ -42,10 +35,10 @@ const ResponsibleHome = () => {
 
             <List
                 showsVerticalScrollIndicator={false}
-                data={tanks}
+                data={responsibleTank}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <TanksList data={item} loadTanks={loadTanks} />}
+                renderItem={({ item }) => <TanksList data={item} loadPage={loadResponsibleTank} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>

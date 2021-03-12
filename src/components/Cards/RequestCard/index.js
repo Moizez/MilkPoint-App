@@ -12,7 +12,7 @@ import {
     IconText, CardInfoBox
 } from './styles'
 
-const RequestCard = ({ data, showModal, role }) => {
+const RequestCard = ({ data, showModal, role, roleName }) => {
 
     let date = moment(data.dataNow).format('L [às] LT[h]')
     let valor = numberToReal(data.valor)
@@ -28,7 +28,7 @@ const RequestCard = ({ data, showModal, role }) => {
                 <CardInfoBox>
                     <InfoBox>
                         {user.perfil === 2 ?
-                            <BoldText>{role}<Text>{data.produtor.nome}</Text></BoldText> :
+                            <BoldText>{role}<Text>{roleName}</Text></BoldText> :
                             <BoldText>Tanque: <Text>{data.tanque.nome}</Text></BoldText>
                         }
                         <BoldText>Qtd. Solicitada: <Text>{data.quantidade} {data.quantidade == 1 ? 'litro' : 'litros'}</Text></BoldText>
@@ -75,7 +75,11 @@ const RequestCard = ({ data, showModal, role }) => {
                 }
 
                 <MoreInfoButton onPress={() => setShow(!show)} activeOpacity={0.8}>
-                    <Icon name={show ? 'chevron-thin-up' : 'chevron-thin-down'} size={18} color='#2a9d8f' />
+                    <Icon
+                        name={show ? 'chevron-thin-up' : 'chevron-thin-down'}
+                        size={18}
+                        color={data.type ? '#2a9d8f' : '#cc444b'}
+                    />
                 </MoreInfoButton>
 
             </CardBox>

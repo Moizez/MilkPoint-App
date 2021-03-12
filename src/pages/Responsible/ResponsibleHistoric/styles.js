@@ -44,6 +44,7 @@ width: 150px;
 export const Titulo = styled.Text`
 font-size: 14px;
 color: #FFF;
+margin-bottom: 3px;
 `;
 
 export const List = styled.FlatList.attrs({
@@ -53,30 +54,6 @@ flex: 1;
 background-color: #FFF;
 border-top-left-radius: 3px;
 border-top-right-radius: 3px;
-`;
-
-//Fab Button
-
-export const BoxFabBtn = styled.View`
-align-items: center;
-position: absolute;
-bottom: 90px;
-right: 59px;
-`;
-
-export const FabBtn = styled.TouchableOpacity`
-position: absolute;
-width: 80px;
-height: 55px;
-border-radius: 10px;
-background-color: #292b2c;
-justify-content: center;
-align-items: center;
-`;
-
-export const FabText = styled.Text`
-font-size: 14px;
-color: #FFF;
 `;
 
 export const Calendar = styled.TouchableOpacity`

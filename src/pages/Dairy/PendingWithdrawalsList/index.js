@@ -43,7 +43,7 @@ const PendingWithdrawalsList = ({ data, loadPage }) => {
         setTimeout(() => {
             closeWarningModal()
             loadPage()
-        }, 2500);
+        }, 2000);
     }
 
     return (
@@ -89,6 +89,7 @@ const PendingWithdrawalsList = ({ data, loadPage }) => {
                 <ActionModal
                     closeModal={closeActionModal}
                     confirmModal={handleConfirm}
+                    title={'Deseja realmente cancelar?'}
                 />
             </Modal>
         </Container>

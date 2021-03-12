@@ -117,22 +117,10 @@ const TanksList = ({ data, onRefresh }) => {
                 renderLeftActions={leftActions}
                 renderRightActions={rightActions}
             >
-                <View style={styles.cardContainer} activeOpacity={0.7}>
-                    <View style={styles.infoCard}>
-                        <Text style={styles.textInfo}>Tanque: <Text style={styles.text}>{data.nome}</Text></Text>
-                        <Text style={styles.textInfo}>Tipo do leite: <Text style={styles.text}>{data.tipo === 'BOVINO' ? 'Bovino' : 'Caprino'}</Text></Text>
-                        <Text style={styles.textInfo}>Vol. atual: <Text style={styles.text}>{data.qtdAtual} litros</Text></Text>
-                        <Text style={styles.textInfo}>Ainda cabe: <Text style={styles.text}>{data.qtdRestante} litros</Text></Text>
-                        <Text style={styles.textInfo}>Responsável: <Text style={styles.text}>{data.responsavel.nome}</Text></Text>
-                        {!data.status && <Text style={{ ...styles.textInfo, color: '#da1e37' }}>Inativo: <Text style={styles.text}>{data.observacao}</Text></Text>}
-                    </View>
-                    <View style={{ width: 0.5, height: '100%', backgroundColor: '#adb5bd' }}></View>
-                    <TankCard
-                        data={data}
-                        openModal={openDepositModal}
-                        tankStatus={data.status ? false : true}
-                    />
-                </View>
+                <TankCard
+                    data={data}
+                    tankStatus={data.status ? false : true}
+                />
             </Swipeable>
 
             <Modal

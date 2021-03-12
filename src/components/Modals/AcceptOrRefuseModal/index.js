@@ -11,7 +11,7 @@ import {
 } from './styles'
 
 const AcceptOrRefuseModal = ({
-    closeModal, data, confirmModal, cancelModal, openWarning, setMessage
+    closeModal, data, confirmModal, cancelModal, openWarning, setMessage, role, roleName
 }) => {
 
     let date = moment(data.dataNow).locale('pt-br').format('D [de] MMM [às] LT[h]')
@@ -20,6 +20,7 @@ const AcceptOrRefuseModal = ({
     const [show, setShow] = useState(false)
     const [message] = useState([
         'Selecione um dos motivos...',
+        'Limite excedido',
         'Tanque em manutenção',
         'Leite reprovado no teste de água',
         'Leite reprovado no teste de alizarol'
@@ -30,7 +31,7 @@ const AcceptOrRefuseModal = ({
             setMessage('Informe o motivo da recusa!')
             openWarning()
         } else {
-            cancelModal()
+            cancelModal(text)
         }
     }
 
@@ -50,8 +51,8 @@ const AcceptOrRefuseModal = ({
 
                         <InfoBox>
                             <ItemBox>
-                                <InfoTitle>Nome do Produtor</InfoTitle>
-                                <InfoText>{data.produtor.nome}</InfoText>
+                                <InfoTitle>Nome do {role}</InfoTitle>
+                                <InfoText>{roleName}</InfoText>
                                 <DividerH />
                             </ItemBox>
                         </InfoBox>

@@ -4,12 +4,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import {
     Container, CloseContainer, ModalBox, CloseButton, ModalHeader, Title, ModalInfo,
-    InfoBox, ItemBox, InfoTitle, InfoText, ConfirmButton, DividerH, DividerV
+    InfoBox, ItemBox, InfoTitle, InfoText, ConfirmButton, DividerV
 } from './styles'
 
 const ConfirmationModal = ({ closeModal, data, confirmModal, quantidade }) => {
-
-    //let date = moment(data.dataNow).locale('pt-br').format('D [de] MMM [às] LT[h]')
 
     return (
         <Container>

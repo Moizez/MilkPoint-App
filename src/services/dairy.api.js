@@ -77,7 +77,8 @@ export default {
         const data = new FormData();
         data.append("confirmacao", confirmacao)
         data.append("idRetirada", idRetirada)
-        data.append("efetuou", user.apelido)
+        data.append("whoCanceled", user.apelido)
+        data.append("idWhoCanceled", user.id)
         data.append("observacao", "")
 
         await fetch(`${BASE.API}/retirada/confirmacao`, { method: 'POST', body: data })

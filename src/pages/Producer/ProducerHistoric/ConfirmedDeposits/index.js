@@ -1,14 +1,14 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { RefreshControl, Platform, Modal } from 'react-native'
 import moment from 'moment'
 
 import Api from '../../../../services/producer.api'
 
-import ConfirmedHistoryCard from '../../../../components/Cards/ConfirmedHistoryCard'
+import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
-import Fab from '../../../../components/Fab'
+import { Fab } from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
 import DateModal from '../../../../components/Modals/DateModal'
 import { filterSpecificDay, filterByDateInterval, filterByBetweenDates } from '../../../../components/Helpers'
@@ -100,7 +100,7 @@ const ConfirmedDeposits = () => {
                 data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <ConfirmedHistoryCard data={item} />}
+                renderItem={({ item }) => <HistoricCard data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>

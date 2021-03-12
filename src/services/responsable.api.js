@@ -51,10 +51,26 @@ export default {
         return result
     },
 
-    getDepositOrWithdrawalResolved: async (type) => {
+    getAllDepositsOrWithdrawalsResolved: async (type) => {
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const request = await fetch(`${BASE.API}/${type}/resolvidos/responsavel/${user.id}`)
+        const response = await request.json()
+        return response
+    },
+
+    getAllDepositsConfirmedOrCanceledUser: async (status) => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const request = await fetch(`${BASE.API}/deposito/${status}/responsavel/${user.id}`)
+        const response = await request.json()
+        return response
+    },
+
+    getAllWithdrawalsConfirmedOrCanceledUser: async (status) => {
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const request = await fetch(`${BASE.API}/retirada/${status}/responsavel/${user.id}`)
         const response = await request.json()
         return response
     },
@@ -65,7 +81,8 @@ export default {
         const data = new FormData();
         data.append("confirmacao", confirmacao)
         data.append("idDeposito", idDeposito)
-        data.append("efetuou", user.nome)
+        data.append("whoCanceled", user.nome)
+        data.append("idWhoCanceled", user.id)
         data.append('observacao', observacao)
 
         await fetch(`${BASE.API}/deposito/confirmacao`, { method: 'POST', body: data })
@@ -77,7 +94,8 @@ export default {
         const data = new FormData();
         data.append("confirmacao", confirmacao)
         data.append("idRetirada", idRetirada)
-        data.append("efetuou", user.nome)
+        data.append("whoCanceled", user.nome)
+        data.append("idWhoCanceled", user.id)
         data.append('observacao', observacao)
 
         await fetch(`${BASE.API}/retirada/confirmacao`, { method: 'POST', body: data })

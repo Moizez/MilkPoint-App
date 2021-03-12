@@ -75,7 +75,7 @@ const TanksList = ({ data, loadTanks }) => {
         await requestWithdrawal(qtdInfo, data.id)
         closeConfirmationModal()
         closeWithdrawalModal()
-        setTypeMessage('Depósito realizado com sucesso!')
+        setTypeMessage('Retirada realizada com sucesso!')
         openWarningModal()
         loadPendingWithdrawalsDairy()
     }

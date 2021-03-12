@@ -1,22 +1,25 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { RefreshControl, Platform, Modal } from 'react-native'
 import moment from 'moment'
 
-import Api from '../../../../services/producer.api'
+import Api from '../../../../services/responsable.api'
+
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
-import { Fab } from '../../../../components/Fab'
+import { FabGroup } from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
 import DateModal from '../../../../components/Modals/DateModal'
-import { filterSpecificDay, filterByDateInterval, filterByBetweenDates } from '../../../../components/Helpers'
+import {
+    filterSpecificDay, filterByDateInterval, filterByBetweenDates
+} from '../../../../components/Helpers'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from '../styles'
 
-const CanceledDeposits = () => {
+const HistoricWithdrawals = () => {
 
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -26,6 +29,7 @@ const CanceledDeposits = () => {
     const [typeMessage, setTypeMessage] = useState('')
     const [selectedDate, setSelectedDate] = useState(new Date())
 
+    const [status, setStatus] = useState('confirmados')
     const [dataResolved, setDataResolved] = useState([])
     const [mainData, setMainData] = useState([])
 
@@ -37,7 +41,7 @@ const CanceledDeposits = () => {
 
     const getDepositsResolvedByUser = async () => {
         setLoading(true)
-        const response = await Api.getAllDepositsConfirmedOrCanceledUser('cancelados')
+        const response = await Api.getAllDepositsOrWithdrawalsResolved('retirada')
         setDataResolved(response)
         setLoading(false)
     }
@@ -47,17 +51,17 @@ const CanceledDeposits = () => {
     }, [])
 
     const loadPage = async () => {
-        const response = await Api.getAllDepositsConfirmedOrCanceledUser('cancelados')
+        const response = await Api.getAllWithdrawalsConfirmedOrCanceledUser(status)
         const result = await filterSpecificDay(selectedDate, response)
         setMainData(result)
     }
 
     useEffect(() => {
         loadPage()
-    }, [selectedDate])
+    }, [status, selectedDate])
 
-    const filterByQuantityLiters = (value) => {
-        const result = dataResolved.filter(i => i.quantidade == value)
+    const filterByName = async (value) => {
+        const result = await Api.findByNameProducerOrDairy('deposito', value)
         setMainData(result)
     }
 
@@ -116,6 +120,8 @@ const CanceledDeposits = () => {
                         </BoxIconAviso>
                     </BoxNomeAviso>
                 }
+                initialNumToRender={10}
+                maxToRenderPerBatch={10}
             />
             {loading && <Loader />}
 
@@ -126,10 +132,11 @@ const CanceledDeposits = () => {
                 />
             }
 
-            <Fab
-                bgColor={{ backgroundColor: '#da1e37' }}
+            <FabGroup
+                bgColor={{ backgroundColor: status === 'confirmados' ? '#2a9d8f' : '#cc444b' }}
                 openModal={openDateModal}
                 setShowDatePicker={setDatePicker}
+                changeStatus={setStatus}
             />
 
             <Modal
@@ -139,7 +146,7 @@ const CanceledDeposits = () => {
             >
                 <DateModal
                     closeModal={closeDateModal}
-                    filterByQuantityLiters={filterByQuantityLiters}
+                    filterByName={filterByName}
                     filterByLast15Days={filterByLast15Days}
                     filterByLast30Days={filterByLast30Days}
                     filterByTwoDates={filterByTwoDates}
@@ -165,4 +172,4 @@ const CanceledDeposits = () => {
     );
 }
 
-export default CanceledDeposits
+export default HistoricWithdrawals
