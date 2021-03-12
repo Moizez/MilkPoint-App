@@ -5,7 +5,7 @@ import {
     Container, CloseContainer, ModalBox, CloseButton, ModalHeader, Title, ModalInfo,
     NoButton, YesButton, TextButton} from './styles'
 
-const ActionModal = ({ closeModal, confirmModal }) => {
+const ActionModal = ({ closeModal, confirmModal, title }) => {
     return (
         <Container>
             <CloseContainer onPress={closeModal} activeOpacity={1} />
@@ -14,7 +14,7 @@ const ActionModal = ({ closeModal, confirmModal }) => {
                     <CloseButton onPress={closeModal}>
                         <Icon name='chevron-down' color='#FFF' size={40} />
                     </CloseButton>
-                    <Title>Deseja realmente cancelar?</Title>
+                    <Title>{title}</Title>
                 </ModalHeader>
                 <ModalInfo>
 

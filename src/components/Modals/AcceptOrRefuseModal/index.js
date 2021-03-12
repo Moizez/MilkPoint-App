@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-import PickerSelect from '../../Picker'
 import { Picker } from '@react-native-picker/picker';
 import moment from 'moment'
 
@@ -8,22 +7,32 @@ import {
     Container, CloseContainer, ModalBox, CloseButton, ModalHeader, Title, ModalInfo,
     InfoBox, ItemBox, InfoTitle, InfoText, DividerH, DividerV, MessageBox,
     MessageInput, ModalButton, RefuseButton, AcceptButton, TextButton,
-    MessageInputBox, MessageItemBox, MessageText
+    MessageInputBox, MessageItemBox
 } from './styles'
 
-const AcceptOrRefuseModal = ({ closeModal, data, confirmModal }) => {
+const AcceptOrRefuseModal = ({
+    closeModal, data, confirmModal, cancelModal, openWarning, setMessage
+}) => {
 
     let date = moment(data.dataNow).locale('pt-br').format('D [de] MMM [às] LT[h]')
 
     const [text, setText] = useState('')
     const [show, setShow] = useState(false)
-    const [selectedMessage, setSelectedMessage] = useState([])
     const [message] = useState([
-        'Qual o motivo da recusa?', '#c1121f',
+        'Selecione um dos motivos...',
         'Tanque em manutenção',
         'Leite reprovado no teste de água',
         'Leite reprovado no teste de alizarol'
     ])
+
+    const confirmationAction = () => {
+        if (text === '') {
+            setMessage('Informe o motivo da recusa!')
+            openWarning()
+        } else {
+            cancelModal()
+        }
+    }
 
     return (
         <Container>
@@ -90,12 +99,12 @@ const AcceptOrRefuseModal = ({ closeModal, data, confirmModal }) => {
                         </MessageInputBox>
 
                         <ModalButton>
-                            <RefuseButton onPress={() => setShow(!show)}>
+                            <RefuseButton onPress={() => { setShow(!show), setText('') }}>
                                 <TextButton>Fechar</TextButton>
                                 <Icon name='close-circle' color='#FFF' size={30} />
                             </RefuseButton>
 
-                            <AcceptButton onPress={() => confirmModal()}>
+                            <AcceptButton onPress={() => confirmationAction()}>
                                 <TextButton>Confirmar</TextButton>
                                 <Icon name='check-circle' color='#FFF' size={30} />
                             </AcceptButton>

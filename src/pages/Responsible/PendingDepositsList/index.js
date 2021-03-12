@@ -17,15 +17,12 @@ const PendingDepositsList = ({ data, loadPage }) => {
     const [acceptOrRefuseModal, setAcceptOrRefuseModal] = useState(false)
     const [actionModal, setActionModal] = useState(false)
     const [warningModal, setWarningModal] = useState(false)
-
     const [typeMessage, setTypeMessage] = useState('')
-    const [lottie, serLottie] = useState('')
+    const [lottie, setLottie] = useState(error)
+    const [requestType, setRequestType] = useState('')
 
     const openAcceptOrRefuseModal = () => setAcceptOrRefuseModal(true)
     const closeAcceptOrRefuseModal = () => setAcceptOrRefuseModal(false)
-
-    const openCancelModal = () => setCancelModal(true)
-    const closeCancelModal = () => setCancelModal(false)
     const openActioModal = () => setActionModal(true)
     const closeActionModal = () => setActionModal(false)
     const openWarningModal = () => setWarningModal(true)
@@ -39,10 +36,11 @@ const PendingDepositsList = ({ data, loadPage }) => {
     //Função para confirmar a depósito
     const handleConfirm = () => {
         if (data.quantidade <= data.tanque.qtdRestante) {
-            serLottie(success)
+            setLottie(success)
+            setRequestType('Confirmar esta solicitação?')
             openActioModal()
         } else {
-            serLottie(error)
+            setLottie(error)
             setTypeMessage('O valor excede o limite do tanque!')
             openWarningModal()
         }
@@ -50,18 +48,26 @@ const PendingDepositsList = ({ data, loadPage }) => {
 
     const doneConfirm = async () => {
         await confirmacaoDeposito(true, data.id, '')
-        closeActionModal()
         setTypeMessage('Depósito confirmado com sucesso!')
+        closeActionModal()
+        closeAcceptOrRefuseModal()
         openWarningModal()
-        loadPage()
+        setTimeout(() => {
+            closeWarningModal()
+            loadPage()
+        }, 2500);
     }
 
     const doneCancel = async (observacao) => {
         await confirmacaoDeposito(false, data.id, observacao)
-        serLottie(cancel)
+        setLottie(cancel)
         setTypeMessage('Depósito cancelado com sucesso!')
+        closeAcceptOrRefuseModal()
         openWarningModal()
-        loadPage()
+        setTimeout(() => {
+            closeWarningModal()
+            loadPage()
+        }, 2500);
     }
 
     return (
@@ -80,9 +86,12 @@ const PendingDepositsList = ({ data, loadPage }) => {
             >
                 <AcceptOrRefuseModal
                     data={data}
-                    doneCancel={doneCancel}
                     closeModal={closeAcceptOrRefuseModal}
+                    cancelModal={doneCancel}
                     confirmModal={handleConfirm}
+                    openActioModal={openActioModal}
+                    openWarning={openWarningModal}
+                    setMessage={setTypeMessage}
                     role={'Produtor'}
                     roleName={data.produtor.nome}
                     statusTanque={data.tanque.status}
@@ -99,7 +108,6 @@ const PendingDepositsList = ({ data, loadPage }) => {
                     closeModal={closeWarningModal}
                     message={typeMessage}
                     lottie={lottie}
-                    bgColor={true}
                 />
             </Modal>
 
@@ -111,6 +119,7 @@ const PendingDepositsList = ({ data, loadPage }) => {
                 <ActionModal
                     closeModal={closeActionModal}
                     confirmModal={doneConfirm}
+                    title={requestType}
                 />
             </Modal>
 
