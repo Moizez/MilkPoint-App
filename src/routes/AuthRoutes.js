@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 //Páginas
 import SignIn from '../pages/SignIn'
-import ForgotPassword from '../pages/ForgotPassword'
+import ForgotPassword from '../pages/SingleStacks/ForgotPassword'
 
 const AuthStack = createStackNavigator()
 

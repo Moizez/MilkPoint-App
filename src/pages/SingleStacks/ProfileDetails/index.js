@@ -9,19 +9,19 @@ import Api from '../../../services/api'
 
 import ActionButton from '../../../components/ActionButton'
 import Loader from '../../../components/Loader'
-import AlertErrorSuccess from '../../../components/AlertErrorSuccess'
+import WarningModal from '../../../components/Modals/WarningModal'
 
 const ProfileDetails = () => {
 
     const [loading, setLoading] = useState(false)
     const [userNow, setUserNow] = useState([])
     const [modalVisible, setModalVisible] = useState(false)
-    const [alertVisible, setAlertVisible] = useState(false)
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
     const [apelido, setApelido] = useState('')
+
+    const [warningModal, setWarningModal] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
-    const [jsonIcon, setJsonIcon] = useState('error')
 
     //Endereço
     const [cep, setCep] = useState('')
@@ -53,9 +53,6 @@ const ProfileDetails = () => {
     }, [])
 
     let nascimento = moment(userNow.dataNascimento).locale('pt-br').format('L')
-    let error = require('../../../assets/lottie/error-icon.json')
-    let success = require('../../../assets/lottie/success-icon.json')
-    let msgType = jsonIcon == 'error' ? error : success
 
     const perfilCover = () => {
         if (userNow.perfil == 1) {
@@ -76,9 +73,8 @@ const ProfileDetails = () => {
             const data = await response.json()
             if (data.erro) {
                 setLoading(false)
-                setJsonIcon('error')
                 setTypeMessage('CEP não encontrado!')
-                setAlertVisible(true)
+                openWarningModal()
             } else {
                 setDataLocal(data)
                 setCep(data.cep)
@@ -90,18 +86,16 @@ const ProfileDetails = () => {
             }
         } catch (_) {
             setLoading(false)
-            setJsonIcon('error')
             setTypeMessage('CEP inválido!')
-            setAlertVisible(true)
+            openWarningModal()
         }
         setLoading(false)
     }
 
     const handleUpdate = async () => {
         if (nome == '') {
-            setJsonIcon('error')
             setTypeMessage('Preencha o nome corretamente!')
-            setAlertVisible(true)
+            openWarningModal()
         } else {
             setLoading(true)
             await Api.updateUser(
@@ -113,7 +107,8 @@ const ProfileDetails = () => {
         }
     }
 
-    const closeAlertErroSuccess = () => setAlertVisible(false)
+    const openWarningModal = () => setWarningModal(true)
+    const closeWarningModal = () => setWarningModal(false)
 
     return (
         <View style={styles.container}>
@@ -317,20 +312,19 @@ const ProfileDetails = () => {
                             />
                         </View>
                     </View>
+
                     <Modal
                         animationType='fade'
                         transparent={true}
-                        visible={alertVisible}
+                        visible={warningModal}
                     >
-                        {alertVisible &&
-                            <AlertErrorSuccess
-                                onClose={closeAlertErroSuccess}
-                                message={typeMessage}
-                                jsonPath={require('../../../assets/lottie/error-icon.json')}
-                                buttonColor={'#292b2c'}
-                            />
-                        }
+                        <WarningModal
+                            closeModal={closeWarningModal}
+                            message={typeMessage}
+                            lottie={require('../../../assets/lottie/error-icon.json')}
+                        />
                     </Modal>
+
                 </ScrollView>
             </Modal>
             {loading && <Loader />}

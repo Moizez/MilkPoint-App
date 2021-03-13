@@ -6,7 +6,7 @@ import ResponsibleHome from '../pages/Responsible/ResponsibleHome'
 import ResponsibleDeposit from '../pages/Responsible/ResponsibleDeposit'
 import ResponsibleWithdrawal from '../pages/Responsible/ResponsibleWithdrawal'
 import ResponsibleHistoric from '../pages/Responsible/ResponsibleHistoric'
-import ResponsibleSettings from '../pages/Responsible/ResponsibleSettings'
+import Settings from '../pages/SingleStacks/Settings'
 
 const ResponsibleTab = createBottomTabNavigator()
 
@@ -27,7 +27,7 @@ const icons = {
         lib: MaterialCommunityIcons,
         name: 'archive'
     },
-    ResponsibleSettings: {
+    Settings: {
         lib: MaterialCommunityIcons,
         name: 'dots-vertical'
     },
@@ -91,8 +91,8 @@ const Responsible = () => {
             />
 
             <ResponsibleTab.Screen
-                name='ResponsibleSettings'
-                component={ResponsibleSettings}
+                name='Settings'
+                component={Settings}
                 options={{
                     title: 'Mais'
                 }}

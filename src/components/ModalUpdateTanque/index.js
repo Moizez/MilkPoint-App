@@ -7,7 +7,6 @@ import api from '../../services/api'
 
 import PickerView from '../Picker'
 import { AuthContext } from '../../contexts/auth'
-import AlertErrorSuccess from '../AlertErrorSuccess'
 import ActionButton from '../ActionButton'
 import Loader from '../Loader'
 
@@ -462,7 +461,7 @@ export default function ModalUpdateTanque({
                 </View>
             </Modal>
 
-            <Modal
+            {/*<Modal
                 animationType='fade'
                 transparent={true}
                 visible={alertVisible}
@@ -476,6 +475,8 @@ export default function ModalUpdateTanque({
                     />
                 }
             </Modal>
+
+            */}
             {loading && <Loader />}
         </ScrollView>
     );

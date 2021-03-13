@@ -6,7 +6,7 @@ import TechnicianHome from '../pages/Technician/TechnicianHome'
 import ProducersPage from '../pages/Technician/ProducersPage'
 import DairiesPage from '../pages/Technician/DairiesPage'
 import ResponsiblesPage from '../pages/Technician/ResponsiblesPage'
-import TechnicianSettings from '../pages/Technician/TechnicianSettings'
+import Settings from '../pages/SingleStacks/Settings'
 
 const TechnicianTab = createBottomTabNavigator()
 
@@ -27,7 +27,7 @@ const icons = {
         lib: MaterialCommunityIcons,
         name: 'account-hard-hat'
     },
-    TechnicianSettings: {
+    Settings: {
         lib: MaterialCommunityIcons,
         name: 'dots-vertical'
     },
@@ -92,8 +92,8 @@ const Technician = () => {
             />
 
             <TechnicianTab.Screen
-                name='TechnicianSettings'
-                component={TechnicianSettings}
+                name='Settings'
+                component={Settings}
                 options={{
                     title: 'Mais'
                 }}

@@ -6,11 +6,11 @@ import LottieView from 'lottie-react-native'
 import { AuthContext } from '../../../contexts/auth'
 import ActionModal from '../../../components/Modals/ActionModal'
 
-const ProducerSettings = () => {
+const Settings = () => {
     const { logOut } = useContext(AuthContext)
     const [actionModal, setActionModal] = useState(false)
 
-    const handleLogout = () => { setAlertInfo(true) }
+    const handleLogout = () => openActioModal()
 
     const handleConfirm = () => {
         openActioModal()
@@ -124,4 +124,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default ProducerSettings
+export default Settings

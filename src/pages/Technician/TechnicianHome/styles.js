@@ -44,11 +44,21 @@ width: 150px;
 export const Titulo = styled.Text`
 font-size: 14px;
 color: #FFF;
+margin-bottom: 3px;
 `;
 
-export const List = styled.FlatList`
+export const List = styled.FlatList.attrs({
+    marginHorinzontal: 15,
+})`
 flex: 1;
 background-color: #FFF;
 border-top-left-radius: 3px;
 border-top-right-radius: 3px;
 `;
+
+export const Calendar = styled.TouchableOpacity`
+position: absolute;
+right: 8;
+top: 150;
+`;
+

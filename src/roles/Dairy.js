@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import DairyHome from '../pages/Dairy/DairyHome'
 import DairyWithdrawal  from '../pages/Dairy/DairyWithdrawal'
 import DairyHistoric from '../pages/Dairy/DairyHistoric'
-import DairySettings from '../pages/Dairy/DairySettings'
+import Settings from '../pages/SingleStacks/Settings'
 
 const DairyTab = createBottomTabNavigator()
 
@@ -22,7 +22,7 @@ const icons = {
         lib: MaterialCommunityIcons,
         name: 'archive'
     },
-    DairySettings: {
+    Settings: {
         lib: MaterialCommunityIcons,
         name: 'dots-vertical'
     },
@@ -77,8 +77,8 @@ const Dairy = () => {
             />
 
             <DairyTab.Screen
-                name='DairySettings'
-                component={DairySettings}
+                name='Settings'
+                component={Settings}
                 options={{
                     title: 'Mais'
                 }}

@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext, Fragment } from 'react';
 import AsyncStorage from '@react-native-community/async-storage'
 import { Modal } from 'react-native'
 
-import AlertErrorSuccess from '../components/AlertErrorSuccess'
+import WarningModal from '../components/Modals/WarningModal'
 import LoadScreen from '../components/LoadScreen'
 
 import Api from '../services/api'
@@ -11,12 +11,11 @@ export const AuthContext = createContext({})
 
 const AuthProvider = ({ children }) => {
 
-    let error = require('../assets/lottie/error-icon.json')
-    const [errorMsg, setErrorMsg] = useState('')
-
     const [loading, setLoading] = useState(true)
-    const [isVisible, setVisible] = useState(false)
     const [loadingAuth, setLoadingAuth] = useState(false)
+    const [warningModal, setWarningModal] = useState(false)
+    const [typeMessage, setTypeMessage] = useState('')
+
     const [user, setUser] = useState(null)
     const [time, setTime] = useState(false)
 
@@ -33,31 +32,15 @@ const AuthProvider = ({ children }) => {
         loadStorage()
     }, [])
 
-    //Alertas de erro
-    const correctLogin = () => {
-        if (isVisible) {
-            return (
-                <AlertErrorSuccess
-                    onClose={closeAlertErroSuccess}
-                    title='Aviso'
-                    message={errorMsg}
-                    titleButton='Ok'
-                    jsonPath={error}
-                    buttonColor={'#292b2c'}
-                />
-            )
-        }
-    }
-
-    const closeAlertErroSuccess = () => { setVisible(false) }
+    const openWarningModal = () => setWarningModal(true)
+    const closeWarningModal = () => setWarningModal(false)
 
     //Funcao para logar o usuário
     const signIn = async (email, password) => {
         setLoadingAuth(true)
         if (email.trim().length == 0 || password.trim().length == 0) {
-            setErrorMsg('Preencha seu e-mail ou senha corretamente!')
-            setVisible(true)
-            correctLogin()
+            setTypeMessage('Preencha seu e-mail ou senha corretamente!')
+            openWarningModal()
             setLoadingAuth(false)
             return
         } else {
@@ -72,15 +55,15 @@ const AuthProvider = ({ children }) => {
                     setLoadingAuth(false)
                     return
                 } else {
-                    setErrorMsg('E-mail ou senha inválidos! Tente novamente.')
-                    setVisible(true)
-                    correctLogin()
+                    setTypeMessage('E-mail ou senha inválido!\nTente novamente.')
+                    openWarningModal()
                     setLoadingAuth(false)
                     return
                 }
             }
             catch (erro) {
-                alert('Erro ao tentar fazer login: ' + erro)
+                setTypeMessage(`Erro ao tentar fazer login:\n${erro}`)
+                openWarningModal()
                 setLoadingAuth(false)
             }
         }
@@ -118,9 +101,13 @@ const AuthProvider = ({ children }) => {
             <Modal
                 animationType='fade'
                 transparent={true}
-                visible={isVisible}
+                visible={warningModal}
             >
-                {correctLogin()}
+                <WarningModal
+                    closeModal={closeWarningModal}
+                    lottie={require('../assets/lottie/error-icon.json')}
+                    message={typeMessage}
+                />
             </Modal>
 
             <AuthContext.Provider value={{
