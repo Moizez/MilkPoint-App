@@ -49,7 +49,7 @@ const Technician = () => {
                     borderTopColor: 'rgba(0,0,0,0.5)',
                     height: 60,
                 },
-                activeTintColor: '#00abe7',
+                activeTintColor: '#00b4d8',
                 labelStyle: {
                     fontSize: 11,
                     marginBottom: 5

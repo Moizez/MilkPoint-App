@@ -13,8 +13,10 @@ import Technician from '../roles/Technician'
 import ProfileDetails from '../pages/SingleStacks/ProfileDetails'
 import TankDetails from '../pages/TankDetails'
 import CreateTankForm from '../pages/Technician/CreateTankForm'
+import UpdateTankForm from '../pages/Technician/UpdateTankForm'
 import AppTips from '../pages/SingleStacks/AppTips'
 import RouteMap from '../pages/SingleStacks/RouteMap'
+import MarkMap from '../pages/SingleStacks/MarkMap'
 
 const Stack = createStackNavigator()
 
@@ -59,7 +61,9 @@ const AppRoutes = () => {
                 <Stack.Screen name='TankDetails' component={TankDetails} />
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                 <Stack.Screen name='CreateTankForm' component={CreateTankForm} />
+                <Stack.Screen name='UpdateTankForm' component={UpdateTankForm} />
                 <Stack.Screen name='AppTips' component={AppTips} />
+                <Stack.Screen name='MarkMap' component={MarkMap} />
                 <Stack.Screen name='RouteMap' component={RouteMap} />
             </Stack.Navigator>
         )

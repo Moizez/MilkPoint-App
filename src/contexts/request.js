@@ -3,6 +3,7 @@ import React, { useState, createContext } from 'react';
 import ProducerApi from '../services/producer.api'
 import DairyApi from '../services/dairy.api'
 import ResponsibleApi from '../services/responsable.api'
+import TechnicianApi from '../services/technician.api'
 
 export const RequestContext = createContext({})
 
@@ -12,6 +13,20 @@ const RequestProvider = ({ children }) => {
     const [pendingDepositsList, setPendingDepositsList] = useState([])
     const [pendingWithdrawalsList, setPendingWithdrawalsList] = useState([])
     const [responsibleTank, setResponsibleTank] = useState([])
+    const [activeTanks, setActiveTanks] = useState([])
+    const [inactiveTanks, setInactiveTanks] = useState([])
+
+    const loadActiveTanks = async () => {
+        setLoading(true)
+        const response = await TechnicianApi.getActiveTanks()
+        setActiveTanks(response)
+        setLoading(false)
+    }
+
+    const loadInactiveTanks = async () => {
+        const response = await TechnicianApi.getInactiveTanks()
+        setInactiveTanks(response)
+    }
 
     const loadResponsibleTank = async () => {
         setLoading(true)
@@ -39,7 +54,9 @@ const RequestProvider = ({ children }) => {
             loading,
             pendingDepositsList, loadPendingDepositsProducer,
             pendingWithdrawalsList, loadPendingWithdrawalsDairy,
-            responsibleTank, loadResponsibleTank
+            responsibleTank, loadResponsibleTank,
+            activeTanks, loadActiveTanks,
+            inactiveTanks, loadInactiveTanks
         }}>
             {children}
         </RequestContext.Provider>

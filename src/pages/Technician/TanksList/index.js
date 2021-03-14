@@ -1,6 +1,7 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, Fragment } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import { Modal, View, Text, StyleSheet, TouchableOpacity, TextInput, TouchableWithoutFeedback } from 'react-native'
+//import {} from '@react-navigation/material-top-tabs'
+
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
 import styled from 'styled-components/native';
@@ -10,23 +11,22 @@ import ActionModal from '../../../components/Modals/ActionModal'
 import WarningModal from '../../../components/Modals/WarningModal'
 
 import TankCard from '../../../components/Cards/TankCard'
-import Map from '../../../components/Map'
-import ActionButton from '../../../components/ActionButton'
 import InactiveTankModal from '../../../components/Modals/InactiveTankModal'
 
 const TanksList = ({ data, loadPage }) => {
+
+    //Desestruturação do data
+    const {
+        nome: nomeTanque,
+        responsavel: { nome: nomeResponsavel }
+    } = data
+    const inactiveData = { nomeTanque, nomeResponsavel }
 
     const navigation = useNavigation()
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
 
-    const [modalVisible, setModalVisible] = useState(false)
-    const [modalObservation, setModalObservation] = useState(false)
-    const [idTanque, setIdTanque] = useState(data.id)
-    const [modalUpdate, setModalUpdate] = useState(false)
-    const [errorMsg, setErrorMsg] = useState('')
-    const [status, setStatus] = useState(false)
     const [observation, setObservation] = useState('')
 
     const [inactiveTankModal, setInactiveTankModal] = useState(false)
@@ -42,81 +42,59 @@ const TanksList = ({ data, loadPage }) => {
     const openWarningModal = () => setWarningModal(true)
     const closeWarningModal = () => setWarningModal(false)
 
-    const changeIconJson = (value) => setJsonIcon(value)
-
-    const onChangeState = async (idTanque, status, observation) => {
+    const onChangeStatus = async (idTanque, status, observation) => {
         await Api.setTankState(idTanque, status, observation)
     }
 
-    useEffect(() => {
-        setStatus(data.status)
-    }, [])
-
-    const handleChangeStateInative = async () => {
-        if (data.depPendenteCount > 0 | data.retPendenteCount > 0) {
-            setStatus(false)
-            setLottie(error)
-            setTypeMessage('Há depósitos ou retiradas pendentes!')
-            openWarningModal()
+    const handleChangeInactiveStatus = async (value) => {
+        if (value) {
+            setObservation(value)
+            setTypeMessage('Deseja inativar este tanque?')
+            openActionModal()
         } else {
-            setStatus(false)
-            setTypeMessage('Deseja realmente inativar este tanque?')
+            setTypeMessage('Informe o motivo da recusa!')
             openWarningModal()
         }
     }
 
-    const handleChangeStateActive = async () => {
-        setTypeMessage('Deseja realmente ativar este tanque?')
-        setStatus(true)
+    const handleChangeActiveStatus = async () => {
+        setTypeMessage('Deseja ativar este tanque?')
         openActionModal()
     }
 
     const handleConfirm = async () => {
+        await onChangeStatus(data.id, !data.status, observation)
+        setLottie(success)
+        setTypeMessage(data.status ? 'Tanque inativado com sucesso!' : 'Tanque ativado com sucesso!')
         closeActionModal()
-        closeWarningModal()
-        setIdTanque(data.id)
-        await onChangeState(idTanque, status, observation)
-        await loadPage()
-    }
-
-    const handleCloseModal = () => setModalVisible(false)
-    const closeAlertInfo = () => {
-        setStatus(!status)
-        closeActionModal()
-    }
-    const closeObservationModal = () => {
-        setWarningModal('')
-        setStatus(!status)
-        closeWarningModal()
-    }
-    const closeModal = () => setModalUpdate(false)
-    const showAlertErroSuccess = () => {
-        setErrorMsg('Tanque atualizado com sucesso!')
-        setAlertVisible(true)
+        closeInactiveTankModal()
+        openWarningModal()
+        setTimeout(() => {
+            loadPage()
+        }, 2000);
     }
 
     const leftActions = () => {
         return (
-            <TouchableOpacity onPress={() => setModalUpdate(true)} style={styles.actions}>
+            <ActionLeftButton onPress={() => navigation.navigate('UpdateTankForm', { data: data })}>
                 <Icon name='pencil' size={25} color={'#FFF'} />
-                <Text style={styles.actionText}>Editar</Text>
-            </TouchableOpacity>
+                <Text>Editar</Text>
+            </ActionLeftButton>
         )
     }
 
     const rightActions = () => {
         return (
             <Fragment>
-                {status ?
-                    <TouchableOpacity onPress={() => handleChangeStateInative()} style={{ ...styles.actions, backgroundColor: '#da1e37' }}>
+                {data.status ?
+                    <ActionRightButton onPress={openInactiveTankModal}>
                         <Icon name='beaker-remove' size={25} color={'#FFF'} />
-                        <Text style={styles.actionText}>Inativar</Text>
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity onPress={() => handleChangeStateActive()} style={{ ...styles.actions, backgroundColor: '#2a9d8f' }}>
+                        <Text>Inativar</Text>
+                    </ActionRightButton> :
+                    <ActionRightButton onPress={handleChangeActiveStatus} style={{ backgroundColor: '#2a9d8f' }}>
                         <Icon name='beaker-check' size={25} color={'#FFF'} />
-                        <Text style={styles.actionText}>Ativar</Text>
-                    </TouchableOpacity>
+                        <Text>Ativar</Text>
+                    </ActionRightButton>
                 }
             </Fragment>
         )
@@ -136,15 +114,6 @@ const TanksList = ({ data, loadPage }) => {
             </Swipeable>
 
             <Modal
-                animationType='slide'
-                transparent={false}
-                visible={modalVisible}
-            >
-                <Map dataMap={data} onClose={handleCloseModal} />
-
-            </Modal>
-
-            <Modal
                 animationType='fade'
                 transparent={true}
                 visible={actionModal}
@@ -152,23 +121,9 @@ const TanksList = ({ data, loadPage }) => {
                 <ActionModal
                     closeModal={closeActionModal}
                     confirmModal={handleConfirm}
-                    title={'Sei lá'}
+                    title={typeMessage}
                 />
             </Modal>
-
-            {/*   <Modal
-                animationType='fade'
-                transparent={false}
-                visible={modalUpdate}
-            >
-               <ModalUpdateTanque
-                    dataTanque={data}
-                    loadPage={loadPage}
-                    onCloseModal={closeModal}
-                    changeIconJson={changeIconJson}
-                />
-            </Modal>
-            */}
 
             <Modal
                 animationType='fade'
@@ -179,6 +134,7 @@ const TanksList = ({ data, loadPage }) => {
                     closeModal={closeWarningModal}
                     message={typeMessage}
                     lottie={lottie}
+                    bgColor={true}
                 />
 
             </Modal>
@@ -186,36 +142,54 @@ const TanksList = ({ data, loadPage }) => {
             <Modal
                 animationType='fade'
                 transparent={true}
-                visible={modalObservation}
+                visible={inactiveTankModal}
             >
                 <InactiveTankModal
-
+                    closeModal={closeInactiveTankModal}
+                    confirmModal={handleChangeInactiveStatus}
+                    openWarning={openWarningModal}
+                    data={inactiveData}
+                    setMessage={setTypeMessage}
                 />
             </Modal>
         </Container >
     );
 }
 
-const styles = StyleSheet.create({
-
-    actions: {
-        elevation: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#0077b6',
-        width: 75,
-        height: 120,
-        marginTop: 10
-    },
-    actionText: {
-        fontSize: 16,
-        color: '#FFF'
-    },
-})
-
 export default TanksList
 
 const Container = styled.View`
+    flex: 1;
     margin-bottom: 10px;
 `;
 
+const Modal = styled.Modal``;
+
+const ActionRightButton = styled.TouchableOpacity`
+    background-color: #cc444b;
+    width: 70px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-right: 3px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+`;
+
+const ActionLeftButton = styled.TouchableOpacity`
+    background-color: #00b4d8;
+    width: 70px;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    margin-left: 3px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+`;
+
+const Text = styled.Text`
+    font-size: 16px;
+    color: #FFF;
+`;
