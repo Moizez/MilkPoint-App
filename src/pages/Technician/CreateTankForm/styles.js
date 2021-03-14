@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 
 export const Container = styled.ScrollView`
     flex: 1;
-    background-color: rgba(0,0,0,0.05);
+    background-color: #ececec;
 `;
 
 export const InputContainer = styled.View`
@@ -18,10 +18,10 @@ export const FormTitle = styled.Text`
 `;
 
 export const Input = styled.TextInput`
-    height: 45;
+    height: 45px;
     width: 48%;
     font-size: 16px;
-    background-color: #DDD;
+    background-color: #d3d3d3;
     color: #292b2c;
     border-radius: 5px;
     padding: 8px;
@@ -29,8 +29,20 @@ export const Input = styled.TextInput`
 
 export const DateButton = styled.TouchableOpacity`
     flex: 1;
-    background-color: #DDD;
+    flex-direction: row;
+    background-color: #d3d3d3;
     border-radius: 5px;
+    align-items: center;
+    justify-content: space-around;
+`;
+
+export const TitleBox = styled.View`
+    flex-direction: row;
+`;
+
+export const Text = styled.Text`
+    font-size: 12px;
+    color: #000;
 `;
 
 export const FormBox = styled.View`
@@ -41,10 +53,10 @@ export const FormBox = styled.View`
 `;
 
 export const FormItem = styled.View`
-    height: 45;
+    height: 45px;
     width: 48%;
     justify-content: center;
-    background-color: #DDD;
+    background-color: #d3d3d3;
     border-radius: 5px;
 `;
 
@@ -52,12 +64,6 @@ export const MapButtonBox = styled.View`
     border-radius: 8px;
     margin-top: 10px;
     margin-bottom: 5px;
-`;
-
-export const Text = styled.Text`
-    text-align: center;
-    font-size: 16px;
-    color: #000;
 `;
 
 export const MapButton = styled.TouchableOpacity`

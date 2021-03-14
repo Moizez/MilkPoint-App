@@ -1,7 +1,10 @@
 import React from 'react';
+import moment from 'moment'
 import { Formik } from 'formik'
 
+
 import SimpleHeader from '../../../components/SimpleHeader'
+import DatePicker from '../../../components/DatePicker'
 
 import {
     Container, InputContainer, Input, ButtonBox, CloseButton,
@@ -11,6 +14,7 @@ import {
 const UpdateTankForm = ({ route }) => {
 
     const { data } = route.params
+    const [selectedDate, setSelectedDate] = useState(new Date())
 
     return (
         <Container>
