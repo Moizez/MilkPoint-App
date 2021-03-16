@@ -16,6 +16,50 @@ export default {
         return response
     },
 
+    createTank: async (nome, tipo, capacidade, qtdAtual, dataCriacao, responsavelId, status,
+        cep, localidade, uf, bairro, logradouro, complemento, latitude, longitude
+    ) => {
+
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+        headers.append("Accept", 'application/json')
+
+        const data = {
+            nome: nome,
+            tipo: tipo,
+            capacidade: capacidade,
+            qtdAtual: qtdAtual,
+            dataCriacao: dataCriacao,
+            responsavel: {
+                id: responsavelId,
+            },
+            status: status,
+            cep: cep,
+            localidade: localidade,
+            uf: uf,
+            bairro: bairro,
+            logradouro: logradouro,
+            complemento: complemento,
+            latitude: latitude,
+            longitude: longitude,
+            tecnico: {
+                id: user.id,
+            },
+        }
+
+        await fetch(`${BASE.API}/tanque`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(data)
+        })
+    },
+
+    updateTank: async () => {
+
+    },
+
     setTankState: async (idTanque, status, observation) => {
 
         const request = await fetch(`${BASE.API}/tanque/${idTanque}`, {
@@ -27,7 +71,7 @@ export default {
             body: JSON.stringify({
                 id: idTanque,
                 status: status,
-                observation: observation
+                observacao: observation
             })
         })
         return request

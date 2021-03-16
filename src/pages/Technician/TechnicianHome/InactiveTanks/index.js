@@ -1,35 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { RefreshControl } from 'react-native'
 
-import Api from '../../../../services/technician.api'
-import Loader from '../../../../components/Loader'
 import TanksList from '../../TanksList'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from '../styles'
 
-const InactiveTanks = () => {
+const InactiveTanks = ({data, loadPage}) => {
 
-    const [inactiveTanks, setInactiveTanks] = useState([])
-    const [loading, setLoading] = useState(false)
     const [isRefreshing, setIsRefreshing] = useState(false)
-
-    const loadInactiveTanks = async () => {
-        setLoading(true)
-        const response = await Api.getInactiveTanks()
-        setInactiveTanks(response)
-        setLoading(false)
-    }
-
-    useEffect(() => {
-        loadInactiveTanks()
-    }, [])
-
+    
     const onRefreshList = () => {
         setIsRefreshing(true)
-        loadInactiveTanks()
+        loadPage()
         setIsRefreshing(false)
     }
 
@@ -37,10 +22,10 @@ const InactiveTanks = () => {
         <Container>
             <List
                 showsVerticalScrollIndicator={false}
-                data={inactiveTanks}
+                data={data}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <TanksList data={item} loadPage={loadInactiveTanks} />}
+                renderItem={({ item }) => <TanksList data={item} loadPage={loadPage} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
@@ -58,7 +43,6 @@ const InactiveTanks = () => {
                     </BoxNomeAviso>
                 }
             />
-            {loading && <Loader />}
         </Container>
     );
 }

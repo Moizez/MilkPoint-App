@@ -5,6 +5,8 @@ export const Container = styled.ScrollView`
     background-color: #ececec;
 `;
 
+export const Modal = styled.Modal``
+
 export const InputContainer = styled.View`
     flex: 1;
     padding: 15px;

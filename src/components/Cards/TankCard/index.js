@@ -8,7 +8,7 @@ import {
     TankIconBox, TankChart, PetImage
 } from './styles'
 
-const TankCard = ({ data, openPage }) => {
+const TankCard = ({ data, openModal }) => {
 
     const navigation = useNavigation()
     const capacidade = data.qtdAtual + data.qtdRestante
@@ -48,7 +48,7 @@ const TankCard = ({ data, openPage }) => {
                 <DividerV />
 
                 <TankChartBox
-                    onPress={openPage}
+                    onPress={openModal}
                     onLongPress={() => navigation.navigate('TankDetails', { data: data })}
                 >
                     <TankIconBox>

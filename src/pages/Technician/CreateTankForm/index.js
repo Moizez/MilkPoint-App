@@ -1,4 +1,5 @@
 import React, { useState, Fragment, useEffect } from 'react'
+import { Switch, PermissionsAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import DatePicker from '../../../components/DatePicker'
 import { Picker } from '@react-native-picker/picker'
@@ -7,27 +8,49 @@ import moment from 'moment'
 import { Formik } from 'formik'
 
 import ApiCep from '../../../services/api'
-import ApiResponsibles from '../../../services/technician.api'
+import Api from '../../../services/technician.api'
 
 import SimpleHeader from '../../../components/SimpleHeader'
+import Loader from '../../../components/Loader'
+import WarningModal from '../../../components/Modals/WarningModal'
+import MarkMapModal from '../../../components/Modals/MarkMapModal'
 
 import {
     Container, InputContainer, FormTitle, Input, FormBox, FormItem, MapButtonBox,
     MapButton, Text, ButtonBox, CloseButton, SaveButton, TextButton, DateButton,
-    CepButton, TitleBox, Divider
+    CepButton, TitleBox, Modal, Divider
 } from './styles'
 
-const CreateTankForm = () => {
+const CreateTankForm = ({ route }) => {
+
+    const { loadPage } = route.params
+
+    let error = require('../../../assets/lottie/error-icon.json')
+    let success = require('../../../assets/lottie/success-icon.json')
 
     const today = moment(selectedDate).locale('pt-br').format('L')
     const navigation = useNavigation()
 
     const [show, setShow] = useState(false)
     const [datePicker, setDatePicker] = useState(false)
+    const [enabled, setEnabled] = useState(true)
+    const [loading, setLoading] = useState(false)
+    const [warningModal, setWarningModal] = useState(false)
+    const [typeMessage, setTypeMessage] = useState('')
     const [selectedDate, setSelectedDate] = useState(moment())
+    const [lottie, setLottie] = useState(error)
 
-    const [responsible, setResponsible] = useState('')
-    const [responsibles, setResponsibles] = useState('')
+    //Endereço
+    const [cep, setCep] = useState('')
+    const [bairro, setBairro] = useState('')
+    const [localidade, setLocalidade] = useState('')
+    const [logradouro, setLogradouro] = useState('')
+    const [uf, setUf] = useState('')
+
+    const [latitude, setLatitude] = useState(0)
+    const [longitude, setLongitude] = useState(0)
+    const [hasLocationPermission, setHasLocationPermission] = useState(false)
+    const [markMapModal, setMarkMapModal] = useState(false)
 
     const [milkType, setMilkType] = useState('BOVINO')
     const [milkTypes] = useState([
@@ -38,25 +61,87 @@ const CreateTankForm = () => {
     const [capacity, setCapacity] = useState('MIL')
     const [capabilities] = useState([
         { value: 'MIL', label: '1000 litros', color: '#da1e37' },
-        { value: 'DOISMIL', label: '2000 litros', color: '#0077b6' },
+        { value: 'DOISMIL', label: '2000 litros', color: '#003566' },
         { value: 'TRESMIL', label: '3000 litros', color: '#da1e37' },
-        { value: 'QUATROMIL', label: '4000 litros', color: '#0077b6' },
+        { value: 'QUATROMIL', label: '4000 litros', color: '#003566' },
         { value: 'QUATROMILEQUINHENTOS', label: '4500 litros', color: '#da1e37' },
     ])
 
+    const [responsible, setResponsible] = useState('')
+    const [responsibles, setResponsibles] = useState([])
+
     useEffect(() => {
         const loadResponsibles = async () => {
-            const response = await ApiResponsibles.getResponsibles()
-            setResponsibles(response)
-        }
+            const response = await Api.getResponsibles()
+            const result = response.map(i => ({
+                label: i.nome,
+                value: i.id,
+                color: '#000'
 
+            }))
+            setResponsibles(result)
+        }
         loadResponsibles()
     }, [])
+
+    const verifyLocationPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+            )
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                setHasLocationPermission(true)
+            } else {
+                setHasLocationPermission(false)
+            }
+        } catch (err) {
+            console.warn(err)
+        }
+    }
+
+    useEffect(() => {
+        verifyLocationPermission()
+    }, [hasLocationPermission])
 
     const onChange = (currentDate) => {
         setDatePicker(Platform.OS === 'ios')
         let date = currentDate ? currentDate : moment()
         setSelectedDate(date)
+    }
+
+    const openWarningModal = () => setWarningModal(true)
+    const closeWarningModal = () => setWarningModal(false)
+    const openMarkMapModal = () => setMarkMapModal(true)
+    const closeMarkMapModal = () => setMarkMapModal(false)
+
+    const getCoordinates = (latitude, longitude) => {
+        setLatitude(latitude)
+        setLongitude(longitude)
+    }
+
+    const findCep = async (cep) => {
+        setLoading(true)
+        try {
+            const response = await ApiCep.getCep(cep)
+            const data = await response.json()
+            if (data.error) {
+                setLoading(false)
+                setTypeMessage('CEP não encontrado!')
+                openWarningModal()
+            } else {
+                setShow(true)
+                setCep(data.cep)
+                setLogradouro(data.logradouro)
+                setBairro(data.bairro)
+                setLocalidade(data.localidade)
+                setUf(data.uf)
+            }
+        } catch (error) {
+            setLoading(false)
+            setTypeMessage('CEP inválido!')
+            openWarningModal()
+        }
+        setLoading(false)
     }
 
     return (
@@ -66,16 +151,22 @@ const CreateTankForm = () => {
             <Formik
                 initialValues={{
                     nome: '',
-                    qtdAtual: '',
-                    cep: '',
-                    localidade: '',
-                    uf: '',
-                    bairro: '',
-                    rua: '',
+                    qtdAtual: 0,
+                    cep: cep,
                     complemento: '',
                 }}
-                onSubmit={(values, actions) => {
-                    console.log(values)
+                onSubmit={async (values) => {
+                    await Api.createTank(values.nome, milkType, capacity, values.qtdAtual, selectedDate,
+                        responsible, enabled, values.cep, localidade, uf, bairro, logradouro,
+                        values.complemento, latitude, longitude)
+                    setLottie(success)
+                    setTypeMessage('Tanque criado com sucesso!')
+                    openWarningModal()
+                    setTimeout(() => {
+                        closeWarningModal()
+                        navigation.goBack()
+                        loadPage()
+                    }, 2000);
                 }}
             >
                 {(props) => (
@@ -114,7 +205,7 @@ const CreateTankForm = () => {
                             <FormItem style={{ marginLeft: 8 }}>
                                 <Picker
                                     selectedValue={capacity}
-                                    prompt='Tipo do leite?'
+                                    prompt='Capacidade do tanque?'
                                     onValueChange={(itemValue, itemIndex) =>
                                         setCapacity(itemValue)
                                     }>
@@ -127,10 +218,11 @@ const CreateTankForm = () => {
 
                         <TitleBox>
                             <Text>Quantidade atual:</Text>
-                            <Text style={{ marginLeft: 78 }}>Data de criação:</Text>
+                            <Text style={{ marginLeft: 77 }}>Data de criação:</Text>
                         </TitleBox>
                         <FormBox>
                             <Input
+                                keyboardType='phone-pad'
                                 placeholder='Em litros'
                                 onChangeText={props.handleChange('qtdAtual')}
                                 value={props.values.qtdAtual}
@@ -143,11 +235,15 @@ const CreateTankForm = () => {
                             </FormItem>
                         </FormBox>
 
+                        <TitleBox>
+                            <Text>Responsável do tanque:</Text>
+                            <Text style={{ marginLeft: 44 }}>Status do tanque:</Text>
+                        </TitleBox>
                         <FormBox>
                             <FormItem>
                                 <Picker
                                     selectedValue={responsible}
-                                    prompt='Tipo do leite?'
+                                    prompt='Responsável do tanque?'
                                     onValueChange={(itemValue, itemIndex) =>
                                         setResponsible(itemValue)
                                     }>
@@ -156,11 +252,21 @@ const CreateTankForm = () => {
                                     })}
                                 </Picker>
                             </FormItem>
-                            <FormItem>
-                                <DateButton onPress={() => setDatePicker(true)}>
-                                    <TextButton style={{ color: '#000', fontSize: 15 }}>{today}</TextButton>
-                                    <Icon name='calendar' size={30} color='#000' />
-                                </DateButton>
+                            <FormItem style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                justifyContent: 'space-around'
+                            }}>
+                                <TextButton style={{
+                                    color: enabled ? '#2a9d8f' : '#767577',
+                                    fontSize: 20
+                                }}>{enabled ? 'Ativo' : 'Inativo'}</TextButton>
+                                <Switch
+                                    value={enabled}
+                                    trackColor={{ false: "#767577", true: "#b7e4c7" }}
+                                    thumbColor={enabled ? "#2a9d8f" : "#f4f3f4"}
+                                    onValueChange={() => setEnabled(!enabled)}
+                                />
                             </FormItem>
                         </FormBox>
 
@@ -176,12 +282,13 @@ const CreateTankForm = () => {
                                 justifyContent: 'space-between'
                             }}>
                                 <Input
+                                    style={{ flex: 1 }}
                                     placeholder='Somente números'
                                     onChangeText={props.handleChange('cep')}
                                     value={props.values.cep}
                                     keyboardType='phone-pad'
                                 />
-                                <CepButton>
+                                <CepButton onPress={() => findCep(props.values.cep)}>
                                     <Icon name='magnify' size={30} color='#FFF' />
                                 </CepButton>
                             </FormItem>
@@ -198,8 +305,8 @@ const CreateTankForm = () => {
                                         <Input
                                             style={{ width: '100%' }}
                                             placeholder='Nome da cidade'
-                                            onChangeText={props.handleChange('localidade')}
-                                            value={props.values.localidade}
+                                            onChangeText={setLocalidade}
+                                            value={localidade}
                                         />
                                     </FormItem>
 
@@ -207,8 +314,8 @@ const CreateTankForm = () => {
                                         <Input
                                             style={{ width: '100%' }}
                                             placeholder='UF'
-                                            onChangeText={props.handleChange('uf')}
-                                            value={props.values.uf}
+                                            onChangeText={setUf}
+                                            value={uf}
                                         />
                                     </FormItem>
                                 </FormBox>
@@ -218,8 +325,8 @@ const CreateTankForm = () => {
                                     <Input
                                         style={{ width: '100%' }}
                                         placeholder='Nome do bairro ou comunidade'
-                                        onChangeText={props.handleChange('nome')}
-                                        value={props.values.nome}
+                                        onChangeText={setBairro}
+                                        value={bairro}
                                     />
                                 </FormItem>
 
@@ -228,8 +335,8 @@ const CreateTankForm = () => {
                                     <Input
                                         style={{ width: '100%' }}
                                         placeholder='Nome da rua'
-                                        onChangeText={props.handleChange('nome')}
-                                        value={props.values.nome}
+                                        onChangeText={setLogradouro}
+                                        value={logradouro}
                                     />
                                 </FormItem>
 
@@ -239,15 +346,15 @@ const CreateTankForm = () => {
                                         style={{ width: '100%' }}
                                         multiline
                                         placeholder='Ex: Próximo ao mercadinho do José'
-                                        onChangeText={props.handleChange('nome')}
-                                        value={props.values.nome}
+                                        onChangeText={props.handleChange('complemento')}
+                                        value={props.values.complemento}
                                     />
                                 </FormItem>
 
                             </Fragment>}
 
                         <MapButtonBox>
-                            <MapButton onPress={() => navigation.navigate('MarkMap')}>
+                            <MapButton onPress={openMarkMapModal}>
                                 <TextButton>Marcar Tanque no Mapa</TextButton>
                                 <Icon name='map-search' size={30} color='#FFF' style={{ marginLeft: 10 }} />
                             </MapButton>
@@ -272,6 +379,36 @@ const CreateTankForm = () => {
                     onSet={onChange}
                 />
             }
+            {loading && <Loader />}
+
+            <Modal
+                animationType='slide'
+                transparent={true}
+                visible={markMapModal}
+            >
+
+                <MarkMapModal
+                    closeModal={closeMarkMapModal}
+                    permission={hasLocationPermission}
+                    milkType={milkType}
+                    getCoordinates={getCoordinates}
+                />
+            </Modal>
+
+            <Modal
+                animationType='fade'
+                transparent={true}
+                visible={warningModal}
+            >
+
+                <WarningModal
+                    closeModal={closeWarningModal}
+                    message={typeMessage}
+                    lottie={lottie}
+                    bgColor={true}
+                />
+            </Modal>
+
         </Container>
     );
 }

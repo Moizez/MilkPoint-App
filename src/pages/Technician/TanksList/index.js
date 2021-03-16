@@ -1,6 +1,5 @@
 import React, { useState, Fragment } from 'react'
 import { useNavigation } from '@react-navigation/native'
-//import {} from '@react-navigation/material-top-tabs'
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Swipeable from 'react-native-gesture-handler/Swipeable'
@@ -42,10 +41,6 @@ const TanksList = ({ data, loadPage }) => {
     const openWarningModal = () => setWarningModal(true)
     const closeWarningModal = () => setWarningModal(false)
 
-    const onChangeStatus = async (idTanque, status, observation) => {
-        await Api.setTankState(idTanque, status, observation)
-    }
-
     const handleChangeInactiveStatus = async (value) => {
         if (value) {
             setObservation(value)
@@ -63,7 +58,7 @@ const TanksList = ({ data, loadPage }) => {
     }
 
     const handleConfirm = async () => {
-        await onChangeStatus(data.id, !data.status, observation)
+        await Api.setTankState(data.id, !data.status, observation)
         setLottie(success)
         setTypeMessage(data.status ? 'Tanque inativado com sucesso!' : 'Tanque ativado com sucesso!')
         closeActionModal()
@@ -76,7 +71,7 @@ const TanksList = ({ data, loadPage }) => {
 
     const leftActions = () => {
         return (
-            <ActionLeftButton onPress={() => navigation.navigate('UpdateTankForm', { data: data })}>
+            <ActionLeftButton  style={{elevation: 5}} onPress={() => navigation.navigate('UpdateTankForm', { data: data })}>
                 <Icon name='pencil' size={25} color={'#FFF'} />
                 <Text>Editar</Text>
             </ActionLeftButton>
@@ -87,11 +82,11 @@ const TanksList = ({ data, loadPage }) => {
         return (
             <Fragment>
                 {data.status ?
-                    <ActionRightButton onPress={openInactiveTankModal}>
+                    <ActionRightButton style={{elevation: 5}} onPress={openInactiveTankModal}>
                         <Icon name='beaker-remove' size={25} color={'#FFF'} />
                         <Text>Inativar</Text>
                     </ActionRightButton> :
-                    <ActionRightButton onPress={handleChangeActiveStatus} style={{ backgroundColor: '#2a9d8f' }}>
+                    <ActionRightButton  style={{elevation: 5}} onPress={handleChangeActiveStatus} style={{ backgroundColor: '#2a9d8f' }}>
                         <Icon name='beaker-check' size={25} color={'#FFF'} />
                         <Text>Ativar</Text>
                     </ActionRightButton>
@@ -160,7 +155,6 @@ export default TanksList
 
 const Container = styled.View`
     flex: 1;
-    margin-bottom: 10px;
 `;
 
 const Modal = styled.Modal``;
@@ -168,7 +162,7 @@ const Modal = styled.Modal``;
 const ActionRightButton = styled.TouchableOpacity`
     background-color: #cc444b;
     width: 70px;
-    height: 100%;
+    height: 125px;
     align-items: center;
     justify-content: center;
     margin-top: 10px;
@@ -180,7 +174,7 @@ const ActionRightButton = styled.TouchableOpacity`
 const ActionLeftButton = styled.TouchableOpacity`
     background-color: #00b4d8;
     width: 70px;
-    height: 100%;
+    height: 125px;
     align-items: center;
     justify-content: center;
     margin-top: 10px;

@@ -1,18 +1,47 @@
-import React, { useState, Fragment } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 import { FAB } from 'react-native-paper'
 import { StyleSheet, Dimensions, Text } from 'react-native'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { useNavigation } from '@react-navigation/native'
 
+import Api from '../../../services/technician.api'
+
 import Header from '../../../components/Header'
 import ActiveTanks from './ActiveTanks'
 import InactiveTanks from './InactiveTanks'
+import Loader from '../../../components/Loader'
 
 const initialLayout = { width: Dimensions.get('window').width };
 
 const TechnicianHome = () => {
 
     const navigation = useNavigation()
+
+    const [activeTanks, setActiveTanks] = useState([])
+    const [inactiveTanks, setInactiveTanks] = useState([])
+
+    const [loading, setLoading] = useState(false)
+
+    const loadActiveTanks = async () => {
+        setLoading(true)
+        const response = await Api.getActiveTanks()
+        setActiveTanks(response)
+        setLoading(false)
+    }
+
+    const loadInactiveTanks = async () => {
+        setLoading(true)
+        const response = await Api.getInactiveTanks()
+        setInactiveTanks(response)
+        setLoading(false)
+    }
+
+    useEffect(() => {
+        loadActiveTanks()
+        loadInactiveTanks()
+    }, [])
+
+
 
     const [index, setIndex] = useState(0)
     const [routes] = useState([
@@ -33,8 +62,8 @@ const TechnicianHome = () => {
     );
 
     const renderScene = SceneMap({
-        first: () => <ActiveTanks />,
-        second: () => <InactiveTanks />
+        first: () => <ActiveTanks data={activeTanks} loadPage={loadActiveTanks} />,
+        second: () => <InactiveTanks data={inactiveTanks} loadPage={loadInactiveTanks} />
     });
 
     return (
@@ -53,8 +82,10 @@ const TechnicianHome = () => {
                 style={styles.fab}
                 icon="plus"
                 color='#FFF'
-                onPress={() => navigation.navigate('CreateTankForm')}
+                onPress={() => navigation.navigate('CreateTankForm', { loadPage: loadActiveTanks })}
             />
+            {loading && <Loader />}
+
         </Fragment>
     );
 }

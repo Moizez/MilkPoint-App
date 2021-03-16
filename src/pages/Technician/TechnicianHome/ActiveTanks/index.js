@@ -1,35 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { RefreshControl } from 'react-native'
 
-import Api from '../../../../services/technician.api'
-import Loader from '../../../../components/Loader'
 import TanksList from '../../TanksList'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from '../styles'
 
-const ActiveTanks = () => {
+const ActiveTanks = ({ data, loadPage }) => {
 
-    const [activeTanks, setActiveTanks] = useState([])
-    const [loading, setLoading] = useState(false)
     const [isRefreshing, setIsRefreshing] = useState(false)
-
-    const loadActiveTanks = async () => {
-        setLoading(true)
-        const response = await Api.getActiveTanks()
-        setActiveTanks(response)
-        setLoading(false)
-    }
-
-    useEffect(() => {
-        loadActiveTanks()
-    }, [])
 
     const onRefreshList = () => {
         setIsRefreshing(true)
-        loadActiveTanks()
+        loadPage()
         setIsRefreshing(false)
     }
 
@@ -37,10 +22,10 @@ const ActiveTanks = () => {
         <Container>
             <List
                 showsVerticalScrollIndicator={false}
-                data={activeTanks}
+                data={data}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <TanksList data={item} loadPage={loadActiveTanks}/>}
+                renderItem={({ item }) => <TanksList data={item} loadPage={loadPage} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
@@ -58,7 +43,6 @@ const ActiveTanks = () => {
                     </BoxNomeAviso>
                 }
             />
-            {loading && <Loader />}
         </Container>
     );
 }
