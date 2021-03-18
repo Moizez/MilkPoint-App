@@ -16,7 +16,7 @@ const TechnicianHome = () => {
 
     const navigation = useNavigation()
     const {
-        activeTanks, loadActiveTanks, inactiveTanks, loadInactiveTanks
+        activeTanks, loadActiveTanks, inactiveTanks, loadInactiveTanks, loading
     } = useContext(RequestContext)
 
     useEffect(() => {
@@ -43,8 +43,8 @@ const TechnicianHome = () => {
     );
 
     const renderScene = SceneMap({
-        first: () => <ActiveTanks data={activeTanks} loadPage={loadActiveTanks} />,
-        second: () => <InactiveTanks data={inactiveTanks} loadPage={loadInactiveTanks} />
+        first: () => <ActiveTanks data={activeTanks} loadPage={loadActiveTanks} loading={loading} />,
+        second: () => <InactiveTanks data={inactiveTanks} loadPage={loadInactiveTanks} loading={loading} />
     });
 
     return (

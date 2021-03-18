@@ -23,7 +23,7 @@ const TanksList = ({ data }) => {
     const inactiveData = { nomeTanque, nomeResponsavel }
 
     const navigation = useNavigation()
-    const { loadActiveTanks, loadInactiveTanks } = useContext(RequestContext)
+    const { loadActiveTanks, loadInactiveTanks, setLoading } = useContext(RequestContext)
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
@@ -49,7 +49,7 @@ const TanksList = ({ data }) => {
             setTypeMessage('Deseja inativar este tanque?')
             openActionModal()
         } else {
-            setTypeMessage('Informe o motivo da recusa!')
+            setTypeMessage('Informe o motivo da inativação!')
             openWarningModal()
         }
     }
@@ -60,15 +60,17 @@ const TanksList = ({ data }) => {
     }
 
     const handleConfirm = async () => {
+        setLoading(true)
         await Api.setTankState(data.id, !data.status, observation)
         setLottie(success)
         setTypeMessage(data.status ? 'Tanque inativado com sucesso!' : 'Tanque ativado com sucesso!')
         closeActionModal()
         closeInactiveTankModal()
-        openWarningModal()
         setTimeout(() => {
             loadActiveTanks()
             loadInactiveTanks()
+            setLoading(false)
+            openWarningModal()
         }, 2000);
     }
 
@@ -150,6 +152,7 @@ const TanksList = ({ data }) => {
                     setMessage={setTypeMessage}
                 />
             </Modal>
+
         </Container >
     );
 }

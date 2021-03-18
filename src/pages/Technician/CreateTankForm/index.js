@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from 'react'
+import React, { useState, Fragment, useEffect, useContext } from 'react'
 import { Switch, PermissionsAndroid } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import DatePicker from '../../../components/DatePicker'
@@ -9,6 +9,7 @@ import { Formik } from 'formik'
 
 import ApiCep from '../../../services/api'
 import Api from '../../../services/technician.api'
+import { RequestContext } from '../../../contexts/request'
 
 import SimpleHeader from '../../../components/SimpleHeader'
 import Loader from '../../../components/Loader'
@@ -21,14 +22,13 @@ import {
     CepButton, TitleBox, Modal, Divider
 } from './styles'
 
-const CreateTankForm = ({ route }) => {
-
-    const { loadPage } = route.params
+const CreateTankForm = () => {
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
 
     const today = moment(selectedDate).locale('pt-br').format('L')
+    const { loadActiveTanks, loadInactiveTanks } = useContext(RequestContext)
     const navigation = useNavigation()
 
     const [show, setShow] = useState(false)
@@ -165,7 +165,8 @@ const CreateTankForm = ({ route }) => {
                     setTimeout(() => {
                         closeWarningModal()
                         navigation.goBack()
-                        loadPage()
+                        loadActiveTanks()
+                        loadInactiveTanks()
                     }, 2000);
                 }}
             >
@@ -193,7 +194,7 @@ const CreateTankForm = ({ route }) => {
                                 <Picker
                                     selectedValue={milkType}
                                     prompt='Tipo do leite?'
-                                    onValueChange={(itemValue, itemIndex) =>
+                                    onValueChange={(itemValue) =>
                                         setMilkType(itemValue)
                                     }>
                                     {milkTypes.map(i => {
@@ -206,7 +207,7 @@ const CreateTankForm = ({ route }) => {
                                 <Picker
                                     selectedValue={capacity}
                                     prompt='Capacidade do tanque?'
-                                    onValueChange={(itemValue, itemIndex) =>
+                                    onValueChange={(itemValue) =>
                                         setCapacity(itemValue)
                                     }>
                                     {capabilities.map(i => {
@@ -244,7 +245,7 @@ const CreateTankForm = ({ route }) => {
                                 <Picker
                                     selectedValue={responsible}
                                     prompt='Responsável do tanque?'
-                                    onValueChange={(itemValue, itemIndex) =>
+                                    onValueChange={(itemValue) =>
                                         setResponsible(itemValue)
                                     }>
                                     {responsibles.map(i => {

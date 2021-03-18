@@ -3,12 +3,13 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { RefreshControl } from 'react-native'
 
 import TanksList from '../../TanksList'
+import Loader from '../../../../components/Loader'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from '../styles'
 
-const InactiveTanks = ({ data, loadPage }) => {
+const InactiveTanks = ({ data, loadPage, loading }) => {
 
     const [isRefreshing, setIsRefreshing] = useState(false)
 
@@ -43,6 +44,7 @@ const InactiveTanks = ({ data, loadPage }) => {
                     </BoxNomeAviso>
                 }
             />
+            {loading && <Loader />}
         </Container>
     );
 }

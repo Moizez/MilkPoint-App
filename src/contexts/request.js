@@ -17,43 +17,33 @@ const RequestProvider = ({ children }) => {
     const [inactiveTanks, setInactiveTanks] = useState([])
 
     const loadActiveTanks = async () => {
-        setLoading(true)
         const response = await TechnicianApi.getActiveTanks()
         setActiveTanks(response)
-        setLoading(false)
     }
 
     const loadInactiveTanks = async () => {
-        setLoading(true)
         const response = await TechnicianApi.getInactiveTanks()
         setInactiveTanks(response)
-        setLoading(false)
     }
 
     const loadResponsibleTank = async () => {
-        setLoading(true)
         const response = await ResponsibleApi.getResponsibleTanks()
         setResponsibleTank(response)
-        setLoading(false)
     }
 
     const loadPendingDepositsProducer = async () => {
-        setLoading(true)
         const response = await ProducerApi.getPendingDepositsProducer()
         setPendingDepositsList(response)
-        setLoading(false)
     }
 
     const loadPendingWithdrawalsDairy = async () => {
-        setLoading(true)
         const response = await DairyApi.getPendingWithdrawalsDairy()
         setPendingWithdrawalsList(response)
-        setLoading(false)
     }
 
     return (
         <RequestContext.Provider value={{
-            loading,
+            loading, setLoading,
             pendingDepositsList, loadPendingDepositsProducer,
             pendingWithdrawalsList, loadPendingWithdrawalsDairy,
             responsibleTank, loadResponsibleTank,

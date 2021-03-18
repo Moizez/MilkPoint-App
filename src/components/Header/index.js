@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useContext } from 'react'
-import AsyncStorage from '@react-native-community/async-storage'
+import React, { useContext, Fragment } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import Api from '../../services/api'
 import { AuthContext } from '../../contexts/auth'
 
 import {
@@ -29,7 +27,7 @@ const Header = ({ msg, onOpen, calendar, disabled, showNameList }) => {
     }
 
     return (
-        <>
+        <Fragment>
             <Container
                 source={perfilCover()}
                 resizeMode='cover'
@@ -70,7 +68,7 @@ const Header = ({ msg, onOpen, calendar, disabled, showNameList }) => {
                     </TitleButton>
                 </TitleBox>
             }
-        </>
+        </Fragment>
     );
 }
 

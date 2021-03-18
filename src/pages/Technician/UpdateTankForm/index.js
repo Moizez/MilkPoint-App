@@ -190,7 +190,7 @@ const UpdateTankForm = ({ route }) => {
                             />
                             <FormItem>
                                 <DateButton>
-                                    <TextButton style={{ color: '#767577', fontSize: 15 }}>{today}</TextButton>
+                                    <Text style={{ color: '#767577', fontSize: 15 }}>{today}</Text>
                                     <Icon name='calendar' size={25} color='#767577' />
                                 </DateButton>
                             </FormItem>

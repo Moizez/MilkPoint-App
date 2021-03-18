@@ -51,7 +51,7 @@ const InactiveTankModal = ({ data, confirmModal, closeModal }) => {
                         <Picker
                             selectedValue={text}
                             style={{ height: 30, width: '100%' }}
-                            prompt='Qual o motivo da recusa?'
+                            prompt='Qual o motivo da inativação?'
                             onValueChange={(itemValue, itemIndex) =>
                                 itemIndex != 0 && setText(itemValue)
                             }>
@@ -73,7 +73,7 @@ const InactiveTankModal = ({ data, confirmModal, closeModal }) => {
                     </MessageInputBox>
 
                     <ModalButton>
-                        <RefuseButton onPress={() => { setText(''), openModal() }}>
+                        <RefuseButton onPress={() => { setText(''), closeModal() }}>
                             <TextButton>Fechar</TextButton>
                             <Icon name='close-circle' color='#FFF' size={30} />
                         </RefuseButton>

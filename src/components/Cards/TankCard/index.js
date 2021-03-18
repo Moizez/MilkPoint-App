@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Speedometer from 'react-native-speedometer-chart'
 import { useNavigation } from '@react-navigation/native'
+
+import { AuthContext } from '../../../contexts/auth'
 
 import {
     Container, CardBox, InfoBox, Text, BoldText, DividerV, TankChartBox,
@@ -12,6 +14,7 @@ const TankCard = ({ data, openModal }) => {
 
     const navigation = useNavigation()
     const capacidade = data.qtdAtual + data.qtdRestante
+    const { user } = useContext(AuthContext)
 
     const images = {
         cow: require('../../../assets/images/cow-circle.png'),
@@ -43,12 +46,13 @@ const TankCard = ({ data, openModal }) => {
                     <BoldText>Volume atual: <Text>{setCurrentVol(data.qtdAtual, 0)}</Text></BoldText>
                     <BoldText>Cabem: <Text>{setCurrentVol(data.qtdRestante, 1)}</Text></BoldText>
                     <BoldText>Responsável: <Text>{data.responsavel.nome}</Text></BoldText>
+                    {!data.status && <BoldText>Inativado: <Text style={{ color: '#da1e37' }}>{data.observacao}</Text></BoldText>}
                 </InfoBox>
 
                 <DividerV />
 
                 <TankChartBox
-                    onPress={openModal}
+                    onPress={user.perfil != 4 ? openModal : () => navigation.navigate('TankDetails', { data: data })}
                     onLongPress={() => navigation.navigate('TankDetails', { data: data })}
                 >
                     <TankIconBox>
