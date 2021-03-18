@@ -8,10 +8,10 @@ import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
 } from '../styles'
 
-const InactiveTanks = ({data, loadPage}) => {
+const InactiveTanks = ({ data, loadPage }) => {
 
     const [isRefreshing, setIsRefreshing] = useState(false)
-    
+
     const onRefreshList = () => {
         setIsRefreshing(true)
         loadPage()
@@ -25,7 +25,7 @@ const InactiveTanks = ({data, loadPage}) => {
                 data={data}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <TanksList data={item} loadPage={loadPage} />}
+                renderItem={({ item }) => <TanksList data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>

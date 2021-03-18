@@ -56,8 +56,41 @@ export default {
         })
     },
 
-    updateTank: async () => {
+    updateTank: async (idTank, nome, tipo, qtdAtual, responsavelId, status, cep, localidade,
+        uf, bairro, logradouro, complemento, latitude, longitude) => {
 
+        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+        headers.append("Accept", 'application/json')
+
+        const data = {
+            nome: nome,
+            tipo: tipo,
+            qtdAtual: parseInt(qtdAtual),
+            responsavel: {
+                id: responsavelId,
+            },
+            status: status,
+            cep: cep,
+            localidade: localidade,
+            uf: uf,
+            bairro: bairro,
+            logradouro: logradouro,
+            complemento: complemento,
+            latitude: latitude,
+            longitude: longitude,
+            tecnico: {
+                id: user.id,
+            },
+        }
+
+        await fetch(`${BASE.API}/tanque/${idTank}`, {
+            method: 'PUT',
+            headers: headers,
+            body: JSON.stringify(data)
+        })
     },
 
     setTankState: async (idTanque, status, observation) => {

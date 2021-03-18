@@ -61,7 +61,7 @@ const MarkMapModal = ({ closeModal, permission, milkType, getCoordinates }) => {
                 </Marker>
             </MapView>
 
-            <CloseButton onPress={closeModal}>
+            <CloseButton onPress={() => { closeModal()}}>
                 <Icon name='chevron-down' size={35} color='#FFF' />
             </CloseButton>
 
@@ -129,8 +129,8 @@ const CloseButton = styled.TouchableOpacity`
     border-radius: 18px;
     align-items: center;
     justify-content: center;
-    height: 36;
-    width: 36;
+    height: 36px;
+    width: 36px;
     position: absolute;
     left: 15px;
     top: 15px;

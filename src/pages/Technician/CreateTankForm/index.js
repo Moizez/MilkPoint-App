@@ -354,10 +354,16 @@ const CreateTankForm = ({ route }) => {
                             </Fragment>}
 
                         <MapButtonBox>
-                            <MapButton onPress={openMarkMapModal}>
-                                <TextButton>Marcar Tanque no Mapa</TextButton>
-                                <Icon name='map-search' size={30} color='#FFF' style={{ marginLeft: 10 }} />
-                            </MapButton>
+                            {(latitude === 0 || longitude === 0) ?
+                                <MapButton onPress={openMarkMapModal}>
+                                    <TextButton>Marcar Tanque no Mapa</TextButton>
+                                    <Icon name='map-search' size={30} color='#FFF' style={{ marginLeft: 10 }} />
+                                </MapButton> :
+                                <MapButton style={{ backgroundColor: '#2a9d8f' }} onPress={openMarkMapModal}>
+                                    <TextButton>Tanque Marcado!</TextButton>
+                                    <Icon name='check-circle' size={30} color='#FFF' style={{ marginLeft: 10 }} />
+                                </MapButton>
+                            }
                         </MapButtonBox>
 
                         <ButtonBox>

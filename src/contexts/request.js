@@ -24,8 +24,10 @@ const RequestProvider = ({ children }) => {
     }
 
     const loadInactiveTanks = async () => {
+        setLoading(true)
         const response = await TechnicianApi.getInactiveTanks()
         setInactiveTanks(response)
+        setLoading(false)
     }
 
     const loadResponsibleTank = async () => {

@@ -193,6 +193,7 @@ android {
 }
 
 dependencies {
+    implementation project(':lottie-react-native')
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion

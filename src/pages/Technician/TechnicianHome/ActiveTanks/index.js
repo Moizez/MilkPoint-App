@@ -25,7 +25,7 @@ const ActiveTanks = ({ data, loadPage }) => {
                 data={data}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-                renderItem={({ item }) => <TanksList data={item} loadPage={loadPage} />}
+                renderItem={({ item }) => <TanksList data={item} />}
                 ListEmptyComponent={
                     <BoxNomeAviso>
                         <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
