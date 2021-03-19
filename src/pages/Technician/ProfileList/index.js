@@ -3,12 +3,12 @@ import { Switch } from 'react-native'
 import Icon from 'react-native-vector-icons/Entypo'
 
 import Api from '../../../services/technician.api'
-import WarnningModal from '../../../components/Modals/WarningModal'
 
+import ActionModal from '../../../components/Modals/ActionModal'
 import {
     Container, CardBox, InfoBox, Text, BoldText, ImageBox, MoreInfoButton, DividerV,
     ImageButton, Image, ExpandedCardBox, ExpandedHeader, ExpandedInfoBox, ExpandedItemBox,
-    CardInfoBox, StatusBox, DividerH
+    CardInfoBox, StatusBox, Modal, DividerH
 } from './styles'
 
 const ProfileList = ({ data }) => {
@@ -16,13 +16,24 @@ const ProfileList = ({ data }) => {
     const [show, setShow] = useState(false)
     const [enabled, setEnabled] = useState(data.status)
     const [role, setRole] = useState('')
-    const [warningModal, setWarningModal] = useState(false)
+    const [typeMessage, setTypeMessage] = useState('')
+    const [actionModal, setActionModal] = useState(false)
 
-    const openWarningModal = () => setWarningModal(true)
-    const closeWarningModal = () => setWarningModal(false)
+    const openActioModal = () => setActionModal(true)
+    const closeActionModal = () => {
+        setEnabled(!enabled)
+        setActionModal(false)
+    }
 
     const requestStatus = async () => {
         await Api.setStateRoles(role, enabled, data.id)
+        setActionModal(false)
+    }
+
+    const onChangeStaus = () => {
+        setEnabled(!enabled)
+        setTypeMessage(`Deseja ${enabled ? 'desativar' : 'ativar'} este ${role}?`)
+        openActioModal()
     }
 
     useEffect(() => {
@@ -31,24 +42,14 @@ const ProfileList = ({ data }) => {
                 setRole('produtor')
             } else if (data.perfil === 3) {
                 setRole('laticinio')
-            } else {
+            } else if (data.perfil === 2) {
                 setRole('responsavel')
+            } else {
+                return
             }
         }
         setRoles()
     }, [])
-
-    const setColor = () => {
-        if (data.perfil === 1) {
-            return '#2a9d8f'
-        } else if (data.perfil === 3) {
-            return '#cc444b'
-        } else {
-            return '#e7b705'
-        }
-    }
-
-
 
     return (
         <Container>
@@ -71,7 +72,7 @@ const ProfileList = ({ data }) => {
                                 value={enabled}
                                 trackColor={{ false: "#767577", true: "#b7e4c7" }}
                                 thumbColor={enabled ? "#2a9d8f" : "#f4f3f4"}
-                                onValueChange={() => setEnabled(!enabled)}
+                                onValueChange={onChangeStaus}
                             />
                         </StatusBox>
                     </InfoBox>
@@ -140,11 +141,23 @@ const ProfileList = ({ data }) => {
                     <Icon
                         name={show ? 'chevron-thin-up' : 'chevron-thin-down'}
                         size={18}
-                        color={setColor()}
+                        color='#2a9d8f'
                     />
                 </MoreInfoButton>
 
             </CardBox>
+
+            <Modal
+                animationType={'slide'}
+                transparent={true}
+                visible={actionModal}
+            >
+                <ActionModal
+                    closeModal={closeActionModal}
+                    confirmModal={requestStatus}
+                    title={typeMessage}
+                />
+            </Modal>
 
         </Container>
     );

@@ -112,17 +112,19 @@ export default {
 
     setStateRoles: async (role, status, id) => {
 
-        const request = await fetch(`${BASE.API}/${role}/${id}`, {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: id,
-                status: status,
-            })
-        })
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+        headers.append("Accept", 'application/json')
+
+        const data = { id: id, status: status }
+
+        const request = await fetch(`${BASE.API}/${role}/${id}`,
+            {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(data)
+            }
+        )
         return request
     },
 

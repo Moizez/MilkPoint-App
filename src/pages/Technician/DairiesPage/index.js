@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import Api from '../../../services/technician.api'
 
 import Header from '../../../components/Header'
-import DairiesList from '../DairiesList'
+import ProfileList from '../ProfileList'
 import Loader from '../../../components/Loader'
 
 import {
@@ -44,7 +44,7 @@ const DairiesPage = () => {
 				data={dairies}
 				keyExtractor={(item) => item.id}
 				refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
-				renderItem={({ item }) => <DairiesList data={item} />}
+				renderItem={({ item }) => <ProfileList data={item} />}
 				ListEmptyComponent={
 					<BoxNomeAviso>
 						<NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>

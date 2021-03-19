@@ -4,6 +4,8 @@ export const Container = styled.View`
     margin-bottom: 10px;
 `;
 
+export const Modal = styled.Modal``;
+
 export const CardBox = styled.View`
     align-items: center;
     justify-content: space-between;
@@ -31,7 +33,7 @@ export const Text = styled.Text`
 `;
 
 export const ImageBox = styled.View`
-    flex: 0.5;
+    flex: 0.6;
     align-items: center;
     justify-content: center;
     border-top-right-radius: 5px;
@@ -53,7 +55,7 @@ export const ImageButton = styled.View`
 export const Image = styled.Image`
     border-top-right-radius: 5px;
     height: 100%;
-    width: 65px;
+    width: 75px;
 `;
 
 export const IconText = styled.Text`
