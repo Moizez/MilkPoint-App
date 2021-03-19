@@ -16,6 +16,7 @@ import CreateTankForm from '../pages/Technician/CreateTankForm'
 import UpdateTankForm from '../pages/Technician/UpdateTankForm'
 import AppTips from '../pages/SingleStacks/AppTips'
 import RouteMap from '../pages/SingleStacks/RouteMap'
+import EditProfile from '../pages/SingleStacks/EditProfile'
 
 const Stack = createStackNavigator()
 
@@ -31,6 +32,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                 <Stack.Screen name='AppTips' component={AppTips} />
                 <Stack.Screen name='RouteMap' component={RouteMap} />
+                <Stack.Screen name='EditProfile' component={EditProfile} />
             </Stack.Navigator>
         )
     } else if (user.perfil === 2) {
@@ -41,6 +43,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                 <Stack.Screen name='AppTips' component={AppTips} />
                 <Stack.Screen name='RouteMap' component={RouteMap} />
+                <Stack.Screen name='EditProfile' component={EditProfile} />
             </Stack.Navigator>
         )
     } else if (user.perfil === 3) {
@@ -51,6 +54,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='ProfileDetails' component={ProfileDetails} />
                 <Stack.Screen name='AppTips' component={AppTips} />
                 <Stack.Screen name='RouteMap' component={RouteMap} />
+                <Stack.Screen name='EditProfile' component={EditProfile} />
             </Stack.Navigator>
         )
     } else {
@@ -63,6 +67,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='UpdateTankForm' component={UpdateTankForm} />
                 <Stack.Screen name='AppTips' component={AppTips} />
                 <Stack.Screen name='RouteMap' component={RouteMap} />
+                <Stack.Screen name='EditProfile' component={EditProfile} />
             </Stack.Navigator>
         )
     }

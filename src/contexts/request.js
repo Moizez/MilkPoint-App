@@ -17,13 +17,17 @@ const RequestProvider = ({ children }) => {
     const [inactiveTanks, setInactiveTanks] = useState([])
 
     const loadActiveTanks = async () => {
+        setLoading(true)
         const response = await TechnicianApi.getActiveTanks()
         setActiveTanks(response)
+        setLoading(false)
     }
 
     const loadInactiveTanks = async () => {
+        setLoading(true)
         const response = await TechnicianApi.getInactiveTanks()
         setInactiveTanks(response)
+        setLoading(false)
     }
 
     const loadResponsibleTank = async () => {
