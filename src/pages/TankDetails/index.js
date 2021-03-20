@@ -1,16 +1,19 @@
 import React, { useState } from 'react'
 import { Text, Dimensions } from 'react-native'
+import {useNavigation} from '@react-navigation/native'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import { Divider } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from 'styled-components/native';
 
 import Movements from './Movements'
 import Specifications from './Specifications'
+import SimpleHeader from '../../components/SimpleHeader'
 
 const initialLayout = { width: Dimensions.get('window').width };
 
 const TankDetails = ({ route }) => {
 
+    const navigation = useNavigation()
     const { data } = route.params
 
     const [index, setIndex] = useState(0)
@@ -38,10 +41,7 @@ const TankDetails = ({ route }) => {
 
     return (
         <Container>
-            <TitleBox>
-                <Title>Tanque: <Title style={{ color: '#da1e37' }}>{data.nome}</Title></Title>
-            </TitleBox>
-            <Divider />
+            <SimpleHeader title={`Tanque: ${data.nome}`} />
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
@@ -49,6 +49,10 @@ const TankDetails = ({ route }) => {
                 initialLayout={initialLayout}
                 renderTabBar={renderTabBar}
             />
+
+            <CloseButton onPress={() => navigation.goBack()}>
+                <Icon name='chevron-down' color='#292b2c' size={24} />
+            </CloseButton>
         </Container>
     );
 }
@@ -56,14 +60,12 @@ const TankDetails = ({ route }) => {
 export default TankDetails
 
 const Container = styled.View` flex: 1;`;
-const TitleBox = styled.View` 
-    height: 80px;
-    align-items: center;
-    justify-content: center;
-    background-color: #292b2c;
-`;
-const Title = styled.Text`
-    font-size: 20px;
-    color: #FFF;
-    text-align: center;
+const CloseButton = styled.TouchableOpacity` 
+    background-color: #FFF;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    position: absolute;
+    top: 10px;
+    left: 12px;
 `;

@@ -5,10 +5,12 @@ import moment from 'moment'
 
 import Api from '../../../services/api'
 import Loader from '../../../components/Loader'
+import EditProfileModal from '../../../components/Modals/EditProfileModal'
 
 import {
     Container, HeaderBox, Cover, ProfileBox, Profile, EditPhoto, ProfileInformation,
-    Title, BoldText, CardInfo, Text, EditBox, EditButton, TextButton, DividerH
+    Title, BoldText, CardInfo, Text, EditBox, EditButton, TextButton, DividerH,
+    CloseButton, Modal
 } from './styles'
 
 const ProfileDetails = () => {
@@ -16,7 +18,11 @@ const ProfileDetails = () => {
     const navigation = useNavigation()
     const [user, setUser] = useState([])
     const [loading, setLoading] = useState(false)
+    const [editModal, setEditModal] = useState(false)
+
     let birth = moment(user.dataNascimento).locale('pt-br').format('L')
+    const openEditModal = () => setEditModal(true)
+    const closeEditModal = () => setEditModal(false)
 
     const loadUser = async () => {
         setLoading(true)
@@ -67,7 +73,7 @@ const ProfileDetails = () => {
 
                 <CardInfo>
                     <BoldText>Nome: <Text>{user.nome}</Text></BoldText>
-                    <BoldText>Apelido: <Text>{user.apelido}</Text></BoldText>
+                    <BoldText>{user.perfil === 3 ? 'Empresa: ' : 'Aelido: '}<Text>{user.apelido}</Text></BoldText>
                     <BoldText>E-mail: <Text>{user.email}</Text></BoldText>
                     {user.perfil === 3 ?
                         <BoldText>CNPJ: <Text>{user.cnpj}</Text></BoldText> :
@@ -91,12 +97,29 @@ const ProfileDetails = () => {
             </ProfileInformation>
 
             <EditBox>
-                <EditButton onPress={() => navigation.navigate('EditProfile', { user: user }, { loadUser: loadUser })}>
+                <EditButton onPress={openEditModal}>
                     <TextButton>Editar Dados</TextButton>
                     <Icon name='account-edit' color='#FFF' size={35} style={{ marginLeft: 20 }} />
                 </EditButton>
             </EditBox>
             {loading && <Loader />}
+
+            <Modal
+                animationType='slide'
+                visible={editModal}
+                transparent={false}
+            >
+                <EditProfileModal
+                    user={user}
+                    loadUser={loadUser}
+                    closeModal={closeEditModal}
+                />
+            </Modal>
+
+            <CloseButton onPress={() => navigation.goBack()}>
+                <Icon name='chevron-down' color='#FFF' size={24} />
+            </CloseButton>
+
         </Container>
     );
 }

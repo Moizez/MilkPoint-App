@@ -1,51 +1,41 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { useNavigation } from '@react-navigation/native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import React, { useState } from 'react'
 import moment from 'moment'
 import { Formik } from 'formik'
 
-import Api from '../../../services/technician.api'
-import { RequestContext } from '../../../contexts/request'
+import Api from '../../../services/api'
 
-import SimpleHeader from '../../../components/SimpleHeader'
-import WarningModal from '../../../components/Modals/WarningModal'
+import SimpleHeader from '../../SimpleHeader'
+import WarningModal from '../WarningModal'
 
 import {
-    Container, InputContainer, FormTitle, Input, FormBox, FormItem, MapButtonBox,
-    MapButton, Text, ButtonBox, CloseButton, SaveButton, TextButton, DateButton,
-    TitleBox, Modal, Divider
+    Container, InputContainer, FormTitle, Input, FormBox, FormItem, Text,
+    ButtonBox, CloseButton, SaveButton, TextButton, TitleBox, Modal, Divider
 } from './styles'
 
-const EditProfile = ({ route }) => {
-
-    const { user, loadUser } = route.params
+const EditProfileModal = ({ user, loadUser, closeModal }) => {
 
     let error = require('../../../assets/lottie/error-icon.json')
     let success = require('../../../assets/lottie/success-icon.json')
 
-    const today = moment(user.dataNacimento).locale('pt-br').format('L')
-
-    const { loadActiveTanks, loadInactiveTanks } = useContext(RequestContext)
-    const navigation = useNavigation()
+    //const birth = moment(user.dataNacimento).locale('pt-br').format('L')
 
     const [warningModal, setWarningModal] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
     const [lottie, setLottie] = useState(error)
-
-    useEffect(() => {
-
-    }, [])
 
     const openWarningModal = () => setWarningModal(true)
     const closeWarningModal = () => setWarningModal(false)
 
     return (
         <Container>
-            <SimpleHeader title={'Criação de Tanque'} />
+            <SimpleHeader title={'Edição de Dados'} />
 
             <Formik
                 initialValues={{
                     nome: user.nome,
+                    apelido: user.apelido,
+                    email: user.email,
+                    password: user.password,
                     cep: user.cep,
                     localidade: user.localidade,
                     uf: user.uf,
@@ -54,23 +44,25 @@ const EditProfile = ({ route }) => {
                     complemento: user.complemento,
                 }}
                 onSubmit={async (values) => {
-                    await Api.updateTank(user.id, values.nome, values.cep, values.localidade,
-                        values.uf, values.bairro, values.logradouro, values.complemento)
+                    await Api.editUser(values.nome, values.apelido, values.cep,
+                        values.localidade, values.uf, values.bairro, values.logradouro,
+                        values.complemento)
                     setLottie(success)
-                    setTypeMessage('Tanque atualizado com sucesso!')
-                    loadActiveTanks()
-                    loadInactiveTanks()
+                    setTypeMessage('Perfil editado com sucesso!')
                     openWarningModal()
-                    navigation.goBack()
+                    setTimeout(() => {
+                        closeModal()
+                    }, 2000);
+                    loadUser()
                 }}
             >
                 {(props) => (
                     <InputContainer>
 
-                        <FormTitle>Características</FormTitle>
+                        <FormTitle>Dados cadastrais</FormTitle>
                         <Divider />
 
-                        <Text>Nome do tanque:</Text>
+                        <Text>Nome:</Text>
                         <FormItem style={{ width: '100%', marginBottom: 8 }}>
                             <Input
                                 style={{ width: '100%' }}
@@ -79,45 +71,47 @@ const EditProfile = ({ route }) => {
                                 value={props.values.nome}
                             />
                         </FormItem>
-                        <TitleBox>
-                            <Text>Tipo do leite:</Text>
-                            <Text style={{ marginLeft: 102 }}>Capacidade:</Text>
-                        </TitleBox>
+                        <Text>{user.perfil === 3 ? 'Empresa:' : 'Apelido:'}</Text>
                         <FormBox>
-                            <FormItem>
-
-                            </FormItem>
-
-                            <FormItem style={{ marginLeft: 8 }}>
-
+                            <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                                <Input
+                                    style={{ width: '100%' }}
+                                    placeholder='Ex: Joãozinho'
+                                    onChangeText={props.handleChange('apelido')}
+                                    value={props.values.apelido}
+                                />
                             </FormItem>
                         </FormBox>
 
-                        <TitleBox>
-                            <Text>Quantidade atual:</Text>
-                            <Text style={{ marginLeft: 77 }}>Data de criação:</Text>
-                        </TitleBox>
+                        <Text>E-mail:</Text>
                         <FormBox>
-                            <FormItem>
-                                <DateButton>
-                                    <Text style={{ color: '#767577', fontSize: 15 }}>{today}</Text>
-                                    <Icon name='calendar' size={25} color='#767577' />
-                                </DateButton>
-                            </FormItem>
-                        </FormBox>
-
-                        <TitleBox>
-                            <Text>Responsável do tanque:</Text>
-                            <Text style={{ marginLeft: 44 }}>Status do tanque:</Text>
-                        </TitleBox>
-                        <FormBox>
-                            <FormItem>
-
+                            <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                                <Input
+                                    editable={false}
+                                    style={{ width: '100%', color: '#767577' }}
+                                    placeholder='Ex: joao@gmail.com'
+                                    onChangeText={props.handleChange('email')}
+                                    value={props.values.email}
+                                />
                             </FormItem>
 
                         </FormBox>
 
-                        <FormTitle style={{ marginTop: 6 }}>Localização</FormTitle>
+                        <Text>Senha:</Text>
+                        <FormBox>
+                            <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                                <Input
+                                    editable={false}
+                                    style={{ width: '100%', color: '#767577' }}
+                                    placeholder='Ex: Joao@2021'
+                                    secureTextEntry={true}
+                                    onChangeText={props.handleChange('password')}
+                                    value={props.values.password}
+                                />
+                            </FormItem>
+                        </FormBox>
+
+                        <FormTitle style={{ marginTop: 6 }}>Endereço</FormTitle>
                         <Divider />
 
                         <Text>CEP:</Text>
@@ -194,7 +188,7 @@ const EditProfile = ({ route }) => {
                         </FormItem>
 
                         <ButtonBox>
-                            <CloseButton onPress={() => navigation.goBack()}>
+                            <CloseButton onPress={closeModal}>
                                 <TextButton>Fechar</TextButton>
                             </CloseButton>
 
@@ -225,4 +219,4 @@ const EditProfile = ({ route }) => {
     );
 }
 
-export default EditProfile
+export default EditProfileModal

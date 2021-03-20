@@ -39,29 +39,34 @@ export default {
         return response
     },
 
-    updateUser: async (nome, apelido, email, cep, localidade, uf, bairro, logradouro, complemento) => {
+    editUser: async (
+        nome, apelido, cep, localidade, uf, bairro, logradouro, complemento
+    ) => {
+
         const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
-        const request = await fetch(`${BASE.API}/${setRole(user.perfil)}/${user.id}`, {
-            method: 'PUT',
-            headers: {
-                Accept: 'application/json',
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: user.id,
-                nome: nome,
-                apelido: apelido,
-                email: email,
-                cep: cep,
-                localidade: localidade,
-                uf: uf,
-                bairro: bairro,
-                logradouro: logradouro,
-                complemento: complemento
-            })
-        })
-        return request
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+        headers.append("Accept", 'application/json')
+
+        const data = {
+            nome: nome,
+            apelido: apelido,
+            cep: cep,
+            localidade: localidade,
+            uf: uf,
+            bairro: bairro,
+            logradouro: logradouro,
+            complemento: complemento
+        }
+
+        await fetch(`${BASE.API}/${setRole(user.perfil)}/${user.id}`,
+            {
+                method: 'PUT',
+                headers: headers,
+                body: JSON.stringify(data)
+            }
+        )
     },
 
     //Pega a lista de tanques

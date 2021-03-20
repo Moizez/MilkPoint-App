@@ -42,7 +42,7 @@ const PendingWithdrawalsList = ({ data, loadPage }) => {
 
     //Função para confirmar a depósito
     const handleConfirm = () => {
-        if (data.quantidade <= data.tanque.qtdRestante) {
+        if (data.quantidade <= data.tanque.qtdAtual) {
             setLottie(success)
             openActionModal()
         } else {

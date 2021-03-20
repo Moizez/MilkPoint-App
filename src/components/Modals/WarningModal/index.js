@@ -11,18 +11,13 @@ const WarningModal = ({ closeModal, message, lottie, bgColor }) => {
     return (
         <Container bgColor={bgColor}>
             <CloseContainer onPress={closeModal} activeOpacity={1} />
-
             <ModalBox>
-
                 <ModalInfo>
                     <LottieBox>
                         <LottieView source={lottie} autoPlay loop />
                     </LottieBox>
-
                     <Text>{message}</Text>
-
                 </ModalInfo>
-
             </ModalBox>
 
             <CloseContainer onPress={closeModal} activeOpacity={1} />

@@ -104,7 +104,7 @@ const UpdateTankForm = ({ route }) => {
 
     return (
         <Container>
-            <SimpleHeader title={'Criação de Tanque'} />
+            <SimpleHeader title={'Atualizar Tanque'} />
 
             <Formik
                 initialValues={{

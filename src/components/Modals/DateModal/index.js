@@ -60,8 +60,12 @@ const DateModal = ({
 
     const handleSearchValue = () => {
         if (user.perfil === 2) {
-            filterByName(text)
-            closeModal()
+            if (text === '' || text === null) {
+                openWarning('Digite um valor válido!')
+            } else {
+                filterByName(text)
+                closeModal()
+            }
         } else {
             if (isNaN(text) || text <= 0) {
                 openWarning('Digite um valor válido!')

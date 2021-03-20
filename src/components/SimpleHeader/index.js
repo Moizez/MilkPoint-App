@@ -1,10 +1,14 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-const SimpleHeader = ({title}) => {
+const SimpleHeader = ({ title, color }) => {
     return (
         <Container>
-            <Title>{title}</Title>
+            <Title style={
+                {
+                    color: color ? color : '#FFF'
+                }
+            }>{title}</Title>
         </Container>
     );
 }
@@ -20,5 +24,4 @@ const Container = styled.View`
 `;
 const Title = styled.Text`
     font-size: 20px;
-    color: #FFF;
 `;

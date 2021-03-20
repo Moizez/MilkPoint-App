@@ -4,6 +4,8 @@ export const Container = styled.View`
     flex: 1;
 `;
 
+export const Modal = styled.Modal``;
+
 export const HeaderBox = styled.View``;
 
 export const Cover = styled.ImageBackground`
@@ -87,3 +89,14 @@ export const TextButton = styled.Text`
     font-weight: bold;
     font-size: 18px;
 `;
+
+export const CloseButton = styled.TouchableOpacity`
+    background-color: #292b2c;
+    width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    position: absolute;
+    top: 10px;
+    left: 12px;
+`;
+
