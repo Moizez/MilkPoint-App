@@ -45,7 +45,7 @@ export const ChosenDateBox = styled.View`
 export const Button15Days = styled.TouchableOpacity`
     flex: 1;
     flex-direction: row;
-    background-color: #e9c46a;
+    background-color: #ca85ff;
     height: 45px;
     padding: 5px;
     border-radius: 5px;

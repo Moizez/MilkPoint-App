@@ -9,8 +9,9 @@ import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
 import { Fab } from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
-import DateModal from '../../../../components/Modals/DateModal'
-import { filterSpecificDay, filterByDateInterval, filterByBetweenDates } from '../../../../components/Helpers'
+import {
+    filterSpecificDay, filterByDateInterval, filterByBetweenDates
+} from '../../../../components/Helpers'
 
 import {
     Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
@@ -20,7 +21,6 @@ const CanceledDeposits = () => {
 
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [dateModal, setDateModal] = useState(false)
     const [datePicker, setDatePicker] = useState(false)
     const [warningModal, setWarningModal] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
@@ -29,32 +29,24 @@ const CanceledDeposits = () => {
     const [dataResolved, setDataResolved] = useState([])
     const [mainData, setMainData] = useState([])
 
-    const openWarningModal = (message) => {
-        setTypeMessage(message)
-        setWarningModal(true)
-    }
-    const closeWarningModal = () => setWarningModal(false)
-
-    const getDepositsResolvedByUser = async () => {
-        setLoading(true)
-        const response = await Api.getAllDepositsConfirmedOrCanceledUser('cancelados')
-        setDataResolved(response)
-        setLoading(false)
-    }
-
     useEffect(() => {
-        getDepositsResolvedByUser()
-    }, [])
-
-    const loadPage = async () => {
-        const response = await Api.getAllDepositsConfirmedOrCanceledUser('cancelados')
-        const result = await filterSpecificDay(selectedDate, response)
-        setMainData(result)
-    }
-
-    useEffect(() => {
+        const loadPage = async () => {
+            const response = await Api.getAllDepositsConfirmedOrCanceledUser('cancelados')
+            const result = await filterSpecificDay(selectedDate, response)
+            setMainData(result)
+        }
         loadPage()
     }, [selectedDate])
+
+    useEffect(() => {
+        const getDepositsResolvedByUser = async () => {
+            setLoading(true)
+            const response = await Api.getAllDepositsConfirmedOrCanceledUser('cancelados')
+            setDataResolved(response)
+            setLoading(false)
+        }
+        getDepositsResolvedByUser()
+    }, [])
 
     const filterByQuantityLiters = (value) => {
         const result = dataResolved.filter(i => i.quantidade == value)
@@ -89,8 +81,11 @@ const CanceledDeposits = () => {
         setIsRefreshing(false)
     }
 
-    const closeDateModal = () => setDateModal(false)
-    const openDateModal = () => setDateModal(true)
+    const openWarningModal = (message) => {
+        setTypeMessage(message)
+        setWarningModal(true)
+    }
+    const closeWarningModal = () => setWarningModal(false)
 
     return (
         <Container>
@@ -127,26 +122,14 @@ const CanceledDeposits = () => {
             }
 
             <Fab
-                bgColor={{ backgroundColor: '#da1e37' }}
-                openModal={openDateModal}
                 setShowDatePicker={setDatePicker}
+                filterByQuantityLiters={filterByQuantityLiters}
+                filterByLast15Days={filterByLast15Days}
+                filterByLast30Days={filterByLast30Days}
+                filterByTwoDates={filterByTwoDates}
+                isLoading={setLoading}
+                openWarning={openWarningModal}
             />
-
-            <Modal
-                transparent={true}
-                visible={dateModal}
-                animationType='slide'
-            >
-                <DateModal
-                    closeModal={closeDateModal}
-                    filterByQuantityLiters={filterByQuantityLiters}
-                    filterByLast15Days={filterByLast15Days}
-                    filterByLast30Days={filterByLast30Days}
-                    filterByTwoDates={filterByTwoDates}
-                    isLoading={setLoading}
-                    openWarning={openWarningModal}
-                />
-            </Modal>
 
             <Modal
                 animationType='fade'

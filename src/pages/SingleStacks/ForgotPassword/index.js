@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import { useNavigation } from '@react-navigation/native'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
-import { Container, BoxInput, Titulo, AreaInput, Input, SubmitButton, SubmitText } from './styles';
+import {
+    Container, BoxInput, Titulo, AreaInput, Input, CloseButton, SubmitButton,
+    SubmitText, Text, ButtonBox
+} from './styles';
 
-export default function ForgotPassword() {
+const ForgotPassword = () => {
+
+    const navigation = useNavigation()
+
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
     const [cpf, setCpf] = useState('');
 
     return (
-        <Container>
+        <Container behavior='padding'>
+            <CloseButton onPress={() => navigation.goBack()}>
+                <Icon name='chevron-down' color='#000' size={40} />
+            </CloseButton>
             <BoxInput>
                 <Titulo>Recuperar senha</Titulo>
+                <Text>E-mail:</Text>
                 <AreaInput>
                     <Input
                         placeholder="E-mail"
@@ -20,7 +32,7 @@ export default function ForgotPassword() {
                         onChangeText={(text) => setEmail(text)}
                     />
                 </AreaInput>
-
+                <Text>Telefone:</Text>
                 <AreaInput>
                     <Input
                         placeholder="Telefone"
@@ -31,7 +43,7 @@ export default function ForgotPassword() {
                         onChangeText={(text) => setNome(text)}
                     />
                 </AreaInput>
-
+                <Text>CPF/CNPJ:</Text>
                 <AreaInput>
                     <Input
                         placeholder="CPF/CNPJ"
@@ -43,11 +55,15 @@ export default function ForgotPassword() {
                     />
                 </AreaInput>
 
-                <SubmitButton>
-                    <SubmitText>Recuperar</SubmitText>
-                </SubmitButton>
+                <ButtonBox>
+                    <SubmitButton>
+                        <SubmitText>Recuperar</SubmitText>
+                    </SubmitButton>
+                </ButtonBox>
 
             </BoxInput>
         </Container>
     );
 }
+
+export default ForgotPassword

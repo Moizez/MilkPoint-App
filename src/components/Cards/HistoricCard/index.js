@@ -1,5 +1,6 @@
 import React, { useState, Fragment, useContext } from 'react'
-import Icon from 'react-native-vector-icons/Entypo'
+import Entypo from 'react-native-vector-icons/Entypo'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
@@ -38,8 +39,8 @@ const HistoricCard = ({ data }) => {
                     </InfoBox>
                     <DividerV />
                     <IconBox>
-                        <Icon
-                            name='bucket'
+                        <MaterialCommunityIcons
+                            name={data.confirmacao ? 'check-circle' : 'delete-circle'}
                             size={30}
                             color={data.confirmacao ? '#2a9d8f' : '#cc444b'}
                         />
@@ -104,7 +105,7 @@ const HistoricCard = ({ data }) => {
                 }
 
                 <MoreInfoButton onPress={() => setShow(!show)} activeOpacity={0.8}>
-                    <Icon
+                    <Entypo
                         name={show ? 'chevron-thin-up' : 'chevron-thin-down'}
                         size={18}
                         color={data.confirmacao ? '#2a9d8f' : '#cc444b'}

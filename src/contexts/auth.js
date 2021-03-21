@@ -38,7 +38,7 @@ const AuthProvider = ({ children }) => {
     //Funcao para logar o usuário
     const signIn = async (email, password) => {
         setLoadingAuth(true)
-        if (email.trim().length == 0 || password.trim().length == 0) {
+        if (email.length == 0 || password.length == 0) {
             setTypeMessage('Preencha seu e-mail ou senha corretamente!')
             openWarningModal()
             setLoadingAuth(false)

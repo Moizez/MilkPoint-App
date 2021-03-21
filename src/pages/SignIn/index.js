@@ -1,13 +1,17 @@
 import React, { useState, useEffect, useContext } from 'react'
-import { Animated, TouchableOpacity, StyleSheet, View, Text, Keyboard, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
+import { Animated, StyleSheet, Keyboard, ActivityIndicator } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { AuthContext } from '../../contexts/auth'
 
-import { BoxImage, Input, SubmitButton, SubmitText, Link, LinkText } from './styles'
+import {
+    Container, BoxImage, Text, InputBox, Input, IconBox, IconButton, EnterButton,
+    EnterText, Link, LinkText
+} from './styles'
 
-export default function SignIn() {
+const SignIn = () => {
+
     const navigation = useNavigation()
 
     //Dados p/ Login
@@ -17,7 +21,7 @@ export default function SignIn() {
     const [eye, setEye] = useState(false)
 
     async function handleLogin() {
-        await signIn(email, password)
+        await signIn(email.trim(), password.trim())
     }
 
     //Animação da tela de login
@@ -36,149 +40,128 @@ export default function SignIn() {
                 toValue: 0,
                 speed: 4,
                 bounciness: 12,
+                useNativeDriver: false
             }),
             Animated.timing(opacity, {
                 toValue: 1,
                 duration: 300,
+                useNativeDriver: false
             })
-
         ]).start()
-
     }, [])
 
     //Função para verificar se o teclado está aberto e começar a animação da logo
     function keyboardDidShow() {
-
         Animated.parallel([
 
             Animated.timing(logo.x, {
                 toValue: 100,
                 duration: 100,
+                useNativeDriver: false
             }),
             Animated.timing(logo.y, {
                 toValue: 100,
                 duration: 100,
+                useNativeDriver: false
             }),
-
         ]).start()
-
     }
 
     //Função para verificar se o teclado está fechado e retornar o tamanho da logo
     function keyboardDidHide() {
-
         Animated.parallel([
 
             Animated.timing(logo.x, {
                 toValue: 225,
                 duration: 100,
+                useNativeDriver: false
             }),
             Animated.timing(logo.y, {
                 toValue: 225,
                 duration: 100,
+                useNativeDriver: false
             }),
-
         ]).start()
-
     }
 
     return (
-        <>
-            <KeyboardAvoidingView style={styles.containerBody} behavior='padding'>
-                <BoxImage>
-                    <Animated.Image style={{
-                        width: logo.x,
-                        height: logo.y,
-                    }}
-                        source={require('../../assets/images/mkLogo.png')} />
-                </BoxImage>
-                <Animated.View
-                    style={[
-                        styles.boxInput,
-                        {
-                            opacity: opacity,
-                            transform: [
-                                { translateY: offset.y }
-                            ]
-                        }
-                    ]}>
-                    <Text style={styles.text}>Realize sua autenticação</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Input style={styles.input}
-                            placeholder='E-mail'
-                            autoCorrect={false}
-                            autoCapitalize='none'
-                            value={email}
-                            onChangeText={(text) => setEmail(text)}
-                        />
-                        <View style={styles.icon}>
-                            <Icon name='email' size={28} color='#000' />
-                        </View>
-                    </View>
+        <Container behavior='padding'>
+            <BoxImage>
+                <Animated.Image style={{
+                    width: logo.x,
+                    height: logo.y,
+                }}
+                    source={require('../../assets/images/mkLogo.png')} />
+            </BoxImage>
+            <Animated.View
+                style={[
+                    styles.boxInput,
+                    {
+                        opacity: opacity,
+                        transform: [
+                            { translateY: offset.y }
+                        ]
+                    }
+                ]}>
+                <Text>Realize sua autenticação</Text>
+                <InputBox>
+                    <Input
+                        placeholder='E-mail'
+                        autoCorrect={false}
+                        autoCapitalize='none'
+                        value={email}
+                        onChangeText={(text) => setEmail(text)}
+                    />
+                    <IconBox>
+                        <Icon name='email' size={28} color='#000' />
+                    </IconBox>
+                </InputBox>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Input
-                            placeholder='Senha'
-                            autoCorrect={false}
-                            autoCapitalize='none'
-                            value={password}
-                            secureTextEntry={eye ? true : false}
-                            onChangeText={(text) => setPassword(text)}
-                        />
-                        {password ?
-                            <TouchableOpacity onPress={() => setEye(!eye)} style={styles.icon} activeOpacity={1}>
-                                <Icon name={eye ? 'eye' : 'eye-off'} size={28} color='#000' />
-                            </TouchableOpacity>
-                            :
-                            <View style={styles.icon}>
-                                <Icon name='lock' size={28} color='#000' />
-                            </View>
-                        }
-                    </View>
+                <InputBox>
+                    <Input
+                        placeholder='Senha'
+                        autoCorrect={false}
+                        autoCapitalize='none'
+                        value={password}
+                        secureTextEntry={eye ? true : false}
+                        onChangeText={(text) => setPassword(text)}
+                    />
+                    {password ?
+                        <IconButton onPress={() => setEye(!eye)} activeOpacity={1}>
+                            <Icon name={eye ? 'eye' : 'eye-off'} size={28} color='#000' />
+                        </IconButton>
+                        :
+                        <IconBox>
+                            <Icon name='lock' size={28} color='#000' />
+                        </IconBox>
+                    }
+                </InputBox>
 
-                    <SubmitButton onPress={handleLogin}>
-                        {
-                            loadingAuth ? (
-                                <ActivityIndicator size={20} color="#FFF" />
-                            ) : (
-                                    <SubmitText>Entrar</SubmitText>
-                                )
-                        }
-                    </SubmitButton>
-                    <Link onPress={() => navigation.navigate('ForgotPassword')}>
-                        <LinkText>Esqueceu sua senha?</LinkText>
-                    </Link>
-                </Animated.View>
-            </KeyboardAvoidingView>
-        </>
+                <EnterButton onPress={handleLogin}>
+                    {
+                        loadingAuth ? (
+                            <ActivityIndicator size={20} color="#FFF" />
+                        ) : (
+                            <EnterText>Entrar</EnterText>
+                        )
+                    }
+                </EnterButton>
+                <Link onPress={() => navigation.navigate('ForgotPassword')}>
+                    <LinkText>Esqueceu sua senha?</LinkText>
+                </Link>
+            </Animated.View>
+        </Container>
     );
 }
 
 const styles = StyleSheet.create({
-    containerBody: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     boxInput: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
         width: '75%',
         paddingBottom: 30
-    },
-    icon: {
-        backgroundColor: '#d3d3d3',
-        height: 50,
-        width: 45,
-        borderTopRightRadius: 8,
-        borderBottomRightRadius: 8,
-        marginBottom: 15,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    text: {
-        fontSize: 18,
-        marginBottom: 12
     }
 })
+
+export default SignIn
