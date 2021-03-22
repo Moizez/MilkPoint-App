@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native'
-import { StyleSheet, PermissionsAndroid } from 'react-native';
-import { Divider } from 'react-native-paper';
+import { PermissionsAndroid } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import 'moment/locale/pt-br'
 
-import ActionButton from '../../../components/ActionButton'
-
-import { Container, TechnicalBox, LocalizationBox, Title, BoldText, Text } from './styles'
+import {
+    Container, TechnicalBox, LocalizationBox, Title, BoldText, Text,
+    ButtonBox, HowToGetButton, ButtonText, DividerH
+} from './styles'
 
 const Specifications = ({ data }) => {
 
@@ -44,7 +45,7 @@ const Specifications = ({ data }) => {
 
                 <Title>Informações Técnicas</Title>
 
-                <Divider style={styles.divider} />
+                <DividerH />
 
                 <BoldText>Capacidade: <Text>{capacidade} litros</Text></BoldText>
                 <BoldText>Volume atual: <Text>{data.qtdAtual} litros</Text></BoldText>
@@ -63,7 +64,7 @@ const Specifications = ({ data }) => {
 
                 <Title>Localização</Title>
 
-                <Divider style={styles.divider} />
+                <DividerH />
 
                 <BoldText>Estado: <Text>{data.uf}</Text></BoldText>
                 <BoldText>Cidade: <Text>{data.localidade}</Text></BoldText>
@@ -74,27 +75,18 @@ const Specifications = ({ data }) => {
 
             </LocalizationBox>
 
-            <ActionButton
-                onAction={() => navigation.navigate('RouteMap', {
+            <ButtonBox>
+                <HowToGetButton onPress={() => navigation.navigate('RouteMap', {
                     data: data,
                     permission: hasLocationPermission
-                })}
-                btnColor='#292b2c'
-                nameIcon='google-maps'
-                btnSize={'100%'}
-                btnAlign={'center'}
-                title='Como chegar?'
-                marginRight={30}
-            />
+                })}>
+                    <ButtonText>Como chegar?</ButtonText>
+                    <Icon name='google-maps' size={30} color='#FFF' />
+                </HowToGetButton>
+            </ButtonBox>
 
         </Container>
     );
 }
-
-const styles = StyleSheet.create({
-    divider: {
-        marginVertical: 5, height: 2
-    }
-})
 
 export default Specifications

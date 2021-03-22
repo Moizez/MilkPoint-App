@@ -19,6 +19,7 @@ import {
 
 const CanceledDeposits = () => {
 
+    const type = true
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [loading, setLoading] = useState(false)
     const [datePicker, setDatePicker] = useState(false)
@@ -129,6 +130,7 @@ const CanceledDeposits = () => {
                 filterByTwoDates={filterByTwoDates}
                 isLoading={setLoading}
                 openWarning={openWarningModal}
+                type={type}
             />
 
             <Modal

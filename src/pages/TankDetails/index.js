@@ -66,6 +66,6 @@ const CloseButton = styled.TouchableOpacity`
     height: 24px;
     border-radius: 12px;
     position: absolute;
-    top: 10px;
-    left: 12px;
+    top: 15px;
+    left: 15px;
 `;

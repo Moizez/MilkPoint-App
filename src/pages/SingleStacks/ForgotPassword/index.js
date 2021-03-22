@@ -25,7 +25,7 @@ const ForgotPassword = () => {
                 <Text>E-mail:</Text>
                 <AreaInput>
                     <Input
-                        placeholder="E-mail"
+                        placeholder="Ex: joao@gmail.com"
                         autoCorrect={false}
                         autoCapitalize="none"
                         value={email}
@@ -35,7 +35,7 @@ const ForgotPassword = () => {
                 <Text>Telefone:</Text>
                 <AreaInput>
                     <Input
-                        placeholder="Telefone"
+                        placeholder="Ex: (55)95555-5555"
                         autoCorrect={false}
                         autoCapitalize="none"
                         keyboardType="phone-pad"

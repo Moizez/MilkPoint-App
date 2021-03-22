@@ -127,6 +127,4 @@ const TanksList = ({ data, loadTanks }) => {
 
 export default TanksList
 
-const Container = styled.View`
-    margin-bottom: 10px;
-`;
+const Container = styled.View``;
