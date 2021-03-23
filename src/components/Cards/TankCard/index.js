@@ -52,8 +52,11 @@ const TankCard = ({ data, openModal }) => {
                 <DividerV />
 
                 <TankChartBox
-                    onPress={user.perfil != 4 ? openModal : () => navigation.navigate('TankDetails', { data: data })}
-                    onLongPress={() => navigation.navigate('TankDetails', { data: data })}
+                    onPress={user.perfil != 4 ? openModal : () => navigation.navigate('TankDetailsTechnician', { data: data })}
+                    onLongPress={user.perfil != 4 ?
+                        () => navigation.navigate('TankDetails', { data: data }) :
+                        () => navigation.navigate('TankDetailsTechnician', { data: data })
+                    }
                 >
                     <TankIconBox>
                         {data.tipo == 'BOVINO' ?

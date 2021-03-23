@@ -11,59 +11,72 @@ export const BoxImage = styled.View`
     justify-content: center;
 `;
 
-export const Text = styled.Text`
+export const Title = styled.Text`
     font-size: 18px;
     margin-bottom: 12px;
 `;
 
+export const Text = styled.Text`
+    margin: 5px 0 0 3px;
+    font-size: 11px;
+    color: #495057;
+`;
+
+export const InputContainer = styled.View`
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+`;
+
 export const InputBox = styled.View`
+    height: 48px;
+    width: 100%;
+    background-color: #DDD;
+    margin-bottom: 10px;
+    justify-content: space-around;
+    border-radius: 5px;
+`;
+
+export const InputItemBox = styled.View`
     flex-direction: row;
     align-items: center;
+    justify-content: center;
 `;
 
 export const Input = styled.TextInput.attrs({
-    placeholderTextColor: '#343a40',
+    placeholderTextColor: '#495057',
 })`
-    background: #DDD;
+    width: 90%;
     font-size: 18px;
-    width: 85%;
-    height: 50px;
-    color: #000;
-    margin-bottom: 15px;
-    padding: 10px;
-    border-top-left-radius: 8px;
-    border-bottom-left-radius: 8px;
+    color: #292b2c;
+    padding-left: 15px;
 `;
 
 export const IconBox = styled.View`
-    background-color: #d3d3d3;
-    height: 50px;
-    width: 45px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    margin-bottom: 15px;
+    height: 48px;
+    width: 40px;
     align-items: center;
     justify-content: center;
+    padding-right: 10px;
+    margin-bottom: 6px;
 `;
 
 export const IconButton = styled.TouchableOpacity`
-    background-color: #d3d3d3;
-    height: 50px;
-    width: 45px;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
-    margin-bottom: 15px;
+    height: 48px;
+    width: 40px;
     align-items: center;
     justify-content: center;
+    padding-right: 10px;
+    margin-bottom: 6px;
 `;
 
 export const EnterButton = styled.TouchableOpacity`
     align-items: center;
     justify-content: center;
     background-color: #292b2c;
-    width: 103%;
+    width: 100%;
     height: 45px;
-    border-radius: 8px;
+    border-radius: 5px;
     margin-top: 10px;
 `;
 

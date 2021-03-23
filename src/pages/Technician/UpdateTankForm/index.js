@@ -5,6 +5,7 @@ import { Picker } from '@react-native-picker/picker'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import { Formik } from 'formik'
+import * as yup from 'yup'
 
 import Api from '../../../services/technician.api'
 import { RequestContext } from '../../../contexts/request'
@@ -15,9 +16,18 @@ import MarkMapModal from '../../../components/Modals/MarkMapModal'
 
 import {
     Container, InputContainer, FormTitle, Input, FormBox, FormItem, MapButtonBox,
-    MapButton, Text, ButtonBox, CloseButton, SaveButton, TextButton, DateButton,
-    TitleBox, Modal, Divider
+    MapButton, Text, ButtonBox, CloseButton, SaveButton, TextButton, FormButton,
+    Modal, ErrorText, Divider
 } from './styles'
+
+const formSchema = yup.object({
+    nome: yup.string().required('O nome do tanque é obrigatório!'),
+    cep: yup.string().required('O CEP é obrigatório!'),
+    localidade: yup.string().required('A cidade é obrigatória!'),
+    uf: yup.string().required('O estado é obrigatório!'),
+    bairro: yup.string().required('O bairro é obrigatório!'),
+    logradouro: yup.string().required('A rua é obrigatória!')
+})
 
 const UpdateTankForm = ({ route }) => {
 
@@ -117,16 +127,20 @@ const UpdateTankForm = ({ route }) => {
                     logradouro: data.logradouro,
                     complemento: data.complemento,
                 }}
+                validationSchema={formSchema}
                 onSubmit={async (values) => {
                     await Api.updateTank(data.id, values.nome, milkType, values.qtdAtual, responsible,
                         enabled, values.cep, values.localidade, values.uf, values.bairro,
                         values.logradouro, values.complemento, latitude, longitude)
                     setLottie(success)
                     setTypeMessage('Tanque atualizado com sucesso!')
-                    loadActiveTanks()
-                    loadInactiveTanks()
                     openWarningModal()
-                    navigation.goBack()
+                    setTimeout(() => {
+                        closeWarningModal()
+                        navigation.goBack()
+                        loadActiveTanks()
+                        loadInactiveTanks()
+                    }, 2000);
                 }}
             >
                 {(props) => (
@@ -135,21 +149,21 @@ const UpdateTankForm = ({ route }) => {
                         <FormTitle>Características</FormTitle>
                         <Divider />
 
-                        <Text>Nome do tanque:</Text>
-                        <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                        <FormItem style={{ width: '100%' }}>
+                            <Text>Nome do tanque:</Text>
                             <Input
                                 style={{ width: '100%' }}
                                 placeholder='Ex: T-100'
                                 onChangeText={props.handleChange('nome')}
                                 value={props.values.nome}
+                                onBlur={props.handleBlur('nome')}
                             />
                         </FormItem>
-                        <TitleBox>
-                            <Text>Tipo do leite:</Text>
-                            <Text style={{ marginLeft: 102 }}>Capacidade:</Text>
-                        </TitleBox>
+                        <ErrorText>{props.touched.nome && props.errors.nome}</ErrorText>
+
                         <FormBox>
                             <FormItem>
+                                <Text>Tipo do leite:</Text>
                                 <Picker
                                     selectedValue={milkType}
                                     prompt='Tipo do leite?'
@@ -163,6 +177,7 @@ const UpdateTankForm = ({ route }) => {
                             </FormItem>
 
                             <FormItem style={{ marginLeft: 8 }}>
+                                <Text>Capacidade:</Text>
                                 <Picker
                                     enabled={false}
                                     selectedValue={capacity}
@@ -177,31 +192,29 @@ const UpdateTankForm = ({ route }) => {
                             </FormItem>
                         </FormBox>
 
-                        <TitleBox>
-                            <Text>Quantidade atual:</Text>
-                            <Text style={{ marginLeft: 77 }}>Data de criação:</Text>
-                        </TitleBox>
                         <FormBox>
-                            <Input
-                                keyboardType='phone-pad'
-                                placeholder='Em litros'
-                                onChangeText={props.handleChange('qtdAtual')}
-                                value={props.values.qtdAtual}
-                            />
                             <FormItem>
-                                <DateButton>
+                                <Text>Quantidade atual:</Text>
+                                <Input
+                                    keyboardType='phone-pad'
+                                    placeholder='Em litros'
+                                    onChangeText={props.handleChange('qtdAtual')}
+                                    value={props.values.qtdAtual}
+                                />
+                            </FormItem>
+
+                            <FormItem>
+                                <Text>Data de criação:</Text>
+                                <FormButton>
                                     <Text style={{ color: '#767577', fontSize: 15 }}>{today}</Text>
                                     <Icon name='calendar' size={25} color='#767577' />
-                                </DateButton>
+                                </FormButton>
                             </FormItem>
                         </FormBox>
 
-                        <TitleBox>
-                            <Text>Responsável do tanque:</Text>
-                            <Text style={{ marginLeft: 44 }}>Status do tanque:</Text>
-                        </TitleBox>
                         <FormBox>
                             <FormItem>
+                                <Text>Responsável do tanque:</Text>
                                 <Picker
                                     selectedValue={responsible}
                                     prompt='Responsável do tanque?'
@@ -213,91 +226,88 @@ const UpdateTankForm = ({ route }) => {
                                     })}
                                 </Picker>
                             </FormItem>
-                            <FormItem style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'space-around'
-                            }}>
-                                <TextButton style={{
-                                    color: enabled ? '#2a9d8f' : '#767577',
-                                    fontSize: 20
-                                }}>{enabled ? 'Ativo' : 'Inativo'}</TextButton>
-                                <Switch
-                                    value={enabled}
-                                    trackColor={{ false: "#767577", true: "#b7e4c7" }}
-                                    thumbColor={enabled ? "#2a9d8f" : "#f4f3f4"}
-                                    onValueChange={() => setEnabled(!enabled)}
-                                />
+
+                            <FormItem>
+                                <Text>Status do tanque:</Text>
+                                <FormButton>
+                                    <TextButton style={{
+                                        color: enabled ? '#2a9d8f' : '#767577',
+                                        fontSize: 18
+                                    }}>{enabled ? 'Ativo' : 'Inativo'}</TextButton>
+                                    <Switch
+                                        value={enabled}
+                                        trackColor={{ false: "#767577", true: "#b7e4c7" }}
+                                        thumbColor={enabled ? "#2a9d8f" : "#f4f3f4"}
+                                        onValueChange={() => setEnabled(!enabled)}
+                                    />
+                                </FormButton>
                             </FormItem>
                         </FormBox>
 
                         <FormTitle style={{ marginTop: 6 }}>Localização</FormTitle>
                         <Divider />
 
-                        <Text>CEP:</Text>
-                        <FormBox>
-                            <FormItem style={{
-                                flexDirection: 'row',
-                                width: '100%',
-                                alignItems: 'center',
-                                justifyContent: 'space-between'
-                            }}>
-                                <Input
-                                    style={{ flex: 1 }}
-                                    placeholder='Somente números'
-                                    onChangeText={props.handleChange('cep')}
-                                    value={props.values.cep}
-                                    keyboardType='phone-pad'
-                                />
-                            </FormItem>
-                        </FormBox>
 
-                        <TitleBox>
-                            <Text>Nome da cidade:</Text>
-                            <Text style={{ marginLeft: 180 }}>UF:</Text>
-                        </TitleBox>
-                        <FormBox>
+                        <FormItem style={{ width: '100%' }}>
+                            <Text>CEP:</Text>
+                            <Input
+                                placeholder='Somente números'
+                                keyboardType='phone-pad'
+                                onChangeText={props.handleChange('cep')}
+                                value={props.values.cep}
+                                onBlur={props.handleBlur('cep')}
+                            />
+                        </FormItem>
+                        <ErrorText>{props.touched.cep && props.errors.cep}</ErrorText>
+
+                        <FormBox style={{ marginBottom: 0 }}>
                             <FormItem style={{ flex: 1 }}>
+                                <Text>Nome da cidade:</Text>
                                 <Input
-                                    style={{ width: '100%' }}
                                     placeholder='Nome da cidade'
                                     onChangeText={props.handleChange('localidade')}
                                     value={props.values.localidade}
+                                    onBlur={props.handleBlur('localidade')}
                                 />
                             </FormItem>
-
                             <FormItem style={{ width: '18%', marginLeft: 8 }}>
+                                <Text>UF:</Text>
                                 <Input
-                                    style={{ width: '100%' }}
                                     placeholder='UF'
                                     onChangeText={props.handleChange('uf')}
                                     value={props.values.uf}
+                                    onBlur={props.handleBlur('uf')}
                                 />
                             </FormItem>
                         </FormBox>
+                        <ErrorText>{props.touched.localidade && props.errors.localidade}</ErrorText>
 
-                        <Text>Bairro ou comunidade:</Text>
-                        <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                        <FormItem style={{ width: '100%' }}>
+                            <Text>Bairro ou comunidade:</Text>
                             <Input
                                 style={{ width: '100%' }}
                                 placeholder='Nome do bairro ou comunidade'
                                 onChangeText={props.handleChange('bairro')}
                                 value={props.values.bairro}
+                                onBlur={props.handleBlur('bairro')}
                             />
                         </FormItem>
+                        <ErrorText>{props.touched.bairro && props.errors.bairro}</ErrorText>
 
-                        <Text>Rua:</Text>
-                        <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                        <FormItem style={{ width: '100%' }}>
+                            <Text>Rua:</Text>
                             <Input
                                 style={{ width: '100%' }}
                                 placeholder='Nome da rua'
                                 onChangeText={props.handleChange('logradouro')}
                                 value={props.values.logradouro}
+                                onBlur={props.handleBlur('logradouro')}
                             />
                         </FormItem>
+                        <ErrorText>{props.touched.logradouro && props.errors.logradouro}</ErrorText>
 
-                        <Text>Referência:</Text>
-                        <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                        <FormItem style={{ width: '100%' }}>
+                            <Text>Referência:</Text>
                             <Input
                                 style={{ width: '100%' }}
                                 multiline

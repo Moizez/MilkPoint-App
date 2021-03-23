@@ -6,6 +6,7 @@ import { Picker } from '@react-native-picker/picker'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import moment from 'moment'
 import { Formik } from 'formik'
+import * as yup from 'yup'
 
 import ApiCep from '../../../services/api'
 import Api from '../../../services/technician.api'
@@ -18,9 +19,14 @@ import MarkMapModal from '../../../components/Modals/MarkMapModal'
 
 import {
     Container, InputContainer, FormTitle, Input, FormBox, FormItem, MapButtonBox,
-    MapButton, Text, ButtonBox, CloseButton, SaveButton, TextButton, DateButton,
-    CepButton, TitleBox, Modal, Divider
+    MapButton, Text, ButtonBox, CloseButton, SaveButton, TextButton, FormButton,
+    CepButton, Modal, ErrorText, Divider
 } from './styles'
+
+const formSchema = yup.object({
+    nome: yup.string().required('O nome do tanque é obrigatório!'),
+    cep: yup.string().required('O CEP é obrigatório!'),
+})
 
 const CreateTankForm = () => {
 
@@ -155,6 +161,7 @@ const CreateTankForm = () => {
                     cep: cep,
                     complemento: '',
                 }}
+                validationSchema={formSchema}
                 onSubmit={async (values) => {
                     await Api.createTank(values.nome, milkType, capacity, values.qtdAtual, selectedDate,
                         responsible, enabled, values.cep, localidade, uf, bairro, logradouro,
@@ -176,21 +183,20 @@ const CreateTankForm = () => {
                         <FormTitle>Características</FormTitle>
                         <Divider />
 
-                        <Text>Nome do tanque:</Text>
-                        <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                        <FormItem style={{ width: '100%' }}>
+                            <Text>Nome do tanque:</Text>
                             <Input
-                                style={{ width: '100%' }}
                                 placeholder='Ex: T-100'
                                 onChangeText={props.handleChange('nome')}
                                 value={props.values.nome}
+                                onBlur={props.handleBlur('nome')}
                             />
                         </FormItem>
-                        <TitleBox>
-                            <Text>Tipo do leite:</Text>
-                            <Text style={{ marginLeft: 102 }}>Capacidade:</Text>
-                        </TitleBox>
+                        <ErrorText>{props.touched.nome && props.errors.nome}</ErrorText>
+
                         <FormBox>
                             <FormItem>
+                                <Text>Tipo do leite:</Text>
                                 <Picker
                                     selectedValue={milkType}
                                     prompt='Tipo do leite?'
@@ -204,6 +210,7 @@ const CreateTankForm = () => {
                             </FormItem>
 
                             <FormItem style={{ marginLeft: 8 }}>
+                                <Text>Capacidade:</Text>
                                 <Picker
                                     selectedValue={capacity}
                                     prompt='Capacidade do tanque?'
@@ -217,31 +224,29 @@ const CreateTankForm = () => {
                             </FormItem>
                         </FormBox>
 
-                        <TitleBox>
-                            <Text>Quantidade atual:</Text>
-                            <Text style={{ marginLeft: 77 }}>Data de criação:</Text>
-                        </TitleBox>
                         <FormBox>
-                            <Input
-                                keyboardType='phone-pad'
-                                placeholder='Em litros'
-                                onChangeText={props.handleChange('qtdAtual')}
-                                value={props.values.qtdAtual}
-                            />
                             <FormItem>
-                                <DateButton onPress={() => setDatePicker(true)}>
+                                <Text>Quantidade atual:</Text>
+                                <Input
+                                    keyboardType='phone-pad'
+                                    placeholder='Em litros'
+                                    onChangeText={props.handleChange('qtdAtual')}
+                                    value={props.values.qtdAtual}
+                                />
+                            </FormItem>
+
+                            <FormItem>
+                                <Text>Data de criação:</Text>
+                                <FormButton onPress={() => setDatePicker(true)}>
                                     <TextButton style={{ color: '#000', fontSize: 15 }}>{today}</TextButton>
                                     <Icon name='calendar' size={25} color='#000' />
-                                </DateButton>
+                                </FormButton>
                             </FormItem>
                         </FormBox>
 
-                        <TitleBox>
-                            <Text>Responsável do tanque:</Text>
-                            <Text style={{ marginLeft: 44 }}>Status do tanque:</Text>
-                        </TitleBox>
                         <FormBox>
                             <FormItem>
+                                <Text>Responsável do tanque:</Text>
                                 <Picker
                                     selectedValue={responsible}
                                     prompt='Responsável do tanque?'
@@ -253,56 +258,49 @@ const CreateTankForm = () => {
                                     })}
                                 </Picker>
                             </FormItem>
-                            <FormItem style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                justifyContent: 'space-around'
-                            }}>
-                                <TextButton style={{
-                                    color: enabled ? '#2a9d8f' : '#767577',
-                                    fontSize: 20
-                                }}>{enabled ? 'Ativo' : 'Inativo'}</TextButton>
-                                <Switch
-                                    value={enabled}
-                                    trackColor={{ false: "#767577", true: "#b7e4c7" }}
-                                    thumbColor={enabled ? "#2a9d8f" : "#f4f3f4"}
-                                    onValueChange={() => setEnabled(!enabled)}
-                                />
+                            <FormItem>
+                                <Text>Status do tanque:</Text>
+                                <FormButton>
+                                    <TextButton style={{
+                                        color: enabled ? '#2a9d8f' : '#767577',
+                                        fontSize: 18
+                                    }}>{enabled ? 'Ativo' : 'Inativo'}</TextButton>
+                                    <Switch
+                                        value={enabled}
+                                        trackColor={{ false: "#767577", true: "#b7e4c7" }}
+                                        thumbColor={enabled ? "#2a9d8f" : "#f4f3f4"}
+                                        onValueChange={() => setEnabled(!enabled)}
+                                    />
+                                </FormButton>
                             </FormItem>
                         </FormBox>
 
                         <FormTitle style={{ marginTop: 6 }}>Localização</FormTitle>
                         <Divider />
 
-                        <Text>CEP:</Text>
-                        <FormBox>
-                            <FormItem style={{
-                                flexDirection: 'row',
-                                width: '100%',
-                                alignItems: 'center',
-                                justifyContent: 'space-between'
-                            }}>
+                        <FormBox style={{ marginBottom: 0 }}>
+                            <FormItem style={{ width: '85%', borderBottomRightRadius: 0, borderTopRightRadius: 0 }}>
+                                <Text>CEP:</Text>
                                 <Input
-                                    style={{ flex: 1 }}
                                     placeholder='Somente números'
+                                    keyboardType='phone-pad'
                                     onChangeText={props.handleChange('cep')}
                                     value={props.values.cep}
-                                    keyboardType='phone-pad'
+                                    onBlur={props.handleBlur('cep')}
                                 />
-                                <CepButton onPress={() => findCep(props.values.cep)}>
-                                    <Icon name='magnify' size={30} color='#FFF' />
-                                </CepButton>
                             </FormItem>
+
+                            <CepButton onPress={() => findCep(props.values.cep)}>
+                                <Icon name='magnify' size={30} color='#FFF' />
+                            </CepButton>
                         </FormBox>
+                        <ErrorText>{props.touched.cep && props.errors.cep}</ErrorText>
 
                         {show &&
                             <Fragment>
-                                <TitleBox>
-                                    <Text>Nome da cidade:</Text>
-                                    <Text style={{ marginLeft: 180 }}>UF:</Text>
-                                </TitleBox>
                                 <FormBox>
                                     <FormItem style={{ flex: 1 }}>
+                                        <Text>Nome da cidade:</Text>
                                         <Input
                                             style={{ width: '100%' }}
                                             placeholder='Nome da cidade'
@@ -312,8 +310,8 @@ const CreateTankForm = () => {
                                     </FormItem>
 
                                     <FormItem style={{ width: '18%', marginLeft: 8 }}>
+                                        <Text>UF:</Text>
                                         <Input
-                                            style={{ width: '100%' }}
                                             placeholder='UF'
                                             onChangeText={setUf}
                                             value={uf}
@@ -321,30 +319,27 @@ const CreateTankForm = () => {
                                     </FormItem>
                                 </FormBox>
 
-                                <Text>Bairro ou comunidade:</Text>
                                 <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                                    <Text>Bairro ou comunidade:</Text>
                                     <Input
-                                        style={{ width: '100%' }}
                                         placeholder='Nome do bairro ou comunidade'
                                         onChangeText={setBairro}
                                         value={bairro}
                                     />
                                 </FormItem>
 
-                                <Text>Rua:</Text>
                                 <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                                    <Text>Rua:</Text>
                                     <Input
-                                        style={{ width: '100%' }}
                                         placeholder='Nome da rua'
                                         onChangeText={setLogradouro}
                                         value={logradouro}
                                     />
                                 </FormItem>
 
-                                <Text>Referência:</Text>
                                 <FormItem style={{ width: '100%', marginBottom: 8 }}>
+                                    <Text>Referência:</Text>
                                     <Input
-                                        style={{ width: '100%' }}
                                         multiline
                                         placeholder='Ex: Próximo ao mercadinho do José'
                                         onChangeText={props.handleChange('complemento')}
@@ -384,6 +379,7 @@ const CreateTankForm = () => {
                 <DatePicker
                     chosenDate={selectedDate}
                     onSet={onChange}
+                    display='spinner'
                 />
             }
             {loading && <Loader />}

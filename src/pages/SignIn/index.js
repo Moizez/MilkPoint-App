@@ -6,8 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { AuthContext } from '../../contexts/auth'
 
 import {
-    Container, BoxImage, Text, InputBox, Input, IconBox, IconButton, EnterButton,
-    EnterText, Link, LinkText
+    Container, BoxImage, Title, Text, InputItemBox, InputBox, Input, IconBox, IconButton, EnterButton,
+    EnterText, Link, LinkText, InputContainer
 } from './styles'
 
 const SignIn = () => {
@@ -103,39 +103,48 @@ const SignIn = () => {
                         ]
                     }
                 ]}>
-                <Text>Realize sua autenticação</Text>
-                <InputBox>
-                    <Input
-                        placeholder='E-mail'
-                        autoCorrect={false}
-                        autoCapitalize='none'
-                        value={email}
-                        onChangeText={(text) => setEmail(text)}
-                    />
-                    <IconBox>
-                        <Icon name='email' size={28} color='#000' />
-                    </IconBox>
-                </InputBox>
+                <Title>Realize sua autenticação</Title>
+                <InputContainer>
+                    <InputBox>
+                        <Text>E-mail:</Text>
+                        <InputItemBox>
+                            <Input
+                                placeholder='E-mail'
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                value={email}
+                                onChangeText={(text) => setEmail(text)}
+                            />
+                            <IconBox>
+                                <Icon name='email' size={28} color='#000' />
+                            </IconBox>
+                        </InputItemBox>
+                    </InputBox>
 
-                <InputBox>
-                    <Input
-                        placeholder='Senha'
-                        autoCorrect={false}
-                        autoCapitalize='none'
-                        value={password}
-                        secureTextEntry={eye ? true : false}
-                        onChangeText={(text) => setPassword(text)}
-                    />
-                    {password ?
-                        <IconButton onPress={() => setEye(!eye)} activeOpacity={1}>
-                            <Icon name={eye ? 'eye' : 'eye-off'} size={28} color='#000' />
-                        </IconButton>
-                        :
-                        <IconBox>
-                            <Icon name='lock' size={28} color='#000' />
-                        </IconBox>
-                    }
-                </InputBox>
+                    <InputBox>
+                        <Text>Senha:</Text>
+                        <InputItemBox>
+                            <Input
+                                placeholder='Senha'
+                                autoCorrect={false}
+                                autoCapitalize='none'
+                                value={password}
+                                secureTextEntry={eye ? true : false}
+                                onChangeText={(text) => setPassword(text)}
+                            />
+
+                            {password ?
+                                <IconButton onPress={() => setEye(!eye)} activeOpacity={1}>
+                                    <Icon name={eye ? 'eye' : 'eye-off'} size={28} color='#000' />
+                                </IconButton>
+                                :
+                                <IconBox>
+                                    <Icon name='lock' size={28} color='#000' />
+                                </IconBox>
+                            }
+                        </InputItemBox>
+                    </InputBox>
+                </InputContainer>
 
                 <EnterButton onPress={handleLogin}>
                     {

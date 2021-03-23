@@ -16,6 +16,7 @@ import CreateTankForm from '../pages/Technician/CreateTankForm'
 import UpdateTankForm from '../pages/Technician/UpdateTankForm'
 import AppTips from '../pages/SingleStacks/AppTips'
 import RouteMap from '../pages/SingleStacks/RouteMap'
+import TankDetailsTechnician from '../pages/Technician/TankDetailsTechnician'
 
 const Stack = createStackNavigator()
 
@@ -63,6 +64,7 @@ const AppRoutes = () => {
                 <Stack.Screen name='UpdateTankForm' component={UpdateTankForm} />
                 <Stack.Screen name='AppTips' component={AppTips} />
                 <Stack.Screen name='RouteMap' component={RouteMap} />
+                <Stack.Screen name='TankDetailsTechnician' component={TankDetailsTechnician} />
             </Stack.Navigator>
         )
     }

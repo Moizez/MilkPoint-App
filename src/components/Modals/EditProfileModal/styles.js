@@ -20,22 +20,12 @@ export const FormTitle = styled.Text`
 `;
 
 export const Input = styled.TextInput`
-    height: 45px;
-    width: 48%;
+    height: 48px;
+    width: 100%;
     font-size: 16px;
-    background-color: #d3d3d3;
     color: #292b2c;
     border-radius: 5px;
     padding: 8px;
-`;
-
-export const DateButton = styled.View`
-    flex: 1;
-    flex-direction: row;
-    background-color: #d3d3d3;
-    border-radius: 5px;
-    align-items: center;
-    justify-content: space-around;
 `;
 
 export const TitleBox = styled.View`
@@ -43,21 +33,27 @@ export const TitleBox = styled.View`
 `;
 
 export const Text = styled.Text`
-    font-size: 12px;
-    color: #000;
+    margin: 5px 0 0 3px;
+    font-size: 11px;
+    color: #495057;
+`;
+
+export const ErrorText = styled.Text`
+    font-size: 11px;
+    color: #c1121f;
 `;
 
 export const FormBox = styled.View`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 `;
 
 export const FormItem = styled.View`
-    height: 45px;
-    width: 48%;
-    justify-content: center;
+    height: 48px;
+    width: 100%;
+    justify-content: space-around;
     background-color: #d3d3d3;
     border-radius: 5px;
 `;
@@ -111,16 +107,6 @@ export const SaveButton = styled.TouchableOpacity`
     margin-left: 10px;
 `;
 
-export const CepButton = styled.TouchableOpacity`
-    height: 45px;
-    width: 60px;
-    background-color: #292b2c;
-    align-items: center;
-    justify-content: center;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-`;
-
 export const TextButton = styled.Text`
     color: #FFF;
     font-weight: bold;
@@ -131,7 +117,7 @@ export const Divider = styled.View`
     width: 100%;    
     height: 0.5px;
     background-color: #CCB;
-    margin: 8px 0 8px 0;
+    margin: 8px 0 15px 0;
 `;
 
 

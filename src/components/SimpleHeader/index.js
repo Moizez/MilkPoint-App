@@ -24,4 +24,5 @@ const Container = styled.View`
 `;
 const Title = styled.Text`
     font-size: 20px;
+    text-align: center;
 `;

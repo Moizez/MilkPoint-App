@@ -20,46 +20,46 @@ export const FormTitle = styled.Text`
 `;
 
 export const Input = styled.TextInput`
-    height: 45px;
-    width: 48%;
+    height: 48px;
+    width: 100%;
     font-size: 16px;
-    background-color: #d3d3d3;
     color: #292b2c;
     border-radius: 5px;
     padding: 8px;
 `;
 
-export const DateButton = styled.TouchableOpacity`
-    flex: 1;
+export const FormButton = styled.TouchableOpacity`
+    height: 48px;
     flex-direction: row;
-    background-color: #d3d3d3;
     border-radius: 5px;
     align-items: center;
     justify-content: space-around;
 `;
 
-export const TitleBox = styled.View`
-    flex-direction: row;
+export const Text = styled.Text`
+    margin: 5px 0 0 3px;
+    font-size: 11px;
+    color: #495057;
 `;
 
-export const Text = styled.Text`
-    font-size: 12px;
-    color: #000;
+export const ErrorText = styled.Text`
+    font-size: 11px;
+    color: #c1121f;
+`;
+
+export const FormItem = styled.View`
+    height: 48px;
+    width: 48%;
+    justify-content: space-around;
+    background-color: #d3d3d3;
+    border-radius: 5px;
 `;
 
 export const FormBox = styled.View`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
-`;
-
-export const FormItem = styled.View`
-    height: 45px;
-    width: 48%;
-    justify-content: center;
-    background-color: #d3d3d3;
-    border-radius: 5px;
+    margin-bottom: 10px;
 `;
 
 export const MapButtonBox = styled.View`
@@ -112,8 +112,8 @@ export const SaveButton = styled.TouchableOpacity`
 `;
 
 export const CepButton = styled.TouchableOpacity`
-    height: 45px;
-    width: 60px;
+    height: 48px;
+    width: 50px;
     background-color: #292b2c;
     align-items: center;
     justify-content: center;
@@ -131,7 +131,7 @@ export const Divider = styled.View`
     width: 100%;    
     height: 0.5px;
     background-color: #CCB;
-    margin: 8px 0 8px 0;
+    margin: 8px 0 15px 0;
 `;
 
 
