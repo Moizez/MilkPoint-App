@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { RefreshControl } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import styled from 'styled-components/native'
 
 import Api from '../../../services/technician.api'
 
 import Header from '../../../components/Header'
 import ProfileList from '../ProfileList'
 import Loader from '../../../components/Loader'
-
-import {
-	Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso,
-	BoxIconUpdate, BoxIconDelete
-} from '../TechnicianHome/styles'
+import EmptyListCard from '../../../components/Cards/EmptyListCard'
 
 const ProducersPage = () => {
 
@@ -39,30 +35,32 @@ const ProducersPage = () => {
 	return (
 		<Container>
 			<Header msg={'Lista de produtores'} showNameList={false} />
-			<List
+			<FlatList
 				showsVerticalScrollIndicator={false}
 				data={producers}
 				keyExtractor={(item) => item.id}
 				refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
 				renderItem={({ item }) => <ProfileList data={item} />}
 				ListEmptyComponent={
-					<BoxNomeAviso>
-						<NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
-						<NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
-						<BoxIconAviso>
-							<BoxIconUpdate>
-								<Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-								<NomeAviso>Clique e arraste para atualizar a lista de produtores</NomeAviso>
-							</BoxIconUpdate>
-							<BoxIconDelete>
-								<Icon name='gesture-tap' color='#adb5bd' size={60} />
-								<NomeAviso>Clique no produtor para mais detalhes e opções</NomeAviso>
-							</BoxIconDelete>
-						</BoxIconAviso>
-					</BoxNomeAviso>}
+					<EmptyListCard
+						iconLeft={'gesture-swipe-down'}
+						iconRight={'toggle-switch'}
+						infoLeft={'Clique e arraste para atualizar a lista.'}
+						infoRight={'Clique no seletor para ativar ou desativar.'}
+					/>
+				}
 			/>
 			{loading && !isRefreshing && <Loader />}
 		</Container>
 	);
 }
 export default ProducersPage
+
+const Container = styled.View`
+    flex: 1;
+    background-color: #292b2c;
+`;
+const FlatList = styled.FlatList`
+    flex: 1;
+    background-color: #FFF;
+`;

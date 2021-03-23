@@ -31,18 +31,24 @@ const RequestProvider = ({ children }) => {
     }
 
     const loadResponsibleTank = async () => {
+        setLoading(true)
         const response = await ResponsibleApi.getResponsibleTanks()
         setResponsibleTank(response)
+        setLoading(false)
     }
 
     const loadPendingDepositsProducer = async () => {
+        setLoading(true)
         const response = await ProducerApi.getPendingDepositsProducer()
         setPendingDepositsList(response)
+        setLoading(false)
     }
 
     const loadPendingWithdrawalsDairy = async () => {
+        setLoading(true)
         const response = await DairyApi.getPendingWithdrawalsDairy()
         setPendingWithdrawalsList(response)
+        setLoading(false)
     }
 
     return (

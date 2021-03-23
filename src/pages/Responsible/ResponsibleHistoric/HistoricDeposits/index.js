@@ -1,21 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import React, { useState, useEffect } from 'react'
 import { RefreshControl, Platform, Modal } from 'react-native'
+import styled from 'styled-components/native'
 import moment from 'moment'
 
 import Api from '../../../../services/responsable.api'
+
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
 import { FabGroup } from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
+import EmptyListCard from '../../../../components/Cards/EmptyListCard'
+
 import {
     filterSpecificDay, filterByDateInterval, filterByBetweenDates
 } from '../../../../components/Helpers'
-
-import {
-    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
-} from '../styles'
 
 const HistoricDeposits = () => {
 
@@ -31,9 +30,11 @@ const HistoricDeposits = () => {
 
     useEffect(() => {
         const loadPage = async () => {
+            setLoading(true)
             const response = await Api.getAllDepositsOrWithdrawalsResolved('deposito')
             const result = await filterSpecificDay(selectedDate, response)
             setMainData(result)
+            setLoading(false)
         }
         loadPage()
     }, [selectedDate])
@@ -49,29 +50,39 @@ const HistoricDeposits = () => {
     }, [])
 
     const filterByStatus = async (value) => {
+        setLoading(true)
         const response = await Api.getAllDepositsConfirmedOrCanceledUser(value)
         setMainData(response)
+        setLoading(false)
     }
 
     const filterByName = async (value) => {
+        setLoading(true)
         const result = await Api.findByNameProducerOrDairy('deposito', value)
         setMainData(result)
+        setLoading(false)
     }
 
     const filterByLast15Days = () => {
+        setLoading(true)
         const result = filterByDateInterval(15, 'days', dataResolved)
         setMainData(result)
+        setLoading(false)
     }
 
     const filterByLast30Days = () => {
+        setLoading(true)
         const result = filterByDateInterval(1, 'month', dataResolved)
         setMainData(result)
+        setLoading(false)
     }
 
     const filterByTwoDates = (initialDate, finalDate) => {
+        setLoading(true)
         const date = finalDate ? finalDate : moment()
         const result = filterByBetweenDates(dataResolved, initialDate, date)
         setMainData(result)
+        setLoading(false)
     }
 
     const onChange = (currentDate) => {
@@ -94,27 +105,19 @@ const HistoricDeposits = () => {
 
     return (
         <Container>
-            <List
+            <FlatList
                 showsVerticalScrollIndicator={false}
                 data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <HistoricCard data={item} />}
                 ListEmptyComponent={
-                    <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
-                        <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
-                        <BoxIconAviso>
-                            <BoxIconUpdate>
-                                <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e arraste para atualizar as transações</NomeAviso>
-                            </BoxIconUpdate>
-                            <BoxIconDelete>
-                                <Icon name='calendar-search' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique no ícone do calendário para filtrar por data</NomeAviso>
-                            </BoxIconDelete>
-                        </BoxIconAviso>
-                    </BoxNomeAviso>
+                    <EmptyListCard
+                        iconLeft={'gesture-swipe-down'}
+                        iconRight={'calendar-search'}
+                        infoLeft={'Clique e arraste para atualizar a lista.'}
+                        infoRight={'Clique no ícone do calendário para filtrar a lista.'}
+                    />
                 }
                 initialNumToRender={10}
                 maxToRenderPerBatch={10}
@@ -157,3 +160,12 @@ const HistoricDeposits = () => {
 }
 
 export default HistoricDeposits
+
+const Container = styled.View`
+    flex: 1;
+    background-color: #292b2c;
+`;
+const FlatList = styled.FlatList`
+    flex: 1;
+    background-color: #FFF;
+`;

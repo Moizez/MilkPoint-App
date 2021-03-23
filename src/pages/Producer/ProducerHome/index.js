@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import { RefreshControl } from 'react-native'
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import styled from 'styled-components/native'
 
 import Api from '../../../services/api'
 
 import TanksList from '../TanksList'
 import Header from '../../../components/Header'
 import Loader from '../../../components/Loader'
-
-import {
-    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
-} from './styles'
+import EmptyListCard from '../../../components/Cards/EmptyListCard'
 
 const ProducerHome = () => {
 
@@ -38,27 +35,20 @@ const ProducerHome = () => {
     return (
         <Container>
             <Header msg={'Lista de tanques'} />
-            <List
+            <FlatList
                 showsVerticalScrollIndicator={false}
                 data={tanks}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <TanksList data={item} loadTanks={loadTanks} />}
                 ListEmptyComponent={
-                    <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Nenhum tanques disponíveis!</NomeAviso>
-                        <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
-                        <BoxIconAviso>
-                            <BoxIconUpdate>
-                                <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e arraste para atualizar os tanques</NomeAviso>
-                            </BoxIconUpdate>
-                            <BoxIconDelete>
-                                <Icon name='gesture-tap-hold' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e segure no tanque para mais detalhes</NomeAviso>
-                            </BoxIconDelete>
-                        </BoxIconAviso>
-                    </BoxNomeAviso>}
+                    <EmptyListCard
+                        iconLeft={'gesture-swipe-down'}
+                        iconRight={'gesture-tap-hold'}
+                        infoLeft={'Clique e arraste para atualizar a lista.'}
+                        infoRight={'Clique e segure no tanque para mais detalhes.'}
+                    />
+                }
             />
             {loading && !isRefreshing && <Loader />}
         </Container >
@@ -66,3 +56,12 @@ const ProducerHome = () => {
 }
 
 export default ProducerHome
+
+const Container = styled.View`
+    flex: 1;
+    background-color: #292b2c;
+`;
+const FlatList = styled.FlatList`
+    flex: 1;
+    background-color: #FFF;
+`;

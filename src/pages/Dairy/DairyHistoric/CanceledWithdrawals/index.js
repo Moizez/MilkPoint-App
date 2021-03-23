@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Fragment } from 'react';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
+import React, { useState, useEffect } from 'react'
 import { RefreshControl, Platform, Modal } from 'react-native'
+import styled from 'styled-components/native'
 import moment from 'moment'
 
 import Api from '../../../../services/dairy.api'
@@ -10,13 +10,11 @@ import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
 import { Fab } from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
+import EmptyListCard from '../../../../components/Cards/EmptyListCard'
+
 import {
     filterSpecificDay, filterByDateInterval, filterByBetweenDates
 } from '../../../../components/Helpers'
-
-import {
-    Container, BoxNomeAviso, NomeAviso, List, BoxIconAviso, BoxIconUpdate, BoxIconDelete
-} from '../styles'
 
 const CanceledWithdrawals = () => {
 
@@ -91,27 +89,19 @@ const CanceledWithdrawals = () => {
 
     return (
         <Container>
-            <List
+            <FlatList
                 showsVerticalScrollIndicator={false}
                 data={mainData}
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <HistoricCard data={item} />}
                 ListEmptyComponent={
-                    <BoxNomeAviso>
-                        <NomeAviso style={{ marginBottom: 70 }}>Não há registros!</NomeAviso>
-                        <NomeAviso style={{ marginBottom: 15 }}>{<Icon name='lightbulb-on-outline' color='#adb5bd' size={25} />} Dicas</NomeAviso>
-                        <BoxIconAviso>
-                            <BoxIconUpdate>
-                                <Icon name='gesture-swipe-down' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique e arraste para atualizar as transações</NomeAviso>
-                            </BoxIconUpdate>
-                            <BoxIconDelete>
-                                <Icon name='calendar-search' color='#adb5bd' size={60} />
-                                <NomeAviso>Clique no ícone do calendário para filtrar por data</NomeAviso>
-                            </BoxIconDelete>
-                        </BoxIconAviso>
-                    </BoxNomeAviso>
+                    <EmptyListCard
+                        iconLeft={'gesture-swipe-down'}
+                        iconRight={'calendar-search'}
+                        infoLeft={'Clique e arraste para atualizar a lista.'}
+                        infoRight={'Clique no ícone do calendário para filtrar a lista.'}
+                    />
                 }
             />
             {loading && <Loader />}
@@ -152,3 +142,12 @@ const CanceledWithdrawals = () => {
 }
 
 export default CanceledWithdrawals
+
+const Container = styled.View`
+    flex: 1;
+    background-color: #292b2c;
+`;
+const FlatList = styled.FlatList`
+    flex: 1;
+    background-color: #FFF;
+`;

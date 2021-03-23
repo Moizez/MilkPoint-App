@@ -18,7 +18,7 @@ const DatePicker = ({ chosenDate, onSet, display }) => {
                     setDate(currentDate)
                     onSet(currentDate)
                 }else {
-                    onSet(null)
+                    onSet(date)
                 }
             }}
             style={{ backgroundColor: '#FFF' }}
