@@ -3,65 +3,65 @@ import { useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import {
-    Container, BoxInput, Titulo, AreaInput, Input, CloseButton, SubmitButton,
-    SubmitText, Text, ButtonBox
+    Container, InputContainer, Titulo, InputBox, Input, CloseButton,
+    RecoverButton, RecoverText, Text
 } from './styles';
 
 const ForgotPassword = () => {
 
     const navigation = useNavigation()
 
-    const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
-    const [cpf, setCpf] = useState('');
+    const [phone, setPhone] = useState('');
+    const [doc, setDoc] = useState('');
 
     return (
         <Container behavior='padding'>
             <CloseButton onPress={() => navigation.goBack()}>
                 <Icon name='chevron-down' color='#000' size={40} />
             </CloseButton>
-            <BoxInput>
+            <InputContainer>
                 <Titulo>Recuperar senha</Titulo>
-                <Text>E-mail:</Text>
-                <AreaInput>
+                <InputBox>
+                    {email != 0 && <Text>E-mail:</Text>}
                     <Input
-                        placeholder="Ex: joao@gmail.com"
+                        placeholder="E-mail"
                         autoCorrect={false}
                         autoCapitalize="none"
                         value={email}
                         onChangeText={(text) => setEmail(text)}
                     />
-                </AreaInput>
-                <Text>Telefone:</Text>
-                <AreaInput>
+                </InputBox>
+
+                <InputBox>
+                    {phone != 0 && <Text>Telefone:</Text>}
                     <Input
-                        placeholder="Ex: (55)95555-5555"
+                        placeholder="Celular"
                         autoCorrect={false}
                         autoCapitalize="none"
                         keyboardType="phone-pad"
-                        value={nome}
-                        onChangeText={(text) => setNome(text)}
+                        value={phone}
+                        onChangeText={(text) => setPhone(text)}
                     />
-                </AreaInput>
-                <Text>CPF/CNPJ:</Text>
-                <AreaInput>
+                </InputBox>
+
+                <InputBox>
+                    {doc != 0 && <Text>CPF/CNPJ:</Text>}
                     <Input
                         placeholder="CPF/CNPJ"
                         autoCorrect={false}
                         autoCapitalize="none"
                         keyboardType="phone-pad"
-                        value={cpf}
-                        onChangeText={(text) => setCpf(text)}
+                        value={doc}
+                        onChangeText={(text) => setDoc(text)}
                     />
-                </AreaInput>
+                </InputBox>
 
-                <ButtonBox>
-                    <SubmitButton>
-                        <SubmitText>Recuperar</SubmitText>
-                    </SubmitButton>
-                </ButtonBox>
+                <RecoverButton>
+                    <RecoverText>Recuperar</RecoverText>
+                </RecoverButton>
 
-            </BoxInput>
+            </InputContainer>
         </Container>
     );
 }

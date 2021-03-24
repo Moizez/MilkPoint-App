@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Text, Dimensions } from 'react-native'
 import {useNavigation} from '@react-navigation/native'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styled from 'styled-components/native';
 
 import Movements from './Movements'
@@ -41,7 +40,11 @@ const TankDetails = ({ route }) => {
 
     return (
         <Container>
-            <SimpleHeader title={`Tanque: ${data.nome}`} />
+            <SimpleHeader
+             title={`Tanque: ${data.nome}`}
+             button={true}
+             action={() => navigation.goBack()}
+             />
             <TabView
                 navigationState={{ index, routes }}
                 renderScene={renderScene}
@@ -50,9 +53,6 @@ const TankDetails = ({ route }) => {
                 renderTabBar={renderTabBar}
             />
 
-            <CloseButton onPress={() => navigation.goBack()}>
-                <Icon name='chevron-down' color='#292b2c' size={24} />
-            </CloseButton>
         </Container>
     );
 }

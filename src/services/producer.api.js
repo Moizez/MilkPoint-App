@@ -13,7 +13,7 @@ export default {
 
     //Carregar lista de produtores
     getProducer: async () => {
-        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const request = await fetch(`${BASE.API}/produtor/${user.id}`)
         const response = await request.json()
@@ -22,7 +22,7 @@ export default {
 
     //Carregar lista de depósitos pendentes do produtor logado
     getPendingDepositsProducer: async () => {
-        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const request = await fetch(`${BASE.API}/deposito/pendentes/${user.id}`)
         const response = await request.json()
@@ -52,7 +52,7 @@ export default {
     },
 
     getAllDepositsConfirmedOrCanceledUser: async (status) => {
-        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const request = await fetch(`${BASE.API}/deposito/${status}/${user.id}`)
 
@@ -61,7 +61,7 @@ export default {
     },
 
     setDeposit: async (quantidade, idTanque) => {
-        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const data = new FormData()
         data.append("quantidade", quantidade)
@@ -72,7 +72,7 @@ export default {
     },
 
     setCancelDeposit: async (confirmacao, idDeposito) => {
-        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const data = new FormData();
         data.append("confirmacao", confirmacao)

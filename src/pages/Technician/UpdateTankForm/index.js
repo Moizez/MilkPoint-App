@@ -83,6 +83,14 @@ const UpdateTankForm = ({ route }) => {
         loadResponsibles()
     }, [])
 
+    const checkCapacity = () => {
+        if (capacity === 'MIL') return 1000
+        else if (capacity === 'DOISMIL') return 2000
+        else if (capacity === 'TRESMIL') return 3000
+        else if (capacity === 'QUATROMIL') return 4000
+        else return 4500
+    }
+
     const verifyLocationPermission = async () => {
         try {
             const granted = await PermissionsAndroid.request(
@@ -129,18 +137,30 @@ const UpdateTankForm = ({ route }) => {
                 }}
                 validationSchema={formSchema}
                 onSubmit={async (values) => {
-                    await Api.updateTank(data.id, values.nome, milkType, values.qtdAtual, responsible,
-                        enabled, values.cep, values.localidade, values.uf, values.bairro,
-                        values.logradouro, values.complemento, latitude, longitude)
-                    setLottie(success)
-                    setTypeMessage('Tanque atualizado com sucesso!')
-                    openWarningModal()
-                    setTimeout(() => {
-                        closeWarningModal()
-                        navigation.goBack()
-                        loadActiveTanks()
-                        loadInactiveTanks()
-                    }, 2000);
+                    if (values.qtdAtual > checkCapacity()) {
+                        setLottie(error)
+                        setTypeMessage('A quantidade atual excede o valor máximo!')
+                        openWarningModal()
+                        return
+                    } else if (latitude === 0 || longitude === 0) {
+                        setLottie(error)
+                        setTypeMessage('O tanque ainda não foi marcado!')
+                        openWarningModal()
+                        return
+                    } else {
+                        await Api.updateTank(data.id, values.nome, milkType, values.qtdAtual, responsible,
+                            enabled, values.cep, values.localidade, values.uf, values.bairro,
+                            values.logradouro, values.complemento, latitude, longitude)
+                        setLottie(success)
+                        setTypeMessage('Tanque atualizado com sucesso!')
+                        openWarningModal()
+                        setTimeout(() => {
+                            closeWarningModal()
+                            navigation.goBack()
+                            loadActiveTanks()
+                            loadInactiveTanks()
+                        }, 2000);
+                    }
                 }}
             >
                 {(props) => (

@@ -138,6 +138,7 @@ const HistoricWithdrawals = () => {
                 filterByTwoDates={filterByTwoDates}
                 isLoading={setLoading}
                 openWarning={openWarningModal}
+                type={false}
             />
 
             <Modal

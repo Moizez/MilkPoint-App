@@ -22,7 +22,6 @@ const RequestCard = ({ data, showModal, role, roleName }) => {
 
     return (
         <Container>
-
             <CardBox style={{ elevation: 5 }}>
 
                 <CardInfoBox>
@@ -35,10 +34,11 @@ const RequestCard = ({ data, showModal, role, roleName }) => {
                         <BoldText>Pedido em: <Text>{date}</Text></BoldText>
                     </InfoBox>
                     <DividerV />
-                    <IconBox>
+
+                    <IconBox style={{ backgroundColor: user.perfil === 2 ? '#6c757d' : '#cc444b' }}>
                         <IconButton onPress={showModal}>
                             <Icon name='bucket' size={30} color='#e9ecef' />
-                            <IconText>Cancelar</IconText>
+                            <IconText>{user.perfil === 2 ? 'Pendente' : 'Cancelar'}</IconText>
                         </IconButton>
                     </IconBox>
                 </CardInfoBox>

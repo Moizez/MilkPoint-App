@@ -14,6 +14,7 @@ export const BoxImage = styled.View`
 export const Title = styled.Text`
     font-size: 18px;
     margin-bottom: 12px;
+    color: #292b2c;
 `;
 
 export const Text = styled.Text`
@@ -23,59 +24,50 @@ export const Text = styled.Text`
 `;
 
 export const InputContainer = styled.View`
-    align-items: center;
-    justify-content: center;
-    padding: 5px;
+    width: 100%;
 `;
 
 export const InputBox = styled.View`
-    height: 48px;
     width: 100%;
+    flex-direction: row;
+    border-radius: 5px;
     background-color: #DDD;
     margin-bottom: 10px;
-    justify-content: space-around;
-    border-radius: 5px;
+    justify-content: center;
+    align-items: center;
 `;
 
 export const InputItemBox = styled.View`
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+    height: 48px;
+    width: 85%;
+    justify-content: space-around;
 `;
 
 export const Input = styled.TextInput.attrs({
     placeholderTextColor: '#495057',
 })`
-    width: 90%;
-    font-size: 16px;
+    width: 100%;
+    font-size: 18px;
     color: #292b2c;
     padding-left: 15px;
 `;
 
-export const IconBox = styled.View`
+export const IconBox = styled.TouchableOpacity`
     height: 48px;
-    width: 40px;
+    width: 15%;
     align-items: center;
     justify-content: center;
-    padding-right: 10px;
-    margin-bottom: 6px;
-`;
-
-export const IconButton = styled.TouchableOpacity`
-    height: 48px;
-    width: 40px;
-    align-items: center;
-    justify-content: center;
-    padding-right: 10px;
-    margin-bottom: 6px;
+    background-color: #CCC;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
 `;
 
 export const EnterButton = styled.TouchableOpacity`
     align-items: center;
     justify-content: center;
     background-color: #292b2c;
-    width: 100%;
-    height: 45px;
+    width: 272px;
+    height: 48px;
     border-radius: 5px;
     margin-top: 10px;
 `;
@@ -87,7 +79,6 @@ export const EnterText = styled.Text`
 
 export const Link = styled.TouchableOpacity`
     margin-top: 5px;
-    margin-bottom: 10px;
 `;
 
 export const LinkText = styled.Text`

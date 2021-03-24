@@ -40,7 +40,11 @@ const EditProfileModal = ({ user, loadUser, closeModal }) => {
 
     return (
         <Container>
-            <SimpleHeader title={'Edição de Dados'} />
+            <SimpleHeader
+                title={'Edição de Dados'}
+                button={true}
+                action={closeModal}
+            />
 
             <Formik
                 initialValues={{

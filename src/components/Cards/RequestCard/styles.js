@@ -34,7 +34,6 @@ export const IconBox = styled.View`
     flex: 0.5;
     align-items: center;
     justify-content: center;
-    background-color: #cc444b;
     border-top-right-radius: 5px;
 `;
 

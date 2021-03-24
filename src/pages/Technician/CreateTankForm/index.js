@@ -83,12 +83,19 @@ const CreateTankForm = () => {
                 label: i.nome,
                 value: i.id,
                 color: '#000'
-
             }))
             setResponsibles(result)
         }
         loadResponsibles()
     }, [])
+
+    const checkCapacity = () => {
+        if (capacity === 'MIL') return 1000
+        else if (capacity === 'DOISMIL') return 2000
+        else if (capacity === 'TRESMIL') return 3000
+        else if (capacity === 'QUATROMIL') return 4000
+        else return 4500
+    }
 
     const verifyLocationPermission = async () => {
         try {
@@ -163,18 +170,30 @@ const CreateTankForm = () => {
                 }}
                 validationSchema={formSchema}
                 onSubmit={async (values) => {
-                    await Api.createTank(values.nome, milkType, capacity, values.qtdAtual, selectedDate,
-                        responsible, enabled, values.cep, localidade, uf, bairro, logradouro,
-                        values.complemento, latitude, longitude)
-                    setLottie(success)
-                    setTypeMessage('Tanque criado com sucesso!')
-                    openWarningModal()
-                    setTimeout(() => {
-                        closeWarningModal()
-                        navigation.goBack()
-                        loadActiveTanks()
-                        loadInactiveTanks()
-                    }, 2000);
+                    if (values.qtdAtual > checkCapacity()) {
+                        setLottie(error)
+                        setTypeMessage('A quantidade atual excede o valor máximo!')
+                        openWarningModal()
+                        return
+                    } else if (latitude === 0 || longitude === 0) {
+                        setLottie(error)
+                        setTypeMessage('O tanque ainda não foi marcado!')
+                        openWarningModal()
+                        return
+                    } else {
+                        await Api.createTank(values.nome, milkType, capacity, values.qtdAtual, selectedDate,
+                            responsible, enabled, values.cep, localidade, uf, bairro, logradouro,
+                            values.complemento, latitude, longitude)
+                        setLottie(success)
+                        setTypeMessage('Tanque criado com sucesso!')
+                        openWarningModal()
+                        setTimeout(() => {
+                            closeWarningModal()
+                            navigation.goBack()
+                            loadActiveTanks()
+                            loadInactiveTanks()
+                        }, 2000);
+                    }
                 }}
             >
                 {(props) => (

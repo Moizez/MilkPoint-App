@@ -45,7 +45,11 @@ const TankDetailsTechnician = ({ route }) => {
     return (
         <Fragment>
 
-            <SimpleHeader title='Caracteristicas' />
+            <SimpleHeader
+                title='Caracteristicas'
+                button={true}
+                action={() => navigation.goBack()}
+            />
             <Container>
 
                 <TechnicalBox>

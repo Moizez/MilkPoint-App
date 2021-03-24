@@ -20,7 +20,7 @@ export default {
         cep, localidade, uf, bairro, logradouro, complemento, latitude, longitude
     ) => {
 
-        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const headers = new Headers();
         headers.append("Content-Type", "application/json")
@@ -59,7 +59,7 @@ export default {
     updateTank: async (idTank, nome, tipo, qtdAtual, responsavelId, status, cep, localidade,
         uf, bairro, logradouro, complemento, latitude, longitude) => {
 
-        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const headers = new Headers();
         headers.append("Content-Type", "application/json")

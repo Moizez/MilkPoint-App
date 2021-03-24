@@ -140,6 +140,7 @@ const HistoricDeposits = () => {
                 filterByTwoDates={filterByTwoDates}
                 isLoading={setLoading}
                 openWarning={openWarningModal}
+                type={true}
             />
 
             <Modal

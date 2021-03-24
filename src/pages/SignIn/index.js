@@ -6,8 +6,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import { AuthContext } from '../../contexts/auth'
 
 import {
-    Container, BoxImage, Title, Text, InputItemBox, InputBox, Input, IconBox, IconButton, EnterButton,
-    EnterText, Link, LinkText, InputContainer
+    Container, BoxImage, Title, Text, InputItemBox, InputBox,
+    Input, IconBox, EnterButton, EnterText, Link, LinkText
 } from './styles'
 
 const SignIn = () => {
@@ -18,7 +18,7 @@ const SignIn = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const { signIn, loadingAuth } = useContext(AuthContext)
-    const [eye, setEye] = useState(false)
+    const [eye, setEye] = useState(true)
 
     async function handleLogin() {
         await signIn(email.trim(), password.trim())
@@ -31,7 +31,6 @@ const SignIn = () => {
 
     //Ciclo da animação da tela de login
     useEffect(() => {
-        setEye(true)
         keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', keyboardDidShow)
         keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', keyboardDidHide)
 
@@ -51,7 +50,7 @@ const SignIn = () => {
     }, [])
 
     //Função para verificar se o teclado está aberto e começar a animação da logo
-    function keyboardDidShow() {
+    const keyboardDidShow = () => {
         Animated.parallel([
 
             Animated.timing(logo.x, {
@@ -68,7 +67,7 @@ const SignIn = () => {
     }
 
     //Função para verificar se o teclado está fechado e retornar o tamanho da logo
-    function keyboardDidHide() {
+    const keyboardDidHide = () => {
         Animated.parallel([
 
             Animated.timing(logo.x, {
@@ -91,60 +90,57 @@ const SignIn = () => {
                     width: logo.x,
                     height: logo.y,
                 }}
-                    source={require('../../assets/images/mkLogo.png')} />
+                    source={require('../../assets/images/mkLogo.png')}
+                />
             </BoxImage>
             <Animated.View
                 style={[
                     styles.boxInput,
                     {
                         opacity: opacity,
-                        transform: [
-                            { translateY: offset.y }
-                        ]
+                        transform: [{ translateY: offset.y }]
                     }
                 ]}>
                 <Title>Realize sua autenticação</Title>
-                <InputContainer>
-                    <InputBox>
-                        <Text>E-mail:</Text>
-                        <InputItemBox>
-                            <Input
-                                placeholder='E-mail'
-                                autoCorrect={false}
-                                autoCapitalize='none'
-                                value={email}
-                                onChangeText={(text) => setEmail(text)}
-                            />
-                            <IconBox>
-                                <Icon name='email' size={28} color='#000' />
-                            </IconBox>
-                        </InputItemBox>
-                    </InputBox>
+                <InputBox>
+                    <InputItemBox>
+                        {email != 0 && <Text>E-mail:</Text>}
+                        <Input
+                            focusable={true}
+                            placeholder='E-mail'
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            value={email}
+                            onChangeText={(text) => setEmail(text)}
+                        />
+                    </InputItemBox>
+                    <IconBox disabled={true}>
+                        <Icon name='email' size={28} color='#000' />
+                    </IconBox>
+                </InputBox>
 
-                    <InputBox>
-                        <Text>Senha:</Text>
-                        <InputItemBox>
-                            <Input
-                                placeholder='Senha'
-                                autoCorrect={false}
-                                autoCapitalize='none'
-                                value={password}
-                                secureTextEntry={eye ? true : false}
-                                onChangeText={(text) => setPassword(text)}
-                            />
-
-                            {password ?
-                                <IconButton onPress={() => setEye(!eye)} activeOpacity={1}>
-                                    <Icon name={eye ? 'eye' : 'eye-off'} size={28} color='#000' />
-                                </IconButton>
-                                :
-                                <IconBox>
-                                    <Icon name='lock' size={28} color='#000' />
-                                </IconBox>
-                            }
-                        </InputItemBox>
-                    </InputBox>
-                </InputContainer>
+                <InputBox>
+                    <InputItemBox>
+                        {password != 0 && <Text>Senha:</Text>}
+                        <Input
+                            placeholder='Senha'
+                            autoCorrect={false}
+                            autoCapitalize='none'
+                            value={password}
+                            secureTextEntry={eye ? true : false}
+                            onChangeText={(text) => setPassword(text)}
+                        />
+                    </InputItemBox>
+                    {password ?
+                        <IconBox onPress={() => setEye(!eye)} activeOpacity={1}>
+                            <Icon name={eye ? 'eye' : 'eye-off'} size={28} color='#000' />
+                        </IconBox>
+                        :
+                        <IconBox disabled={true}>
+                            <Icon name='lock' size={28} color='#000' />
+                        </IconBox>
+                    }
+                </InputBox>
 
                 <EnterButton onPress={handleLogin}>
                     {
@@ -168,8 +164,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        width: '75%',
-        paddingBottom: 30
+        paddingHorizontal: 45,
+        paddingBottom: 50,
     }
 })
 

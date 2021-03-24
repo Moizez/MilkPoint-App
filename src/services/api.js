@@ -32,7 +32,7 @@ export default {
     },
 
     getUser: async () => {
-        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const request = await fetch(`${BASE.API}/${setRole(user.perfil)}/${user.id}`)
         const response = await request.json()
@@ -43,7 +43,7 @@ export default {
         nome, apelido, cep, localidade, uf, bairro, logradouro, complemento
     ) => {
 
-        const user = JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
 
         const headers = new Headers();
         headers.append("Content-Type", "application/json")

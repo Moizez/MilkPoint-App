@@ -9,14 +9,12 @@ const Fab = ({
     filterByLast30Days, filterByTwoDates, setLoading, openWarning, type
 }) => {
 
-    const types = type ? '#2a9d8f' : '#dd2c2f'
-
     const [state, setState] = useState({ open: false })
     const onStateChange = ({ open }) => setState({ open })
     const { open } = state
 
     const [iconType, setIconType] = useState('calendar-search')
-    const [iconColor, setIconColor] = useState(types)
+    const [iconColor, setIconColor] = useState(type ? '#2a9d8f' : '#dd2c2f')
     const [dateModal, setDateModal] = useState(false)
 
     const openCalendar = () => setShowDatePicker(true)
@@ -79,7 +77,7 @@ const Fab = ({
 
 const FabGroup = ({
     setShowDatePicker, changeStatus, filterByName, filterByLast15Days, filterByLast30Days,
-    filterByTwoDates, setLoading, openWarning
+    filterByTwoDates, setLoading, openWarning, type
 }) => {
 
     const [state, setState] = useState({ open: false })
@@ -109,7 +107,7 @@ const FabGroup = ({
                 actions={[
                     {
                         icon: 'delete-circle',
-                        label: 'Recusados',
+                        label: `Recusad${type ? 'os' : 'as'}`,
                         onPress: () => {
                             changeStatus('cancelados')
                             changeIconStyles('delete-circle', '#cc444b')
@@ -117,7 +115,7 @@ const FabGroup = ({
                     },
                     {
                         icon: 'check-circle',
-                        label: 'Confirmados',
+                        label: `Confirmad${type ? 'os' : 'as'}`,
                         onPress: () => {
                             changeStatus('confirmados')
                             changeIconStyles('check-circle', '#2a9d8f')
