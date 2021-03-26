@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { RefreshControl, Platform, Modal } from 'react-native'
 import styled from 'styled-components/native'
 import moment from 'moment'
 
 import Api from '../../../../services/responsable.api'
+import { AuthContext } from '../../../../contexts/auth'
 
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
@@ -16,7 +17,9 @@ import {
     filterSpecificDay, filterByDateInterval, filterByBetweenDates
 } from '../../../../components/Helpers'
 
-const HistoricDeposits = () => {
+const HistoricDeposits = ({ data, loadDepositData }) => {
+
+    const { user } = useContext(AuthContext)
 
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -25,29 +28,17 @@ const HistoricDeposits = () => {
     const [typeMessage, setTypeMessage] = useState('')
     const [selectedDate, setSelectedDate] = useState(new Date())
 
-    const [dataResolved, setDataResolved] = useState([])
     const [mainData, setMainData] = useState([])
 
     useEffect(() => {
         const loadPage = async () => {
             setLoading(true)
-            const response = await Api.getAllDepositsOrWithdrawalsResolved('deposito')
-            const result = await filterSpecificDay(selectedDate, response)
+            const result = await filterSpecificDay(selectedDate, data)
             setMainData(result)
             setLoading(false)
         }
         loadPage()
     }, [selectedDate])
-
-    useEffect(() => {
-        const getDepositsResolvedByUser = async () => {
-            setLoading(true)
-            const response = await Api.getAllDepositsOrWithdrawalsResolved('deposito')
-            setDataResolved(response)
-            setLoading(false)
-        }
-        getDepositsResolvedByUser()
-    }, [])
 
     const filterByStatus = async (value) => {
         setLoading(true)
@@ -65,14 +56,14 @@ const HistoricDeposits = () => {
 
     const filterByLast15Days = () => {
         setLoading(true)
-        const result = filterByDateInterval(15, 'days', dataResolved)
+        const result = filterByDateInterval(15, 'days', data)
         setMainData(result)
         setLoading(false)
     }
 
     const filterByLast30Days = () => {
         setLoading(true)
-        const result = filterByDateInterval(1, 'month', dataResolved)
+        const result = filterByDateInterval(1, 'month', data)
         setMainData(result)
         setLoading(false)
     }
@@ -80,7 +71,7 @@ const HistoricDeposits = () => {
     const filterByTwoDates = (initialDate, finalDate) => {
         setLoading(true)
         const date = finalDate ? finalDate : moment()
-        const result = filterByBetweenDates(dataResolved, initialDate, date)
+        const result = filterByBetweenDates(data, initialDate, date)
         setMainData(result)
         setLoading(false)
     }
@@ -93,7 +84,7 @@ const HistoricDeposits = () => {
 
     const onRefreshList = () => {
         setIsRefreshing(true)
-        setSelectedDate(moment())
+        loadDepositData()
         setIsRefreshing(false)
     }
 

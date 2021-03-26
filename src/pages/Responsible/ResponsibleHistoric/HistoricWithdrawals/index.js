@@ -15,7 +15,7 @@ import {
     filterSpecificDay, filterByDateInterval, filterByBetweenDates
 } from '../../../../components/Helpers'
 
-const HistoricWithdrawals = () => {
+const HistoricWithdrawals = ({data}) => {
 
     const [isRefreshing, setIsRefreshing] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -30,8 +30,7 @@ const HistoricWithdrawals = () => {
     useEffect(() => {
         const loadPage = async () => {
             setLoading(true)
-            const response = await Api.getAllDepositsOrWithdrawalsResolved('retirada')
-            const result = await filterSpecificDay(selectedDate, response)
+            const result = await filterSpecificDay(selectedDate, data)
             setMainData(result)
             setLoading(false)
         }
@@ -41,8 +40,7 @@ const HistoricWithdrawals = () => {
     useEffect(() => {
         const getDepositsResolvedByUser = async () => {
             setLoading(true)
-            const response = await Api.getAllDepositsOrWithdrawalsResolved('retirada')
-            setDataResolved(response)
+            setDataResolved(data)
             setLoading(false)
         }
         getDepositsResolvedByUser()

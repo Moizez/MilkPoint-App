@@ -13,7 +13,7 @@ export default {
 
     //Carregar lista de laticínios
     getDairy: async () => {
-        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user') || [])
 
         const request = await fetch(`${BASE.API}/laticinio/${user.id}`)
         const response = await request.json()
@@ -22,7 +22,7 @@ export default {
 
     //Carregar lista de retiradas pendentes do laticinio logado
     getPendingWithdrawalsDairy: async () => {
-        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user') || [])
 
         const request = await fetch(`${BASE.API}/retirada/pendentes/${user.id}`)
         const response = await request.json()
@@ -52,7 +52,7 @@ export default {
     },
 
     getAllWithdrawalsConfirmedOrCanceledUser: async (status) => {
-        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user') || [])
 
         const request = await fetch(`${BASE.API}/retirada/${status}/${user.id}`)
 
@@ -61,7 +61,7 @@ export default {
     },
 
     setWithdrawal: async (quantidade, idTanque) => {
-        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user') || [])
 
         const data = new FormData()
         data.append("quantidade", quantidade)
@@ -72,7 +72,7 @@ export default {
     },
 
     setCancelWithdrawal: async (confirmacao, idRetirada) => {
-        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user'))
+        const user = await JSON.parse(await AsyncStorage.getItem('@milkpoint:user') || [])
 
         const data = new FormData();
         data.append("confirmacao", confirmacao)

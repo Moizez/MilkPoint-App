@@ -132,8 +132,8 @@ android {
         applicationId "com.milkpoint"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 5
-        versionName "2.0"
+        versionCode 8
+        versionName "v2021.03.23"
         multiDexEnabled true
     }
     signingConfigs {

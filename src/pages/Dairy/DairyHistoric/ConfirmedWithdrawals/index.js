@@ -120,7 +120,7 @@ const ConfirmedWithdrawals = () => {
                 filterByTwoDates={filterByTwoDates}
                 isLoading={setLoading}
                 openWarning={openWarningModal}
-                type={false}
+                type={true}
             />
 
             <Modal
