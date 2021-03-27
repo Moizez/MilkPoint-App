@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, Fragment } from 'react'
-import { FAB } from 'react-native-paper'
+import FAB  from 'react-native-paper/lib/module/components/FAB/FAB'
 import { StyleSheet, Dimensions, Text } from 'react-native'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { useNavigation } from '@react-navigation/native'

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Text, Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
-import Api from '../../../services/responsable.api'
+import { RequestContext } from '../../../contexts/request'
 
 import Header from '../../../components/Header'
 import HistoricDeposits from './HistoricDeposits'
@@ -13,30 +13,22 @@ const initialLayout = { width: Dimensions.get('window').width };
 
 const ResponsibleHistoric = () => {
 
+    const {
+        resolvedDeposits, loadResolvedDeposits,
+        resolvedWithdrawals, loadResolvedWithdrawals,
+        loading
+    } = useContext(RequestContext)
+
     const [index, setIndex] = useState(0)
-    const [depositData, setDepositData] = useState([])
-    const [withdrawalData, setWithdrawal] = useState([])
-
-
     const [routes] = useState([
         { key: 'first', title: 'Depósitos' },
         { key: 'second', title: 'Retiradas' },
     ])
 
 
-    const loadDepositData = async () => {
-        const response = await Api.getAllDepositsOrWithdrawalsResolved('deposito')
-        setDepositData(response)
-    }
-
-    const loadWithdrawalData = async () => {
-        const response = await Api.getAllDepositsOrWithdrawalsResolved('retirada')
-        setWithdrawal(response)
-    }
-
     useEffect(() => {
-        loadDepositData()
-        loadWithdrawalData()
+        loadResolvedDeposits()
+        loadResolvedWithdrawals()
     }, [])
 
     const renderTabBar = props => (
@@ -52,8 +44,18 @@ const ResponsibleHistoric = () => {
     );
 
     const renderScene = SceneMap({
-        first: () => <HistoricDeposits data={depositData} loadDepositData={loadDepositData} />,
-        second: () => <HistoricWithdrawals data={withdrawalData} loadWithdrawalData={loadWithdrawalData} />,
+        first: () =>
+            <HistoricDeposits
+                data={resolvedDeposits}
+                loading={loading}
+                load={loadResolvedDeposits}
+            />,
+        second: () =>
+            <HistoricWithdrawals
+                data={resolvedWithdrawals}
+                loading={loading}
+                load={loadResolvedWithdrawals}
+            />
     });
 
     return (

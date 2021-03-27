@@ -3,8 +3,6 @@ import { RefreshControl, Platform, Modal } from 'react-native'
 import styled from 'styled-components/native'
 import moment from 'moment'
 
-import Api from '../../../../services/producer.api'
-
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
@@ -16,77 +14,56 @@ import {
     filterSpecificDay, filterByDateInterval, filterByBetweenDates
 } from '../../../../components/Helpers'
 
-const CanceledDeposits = () => {
+const CanceledDeposits = ({ data, loading, load }) => {
 
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [datePicker, setDatePicker] = useState(false)
     const [warningModal, setWarningModal] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
-    const [selectedDate, setSelectedDate] = useState(new Date())
-
-    const [dataResolved, setDataResolved] = useState([])
+    const [selectedDate, setSelectedDate] = useState(moment())
     const [mainData, setMainData] = useState([])
 
     useEffect(() => {
         const loadPage = async () => {
-            setLoading(true)
-            const response = await Api.getAllDepositsConfirmedOrCanceledUser('cancelados')
-            const result = await filterSpecificDay(selectedDate, response)
+            const result = await filterSpecificDay(moment(), data)
             setMainData(result)
-            setLoading(false)
         }
         loadPage()
-    }, [selectedDate])
-
-    useEffect(() => {
-        const getDepositsResolvedByUser = async () => {
-            setLoading(true)
-            const response = await Api.getAllDepositsConfirmedOrCanceledUser('cancelados')
-            setDataResolved(response)
-            setLoading(false)
-        }
-        getDepositsResolvedByUser()
     }, [])
 
     const filterByQuantityLiters = (value) => {
-        setLoading(true)
-        const result = dataResolved.filter(i => i.quantidade === value)
+        const result = data.filter(i => i.quantidade == value)
         setMainData(result)
-        setLoading(false)
     }
 
     const filterByLast15Days = () => {
-        setLoading(true)
-        const result = filterByDateInterval(15, 'days', dataResolved)
+        const result = filterByDateInterval(15, 'days', data)
         setMainData(result)
-        setLoading(false)
     }
 
     const filterByLast30Days = () => {
-        setLoading(true)
-        const result = filterByDateInterval(1, 'month', dataResolved)
+        const result = filterByDateInterval(1, 'month', data)
         setMainData(result)
-        setLoading(false)
     }
 
     const filterByTwoDates = (initialDate, finalDate) => {
-        setLoading(true)
         const date = finalDate ? finalDate : moment()
-        const result = filterByBetweenDates(dataResolved, initialDate, date)
+        const result = filterByBetweenDates(data, initialDate, date)
         setMainData(result)
-        setLoading(false)
     }
 
-    const onChange = (currentDate) => {
+    const onChange = async (currentDate) => {
         setDatePicker(Platform.OS === 'ios')
         let date = currentDate ? currentDate : moment()
+        const result = await filterSpecificDay(date, data)
         setSelectedDate(date)
+        setMainData(result)
     }
 
     const onRefreshList = () => {
         setIsRefreshing(true)
         setSelectedDate(moment())
+        load()
         setIsRefreshing(false)
     }
 
@@ -105,7 +82,7 @@ const CanceledDeposits = () => {
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <HistoricCard data={item} />}
                 ListEmptyComponent={
-                   <EmptyListCard
+                    <EmptyListCard
                         iconLeft={'gesture-swipe-down'}
                         iconRight={'calendar-search'}
                         infoLeft={'Clique e arraste para atualizar a lista.'}
@@ -128,7 +105,6 @@ const CanceledDeposits = () => {
                 filterByLast15Days={filterByLast15Days}
                 filterByLast30Days={filterByLast30Days}
                 filterByTwoDates={filterByTwoDates}
-                isLoading={setLoading}
                 openWarning={openWarningModal}
                 type={false}
             />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, Fragment } from 'react';
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Modal } from 'react-native'
 
 import WarningModal from '../components/Modals/WarningModal'
@@ -72,7 +72,8 @@ const AuthProvider = ({ children }) => {
     //Função para deslogar o usuário
     const logOut = async () => {
         setTime(true)
-        await AsyncStorage.removeItem('@milkpoint:user')
+        await AsyncStorage.clear()
+        //await AsyncStorage.removeItem('@milkpoint:user')
             .then(() => {
                 setTimeout(() => {
                     setUser(null)

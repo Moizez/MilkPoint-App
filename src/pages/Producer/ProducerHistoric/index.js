@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Text, Dimensions } from 'react-native'
 import styled from 'styled-components/native'
-import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view'
+
+import { RequestContext } from '../../../contexts/request'
 
 import Header from '../../../components/Header'
 import ConfirmedDeposits from './ConfirmedDeposits'
@@ -11,11 +13,22 @@ const initialLayout = { width: Dimensions.get('window').width };
 
 const ProducerHistoric = () => {
 
+    const {
+        confirmedDeposits, loadConfirmedDeposits,
+        canceledDeposits, loadCanceledDeposits,
+        loading
+    } = useContext(RequestContext)
+
     const [index, setIndex] = useState(0)
     const [routes] = useState([
         { key: 'first', title: 'Confirmados' },
         { key: 'second', title: 'Cancelados' },
     ])
+
+    useEffect(() => {
+        loadConfirmedDeposits()
+        loadCanceledDeposits()
+    }, [])
 
     const renderTabBar = props => (
         <TabBar {...props}
@@ -30,8 +43,16 @@ const ProducerHistoric = () => {
     );
 
     const renderScene = SceneMap({
-        first: () => <ConfirmedDeposits />,
-        second: () => <CanceledDeposits />,
+        first: () => <ConfirmedDeposits
+            data={confirmedDeposits}
+            loading={loading}
+            load={loadConfirmedDeposits}
+        />,
+        second: () => <CanceledDeposits
+            data={canceledDeposits}
+            loading={loading}
+            load={loadCanceledDeposits}
+        />
     });
 
     return (

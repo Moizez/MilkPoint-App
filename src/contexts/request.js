@@ -16,6 +16,16 @@ const RequestProvider = ({ children }) => {
     const [activeTanks, setActiveTanks] = useState([])
     const [inactiveTanks, setInactiveTanks] = useState([])
 
+    const [resolvedDeposits, setResolvedDeposits] = useState([])
+    const [resolvedWithdrawals, setResolvedWithdrawals] = useState([])
+
+    const [confirmedDeposits, setConfirmedDeposits] = useState([])
+    const [canceledDeposits, setCanceledDeposits] = useState([])
+
+    const [confirmedWithdrawals, setConfirmedWithdrawals] = useState([])
+    const [canceledWithdrawals, setCanceledWithdrawals] = useState([])
+
+    // Request Técnico
     const loadActiveTanks = async () => {
         setLoading(true)
         const response = await TechnicianApi.getActiveTanks()
@@ -30,6 +40,7 @@ const RequestProvider = ({ children }) => {
         setLoading(false)
     }
 
+    // Request responsável
     const loadResponsibleTank = async () => {
         setLoading(true)
         const response = await ResponsibleApi.getResponsibleTanks()
@@ -37,6 +48,21 @@ const RequestProvider = ({ children }) => {
         setLoading(false)
     }
 
+    const loadResolvedDeposits = async () => {
+        setLoading(true)
+        const response = await ResponsibleApi.getAllDepositsOrWithdrawalsResolved('deposito')
+        setResolvedDeposits(response)
+        setLoading(false)
+    }
+
+    const loadResolvedWithdrawals = async () => {
+        setLoading(true)
+        const response = await ResponsibleApi.getAllDepositsOrWithdrawalsResolved('retirada')
+        setResolvedWithdrawals(response)
+        setLoading(false)
+    }
+
+    // Request produtor
     const loadPendingDepositsProducer = async () => {
         setLoading(true)
         const response = await ProducerApi.getPendingDepositsProducer()
@@ -44,11 +70,36 @@ const RequestProvider = ({ children }) => {
         setLoading(false)
     }
 
+    const loadConfirmedDeposits = async () => {
+        setLoading(true)
+        const response = await ProducerApi.getAllDepositsConfirmedOrCanceledUser('confirmados')
+        setConfirmedDeposits(response)
+        setLoading(false)
+    }
+
+    const loadCanceledDeposits = async () => {
+        const response = await ProducerApi.getAllDepositsConfirmedOrCanceledUser('cancelados')
+        setCanceledDeposits(response)
+    }
+
+    // Request laticínio
     const loadPendingWithdrawalsDairy = async () => {
         setLoading(true)
         const response = await DairyApi.getPendingWithdrawalsDairy()
         setPendingWithdrawalsList(response)
         setLoading(false)
+    }
+
+    const loadConfirmedWithdrawals = async () => {
+        setLoading(true)
+        const response = await DairyApi.getAllWithdrawalsConfirmedOrCanceledUser('confirmados')
+        setConfirmedWithdrawals(response)
+        setLoading(false)
+    }
+
+    const loadCanceledWithdrawals = async () => {
+        const response = await DairyApi.getAllWithdrawalsConfirmedOrCanceledUser('cancelados')
+        setCanceledWithdrawals(response)
     }
 
     return (
@@ -58,7 +109,13 @@ const RequestProvider = ({ children }) => {
             pendingWithdrawalsList, loadPendingWithdrawalsDairy,
             responsibleTank, loadResponsibleTank,
             activeTanks, loadActiveTanks,
-            inactiveTanks, loadInactiveTanks
+            inactiveTanks, loadInactiveTanks,
+            resolvedDeposits, loadResolvedDeposits,
+            resolvedWithdrawals, loadResolvedWithdrawals,
+            confirmedDeposits, loadConfirmedDeposits,
+            canceledDeposits, loadCanceledDeposits,
+            confirmedWithdrawals, loadConfirmedWithdrawals,
+            canceledWithdrawals, loadCanceledWithdrawals
         }}>
             {children}
         </RequestContext.Provider>

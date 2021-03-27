@@ -6,18 +6,18 @@ import { AuthContext } from '../../../contexts/auth'
 
 import { MainContainer } from './styles'
 
-const Movements = ({ data }) => {
+const Movements = ({ userDepositData, userWithdrawalData }) => {
 
     const { user } = useContext(AuthContext)
 
     if (user.perfil === 1) {
-        return (<ProducerMovements data={data} />)
+        return (<ProducerMovements userData={userDepositData} />)
     } else if (user.perfil === 3) {
-        return (<DairyMovements data={data} />)
+        return (<DairyMovements userData={userWithdrawalData} />)
     } else return (
         <MainContainer showsVerticalScrollIndicator={false}>
-            <ProducerMovements data={data} />
-            <DairyMovements data={data} />
+            <ProducerMovements userData={userDepositData} />
+            <DairyMovements userData={userWithdrawalData} />
         </MainContainer>
     )
 }

@@ -1,12 +1,12 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment } from 'react'
+import FAB  from 'react-native-paper/lib/module/components/FAB/FABGroup'
 import { Modal } from 'react-native'
-import { FAB } from 'react-native-paper'
 
 import DateModal from '../Modals/DateModal'
 
 const Fab = ({
     setShowDatePicker, filterByQuantityLiters, filterByLast15Days,
-    filterByLast30Days, filterByTwoDates, setLoading, openWarning, type
+    filterByLast30Days, filterByTwoDates, openWarning, type
 }) => {
 
     const [state, setState] = useState({ open: false })
@@ -28,7 +28,7 @@ const Fab = ({
 
     return (
         <Fragment>
-            <FAB.Group
+            <FAB
                 open={open}
                 icon={open ? 'close' : iconType}
                 color='#FFF'
@@ -66,7 +66,6 @@ const Fab = ({
                     filterByLast15Days={filterByLast15Days}
                     filterByLast30Days={filterByLast30Days}
                     filterByTwoDates={filterByTwoDates}
-                    isLoading={setLoading}
                     openWarning={openWarning}
                     changeIconStyles={changeIconStyles}
                 />
@@ -77,7 +76,7 @@ const Fab = ({
 
 const FabGroup = ({
     setShowDatePicker, changeStatus, filterByName, filterByLast15Days, filterByLast30Days,
-    filterByTwoDates, setLoading, openWarning, type
+    filterByTwoDates, openWarning, type
 }) => {
 
     const [state, setState] = useState({ open: false })
@@ -99,7 +98,7 @@ const FabGroup = ({
 
     return (
         <Fragment>
-            <FAB.Group
+            <FAB
                 open={open}
                 icon={open ? 'close' : iconType}
                 color='#FFF'
@@ -153,7 +152,6 @@ const FabGroup = ({
                     filterByLast15Days={filterByLast15Days}
                     filterByLast30Days={filterByLast30Days}
                     filterByTwoDates={filterByTwoDates}
-                    isLoading={setLoading}
                     openWarning={openWarning}
                     changeIconStyles={changeIconStyles}
                 />

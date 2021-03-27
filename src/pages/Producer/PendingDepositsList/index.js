@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import styled from 'styled-components/native';
 
 import Api from '../../../services/producer.api'
+import { RequestContext } from '../../../contexts/request'
 
 import CancelModal from '../../../components/Modals/CancelModal'
 import WarningModal from '../../../components/Modals/WarningModal'
@@ -9,6 +10,8 @@ import ActionModal from '../../../components/Modals/ActionModal'
 import RequestCard from '../../../components/Cards/RequestCard'
 
 const PendingDepositsList = ({ data, loadPage }) => {
+
+    const { loadCanceledDeposits } = useContext(RequestContext)
 
     const [cancelModal, setCancelModal] = useState(false)
     const [actionModal, setActionModal] = useState(false)
@@ -26,10 +29,6 @@ const PendingDepositsList = ({ data, loadPage }) => {
         await Api.setCancelDeposit(confirmacao, idDeposito)
     }
 
-    useEffect(() => {
-        loadPage()
-    }, [])
-
     //Função para cancelar o depósito
     const handleCancel = () => {
         openActioModal()
@@ -37,6 +36,7 @@ const PendingDepositsList = ({ data, loadPage }) => {
 
     const handleConfirm = async () => {
         await depositConfirmation(false, data.id)
+        loadCanceledDeposits()
         closeActionModal()
         closeCancelModal()
         openWarningModal()

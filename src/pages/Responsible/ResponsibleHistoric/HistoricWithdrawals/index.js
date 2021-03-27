@@ -15,35 +15,21 @@ import {
     filterSpecificDay, filterByDateInterval, filterByBetweenDates
 } from '../../../../components/Helpers'
 
-const HistoricWithdrawals = ({data}) => {
+const HistoricWithdrawals = ({ data, loading, load }) => {
 
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [datePicker, setDatePicker] = useState(false)
     const [warningModal, setWarningModal] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
     const [selectedDate, setSelectedDate] = useState(new Date())
-
-    const [dataResolved, setDataResolved] = useState([])
     const [mainData, setMainData] = useState([])
 
     useEffect(() => {
         const loadPage = async () => {
-            setLoading(true)
-            const result = await filterSpecificDay(selectedDate, data)
+            const result = await filterSpecificDay(moment(), data)
             setMainData(result)
-            setLoading(false)
         }
         loadPage()
-    }, [selectedDate])
-
-    useEffect(() => {
-        const getDepositsResolvedByUser = async () => {
-            setLoading(true)
-            setDataResolved(data)
-            setLoading(false)
-        }
-        getDepositsResolvedByUser()
     }, [])
 
     const filterByStatus = async (value) => {
@@ -82,15 +68,18 @@ const HistoricWithdrawals = ({data}) => {
         setLoading(false)
     }
 
-    const onChange = (currentDate) => {
+    const onChange = async (currentDate) => {
         setDatePicker(Platform.OS === 'ios')
         let date = currentDate ? currentDate : moment()
+        const result = await filterSpecificDay(date, data)
         setSelectedDate(date)
+        setMainData(result)
     }
 
     const onRefreshList = () => {
         setIsRefreshing(true)
         setSelectedDate(moment())
+        load()
         setIsRefreshing(false)
     }
 
@@ -134,7 +123,6 @@ const HistoricWithdrawals = ({data}) => {
                 filterByLast15Days={filterByLast15Days}
                 filterByLast30Days={filterByLast30Days}
                 filterByTwoDates={filterByTwoDates}
-                isLoading={setLoading}
                 openWarning={openWarningModal}
                 type={false}
             />

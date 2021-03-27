@@ -3,80 +3,70 @@ import { RefreshControl, Platform, Modal } from 'react-native'
 import styled from 'styled-components/native'
 import moment from 'moment'
 
-import Api from '../../../../services/dairy.api'
-
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
 import { Fab } from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
 import EmptyListCard from '../../../../components/Cards/EmptyListCard'
+import { ListHeader } from '../../../../components/ListComponents'
 
 import {
     filterSpecificDay, filterByDateInterval, filterByBetweenDates
 } from '../../../../components/Helpers'
 
-const CanceledWithdrawals = () => {
+const CanceledWithdrawals = ({ data, loading, load }) => {
 
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [datePicker, setDatePicker] = useState(false)
     const [warningModal, setWarningModal] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
-    const [selectedDate, setSelectedDate] = useState(new Date())
-
-    const [dataResolved, setDataResolved] = useState([])
+    const [selectedDate, setSelectedDate] = useState(moment())
     const [mainData, setMainData] = useState([])
+
+    const today = moment(selectedDate).format('L')
 
     useEffect(() => {
         const loadPage = async () => {
-            const response = await Api.getAllWithdrawalsConfirmedOrCanceledUser('cancelados')
-            const result = await filterSpecificDay(selectedDate, response)
+            const result = await filterSpecificDay(moment(), data)
             setMainData(result)
         }
         loadPage()
-    }, [selectedDate])
-
-    useEffect(() => {
-        const getDepositsResolvedByUser = async () => {
-            setLoading(true)
-            const response = await Api.getAllWithdrawalsConfirmedOrCanceledUser('cancelados')
-            setDataResolved(response)
-            setLoading(false)
-        }
-        getDepositsResolvedByUser()
     }, [])
 
     const filterByQuantityLiters = (value) => {
-        const result = dataResolved.filter(i => i.quantidade == value)
+        const result = data.filter(i => i.quantidade == value)
         setMainData(result)
     }
 
     const filterByLast15Days = () => {
-        const result = filterByDateInterval(15, 'days', dataResolved)
+        const result = filterByDateInterval(15, 'days', data)
         setMainData(result)
     }
 
     const filterByLast30Days = () => {
-        const result = filterByDateInterval(1, 'month', dataResolved)
+        const result = filterByDateInterval(1, 'month', data)
         setMainData(result)
     }
 
     const filterByTwoDates = (initialDate, finalDate) => {
         const date = finalDate ? finalDate : moment()
-        const result = filterByBetweenDates(dataResolved, initialDate, date)
+        const result = filterByBetweenDates(data, initialDate, date)
         setMainData(result)
     }
 
-    const onChange = (currentDate) => {
+    const onChange = async (currentDate) => {
         setDatePicker(Platform.OS === 'ios')
         let date = currentDate ? currentDate : moment()
+        const result = await filterSpecificDay(date, data)
         setSelectedDate(date)
+        setMainData(result)
     }
 
     const onRefreshList = () => {
         setIsRefreshing(true)
         setSelectedDate(moment())
+        load()
         setIsRefreshing(false)
     }
 
@@ -84,6 +74,7 @@ const CanceledWithdrawals = () => {
         setTypeMessage(message)
         setWarningModal(true)
     }
+
     const closeWarningModal = () => setWarningModal(false)
 
     return (
@@ -94,6 +85,14 @@ const CanceledWithdrawals = () => {
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <HistoricCard data={item} />}
+                ListHeaderComponent={mainData &&
+                    <ListHeader
+                        title={today}
+                        iconName='calendar'
+                        iconColor='#FFF'
+                    />
+                }
+                stickyHeaderIndices={[0]}
                 ListEmptyComponent={
                     <EmptyListCard
                         iconLeft={'gesture-swipe-down'}
@@ -111,14 +110,12 @@ const CanceledWithdrawals = () => {
                     onSet={onChange}
                 />
             }
-
             <Fab
                 setShowDatePicker={setDatePicker}
                 filterByQuantityLiters={filterByQuantityLiters}
                 filterByLast15Days={filterByLast15Days}
                 filterByLast30Days={filterByLast30Days}
                 filterByTwoDates={filterByTwoDates}
-                isLoading={setLoading}
                 openWarning={openWarningModal}
                 type={false}
             />

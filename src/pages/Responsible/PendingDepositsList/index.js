@@ -16,7 +16,7 @@ const PendingDepositsList = ({ data, loadPage }) => {
     let success = require('../../../assets/lottie/success-icon.json')
     let cancel = require('../../../assets/lottie/delete-confirm.json')
 
-    const { loadResponsibleTank } = useContext(RequestContext)
+    const { loadResponsibleTank, loadResolvedDeposits } = useContext(RequestContext)
 
     const [acceptOrRefuseModal, setAcceptOrRefuseModal] = useState(false)
     const [actionModal, setActionModal] = useState(false)
@@ -60,6 +60,8 @@ const PendingDepositsList = ({ data, loadPage }) => {
 
     const doneConfirm = async () => {
         await depositConfirmation(true, data.id, '')
+        loadResponsibleTank()
+        loadResolvedDeposits()
         setTypeMessage('Depósito confirmado com sucesso!')
         closeActionModal()
         closeAcceptOrRefuseModal()
@@ -68,11 +70,11 @@ const PendingDepositsList = ({ data, loadPage }) => {
             closeWarningModal()
             loadPage()
         }, 2000);
-        loadResponsibleTank()
     }
 
     const doneCancel = async () => {
         await depositConfirmation(false, data.id, observacao)
+        loadResolvedDeposits()
         setTypeMessage('Depósito cancelado com sucesso!')
         closeRefuseModal()
         closeAcceptOrRefuseModal()

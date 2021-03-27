@@ -24,7 +24,6 @@ const HistoricCard = ({ data }) => {
 
     return (
         <Container>
-
             <CardBox style={{ elevation: 5 }}>
                 <CardInfoBox>
                     <InfoBox>

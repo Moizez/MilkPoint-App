@@ -55,6 +55,7 @@ export const PeriodTitle = styled.Text`
 
 export const PeriodBox = styled.View`
     flex-direction: row;
+    padding: 8px;
 `;
 
 export const PeriodItem = styled.View`
@@ -79,6 +80,20 @@ export const CashMovementsBottom = styled.View`
     height: 20px;
     background-color: #fca311;
     border-bottom-right-radius: 8px;
+`;
+
+export const DividerH = styled.View`
+    width: 100%;    
+    height: 0.5px;
+    background-color: #333533;
+    margin: 2px 0 5px 0;
+`;
+
+export const DividerV = styled.View`
+    height: 100%;    
+    width: 0.5px;
+    background-color: #333533;
+    margin: 0 5px 0 5px;
 `;
 
 

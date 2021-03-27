@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { RefreshControl, Platform, Modal } from 'react-native'
 import styled from 'styled-components/native'
 import moment from 'moment'
 
 import Api from '../../../../services/responsable.api'
-import { AuthContext } from '../../../../contexts/auth'
 
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
@@ -17,74 +16,61 @@ import {
     filterSpecificDay, filterByDateInterval, filterByBetweenDates
 } from '../../../../components/Helpers'
 
-const HistoricDeposits = ({ data, loadDepositData }) => {
-
-    const { user } = useContext(AuthContext)
+const HistoricDeposits = ({ data, loading, load }) => {
 
     const [isRefreshing, setIsRefreshing] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [datePicker, setDatePicker] = useState(false)
     const [warningModal, setWarningModal] = useState(false)
     const [typeMessage, setTypeMessage] = useState('')
     const [selectedDate, setSelectedDate] = useState(new Date())
-
     const [mainData, setMainData] = useState([])
 
     useEffect(() => {
         const loadPage = async () => {
-            setLoading(true)
-            const result = await filterSpecificDay(selectedDate, data)
+            const result = await filterSpecificDay(moment(), data)
             setMainData(result)
-            setLoading(false)
         }
         loadPage()
-    }, [selectedDate])
+    }, [])
 
     const filterByStatus = async (value) => {
-        setLoading(true)
         const response = await Api.getAllDepositsConfirmedOrCanceledUser(value)
         setMainData(response)
-        setLoading(false)
     }
 
     const filterByName = async (value) => {
-        setLoading(true)
         const result = await Api.findByNameProducerOrDairy('deposito', value)
         setMainData(result)
-        setLoading(false)
     }
 
     const filterByLast15Days = () => {
-        setLoading(true)
         const result = filterByDateInterval(15, 'days', data)
         setMainData(result)
-        setLoading(false)
     }
 
     const filterByLast30Days = () => {
-        setLoading(true)
         const result = filterByDateInterval(1, 'month', data)
         setMainData(result)
-        setLoading(false)
     }
 
     const filterByTwoDates = (initialDate, finalDate) => {
-        setLoading(true)
         const date = finalDate ? finalDate : moment()
         const result = filterByBetweenDates(data, initialDate, date)
         setMainData(result)
-        setLoading(false)
     }
 
-    const onChange = (currentDate) => {
+    const onChange = async (currentDate) => {
         setDatePicker(Platform.OS === 'ios')
         let date = currentDate ? currentDate : moment()
+        const result = await filterSpecificDay(date, data)
         setSelectedDate(date)
+        setMainData(result)
     }
 
     const onRefreshList = () => {
         setIsRefreshing(true)
-        loadDepositData()
+        setSelectedDate(moment())
+        load()
         setIsRefreshing(false)
     }
 
@@ -129,7 +115,6 @@ const HistoricDeposits = ({ data, loadDepositData }) => {
                 filterByLast15Days={filterByLast15Days}
                 filterByLast30Days={filterByLast30Days}
                 filterByTwoDates={filterByTwoDates}
-                isLoading={setLoading}
                 openWarning={openWarningModal}
                 type={true}
             />

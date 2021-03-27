@@ -20,18 +20,20 @@ const Specifications = ({ data }) => {
     let criacao = moment(data.dataCriacao).locale('pt-br').format('L')
 
     const verifyLocationPermission = async () => {
-        try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
-            )
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                setHasLocationPermission(true)
-            } else {
-                setHasLocationPermission(false)
+        setTimeout(async () => {
+            try {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+                )
+                if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                    setHasLocationPermission(true)
+                } else {
+                    setHasLocationPermission(false)
+                }
+            } catch (err) {
+                console.warn(err)
             }
-        } catch (err) {
-            console.warn(err)
-        }
+        }, 1000);
     }
 
     useEffect(() => {

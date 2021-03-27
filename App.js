@@ -15,8 +15,8 @@ const colors = {
 	producer: '#2a9d8f',
 	dairy: '#dd2c2f',
 	responsible: '#e7b705',
-	Technician: '#00b4d8',
-	bg: '#292b2c'
+	technician: '#00b4d8',
+	main: '#292b2c'
 }
 
 const App = () => {
