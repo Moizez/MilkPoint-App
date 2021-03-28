@@ -94,7 +94,6 @@ export default {
         } catch (e) {
             console.log('Erro: getTanks ' + e)
         }
-
     },
 
     getCep: async (cep) => {

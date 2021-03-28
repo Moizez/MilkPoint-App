@@ -4,9 +4,9 @@ import { Modal } from 'react-native'
 
 import DateModal from '../Modals/DateModal'
 
-const Fab = ({
-    setShowDatePicker, filterByQuantityLiters, filterByLast15Days,
-    filterByLast30Days, filterByTwoDates, openWarning, iconColor
+const FabGroup = ({
+    setShowDatePicker, changeStatus, filterByName, filterByLast15Days,
+    filterByLast30Days, filterByTwoDates, openWarning, type, iconColor
 }) => {
 
     const [state, setState] = useState({ open: false })
@@ -25,14 +25,28 @@ const Fab = ({
                 open={open}
                 icon={open ? 'close' : 'magnify'}
                 color='#FFF'
-                fabStyle={{ backgroundColor: iconColor }}
+                fabStyle={{ backgroundColor: iconColor}}
                 actions={[
+                    {
+                        icon: 'delete-circle',
+                        label: `Recusad${type ? 'os' : 'as'}`,
+                        onPress: () => {
+                            changeStatus('cancelados')
+                        }
+                    },
+                    {
+                        icon: 'check-circle',
+                        label: `Confirmad${type ? 'os' : 'as'}`,
+                        onPress: () => {
+                            changeStatus('confirmados')
+                        }
+                    },
                     {
                         icon: 'calendar',
                         label: 'Data específica',
                         onPress: () => {
                             openCalendar()
-                        },
+                        }
                     },
                     {
                         icon: 'calendar-search',
@@ -54,7 +68,7 @@ const Fab = ({
             >
                 <DateModal
                     closeModal={closeDateModal}
-                    filterByQuantityLiters={filterByQuantityLiters}
+                    filterByName={filterByName}
                     filterByLast15Days={filterByLast15Days}
                     filterByLast30Days={filterByLast30Days}
                     filterByTwoDates={filterByTwoDates}
@@ -65,4 +79,4 @@ const Fab = ({
     );
 }
 
-export default Fab
+export default FabGroup

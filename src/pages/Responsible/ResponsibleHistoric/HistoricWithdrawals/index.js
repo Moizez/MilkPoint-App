@@ -7,7 +7,7 @@ import Api from '../../../../services/responsable.api'
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
-import { FabGroup } from '../../../../components/Fab'
+import FabGroup from '../../../../components/FabGroup'
 import DatePicker from '../../../../components/DatePicker'
 import EmptyListCard from '../../../../components/Cards/EmptyListCard'
 
@@ -33,39 +33,29 @@ const HistoricWithdrawals = ({ data, loading, load }) => {
     }, [])
 
     const filterByStatus = async (value) => {
-        setLoading(true)
         const response = await Api.getAllWithdrawalsConfirmedOrCanceledUser(value)
         setMainData(response)
-        setLoading(false)
     }
 
     const filterByName = async (value) => {
-        setLoading(true)
         const result = await Api.findByNameProducerOrDairy('retirada', value)
         setMainData(result)
-        setLoading(false)
     }
 
     const filterByLast15Days = () => {
-        setLoading(true)
-        const result = filterByDateInterval(15, 'days', dataResolved)
+        const result = filterByDateInterval(15, 'days', data)
         setMainData(result)
-        setLoading(false)
     }
 
     const filterByLast30Days = () => {
-        setLoading(true)
-        const result = filterByDateInterval(1, 'month', dataResolved)
+        const result = filterByDateInterval(1, 'month', data)
         setMainData(result)
-        setLoading(false)
     }
 
     const filterByTwoDates = (initialDate, finalDate) => {
-        setLoading(true)
         const date = finalDate ? finalDate : moment()
-        const result = filterByBetweenDates(dataResolved, initialDate, date)
+        const result = filterByBetweenDates(data, initialDate, date)
         setMainData(result)
-        setLoading(false)
     }
 
     const onChange = async (currentDate) => {
@@ -124,6 +114,7 @@ const HistoricWithdrawals = ({ data, loading, load }) => {
                 filterByLast30Days={filterByLast30Days}
                 filterByTwoDates={filterByTwoDates}
                 openWarning={openWarningModal}
+                iconColor={'#cc444b'}
                 type={false}
             />
 

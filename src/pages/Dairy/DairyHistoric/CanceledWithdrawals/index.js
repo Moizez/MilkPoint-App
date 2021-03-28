@@ -6,10 +6,10 @@ import moment from 'moment'
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
-import { Fab } from '../../../../components/Fab'
+import Fab from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
 import EmptyListCard from '../../../../components/Cards/EmptyListCard'
-import { ListHeader } from '../../../../components/ListComponents'
+//import { ListHeader } from '../../../../components/ListComponents'
 
 import {
     filterSpecificDay, filterByDateInterval, filterByBetweenDates
@@ -85,14 +85,6 @@ const CanceledWithdrawals = ({ data, loading, load }) => {
                 keyExtractor={(item) => item.id}
                 refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefreshList} />}
                 renderItem={({ item }) => <HistoricCard data={item} />}
-                ListHeaderComponent={mainData &&
-                    <ListHeader
-                        title={today}
-                        iconName='calendar'
-                        iconColor='#FFF'
-                    />
-                }
-                stickyHeaderIndices={[0]}
                 ListEmptyComponent={
                     <EmptyListCard
                         iconLeft={'gesture-swipe-down'}
@@ -117,7 +109,7 @@ const CanceledWithdrawals = ({ data, loading, load }) => {
                 filterByLast30Days={filterByLast30Days}
                 filterByTwoDates={filterByTwoDates}
                 openWarning={openWarningModal}
-                type={false}
+                iconColor={'#cc444b'}
             />
 
             <Modal
@@ -147,3 +139,14 @@ const FlatList = styled.FlatList`
     flex: 1;
     background-color: #FFF;
 `;
+
+/*
+ListHeaderComponent={mainData &&
+                    <ListHeader
+                        title={today}
+                        iconName='calendar'
+                        iconColor='#FFF'
+                    />
+                }
+                stickyHeaderIndices={[0]}
+*/

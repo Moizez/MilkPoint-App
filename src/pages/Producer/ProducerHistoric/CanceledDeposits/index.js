@@ -6,7 +6,7 @@ import moment from 'moment'
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
-import { Fab } from '../../../../components/Fab'
+import Fab from '../../../../components/Fab'
 import DatePicker from '../../../../components/DatePicker'
 import EmptyListCard from '../../../../components/Cards/EmptyListCard'
 
@@ -106,7 +106,7 @@ const CanceledDeposits = ({ data, loading, load }) => {
                 filterByLast30Days={filterByLast30Days}
                 filterByTwoDates={filterByTwoDates}
                 openWarning={openWarningModal}
-                type={false}
+                iconColor={'#cc444b'}
             />
 
             <Modal

@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import BASE from './base'
 
 export default {
-    
+
     //Carregar lista de produtores
     getProducers: async () => {
         try {

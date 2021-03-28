@@ -8,7 +8,7 @@ import Api from '../../../../services/responsable.api'
 import HistoricCard from '../../../../components/Cards/HistoricCard'
 import Loader from '../../../../components/Loader'
 import WarningModal from '../../../../components/Modals/WarningModal'
-import { FabGroup } from '../../../../components/Fab'
+import FabGroup from '../../../../components/FabGroup'
 import DatePicker from '../../../../components/DatePicker'
 import EmptyListCard from '../../../../components/Cards/EmptyListCard'
 
@@ -116,6 +116,7 @@ const HistoricDeposits = ({ data, loading, load }) => {
                 filterByLast30Days={filterByLast30Days}
                 filterByTwoDates={filterByTwoDates}
                 openWarning={openWarningModal}
+                iconColor={'#2a9d8f'}
                 type={true}
             />
 

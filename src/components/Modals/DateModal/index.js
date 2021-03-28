@@ -15,7 +15,7 @@ import {
 
 const DateModal = ({
     closeModal, filterByQuantityLiters, filterByLast15Days, filterByLast30Days,
-    filterByTwoDates, openWarning, filterByName, changeIconStyles
+    filterByTwoDates, openWarning, filterByName
 }) => {
 
     const { user } = useContext(AuthContext)
@@ -54,7 +54,6 @@ const DateModal = ({
             openWarning('A data inicial é obrigatória')
         } else {
             filterByTwoDates(selectedInitialDate, selectedFinalDate)
-            changeIconStyles('calendar-weekend', '#76c893')
             closeModal()
         }
     }
@@ -65,7 +64,6 @@ const DateModal = ({
                 openWarning('Digite um valor válido!')
             } else {
                 filterByName(text)
-                changeIconStyles('alphabetical-variant', '#219ebc')
                 closeModal()
             }
         } else {
@@ -73,7 +71,6 @@ const DateModal = ({
                 openWarning('Digite um valor válido!')
             } else {
                 filterByQuantityLiters(text)
-                changeIconStyles('numeric', '#219ebc')
                 closeModal()
             }
         }
@@ -94,7 +91,6 @@ const DateModal = ({
                     <Button15Days onPress={() => {
                         filterByLast15Days()
                         closeModal()
-                        changeIconStyles('calendar-range', '#ca85ff')
                     }}>
                         <Icon name='calendar-range' color='#FFF' size={35} />
                         <TextButton>Útimos 15 dias</TextButton>
@@ -103,7 +99,6 @@ const DateModal = ({
                     <Button30Days onPress={() => { 
                         filterByLast30Days()
                         closeModal() 
-                        changeIconStyles('calendar-month', '#e76f51')
                         }}>
                         <Icon name='calendar-month' color='#FFF' size={35} />
                         <TextButton>Útimos 30 dias</TextButton>

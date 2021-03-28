@@ -44,18 +44,16 @@ const ResponsibleHistoric = () => {
     );
 
     const renderScene = SceneMap({
-        first: () =>
-            <HistoricDeposits
-                data={resolvedDeposits}
-                loading={loading}
-                load={loadResolvedDeposits}
-            />,
-        second: () =>
-            <HistoricWithdrawals
-                data={resolvedWithdrawals}
-                loading={loading}
-                load={loadResolvedWithdrawals}
-            />
+        first: () => <HistoricDeposits
+            data={resolvedDeposits}
+            loading={loading}
+            load={loadResolvedDeposits}
+        />,
+        second: () => <HistoricWithdrawals
+            data={resolvedWithdrawals}
+            loading={loading}
+            load={loadResolvedWithdrawals}
+        />
     });
 
     return (
